@@ -1,0 +1,21 @@
+{
+  "name": "wikidata-ingest",
+  "version": "0.1.0",
+  "description": "Ingest Wikidata aviation-accident entities (optionally enriched with English Wikipedia lead text) into a standalone SQLite",
+  "license": "Apache-2.0",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node src/cli.js build",
+    "selftest": "node src/cli.js --selftest",
+    "test": "jest"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.10.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

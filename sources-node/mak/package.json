@@ -1,0 +1,22 @@
+{
+  "name": "mak-ingest",
+  "version": "0.1.0",
+  "description": "Ingest MAK (Interstate Aviation Committee) accident reports — HTML detail pages + final-report PDFs — into a standalone SQLite",
+  "license": "Apache-2.0",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node src/cli.js build",
+    "test": "jest"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.10.0",
+    "cheerio": "^1.0.0",
+    "pdf-parse": "^2.4.5"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

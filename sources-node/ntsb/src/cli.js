@@ -1,0 +1,233 @@
+'use strict';
+/**
+ * cli.js — builds a standalone `accidents` SQLite from the NTSB public bulk
+ * aviation dump (avall.zip).
+ *
+ * Pipeline: download avall.zip from NTSB → unzip → mdb-export the
+ * events / narratives / aircraft / occurrences tables → join → write a
+ * self-contained `accidents` table with factual / analysis / cause narratives
+ * plus metadata. The output is a single SQLite file you can read directly.
+ *
+ * Requires `mdbtools` on PATH (provides `mdb-export`) and `unzip`.
+ *
+ * Usage:
+ *   node src/cli.js build [outPath]   # default ./ntsb-accidents.sqlite
+ *   node src/cli.js --selftest        # join/mapping logic check, no download
+ *
+ * Refresh: NTSB updates the dump ~monthly; re-run to regenerate.
+ */
+const fs   = require('node:fs');
+const os   = require('node:os');
+const path = require('node:path');
+const { execFileSync } = require('node:child_process');
+const Database = require('better-sqlite3');
+const { buildWeatherSummary } = require('./parse');
+
+const NTSB_BASE = 'https://data.ntsb.gov/avdata';
+const FULL_DUMP = 'avall.zip';
+
+function parseCsv(text) {
+  const rows = [];
+  let row = [], cur = '', inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQ) {
+      if (c === '"') { if (text[i + 1] === '"') { cur += '"'; i++; continue; } inQ = false; }
+      else cur += c;
+    } else if (c === '"') inQ = true;
+    else if (c === ',') { row.push(cur); cur = ''; }
+    else if (c === '\r') { /* skip */ }
+    else if (c === '\n') { row.push(cur); cur = ''; if (row.some(v => v !== '')) rows.push(row); row = []; }
+    else cur += c;
+  }
+  if (cur || row.length) { row.push(cur); if (row.some(v => v !== '')) rows.push(row); }
+  if (rows.length === 0) return [];
+  const headers = rows[0].map(h => String(h).toLowerCase());
+  return rows.slice(1).map(cells => {
+    const obj = {};
+    for (let j = 0; j < headers.length; j++) obj[headers[j]] = cells[j] ?? '';
+    return obj;
+  });
+}
+
+function toInt(v) { const n = parseInt(v, 10); return Number.isFinite(n) ? n : 0; }
+
+// NTSB ev_date arrives as "MM/DD/YY HH:MM:SS" (2-digit year) or "MM/DD/YYYY".
+// Normalize to ISO "YYYY-MM-DD" so the prompt reads cleanly and the worker's
+// date validation has a stable format to match. 2-digit year window: 80-99 →
+// 19xx, 00-29 → 20xx (NTSB data spans 1980s→present).
+function normalizeDate(raw) {
+  if (!raw) return '';
+  const datePart = String(raw).trim().split(/\s+/)[0];
+  const m = datePart.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})$/);
+  if (!m) return datePart;                 // already ISO or unknown — pass through
+  let [, mm, dd, yy] = m;
+  let year = yy.length === 4 ? Number(yy) : (Number(yy) >= 30 ? 1900 + Number(yy) : 2000 + Number(yy));
+  return `${year}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`;
+}
+
+// Pure mapping: joined NTSB tables → rows in the worker's `accidents` schema.
+// Only events that have a non-empty factual narrative (narr_accp) are emitted —
+// the worker's MIN_NARRATIVE_CHARS gate would drop the rest anyway.
+function mapToAccidents(tables) {
+  const narrByEv = new Map();
+  for (const r of tables.narratives || []) narrByEv.set(r.ev_id, r);
+  const acftByEv = new Map();
+  for (const r of tables.aircraft || []) if (!acftByEv.has(r.ev_id)) acftByEv.set(r.ev_id, r);
+  const occByEv = new Map();
+  for (const r of tables.occurrences || []) if (!occByEv.has(r.ev_id)) occByEv.set(r.ev_id, r);
+
+  const out = [];
+  for (const ev of tables.events || []) {
+    const narr = narrByEv.get(ev.ev_id);
+    const factual = (narr?.narr_accp || '').trim();
+    if (!factual) continue;                        // skip narrative-less events
+    const acft = acftByEv.get(ev.ev_id) || {};
+    const occ  = occByEv.get(ev.ev_id) || {};
+    out.push({
+      case_id:            ev.ev_id,
+      ntsb_no:            ev.ntsb_no || ev.ev_id,
+      event_date:         normalizeDate(ev.ev_date),
+      city:               ev.ev_city || '',
+      state_country:      [ev.ev_state, ev.ev_country].filter(Boolean).join(', '),
+      aircraft:           [acft.acft_make, acft.acft_model].filter(Boolean).join(' ').trim(),
+      registration:       acft.regis_no || '',
+      operator:           acft.oper_name || acft.oper_dba || '',
+      fatal:              toInt(ev.inj_tot_f),
+      serious:            toInt(ev.inj_tot_s),
+      minor:              toInt(ev.inj_tot_m),
+      phase:              occ.phase_flt_spec || occ.phase_of_flight || occ.occurrence_code || '',
+      weather:            buildWeatherSummary(ev) || '',
+      factual_narrative:  factual,
+      analysis_narrative: (narr?.narr_accf || '').trim(),
+      probable_cause:     (narr?.narr_cause || '').trim(),
+      docket_url:         `https://carol.ntsb.gov/event/${ev.ev_id}`,
+    });
+  }
+  return out;
+}
+
+const COLUMNS = [
+  'case_id', 'ntsb_no', 'event_date', 'city', 'state_country', 'aircraft',
+  'registration', 'operator', 'fatal', 'serious', 'minor', 'phase', 'weather',
+  'factual_narrative', 'analysis_narrative', 'probable_cause', 'docket_url',
+];
+
+function writeSqlite(rows, outPath) {
+  if (fs.existsSync(outPath)) fs.rmSync(outPath);
+  const db = new Database(outPath);
+  db.pragma('journal_mode = WAL');
+  db.exec(`
+    CREATE TABLE accidents (
+      case_id            TEXT PRIMARY KEY,
+      ntsb_no            TEXT,
+      event_date         TEXT,
+      city               TEXT,
+      state_country      TEXT,
+      aircraft           TEXT,
+      registration       TEXT,
+      operator           TEXT,
+      fatal              INTEGER,
+      serious            INTEGER,
+      minor              INTEGER,
+      phase              TEXT,
+      weather            TEXT,
+      factual_narrative  TEXT,
+      analysis_narrative TEXT,
+      probable_cause     TEXT,
+      docket_url         TEXT
+    );
+  `);
+  const ins = db.prepare(
+    `INSERT OR REPLACE INTO accidents (${COLUMNS.join(', ')}) VALUES (${COLUMNS.map(c => '@' + c).join(', ')})`
+  );
+  const tx = db.transaction((batch) => { for (const r of batch) ins.run(r); });
+  tx(rows);
+  db.close();
+}
+
+function exportTables(mdbPath, csvDir) {
+  const DEFS = [
+    { csv: 'events',      mdb: 'events' },
+    { csv: 'narratives',  mdb: 'narratives' },
+    { csv: 'aircraft',    mdb: 'aircraft' },
+    { csv: 'occurrences', mdb: 'Occurrences' },
+  ];
+  const tables = {};
+  for (const d of DEFS) {
+    const outFile = path.join(csvDir, `${d.csv}.csv`);
+    execFileSync('mdb-export', [mdbPath, d.mdb], { stdio: ['ignore', fs.openSync(outFile, 'w'), 'inherit'] });
+    tables[d.csv] = parseCsv(fs.readFileSync(outFile, 'utf8'));
+    console.log(`  ${d.csv}: ${tables[d.csv].length} rows`);
+  }
+  return tables;
+}
+
+async function downloadDump(dest) {
+  const fileId = `C:\\avdata\\${FULL_DUMP}`;
+  const url = `${NTSB_BASE}/FileDirectory/DownloadFile?fileID=${encodeURIComponent(fileId)}`;
+  console.log(`Downloading ${url}`);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`NTSB download → HTTP ${res.status}`);
+  fs.writeFileSync(dest, Buffer.from(await res.arrayBuffer()));
+  const sz = fs.statSync(dest).size;
+  if (sz < 1_000_000) throw new Error(`download too small (${sz}b) — likely an error page`);
+  console.log(`  ${(sz / 1e6).toFixed(1)} MB`);
+}
+
+async function main() {
+  const args = process.argv.slice(2);
+
+  if (args.includes('--selftest')) {
+    const rows = mapToAccidents({
+      events: [
+        { ev_id: 'ERA24LA101', ev_date: '08/12/24 00:00:00', ev_city: 'Talkeetna', ev_state: 'AK', ev_country: 'USA',
+          inj_tot_f: '2', inj_tot_s: '1', inj_tot_m: '0', wx_cond_basic: 'VMC' },
+        { ev_id: 'NONARR1', ev_date: '2024-01-01', ev_city: 'Nowhere' },  // no narrative → dropped
+      ],
+      narratives: [
+        { ev_id: 'ERA24LA101', narr_accp: 'The pilot reported a loss of engine power on final approach.', narr_cause: 'Fuel starvation.' },
+        { ev_id: 'NONARR1', narr_accp: '' },
+      ],
+      aircraft: [{ ev_id: 'ERA24LA101', acft_make: 'CESSNA', acft_model: '172', regis_no: 'N12345', oper_name: 'PRIVATE' }],
+      occurrences: [{ ev_id: 'ERA24LA101', phase_flt_spec: 'Approach' }],
+    });
+    console.log(JSON.stringify(rows, null, 2));
+    const out = path.join(os.tmpdir(), `ntsb-selftest-${Date.now()}.sqlite`);
+    writeSqlite(rows, out);
+    const db = new Database(out, { readonly: true });
+    const n = db.prepare('SELECT COUNT(*) c FROM accidents').get().c;
+    const sample = db.prepare('SELECT case_id, aircraft, fatal, phase, docket_url FROM accidents').get();
+    db.close(); fs.rmSync(out); fs.rmSync(out + '-shm', { force: true }); fs.rmSync(out + '-wal', { force: true });
+    console.log(`\nselftest: wrote ${n} row(s); sample=${JSON.stringify(sample)}`);
+    if (n !== 1) { console.error('FAIL: expected exactly 1 row (narrative-less dropped)'); process.exit(1); }
+    console.log('selftest OK');
+    return;
+  }
+
+  const positional = args.filter(a => a !== 'build');   // `build` is an optional verb
+  const outPath = path.resolve(positional[0] || 'ntsb-accidents.sqlite');
+  const tmpRoot = process.env.NTSB_TMPDIR || os.tmpdir();
+  const tmpDir = fs.mkdtempSync(path.join(tmpRoot, 'ntsb-build-'));
+  try {
+    const zip = path.join(tmpDir, FULL_DUMP);
+    await downloadDump(zip);
+    execFileSync('unzip', ['-o', '-q', zip, '-d', tmpDir], { stdio: 'inherit' });
+    const mdb = fs.readdirSync(tmpDir).find(f => f.toLowerCase().endsWith('.mdb'));
+    if (!mdb) throw new Error('no .mdb in dump');
+    console.log('Exporting tables via mdb-export…');
+    const tables = exportTables(path.join(tmpDir, mdb), tmpDir);
+    const rows = mapToAccidents(tables);
+    console.log(`Mapped ${rows.length} accidents with narratives.`);
+    writeSqlite(rows, outPath);
+    console.log(`Wrote ${outPath}`);
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+}
+
+module.exports = { mapToAccidents, parseCsv };
+
+if (require.main === module) {
+  main().catch((err) => { console.error('FAILED:', err.message); process.exit(1); });
+}
