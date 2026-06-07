@@ -1,0 +1,24 @@
+version: 2
+
+updates:
+  # Python packages — one pyproject.toml per source under sources/<code>/.
+  # The /sources/* glob covers all 38 scraper packages with a single block;
+  # updates are grouped per-directory into one PR and capped to keep noise low.
+  - package-ecosystem: "pip"
+    directories:
+      - "/sources/*"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "pip"
+    labels:
+      - "dependencies"
+      - "python"
+    groups:
+      python-dependencies:
+        patterns:
+          - "*"
