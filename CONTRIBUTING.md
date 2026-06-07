@@ -1,8 +1,19 @@
 # Contributing
 
 Thanks for your interest. This repo is a collection of **independent** scrapers
-— the goal is that each `sources/<code>/` can be understood, run, tested, and
-rewritten on its own, without a shared framework to learn first.
+— the goal is that each source can be understood, run, tested, and rewritten on
+its own, without a shared framework to learn first.
+
+Sources live in three trees by language:
+
+- **`sources/<code>/`** — Python packages (the bulk; national SIAs). Anatomy below.
+- **`sources-node/<code>/`** — Node.js packages: `src/{parse,scrape,db,cli}.js`
+  + `test/` (jest, offline fixtures) + `package.json`. Same four-verb contract.
+- **`sources-go/`** — Go projects with their own `go.mod`.
+
+Whatever the language, the contract is the same: one source per directory,
+self-contained, offline tests, never commit harvested data. The Python anatomy
+below is the reference shape; mirror its spirit in Node/Go.
 
 ## Anatomy of a source
 

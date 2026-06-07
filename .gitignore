@@ -26,9 +26,18 @@ pdfs/
 smoke-pdfs/
 *.log
 
+# Node.js (sources-node/)
+node_modules/
+npm-debug.log*
+
+# Go (sources-go/) — compiled binaries; deps are tracked via go.mod/go.sum
+sources-go/**/aircrash-parser
+*.test
+
 # Browser automation profiles (residential-bound, machine-specific)
 .cf-profile/
 .pw-profile/
+*-chromium-profile/
 
 # OS / editor
 .DS_Store

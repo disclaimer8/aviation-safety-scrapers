@@ -1,13 +1,14 @@
 # aviation-safety-scrapers
 
-A collection of **38 independent scrapers** for public-record civil aviation
-accident and incident reports, each targeting a different national **Safety
-Investigation Authority** (SIA) — AAIB, BEA, BFU, JTSB, NTSB-equivalents, and
-many more across six continents.
+A collection of **43 independent scrapers** for public-record civil aviation
+accident and incident reports, each targeting a different source — national
+**Safety Investigation Authorities** (AAIB, BEA, BFU, JTSB, …), the US **NTSB**
+bulk dump, **MAK**, **ATSB**, **Wikidata**, and the global **ASN / B3A**
+archives — across six continents.
 
-Every authority publishes its final reports differently: a server-rendered
-table here, a JavaScript-hydrated accordion there, a Cloudflare-gated PDF
-archive somewhere else. Each scraper encapsulates the quirks of one source
+Every source publishes differently: a server-rendered table here, a
+JavaScript-hydrated accordion there, a Cloudflare-gated PDF archive, an Access
+database dump somewhere else. Each scraper encapsulates the quirks of one source
 behind the **same four-verb pipeline** so they all feel identical to operate.
 
 ```
@@ -17,28 +18,42 @@ discover  →  fetch  →  parse  →  build
 ```
 
 > **Scope:** these scrapers collect **public-record safety data** — reports
-> that national authorities publish specifically so the public can read them.
-> They are deliberately slow and polite (single-threaded, paced, identifiable
+> that authorities publish specifically so the public can read them. They are
+> deliberately slow and polite (single-threaded, paced, identifiable
 > User-Agent). Respect each site's `robots.txt` and terms of use, run them at a
 > low rate, and use the data for safety research and education. No harvested
 > data is included in this repository — only the code that fetches it.
 
 ## Repository layout
 
+The collection spans three languages, grouped by directory. Every source is
+self-contained — its own package/module, own deps, own tests — with no shared
+runtime library, so one can be copied, run, or rewritten without touching the
+others.
+
 ```
-sources/
+sources/         38 Python packages — national Safety Investigation Authorities
   <code>/
-    <code>_ingest/        # the Python package (discover/fetch/parse/build + CLI)
-    tests/                # pytest unit tests with offline HTML/text fixtures
+    <code>_ingest/        # Python package (discover/fetch/parse/build + CLI)
+    tests/                # pytest unit tests with offline fixtures
     deploy/               # systemd *-cycle.service + .timer + run-cycle.sh
-    pyproject.toml        # standalone package; httpx + (optionally) a PDF/browser dep
-    SMOKE.md              # real smoke-test results + source-shape notes
+    pyproject.toml        # httpx + (optionally) a PDF/browser dep
+    SMOKE.md
+
+sources-node/    4 Node.js packages — NTSB, MAK, ATSB, Wikidata
+  <code>/
+    src/{parse,scrape,db,cli}.js   # parser + scraper + SQLite + CLI
+    test/                          # jest unit tests with offline fixtures
+    package.json
+
+sources-go/      1 Go project — ASN / B3A / Wikidata aggregator (+ REST API)
+  aircrash/
+    *.go, go.mod                   # scrapers + Gin API + SQLite
+    static/                        # dashboard
 ```
 
-Each `sources/<code>/` is a **self-contained Python package** with its own
-`pyproject.toml` and test suite. There is no shared runtime library — sources
-are intentionally decoupled so one can be copied, run, or rewritten without
-touching the others.
+See [`sources-node/`](sources-node/) and [`sources-go/aircrash/`](sources-go/aircrash/)
+for their own per-package READMEs. The Python sources are catalogued below.
 
 ## Quickstart
 
@@ -124,6 +139,33 @@ a pure-Python fallback, declared per-package in `pyproject.toml`.
 | `ttsb` | Taiwan Transportation Safety Board | 🇹🇼 Taiwan | Chinese | httpx |
 | `ueim` | Ulaştırma Emniyeti İnceleme Merkezi | 🇹🇷 Turkey | Turkish | httpx |
 | `uzpln` | Ústav pro odborné zjišťování příčin leteckých nehod | 🇨🇿 Czech Republic | Czech | httpx |
+
+## Node & Go sources
+
+Five additional sources that don't fit the Python/SIA mould — a government bulk
+dump, a structured-data endpoint, browser-driven scrapers, and a Go aggregator.
+Each has its own README.
+
+| Source | Dir | Authority / source | Lang | Egress |
+|--------|-----|--------------------|------|--------|
+| `ntsb` | [`sources-node/ntsb`](sources-node/ntsb) | 🇺🇸 NTSB — public `avall.zip` Access dump | Node | download + `mdbtools` |
+| `mak` | [`sources-node/mak`](sources-node/mak) | MAK / Interstate Aviation Committee (RU) | Node | httpx + PDF |
+| `atsb` | [`sources-node/atsb`](sources-node/atsb) | 🇦🇺 ATSB | Node | headed Playwright |
+| `wikidata` | [`sources-node/wikidata`](sources-node/wikidata) | Wikidata (SPARQL) + Wikipedia enrich | Node | SPARQL / REST |
+| `aircrash` | [`sources-go/aircrash`](sources-go/aircrash) | ASN · B3A · Wikidata aggregator + REST API | Go | headed (go-rod) / SPARQL |
+
+```bash
+# Node source — same four verbs, run via the package CLI
+cd sources-node/ntsb && npm install && npm run selftest && npm test
+
+# Go source
+cd sources-go/aircrash && go mod tidy && go build -o aircrash-parser
+```
+
+> **Data rights note:** the Go `aircrash` aggregator includes an Aviation Safety
+> Network (ASN) scraper. ASN asserts copyright over its database — review and
+> respect its terms before redistributing harvested ASN data. Wikidata is CC0;
+> Wikipedia text (used by `wikidata --enrich`) is CC BY-SA.
 
 ## Scheduling
 
