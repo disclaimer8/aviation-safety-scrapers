@@ -1,0 +1,14 @@
+# /etc/systemd/system/sust-cycle.service
+[Unit]
+Description=SUST STSB (Switzerland) ingest cycle (weekly; discover->fetch->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/sust
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/sust/sust-cycle.log
+StandardError=append:/opt/sust/sust-cycle.log
+TimeoutStartSec=14400

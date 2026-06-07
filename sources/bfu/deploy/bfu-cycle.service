@@ -1,0 +1,14 @@
+# /etc/systemd/system/bea-cycle.service
+[Unit]
+Description=BFU (Germany) ingest cycle (weekly; discover->fetch->parse->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/bfu
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/bfu/bfu-cycle.log
+StandardError=append:/opt/bfu/bfu-cycle.log
+TimeoutStartSec=7200

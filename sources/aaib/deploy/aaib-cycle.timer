@@ -1,0 +1,10 @@
+# /etc/systemd/system/aaib-cycle.timer
+[Unit]
+Description=Weekly AAIB ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 08:00:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

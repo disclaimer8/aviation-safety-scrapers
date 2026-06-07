@@ -1,0 +1,14 @@
+[project]
+name = "sub-ingest"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = ["httpx[socks]>=0.27", "certifi"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+include = ["sub_ingest*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

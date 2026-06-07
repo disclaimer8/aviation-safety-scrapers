@@ -1,0 +1,11 @@
+# /etc/systemd/system/dgacgt-cycle.timer
+[Unit]
+Description=Weekly DGAC Guatemala (UIA) ingest
+
+[Timer]
+# Requested 21:30 UTC was taken by griaa-cycle; nearest free slot 21:45 UTC.
+OnCalendar=Sun *-*-* 21:45:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

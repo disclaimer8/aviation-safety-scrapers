@@ -1,0 +1,1 @@
+# AIB DK ingest — 22nd source. ONE year-page GET leaks ALL 407 case-ids via filter checkboxes (results widget is JS). Detail URL filing-year cascade (case-year, ±1, 2002-2027 sweep — verified 2018-401 lives at /2015/). Danish PDFs (up to 34MB, timeout 300) → DA→EN at P3. Date format D-M-YYYY in title.

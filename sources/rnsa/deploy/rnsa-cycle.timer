@@ -1,0 +1,10 @@
+# /etc/systemd/system/rnsa-cycle.timer
+[Unit]
+Description=Weekly RNSA Iceland (aviation) ingest cycle
+
+[Timer]
+OnCalendar=Sun 19:30 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

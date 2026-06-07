@@ -1,0 +1,14 @@
+# /etc/systemd/system/jst-cycle.service
+[Unit]
+Description=JST (Argentina) ingest cycle (weekly; discover->fetch->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/jst
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/jst/jst-cycle.log
+StandardError=append:/opt/jst/jst-cycle.log
+TimeoutStartSec=7200

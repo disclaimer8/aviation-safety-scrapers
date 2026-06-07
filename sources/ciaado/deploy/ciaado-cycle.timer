@@ -1,0 +1,10 @@
+# /etc/systemd/system/ciaado-cycle.timer
+[Unit]
+Description=Weekly CIAA (Dominican Republic) ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 22:30:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

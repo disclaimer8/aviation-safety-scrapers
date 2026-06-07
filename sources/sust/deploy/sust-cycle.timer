@@ -1,0 +1,10 @@
+# /etc/systemd/system/sust-cycle.timer
+[Unit]
+Description=Weekly SUST STSB (Switzerland) ingest cycle
+
+[Timer]
+OnCalendar=Sun 02:30 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

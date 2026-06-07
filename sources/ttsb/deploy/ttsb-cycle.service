@@ -1,0 +1,14 @@
+# /etc/systemd/system/ttsb-cycle.service
+[Unit]
+Description=TTSB Taiwan ingest cycle (weekly; discover->fetch->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/ttsb
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/ttsb/ttsb-cycle.log
+StandardError=append:/opt/ttsb/ttsb-cycle.log
+TimeoutStartSec=7200

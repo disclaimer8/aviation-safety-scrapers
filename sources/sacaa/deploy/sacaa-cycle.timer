@@ -1,0 +1,10 @@
+# /etc/systemd/system/sacaa-cycle.timer
+[Unit]
+Description=Weekly SACAA AIID (South Africa) ingest cycle
+
+[Timer]
+OnCalendar=Sun 22:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

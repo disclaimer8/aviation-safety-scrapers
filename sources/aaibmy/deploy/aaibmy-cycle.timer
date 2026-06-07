@@ -1,0 +1,10 @@
+# /etc/systemd/system/aaibmy-cycle.timer
+[Unit]
+Description=Weekly AAIB Malaysia ingest cycle
+
+[Timer]
+OnCalendar=Sun 04:30 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

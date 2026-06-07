@@ -1,0 +1,60 @@
+Bundesstelle für
+Flugunfalluntersuchung
+
+Untersuchungsbericht
+Identifikation
+Art des Ereignisses: Unfall
+Datum:
+
+16.01.2023
+
+Ort:
+
+Rendsburg
+
+Luftfahrzeug:
+
+Flugzeug
+
+Hersteller:
+
+Learjet Corporation
+
+Muster:
+
+Learjet 35 A
+
+Personenschaden:
+
+ohne Verletzte
+
+Sachschaden:
+
+Luftfahrzeug schwer beschädigt
+
+Drittschaden:
+
+Keiner
+
+Aktenzeichen:
+
+BFU23-0022-1X
+
+Kurzdarstellung
+Im Steigflug kam es zum Ausfall des linken Triebwerks, bei dem die Rotorbaugruppen der ersten und zweiten Stufe der Niederdruckturbine sowie der Stator der zweiten Stufe aus dem Gehäuse des Triebwerks austraten und das Flugzeug beschädigten.
+
+Untersuchungsbericht BFU23-0022-1X
+
+Sachverhalt
+Ereignisse und Flugverlauf
+An dem Ereignistag war ein Zieldarstellungsflug geplant. Der erste Versuch den Flug
+anzutreten scheiterte, da ein Instrument (künstlicher Horizont) defekt war. Nach dessen Austausch startete das Flugzeug vom Flugplatz Hohn um 13:34 Uhr1. Der Kapitän
+war der steuernde Pilot2. Kurz nach dem Start um 13:36 Uhr in etwa 7 000 AMSL kam
+es zu einer Erschütterung des Flugzeuges in Verbindung mit Schubverlust am linken
+Triebwerk. An diesem Triebwerk gingen die Anzeigen des Niederdruckkompressors
+N1 auf 0 und die des Hochdruckkompressors N2 auf 11 % zurück. Nach Aussage der
+Besatzung kam es zu einem Schlag und ausgeprägten Vibrationen am Luftfahrzeug.
+Der Co-Pilot reagierte mit dem Ausruf: „We lost the left engine.“ Der Steigflug wurde
+abgebrochen, Luftnotlage erklärt und das linke Triebwerk in Idle zurückgenommen.
+Anschließend stellte der Kapitän das Triebwerk ab3. Im weiteren Verlauf wurden die
+Checks und Handlungen entsprechend den Memory-Items abgearbeitet.

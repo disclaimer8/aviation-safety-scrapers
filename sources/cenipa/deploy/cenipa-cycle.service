@@ -1,0 +1,14 @@
+# /etc/systemd/system/cenipa-cycle.service
+[Unit]
+Description=CENIPA (Brazil) ingest cycle (weekly; Playwright/Xvfb; discover->fetch->parse->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/cenipa
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/cenipa/cenipa-cycle.log
+StandardError=append:/opt/cenipa/cenipa-cycle.log
+TimeoutStartSec=21600

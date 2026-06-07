@@ -1,0 +1,10 @@
+# /etc/systemd/system/ciaiac-cycle.timer
+[Unit]
+Description=Weekly CIAIAC ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 14:00:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

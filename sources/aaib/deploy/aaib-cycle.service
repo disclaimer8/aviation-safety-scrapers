@@ -1,0 +1,14 @@
+# /etc/systemd/system/aaib-cycle.service
+[Unit]
+Description=AAIB (UK) ingest cycle (weekly; discover->fetch->parse->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/aaib
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/aaib/aaib-cycle.log
+StandardError=append:/opt/aaib/aaib-cycle.log
+TimeoutStartSec=7200

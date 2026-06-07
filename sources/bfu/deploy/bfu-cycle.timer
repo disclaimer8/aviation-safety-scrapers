@@ -1,0 +1,10 @@
+# /etc/systemd/system/bfu-cycle.timer
+[Unit]
+Description=Weekly BFU ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 10:00:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

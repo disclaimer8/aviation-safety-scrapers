@@ -1,0 +1,10 @@
+# /etc/systemd/system/aaiube-cycle.timer
+[Unit]
+Description=Weekly AAIU (Belgium) ingest cycle
+
+[Timer]
+OnCalendar=Sun 00:30 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

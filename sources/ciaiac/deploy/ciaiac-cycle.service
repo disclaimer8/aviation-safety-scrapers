@@ -1,0 +1,14 @@
+# /etc/systemd/system/ciaiac-cycle.service
+[Unit]
+Description=CIAIAC (Spain) ingest cycle (weekly; discover->fetch->parse->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/ciaiac
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/ciaiac/ciaiac-cycle.log
+StandardError=append:/opt/ciaiac/ciaiac-cycle.log
+TimeoutStartSec=10800

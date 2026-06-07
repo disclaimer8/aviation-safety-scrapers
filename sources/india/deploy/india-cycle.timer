@@ -1,0 +1,10 @@
+# /etc/systemd/system/india-cycle.timer
+[Unit]
+Description=Weekly AAIB India ingest cycle
+
+[Timer]
+OnCalendar=Sun 21:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

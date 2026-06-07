@@ -1,0 +1,10 @@
+# /etc/systemd/system/gpiaaf-cycle.timer
+[Unit]
+Description=Weekly GPIAAF (Portugal) civil-aviation ingest
+
+[Timer]
+OnCalendar=Sun 14:30 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

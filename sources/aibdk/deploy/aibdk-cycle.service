@@ -1,0 +1,14 @@
+# /etc/systemd/system/aibdk-cycle.service
+[Unit]
+Description=AIB Denmark ingest cycle (weekly; discover->fetch->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/aibdk
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/aibdk/aibdk-cycle.log
+StandardError=append:/opt/aibdk/aibdk-cycle.log
+TimeoutStartSec=14400

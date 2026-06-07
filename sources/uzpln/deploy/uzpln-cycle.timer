@@ -1,0 +1,10 @@
+# /etc/systemd/system/uzpln-cycle.timer
+[Unit]
+Description=Weekly UZPLN (Czech Republic) ingest cycle
+
+[Timer]
+OnCalendar=Sun 17:30 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

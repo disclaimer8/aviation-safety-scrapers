@@ -1,0 +1,14 @@
+# /etc/systemd/system/shk-cycle.service
+[Unit]
+Description=SHK (Sweden) ingest cycle (weekly; discover->fetch->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/shk
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/shk/shk-cycle.log
+StandardError=append:/opt/shk/shk-cycle.log
+TimeoutStartSec=7200

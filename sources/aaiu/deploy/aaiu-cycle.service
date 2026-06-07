@@ -1,0 +1,14 @@
+# /etc/systemd/system/aaiu-cycle.service
+[Unit]
+Description=AAIU (Ireland) ingest cycle (weekly; discover->fetch->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/aaiu
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/aaiu/aaiu-cycle.log
+StandardError=append:/opt/aaiu/aaiu-cycle.log
+TimeoutStartSec=7200

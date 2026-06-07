@@ -1,0 +1,14 @@
+# /etc/systemd/system/ciaape-cycle.service
+[Unit]
+Description=CIAA Peru (ciaape) ingest cycle (weekly; discover->fetch->parse->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/ciaape
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/ciaape/ciaape-cycle.log
+StandardError=append:/opt/ciaape/ciaape-cycle.log
+TimeoutStartSec=14400

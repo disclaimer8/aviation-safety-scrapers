@@ -1,0 +1,14 @@
+# /etc/systemd/system/dgaccl-cycle.service
+[Unit]
+Description=DGAC Chile ingest cycle (weekly; discover->fetch->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/dgaccl
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/dgaccl/dgaccl-cycle.log
+StandardError=append:/opt/dgaccl/dgaccl-cycle.log
+TimeoutStartSec=7200

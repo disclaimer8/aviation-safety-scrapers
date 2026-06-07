@@ -1,0 +1,1 @@
+# OVV ingest — 21st source. Listing ?_aviation_tax=uncategorized&_page=N (server-side filter works; quarterly stubs excluded). Docs = hash-slug -pdf/ links in RAW detail HTML (visually hidden by 2026 redesign; WP REST 403). Rank EN-main>main>EN>other>appendix/letters; scan fall-through; summary fallback; ongoing stay new. NL->EN at P3.

@@ -1,0 +1,14 @@
+# /etc/systemd/system/bea-cycle.service
+[Unit]
+Description=BEA (France) ingest cycle (weekly; discover->fetch->parse->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/bea
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/bea/bea-cycle.log
+StandardError=append:/opt/bea/bea-cycle.log
+TimeoutStartSec=7200

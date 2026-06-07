@@ -1,0 +1,39 @@
+{
+  "uid": 3811,
+  "date": "17. 03. 2025",
+  "place": "La Punt Chamues-ch",
+  "canton": "GR",
+  "aircrafts": [
+    {
+      "matriculation": "D-EXIK",
+      "manufacturer": "EXTRA AIRCRAFT",
+      "type": "EA400",
+      "category": "Aircraft",
+      "flightcategory": "Type: Private",
+      "flightrules": "Flightrules: VFR"
+    }
+  ],
+  "documents": [
+    {
+      "name": "Vorbericht",
+      "url": "/inhalte/AV-berichte/D-EXIK_VB_D.pdf",
+      "extension": "pdf",
+      "size": "121KB",
+      "releasedate": "02. 04. 2025"
+    },
+    {
+      "name": "Notification",
+      "url": "/inhalte/AV-berichte/D-EXIK_VB_e.pdf",
+      "extension": "pdf",
+      "size": "107KB",
+      "releasedate": "02. 04. 2025"
+    },
+    {
+      "name": "Schlussbericht",
+      "url": "/inhalte/AV-berichte/D-EXIK_FB_D.pdf",
+      "extension": "pdf",
+      "size": "3895KB",
+      "releasedate": "19. 05. 2026"
+    }
+  ]
+}

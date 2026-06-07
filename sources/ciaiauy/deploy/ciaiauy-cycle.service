@@ -1,0 +1,14 @@
+# /etc/systemd/system/ciaiauy-cycle.service
+[Unit]
+Description=CIAIA (Uruguay) ingest cycle (weekly; discover->fetch->parse->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/ciaiauy
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/ciaiauy/ciaiauy-cycle.log
+StandardError=append:/opt/ciaiauy/ciaiauy-cycle.log
+TimeoutStartSec=10800

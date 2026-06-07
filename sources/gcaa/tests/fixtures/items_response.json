@@ -1,0 +1,197 @@
+{
+  "d": {
+    "results": [
+      {
+        "Id": 1,
+        "ID": 1,
+        "Reference_x0020_No": "AIFN/0007/2013",
+        "Registration_x0020_No": "A6-FDE",
+        "Aircraft_x0020_Type": "Boeing 737-800",
+        "Aircraft": "Airplane",
+        "Location": "Dubai International Airport",
+        "Damage": "Minor",
+        "Occurrence_x0020_Date": "2013-04-05T20:00:00Z",
+        "Occurrence_x0020_Category": "Incident",
+        "Report_x0020_Status": "Final",
+        "OccurrenceYear": "2013",
+        "Title": "Investigation Summary Report of Boeing 737-800 Incident, Dubai International Airport, UAE, 6 April 2013.",
+        "Occurrence": "Boeing 737-800, A6-FDE, Aeroplane, Aircraft damage due to impact by wind blown containers, Dubai International Airport - UAE, 6 April 2013.",
+        "AttachmentFiles": {
+          "results": [
+            {
+              "FileName": "2013-2013 - Summary Report B737-800, A6-FDE, AIFN-0007-2013 - 18 May 2015.pdf",
+              "ServerRelativeUrl": "/en/departments/airaccidentinvestigation/Lists/Incidents Investigation Reports/Attachments/1/2013-2013 - Summary Report B737-800, A6-FDE, AIFN-0007-2013 - 18 May 2015.pdf"
+            }
+          ]
+        }
+      },
+      {
+        "Id": 5,
+        "ID": 5,
+        "Reference_x0020_No": "AIFN/0006/2020",
+        "Registration_x0020_No": "UP-A3003",
+        "Aircraft_x0020_Type": "Airbus A300B4-203F",
+        "Aircraft": "Airplane",
+        "Location": "Sharjah International Airport",
+        "Damage": "Substantial",
+        "Occurrence_x0020_Date": "2020-02-27T20:00:00Z",
+        "Occurrence_x0020_Category": "Accident",
+        "Report_x0020_Status": "Final",
+        "OccurrenceYear": "2020",
+        "Title": "Sigma Airlines Airbus A300B4 Collision with Ground Support Vehicle during Parking",
+        "Occurrence": "Sigma Airlines Airbus A300B4 Collision with Ground Support Vehicle during Parking",
+        "AttachmentFiles": {
+          "results": [
+            {
+              "FileName": "2020-Final Report AIFN0006-2020.pdf",
+              "ServerRelativeUrl": "/en/departments/airaccidentinvestigation/Lists/Incidents Investigation Reports/Attachments/5/2020-Final Report AIFN0006-2020.pdf"
+            }
+          ]
+        }
+      },
+      {
+        "Id": 10,
+        "ID": 10,
+        "Reference_x0020_No": "AIFN/0016/2021",
+        "Registration_x0020_No": "A6-EQI",
+        "Aircraft_x0020_Type": "Boeing 777-300ER",
+        "Aircraft": "Airplane",
+        "Location": "Dubai ",
+        "Damage": "None",
+        "Occurrence_x0020_Date": "2021-12-18T20:00:00Z",
+        "Occurrence_x0020_Category": "Serious Incident",
+        "Report_x0020_Status": "Preliminary",
+        "OccurrenceYear": "2021",
+        "Title": "Emirates Boeing 777-300 ER",
+        "Occurrence": "Emirates Boeing 777-300 flight crew flew the aircraft in shallow climb after lift-off",
+        "AttachmentFiles": {
+          "results": [
+            {
+              "FileName": "AIFN0016-2021-  Preliminary Report.pdf",
+              "ServerRelativeUrl": "/en/departments/airaccidentinvestigation/Lists/Incidents Investigation Reports/Attachments/10/AIFN0016-2021-  Preliminary Report.pdf"
+            }
+          ]
+        }
+      },
+      {
+        "Id": 3,
+        "ID": 3,
+        "Reference_x0020_No": "AIFN0009/2020",
+        "Registration_x0020_No": "A6-GY7",
+        "Aircraft_x0020_Type": "Gyrocopter",
+        "Aircraft": "Airplane",
+        "Location": "Dubai \u2013 Nad AlSheba",
+        "Damage": "Substantial",
+        "Occurrence_x0020_Date": "2020-07-23T20:00:00Z",
+        "Occurrence_x0020_Category": "Accident",
+        "Report_x0020_Status": "Summary",
+        "OccurrenceYear": "2020",
+        "Title": "Gyrocopter Landing Strip Excursion After Landing",
+        "Occurrence": "Accident \u2013 24 July 2020",
+        "AttachmentFiles": {
+          "results": [
+            {
+              "FileName": "AIFN0009-2020 Draft Summary Report- Gyrocopter.pdf",
+              "ServerRelativeUrl": "/en/departments/airaccidentinvestigation/Lists/Incidents Investigation Reports/Attachments/3/AIFN0009-2020 Draft Summary Report- Gyrocopter.pdf"
+            }
+          ]
+        }
+      },
+      {
+        "Id": 136,
+        "ID": 136,
+        "Reference_x0020_No": "AIFN/0007/2021",
+        "Registration_x0020_No": "A6-BLT",
+        "Aircraft_x0020_Type": "Airplane- Fix wing ",
+        "Aircraft": "Airplane",
+        "Location": "India FIR",
+        "Damage": "None",
+        "Occurrence_x0020_Date": "2021-05-12T20:00:00Z",
+        "Occurrence_x0020_Category": "Incident",
+        "Report_x0020_Status": "Summary",
+        "OccurrenceYear": "2021",
+        "Title": "Cabin Safety Event",
+        "Occurrence": "During cruise at flight level FL410, the PF observed an engine indication and crew alerting system (EICAS) status message on the multifunction display (MFD) \u201cCabin Air CPRSR R\u201d associated with cabin air compressor (CAC) failure. The PM referred to the quick reference handbook (QRH) that directs to descend to 35,000 feet for a subsequent pack reset.  \nAfter resetting the air conditioning system, another alert message appeared indicating that the left pressurization air conditioning kit (PACK) failed whereas the right PACK was operating with one CAC. \nAfter  few minutes, an indication of the right PACK failure appeared and consequently, the PF decided to descend to 10,000 feet, based on the QRH checklist, with the activation of oxygen masks in the cabin.\n",
+        "AttachmentFiles": {
+          "results": []
+        }
+      },
+      {
+        "Id": 900,
+        "ID": 900,
+        "Reference_x0020_No": "AIFN/0099/2020",
+        "Registration_x0020_No": null,
+        "Aircraft_x0020_Type": "Boeing 737-800",
+        "Aircraft": "Airplane",
+        "Location": "Dubai International Airport",
+        "Damage": "Minor",
+        "Occurrence_x0020_Date": "2013-04-05T20:00:00Z",
+        "Occurrence_x0020_Category": "Incident",
+        "Report_x0020_Status": "Final",
+        "OccurrenceYear": "2013",
+        "Title": "Investigation Summary Report of Boeing 737-800 Incident, Dubai International Airport, UAE, 6 April 2013.",
+        "Occurrence": "Boeing 737-800, A6-FDE, Aeroplane, Aircraft damage due to impact by wind blown containers, Dubai International Airport - UAE, 6 April 2013.",
+        "AttachmentFiles": {
+          "results": [
+            {
+              "FileName": "2020 - Final Report, AIFN-0099-2020.pdf",
+              "ServerRelativeUrl": "/en/departments/airaccidentinvestigation/Lists/Incidents Investigation Reports/Attachments/900/2020 - Final Report, AIFN-0099-2020.pdf"
+            }
+          ]
+        }
+      },
+      {
+        "Id": 901,
+        "ID": 901,
+        "Reference_x0020_No": null,
+        "Registration_x0020_No": "A6-ABC",
+        "Aircraft_x0020_Type": "Boeing 737-800",
+        "Aircraft": "Airplane",
+        "Location": "Dubai International Airport",
+        "Damage": "Minor",
+        "Occurrence_x0020_Date": "2013-04-05T20:00:00Z",
+        "Occurrence_x0020_Category": "Incident",
+        "Report_x0020_Status": "Final",
+        "OccurrenceYear": "2013",
+        "Title": "Investigation Summary Report of Boeing 737-800 Incident, Dubai International Airport, UAE, 6 April 2013.",
+        "Occurrence": "Boeing 737-800, A6-FDE, Aeroplane, Aircraft damage due to impact by wind blown containers, Dubai International Airport - UAE, 6 April 2013.",
+        "AttachmentFiles": {
+          "results": [
+            {
+              "FileName": "2019 - Summary Report no ref.pdf",
+              "ServerRelativeUrl": "/en/departments/airaccidentinvestigation/Lists/Incidents Investigation Reports/Attachments/901/2019 - Summary Report no ref.pdf"
+            }
+          ]
+        }
+      },
+      {
+        "Id": 902,
+        "ID": 902,
+        "Reference_x0020_No": "AIFN/0050/2018",
+        "Registration_x0020_No": "A6-MUL",
+        "Aircraft_x0020_Type": "Boeing 737-800",
+        "Aircraft": "Airplane",
+        "Location": "Dubai International Airport",
+        "Damage": "Minor",
+        "Occurrence_x0020_Date": "2013-04-05T20:00:00Z",
+        "Occurrence_x0020_Category": "Incident",
+        "Report_x0020_Status": "Final",
+        "OccurrenceYear": "2013",
+        "Title": "Investigation Summary Report of Boeing 737-800 Incident, Dubai International Airport, UAE, 6 April 2013.",
+        "Occurrence": "Boeing 737-800, A6-FDE, Aeroplane, Aircraft damage due to impact by wind blown containers, Dubai International Airport - UAE, 6 April 2013.",
+        "AttachmentFiles": {
+          "results": [
+            {
+              "FileName": "2018 - Preliminary Report, AIFN-0050-2018.pdf",
+              "ServerRelativeUrl": "/en/departments/airaccidentinvestigation/Lists/Incidents Investigation Reports/Attachments/902/2018 - Preliminary Report, AIFN-0050-2018.pdf"
+            },
+            {
+              "FileName": "2018 - Final Report, AIFN-0050-2018.pdf",
+              "ServerRelativeUrl": "/en/departments/airaccidentinvestigation/Lists/Incidents Investigation Reports/Attachments/902/2018 - Final Report, AIFN-0050-2018.pdf"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

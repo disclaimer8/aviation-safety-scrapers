@@ -1,0 +1,170 @@
+{
+ "Error": false,
+ "Message": [
+  {
+   "Tanggal": "2007-01-01",
+   "_Tanggal": "01 Januari 2007",
+   "Keterangan": "Loss of Control-Inflight, Adam Air (Boeing 737-400/PK-KKW); Selat Makassar / KNKT.07.01.01.04",
+   "Preliminary_Report": null,
+   "Final_Report": "PK-KKW Final Report.pdf",
+   "Interim_Report": null,
+   "No_Investigation": 0,
+   "SummaryLink": null,
+   "Final_Report_Interim": null
+  },
+  {
+   "Tanggal": "2007-01-07",
+   "_Tanggal": "07 Januari 2007",
+   "Keterangan": "System/Component Failure or Malfunction (Non-Powerplant), Batavia Air (Boeing 737-300/PK-YTU); Depati Amir Airport, Pangkal Pinang / KNKT.07.01.02.04",
+   "Preliminary_Report": null,
+   "Final_Report": "PK-YTU Final Report.pdf",
+   "Interim_Report": null,
+   "No_Investigation": 0,
+   "SummaryLink": null,
+   "Final_Report_Interim": null
+  },
+  {
+   "Tanggal": "2007-01-11",
+   "_Tanggal": "11 Januari 2007",
+   "Keterangan": "Runway Excursion, Aviastar Mandiri (Casa 212-200/PK-BRM); Sangata, Kalimantan / KNKT.07.01.03.04",
+   "Preliminary_Report": null,
+   "Final_Report": "PK-BRM Final Report.pdf",
+   "Interim_Report": null,
+   "No_Investigation": 0,
+   "SummaryLink": null,
+   "Final_Report_Interim": null
+  },
+  {
+   "Tanggal": "2007-02-21",
+   "_Tanggal": "21 Februari 2007",
+   "Keterangan": "Abnormal runway contact, Adam Air (Boeing 737-300/PK-KKV); Juanda International Airport, Surabaya / KNKT.07.02.04.04",
+   "Preliminary_Report": null,
+   "Final_Report": "PK-KKV Final Report.pdf",
+   "Interim_Report": null,
+   "No_Investigation": 0,
+   "SummaryLink": null,
+   "Final_Report_Interim": null
+  },
+  {
+   "Tanggal": "2007-03-07",
+   "_Tanggal": "07 Maret 2007",
+   "Keterangan": "Runway Excursion, Garuda Indonesia (Boeing 737-400/PK-GZC); Adisutjipto International Airport, Yogyakarta / KNKT.07.03.05.04",
+   "Preliminary_Report": null,
+   "Final_Report": "PK-GZC Final Report.pdf",
+   "Interim_Report": null,
+   "No_Investigation": 0,
+   "SummaryLink": null,
+   "Final_Report_Interim": null
+  },
+  {
+   "Tanggal": "2007-04-07",
+   "_Tanggal": "07 April 2007",
+   "Keterangan": "System/Component Failure or Malfunction (Powerplant), Alfa Flying Club (Cessna 172/PK-SDP); Perumahan Nirwana Indah Ciputat, Tangerang / KNKT.07.04.06.04",
+   "Preliminary_Report": null,
+   "Final_Report": "PK-SDP Final Report.pdf",
+   "Interim_Report": null,
+   "No_Investigation": 0,
+   "SummaryLink": null,
+   "Final_Report_Interim": null
+  },
+  {
+   "Tanggal": "1988-01-07",
+   "_Tanggal": "07 Januari 1988",
+   "Keterangan": "Airprox/TCAS Alert/Loss of Separation/Near Midair Collisions/Midair Collisions, Pelita Air Services (Bolkow BO105/PK-PIW); Pabelokan island, West Java",
+   "Preliminary_Report": null,
+   "Final_Report": null,
+   "Interim_Report": null,
+   "No_Investigation": 0,
+   "SummaryLink": null,
+   "Final_Report_Interim": null
+  },
+  {
+   "Tanggal": "1988-01-07",
+   "_Tanggal": "07 Januari 1988",
+   "Keterangan": "Airprox/TCAS Alert/Loss of Separation/Near Midair Collisions/Midair Collisions, Derazona (Bell 205/PK-BDE); Pabelokan island, West Java",
+   "Preliminary_Report": null,
+   "Final_Report": null,
+   "Interim_Report": null,
+   "No_Investigation": 0,
+   "SummaryLink": null,
+   "Final_Report_Interim": null
+  },
+  {
+   "Tanggal": "1988-01-13",
+   "_Tanggal": "13 Januari 1988",
+   "Keterangan": "System/Component Failure or Malfunction (Powerplant), Mission Aviation Fellowship (Cessna 185/PK-MCS); Long Bawan, East Kalimantan",
+   "Preliminary_Report": null,
+   "Final_Report": null,
+   "Interim_Report": null,
+   "No_Investigation": 0,
+   "SummaryLink": null,
+   "Final_Report_Interim": null
+  },
+  {
+   "Tanggal": "1988-01-23",
+   "_Tanggal": "23 Januari 1988",
+   "Keterangan": "Collision With Obstacle(s) During Takeoff and Landing, Gudang Garam (Bolkow BO105/PK-FGG); Kediri, East Java",
+   "Preliminary_Report": null,
+   "Final_Report": null,
+   "Interim_Report": null,
+   "No_Investigation": 0,
+   "SummaryLink": null,
+   "Final_Report_Interim": null
+  },
+  {
+   "Tanggal": "1988-07-06",
+   "_Tanggal": "06 Juli 1988",
+   "Keterangan": "Controlled Flight into or Toward Terrain, STPI (Piper Dakota/PK-ADE); Polusari mountain, Pandeglang",
+   "Preliminary_Report": null,
+   "Final_Report": null,
+   "Interim_Report": null,
+   "No_Investigation": 0,
+   "SummaryLink": null,
+   "Final_Report_Interim": null
+  },
+  {
+   "Tanggal": "1988-08-19",
+   "_Tanggal": "19 Agustus 1988",
+   "Keterangan": "Controlled Flight into or Toward Terrain, AMA (Cessna 185/PK-RCJ); Timepa",
+   "Preliminary_Report": null,
+   "Final_Report": null,
+   "Interim_Report": null,
+   "No_Investigation": 0,
+   "SummaryLink": null,
+   "Final_Report_Interim": null
+  },
+  {
+   "Tanggal": "2007-01-01",
+   "_Tanggal": "01 Januari 2007",
+   "Keterangan": "Loss of Control-Inflight, Adam Air (Boeing 737-400/PK-KKW); Selat Makassar / KNKT.07.01.01.04",
+   "Preliminary_Report": null,
+   "Final_Report": "PK-KKW Final Report.pdf",
+   "Interim_Report": null,
+   "No_Investigation": 0,
+   "SummaryLink": null,
+   "Final_Report_Interim": null
+  },
+  {
+   "Tanggal": "2008-03-10",
+   "_Tanggal": "10 Maret 2008",
+   "Keterangan": "System/Component Failure or Malfunction (Non-Powerplant), Citilink Indonesia (Airbus A320/PK-GLW); Hang Nadim Airport, Batam / KNKT.22.07.11.04",
+   "Preliminary_Report": "KNKT.22.07.11.04-Preliminary-Report.pdf",
+   "Final_Report": null,
+   "Interim_Report": null,
+   "No_Investigation": 0,
+   "SummaryLink": "",
+   "Final_Report_Interim": null
+  },
+  {
+   "Tanggal": "2008-03-10",
+   "_Tanggal": "10 Maret 2008",
+   "Keterangan": "System/Component Failure or Malfunction (Non-Powerplant), Adam Air (Boeing 737-400/PK-KKT); Hang Nadim Airport, Batam / KNKT.08.03.05.04",
+   "Preliminary_Report": null,
+   "Final_Report": "PK-KKT Final Report.pdf",
+   "Interim_Report": null,
+   "No_Investigation": 0,
+   "SummaryLink": "",
+   "Final_Report_Interim": null
+  }
+ ]
+}
