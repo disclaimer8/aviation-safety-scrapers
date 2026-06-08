@@ -2,10 +2,10 @@
 name = "pkbwl-ingest"
 version = "0.1.0"
 requires-python = ">=3.11"
-dependencies = ["httpx[socks]>=0.27", "certifi"]
+dependencies = ["httpx[socks]>=0.28.1", "certifi"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8"]
+dev = ["pytest>=9.0.3"]
 
 [tool.setuptools.packages.find]
 include = ["pkbwl_ingest*"]
