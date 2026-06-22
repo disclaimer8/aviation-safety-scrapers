@@ -3,6 +3,7 @@ module github.com/denyskolomiiets/aviation-safety-scrapers/control-plane
 go 1.24.0
 
 require (
+	golang.org/x/net v0.38.0
 	golang.org/x/text v0.34.0
 	modernc.org/sqlite v1.46.1
 )
