@@ -268,3 +268,115 @@ func TestGetLastModified(t *testing.T) {
 		t.Errorf("LastModified=%q", got.LastModified)
 	}
 }
+
+// TestGetLargeBodySuccess verifies that a body well over the transport read
+// buffer (~4 KiB) is returned in full when MaxBytes allows it. This test
+// reproduces the "cancel-before-read" bug where the per-attempt context was
+// cancelled immediately after client.Do returned (headers only), causing
+// io.ReadAll to fail with context canceled on large bodies.
+func TestGetLargeBodySuccess(t *testing.T) {
+	const bodySize = 1 << 20 // 1 MiB — well above any transport read buffer
+	payload := make([]byte, bodySize)
+	for i := range payload {
+		payload[i] = 'a'
+	}
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/octet-stream")
+		w.Write(payload)
+	}))
+	defer srv.Close()
+
+	got, err := fetch.Get(context.Background(), srv.Client(), fetch.Request{
+		URL:      srv.URL,
+		Timeout:  5 * time.Second,
+		MaxBytes: bodySize, // exactly the size — must succeed
+		Retries:  0,
+	})
+	if err != nil {
+		t.Fatalf("expected no error for 1 MiB body, got: %v", err)
+	}
+	if len(got.Body) != bodySize {
+		t.Fatalf("expected body length %d, got %d", bodySize, len(got.Body))
+	}
+}
+
+// TestGetBodyBoundaryExact verifies the exact MaxBytes boundary behaviour:
+//   - exactly MaxBytes bytes must succeed,
+//   - exactly MaxBytes+1 bytes must return ErrBodyTooLarge.
+func TestGetBodyBoundaryExact(t *testing.T) {
+	const limit = 512
+
+	// Exactly at the boundary — must succeed.
+	srvOK := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write(make([]byte, limit))
+	}))
+	defer srvOK.Close()
+
+	got, err := fetch.Get(context.Background(), srvOK.Client(), fetch.Request{
+		URL:      srvOK.URL,
+		Timeout:  time.Second,
+		MaxBytes: limit,
+		Retries:  0,
+	})
+	if err != nil {
+		t.Fatalf("exactly MaxBytes should succeed, got: %v", err)
+	}
+	if int64(len(got.Body)) != limit {
+		t.Fatalf("expected %d bytes, got %d", limit, len(got.Body))
+	}
+
+	// One byte over — must return ErrBodyTooLarge.
+	srvOver := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write(make([]byte, limit+1))
+	}))
+	defer srvOver.Close()
+
+	_, err = fetch.Get(context.Background(), srvOver.Client(), fetch.Request{
+		URL:      srvOver.URL,
+		Timeout:  time.Second,
+		MaxBytes: limit,
+		Retries:  0,
+	})
+	if !errors.Is(err, fetch.ErrBodyTooLarge) {
+		t.Fatalf("MaxBytes+1 should return ErrBodyTooLarge, got: %v", err)
+	}
+}
+
+// TestGetInterruptibleBackoff verifies that cancelling the parent context
+// during a retry backoff causes Get to return promptly with a context error
+// rather than sleeping for the full backoff duration.
+func TestGetInterruptibleBackoff(t *testing.T) {
+	// Always return 503 so every attempt is retriable.
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusServiceUnavailable)
+	}))
+	defer srv.Close()
+
+	ctx, cancel := context.WithCancel(context.Background())
+
+	// Cancel the context shortly after the first attempt completes. The backoff
+	// between attempt 0 and 1 is 250 ms; we cancel at 50 ms — if the sleep is
+	// not interruptible the call would block for ~250 ms instead.
+	go func() {
+		time.Sleep(50 * time.Millisecond)
+		cancel()
+	}()
+
+	start := time.Now()
+	_, err := fetch.Get(ctx, srv.Client(), fetch.Request{
+		URL:      srv.URL,
+		Timeout:  time.Second,
+		MaxBytes: 1024,
+		Retries:  3, // plenty of retries so we don't exhaust them before cancel
+	})
+	elapsed := time.Since(start)
+
+	if err == nil {
+		t.Fatal("expected an error after context cancellation, got nil")
+	}
+	// Should return well before the full 250 ms backoff.
+	if elapsed > 200*time.Millisecond {
+		t.Fatalf("Get took %v — backoff is not interruptible (expected <200ms)", elapsed)
+	}
+}
