@@ -1,0 +1,62 @@
+[
+  {
+    "iso2": "AD",
+    "group": "A",
+    "policy_status": "allowed",
+    "coverage_status": "delegated_to_foreign_authority",
+    "coverage_score": 3,
+    "effort_score": 2,
+    "expected_records": 5,
+    "expected_source_quality": 4,
+    "refresh_cadence": "quarterly",
+    "notes": "Route through Spain CIAIAC and France BEA."
+  },
+  {
+    "iso2": "AF",
+    "group": "B",
+    "policy_status": "excluded",
+    "coverage_status": "policy_excluded",
+    "coverage_score": 2,
+    "effort_score": 5,
+    "expected_records": 10,
+    "expected_source_quality": 3,
+    "refresh_cadence": "quarterly",
+    "notes": "No direct acquisition; public non-sanctioned official sources only."
+  },
+  {
+    "iso2": "KP",
+    "group": "B",
+    "policy_status": "excluded",
+    "coverage_status": "policy_excluded",
+    "coverage_score": 2,
+    "effort_score": 5,
+    "expected_records": 10,
+    "expected_source_quality": 3,
+    "refresh_cadence": "quarterly",
+    "notes": "No direct acquisition; public non-sanctioned official sources only."
+  },
+  {
+    "iso2": "PA",
+    "group": "D",
+    "policy_status": "allowed",
+    "coverage_status": "source_exists_unstable",
+    "coverage_score": 4,
+    "effort_score": 3,
+    "expected_records": 80,
+    "expected_source_quality": 5,
+    "refresh_cadence": "weekly",
+    "notes": "UPIA retry/backoff, Wayback, PDF discovery, ICAO and aircraft-origin routes."
+  },
+  {
+    "iso2": "SY",
+    "group": "B",
+    "policy_status": "excluded",
+    "coverage_status": "policy_excluded",
+    "coverage_score": 2,
+    "effort_score": 5,
+    "expected_records": 10,
+    "expected_source_quality": 3,
+    "refresh_cadence": "quarterly",
+    "notes": "No direct acquisition; public non-sanctioned official sources only."
+  }
+]
