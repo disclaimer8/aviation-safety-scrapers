@@ -159,7 +159,7 @@ func splitMembers(raw string) (members, observers []string) {
 	return members, observers
 }
 
-// splitLabels splits a run on commas/semicolons/" and ", trims each fragment,
+// splitLabels splits a run on commas and semicolons, trims each fragment,
 // strips a trailing period, and drops empties.
 func splitLabels(raw string) []string {
 	var out []string

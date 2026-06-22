@@ -147,15 +147,12 @@ func TestImportRAIOConditionalCoverage(t *testing.T) {
 	}
 }
 
-// TestImportRAIOZeroRecordsGuard asserts that feeding a valid HTML page with no
-// RAIO/ICM directory tables (e.g. a Cloudflare block page or a wrong URL) is
-// treated as a hard failure, not a silent success with Parsed=0.
-// TestImportRAIOAliasExpansionResolvesICOLabels asserts that the curated alias
+// TestImportRAIOAliasExpansionResolvesICAOLabels asserts that the curated alias
 // map resolves ICAO short-form country names to their seeded ISO names. The
 // ARCM-MENA body in the fixture contains "Iran" and "UAE" — both must be
 // resolved as members (no unresolved-label warnings for them), and the
 // membership count must increase compared to a run with no aliases.
-func TestImportRAIOAliasExpansionResolvesICOLabels(t *testing.T) {
+func TestImportRAIOAliasExpansionResolvesICAOLabels(t *testing.T) {
 	db := testDB(t)
 
 	result, err := Import(context.Background(), db, common.Input{
