@@ -13,14 +13,14 @@ const (
 type CoverageStatus string
 
 const (
-	CoverageStatusDirectPublicArchive   CoverageStatus = "direct_public_archive"
-	CoverageStatusDelegatedToForeign    CoverageStatus = "delegated_to_foreign_authority"
-	CoverageStatusRegionalRAIO          CoverageStatus = "regional_raio"
-	CoverageStatusOfficialContactOnly   CoverageStatus = "official_contact_only"
-	CoverageStatusSourceExistsUnstable  CoverageStatus = "source_exists_unstable"
-	CoverageStatusNoPublicArchive       CoverageStatus = "no_public_archive"
-	CoverageStatusPolicyExcluded        CoverageStatus = "policy_excluded"
-	CoverageStatusUnknown               CoverageStatus = "unknown"
+	CoverageStatusDirectPublicArchive  CoverageStatus = "direct_public_archive"
+	CoverageStatusDelegatedToForeign   CoverageStatus = "delegated_to_foreign_authority"
+	CoverageStatusRegionalRAIO         CoverageStatus = "regional_raio"
+	CoverageStatusOfficialContactOnly  CoverageStatus = "official_contact_only"
+	CoverageStatusSourceExistsUnstable CoverageStatus = "source_exists_unstable"
+	CoverageStatusNoPublicArchive      CoverageStatus = "no_public_archive"
+	CoverageStatusPolicyExcluded       CoverageStatus = "policy_excluded"
+	CoverageStatusUnknown              CoverageStatus = "unknown"
 )
 
 // AuthorityType values match the CHECK constraint in 001_core.sql (authorities.type).
@@ -42,15 +42,15 @@ const (
 type HealthStatus string
 
 const (
-	HealthStatusOK                HealthStatus = "ok"
-	HealthStatusEmptyArchive      HealthStatus = "empty_archive"
-	HealthStatusTLSError          HealthStatus = "tls_error"
-	HealthStatusNXDomain          HealthStatus = "nx_domain"
-	HealthStatusSuspended         HealthStatus = "suspended"
-	HealthStatusForbidden         HealthStatus = "forbidden"
-	HealthStatusChangedStructure  HealthStatus = "changed_structure"
+	HealthStatusOK                 HealthStatus = "ok"
+	HealthStatusEmptyArchive       HealthStatus = "empty_archive"
+	HealthStatusTLSError           HealthStatus = "tls_error"
+	HealthStatusNXDomain           HealthStatus = "nx_domain"
+	HealthStatusSuspended          HealthStatus = "suspended"
+	HealthStatusForbidden          HealthStatus = "forbidden"
+	HealthStatusChangedStructure   HealthStatus = "changed_structure"
 	HealthStatusManualReviewNeeded HealthStatus = "manual_review_needed"
-	HealthStatusUnknown           HealthStatus = "unknown"
+	HealthStatusUnknown            HealthStatus = "unknown"
 )
 
 // BodyClass values match the CHECK constraint in 001_core.sql (regional_bodies.body_class).
@@ -115,25 +115,25 @@ const (
 type DedupStatus string
 
 const (
-	DedupStatusUnreviewed    DedupStatus = "unreviewed"
-	DedupStatusAutoMerged    DedupStatus = "auto_merged"
-	DedupStatusSoftLinked    DedupStatus = "soft_linked"
-	DedupStatusManualReview  DedupStatus = "manual_review"
-	DedupStatusDistinct      DedupStatus = "distinct"
+	DedupStatusUnreviewed   DedupStatus = "unreviewed"
+	DedupStatusAutoMerged   DedupStatus = "auto_merged"
+	DedupStatusSoftLinked   DedupStatus = "soft_linked"
+	DedupStatusManualReview DedupStatus = "manual_review"
+	DedupStatusDistinct     DedupStatus = "distinct"
 )
 
 // ReportType values match the CHECK constraint in 002_pipeline.sql (reports.report_type).
 type ReportType string
 
 const (
-	ReportTypeFinal              ReportType = "final"
-	ReportTypePreliminary        ReportType = "preliminary"
-	ReportTypeInterim            ReportType = "interim"
-	ReportTypeFactual            ReportType = "factual"
+	ReportTypeFinal                ReportType = "final"
+	ReportTypePreliminary          ReportType = "preliminary"
+	ReportTypeInterim              ReportType = "interim"
+	ReportTypeFactual              ReportType = "factual"
 	ReportTypeSafetyRecommendation ReportType = "safety_recommendation"
-	ReportTypePressRelease       ReportType = "press_release"
-	ReportTypeIndexRecord        ReportType = "index_record"
-	ReportTypeMediaArticle       ReportType = "media_article"
+	ReportTypePressRelease         ReportType = "press_release"
+	ReportTypeIndexRecord          ReportType = "index_record"
+	ReportTypeMediaArticle         ReportType = "media_article"
 )
 
 // ExtractionStatus values match the CHECK constraint in 002_pipeline.sql.
@@ -150,9 +150,9 @@ const (
 type CopyrightStatus string
 
 const (
-	CopyrightStatusOfficialPublic   CopyrightStatus = "official_public"
-	CopyrightStatusMetadataOnly     CopyrightStatus = "metadata_only"
-	CopyrightStatusUnknown          CopyrightStatus = "unknown"
+	CopyrightStatusOfficialPublic     CopyrightStatus = "official_public"
+	CopyrightStatusMetadataOnly       CopyrightStatus = "metadata_only"
+	CopyrightStatusUnknown            CopyrightStatus = "unknown"
 	CopyrightStatusDoNotStoreFulltext CopyrightStatus = "do_not_store_fulltext"
 )
 
@@ -160,15 +160,15 @@ const (
 type InvestigationRole string
 
 const (
-	InvestigationRoleStateOfOccurrence       InvestigationRole = "state_of_occurrence"
-	InvestigationRoleStateOfRegistry         InvestigationRole = "state_of_registry"
-	InvestigationRoleStateOfOperator         InvestigationRole = "state_of_operator"
-	InvestigationRoleStateOfDesign           InvestigationRole = "state_of_design"
-	InvestigationRoleStateOfManufacture      InvestigationRole = "state_of_manufacture"
+	InvestigationRoleStateOfOccurrence        InvestigationRole = "state_of_occurrence"
+	InvestigationRoleStateOfRegistry          InvestigationRole = "state_of_registry"
+	InvestigationRoleStateOfOperator          InvestigationRole = "state_of_operator"
+	InvestigationRoleStateOfDesign            InvestigationRole = "state_of_design"
+	InvestigationRoleStateOfManufacture       InvestigationRole = "state_of_manufacture"
 	InvestigationRoleStateOfEngineManufacture InvestigationRole = "state_of_engine_manufacture"
 	InvestigationRoleAccreditedRepresentative InvestigationRole = "accredited_representative"
-	InvestigationRoleDelegatedInvestigator   InvestigationRole = "delegated_investigator"
-	InvestigationRoleAssistingAuthority      InvestigationRole = "assisting_authority"
+	InvestigationRoleDelegatedInvestigator    InvestigationRole = "delegated_investigator"
+	InvestigationRoleAssistingAuthority       InvestigationRole = "assisting_authority"
 )
 
 // CrawlJobType values match the CHECK constraint in 002_pipeline.sql.
@@ -229,8 +229,8 @@ const (
 type ProvenanceKind string
 
 const (
-	ProvenanceKindSeed           ProvenanceKind = "seed"
-	ProvenanceKindICAOSnapshot   ProvenanceKind = "icao_snapshot"
+	ProvenanceKindSeed            ProvenanceKind = "seed"
+	ProvenanceKindICAOSnapshot    ProvenanceKind = "icao_snapshot"
 	ProvenanceKindCuratedOverride ProvenanceKind = "curated_override"
 )
 

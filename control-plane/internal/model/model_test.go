@@ -3,7 +3,7 @@ package model
 import "testing"
 
 func TestNormalizeAuthorityName(t *testing.T) {
-	got := NormalizeName("  Bureau d'Enquêtes  ET   d'Analyses ")
+	got := NormalizeName("  Bureau d’Enquêtes  ET   d'Analyses ")
 	want := "bureau d'enquetes et d'analyses"
 	if got != want {
 		t.Fatalf("got %q want %q", got, want)
