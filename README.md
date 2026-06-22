@@ -167,6 +167,29 @@ cd sources-go/aircrash && go mod tidy && go build -o aircrash-parser
 > respect its terms before redistributing harvested ASN data. Wikidata is CC0;
 > Wikipedia text (used by `wikidata --enrich`) is CC BY-SA.
 
+## Coverage control plane
+
+[`control-plane/`](control-plane/) is a Go binary (`aviation-coverage`) that
+manages **coverage metadata** — which countries exist, which national
+authorities investigate accidents there, how sources are routed, and which
+countries are policy-excluded from direct acquisition.  It is a coordination and
+policy layer, **not a scraper**: it tracks and exports the metadata that tells
+the scrapers what to do, but does not replace the independent source packages in
+`sources/`, `sources-node/`, or `sources-go/`.
+
+```bash
+cd control-plane
+go build -o aviation-coverage ./cmd/aviation-coverage
+./aviation-coverage migrate  --db coverage.db
+./aviation-coverage seed     --db coverage.db
+./aviation-coverage validate --db coverage.db
+./aviation-coverage export   --db coverage.db --format json --output coverage.json
+```
+
+See [`control-plane/README.md`](control-plane/README.md) for the full operator
+guide (offline imports, override precedence, import run statuses, policy
+exclusions, and CI vs. manual commands).
+
 ## Scheduling
 
 Each source ships a systemd `*-cycle.service` (one-shot, runs the pipeline) and
