@@ -15,8 +15,6 @@ import (
 )
 
 // Stats reports how many rows were touched by a single Apply call.
-// Fields for regional bodies, sources, and aircraft-origin routes are reserved
-// for Task 5 and always return zero from this implementation.
 type Stats struct {
 	Countries            int
 	RegionalBodies       int
@@ -30,6 +28,15 @@ var iso3166JSON []byte
 
 //go:embed data/country_overlays.json
 var overlaysJSON []byte
+
+//go:embed data/regional_bodies.json
+var regionalBodiesJSON []byte
+
+//go:embed data/sources.json
+var sourcesJSON []byte
+
+//go:embed data/aircraft_origin_routes.json
+var aircraftOriginRoutesJSON []byte
 
 type isoEntry struct {
 	ISO2   string `json:"iso2"`
@@ -51,14 +58,72 @@ type overlayEntry struct {
 	Notes                 string `json:"notes"`
 }
 
+type regionalBodyMember struct {
+	ISO2 string `json:"iso2"`
+	Role string `json:"role"`
+}
+
+type regionalBodyEntry struct {
+	Code       string               `json:"code"`
+	Name       string               `json:"name"`
+	BodyClass  string               `json:"body_class"`
+	WebsiteURL string               `json:"website_url"`
+	SourceURL  string               `json:"source_url"`
+	Notes      string               `json:"notes"`
+	Members    []regionalBodyMember `json:"members"`
+}
+
+type sourceEntry struct {
+	Name                 string `json:"name"`
+	URL                  string `json:"url"`
+	CanonicalURL         string `json:"canonical_url"`
+	SourceType           string `json:"source_type"`
+	SourceTier           int    `json:"source_tier"`
+	RobotsPolicy         string `json:"robots_policy"`
+	CopyrightPolicyNotes string `json:"copyright_policy_notes"`
+}
+
+type aircraftOriginRouteEntry struct {
+	Patterns           []string `json:"patterns"`
+	Manufacturer       string   `json:"manufacturer"`
+	StateOfDesignISO2  string   `json:"state_of_design_iso2"`
+	StateOfMfgISO2     string   `json:"state_of_manufacture_iso2"`
+	ExpectedSourceName string   `json:"expected_source_name"`
+	Priority           int      `json:"priority"`
+}
+
 // Apply seeds the countries table from embedded ISO 3166-1 data and
-// coverage/policy overlays. It is safe to call multiple times (idempotent
-// UPSERT keyed on iso2). Returns Stats with Countries set to the number of
-// rows upserted (always 249 on a valid run).
+// coverage/policy overlays, then seeds regional bodies + members, sources,
+// and aircraft-origin routes — all within the SAME transaction. It is safe
+// to call multiple times (idempotent UPSERTs keyed on unique constraints).
 func Apply(ctx context.Context, db *sql.DB) (Stats, error) {
 	countries, overlays, err := parseAndValidate()
 	if err != nil {
 		return Stats{}, err
+	}
+
+	var bodies []regionalBodyEntry
+	if err := json.Unmarshal(regionalBodiesJSON, &bodies); err != nil {
+		return Stats{}, fmt.Errorf("seed: parse regional_bodies.json: %w", err)
+	}
+
+	var sources []sourceEntry
+	if err := json.Unmarshal(sourcesJSON, &sources); err != nil {
+		return Stats{}, fmt.Errorf("seed: parse sources.json: %w", err)
+	}
+
+	var routes []aircraftOriginRouteEntry
+	if err := json.Unmarshal(aircraftOriginRoutesJSON, &routes); err != nil {
+		return Stats{}, fmt.Errorf("seed: parse aircraft_origin_routes.json: %w", err)
+	}
+
+	// Validate source tiers before touching the DB.
+	for _, s := range sources {
+		styp := model.SourceType(s.SourceType)
+		if !model.SourceTierAllowsType(s.SourceTier, styp) {
+			return Stats{}, fmt.Errorf("seed: source %q tier %d does not allow type %q",
+				s.Name, s.SourceTier, s.SourceType)
+		}
 	}
 
 	overlayMap := make(map[string]overlayEntry, len(overlays))
@@ -72,7 +137,9 @@ func Apply(ctx context.Context, db *sql.DB) (Stats, error) {
 	}
 	defer func() { _ = tx.Rollback() }()
 
-	stmt, err := tx.PrepareContext(ctx, `
+	// ── countries ────────────────────────────────────────────────────────────
+
+	stmtCountry, err := tx.PrepareContext(ctx, `
 		INSERT INTO countries (
 			iso2, iso3, name, region,
 			policy_status, coverage_status,
@@ -97,9 +164,9 @@ func Apply(ctx context.Context, db *sql.DB) (Stats, error) {
 			notes=excluded.notes
 	`)
 	if err != nil {
-		return Stats{}, fmt.Errorf("seed: prepare upsert: %w", err)
+		return Stats{}, fmt.Errorf("seed: prepare country upsert: %w", err)
 	}
-	defer stmt.Close()
+	defer stmtCountry.Close()
 
 	for _, c := range countries {
 		// Defaults for countries without an overlay.
@@ -136,7 +203,7 @@ func Apply(ctx context.Context, db *sql.DB) (Stats, error) {
 			}
 		}
 
-		if _, err := stmt.ExecContext(ctx,
+		if _, err := stmtCountry.ExecContext(ctx,
 			c.ISO2, c.ISO3, c.Name, c.Region,
 			policyStatus, coverageStatus,
 			coverageScore, effortScore,
@@ -144,7 +211,191 @@ func Apply(ctx context.Context, db *sql.DB) (Stats, error) {
 			priority, groupVal,
 			refreshCadence, notes,
 		); err != nil {
-			return Stats{}, fmt.Errorf("seed: upsert %s: %w", c.ISO2, err)
+			return Stats{}, fmt.Errorf("seed: upsert country %s: %w", c.ISO2, err)
+		}
+	}
+
+	// Build an in-transaction ISO2 → country_id lookup map.
+	rows, err := tx.QueryContext(ctx, `SELECT id, iso2 FROM countries`)
+	if err != nil {
+		return Stats{}, fmt.Errorf("seed: query countries: %w", err)
+	}
+	countryByISO2 := make(map[string]int64)
+	for rows.Next() {
+		var id int64
+		var iso2 string
+		if err := rows.Scan(&id, &iso2); err != nil {
+			rows.Close()
+			return Stats{}, fmt.Errorf("seed: scan country row: %w", err)
+		}
+		countryByISO2[iso2] = id
+	}
+	rows.Close()
+	if err := rows.Err(); err != nil {
+		return Stats{}, fmt.Errorf("seed: iterate countries: %w", err)
+	}
+
+	// ── regional bodies ──────────────────────────────────────────────────────
+
+	stmtBody, err := tx.PrepareContext(ctx, `
+		INSERT INTO regional_bodies (code, name, body_class, website_url, source_url, notes)
+		VALUES (?, ?, ?, ?, ?, ?)
+		ON CONFLICT(code) DO UPDATE SET
+			name=excluded.name,
+			body_class=excluded.body_class,
+			website_url=excluded.website_url,
+			source_url=excluded.source_url,
+			notes=excluded.notes
+	`)
+	if err != nil {
+		return Stats{}, fmt.Errorf("seed: prepare regional_bodies upsert: %w", err)
+	}
+	defer stmtBody.Close()
+
+	stmtMember, err := tx.PrepareContext(ctx, `
+		INSERT INTO regional_body_members (regional_body_id, country_id, role, source_url)
+		VALUES (?, ?, ?, ?)
+		ON CONFLICT(regional_body_id, country_id, role) DO UPDATE SET
+			source_url=excluded.source_url
+	`)
+	if err != nil {
+		return Stats{}, fmt.Errorf("seed: prepare regional_body_members upsert: %w", err)
+	}
+	defer stmtMember.Close()
+
+	bodiesUpserted := 0
+	membersUpserted := 0
+
+	for _, b := range bodies {
+		// Validate member ISO2 references before writing.
+		for _, m := range b.Members {
+			if _, ok := countryByISO2[m.ISO2]; !ok {
+				return Stats{}, fmt.Errorf("seed: regional body %q member iso2 %q not found in countries",
+					b.Code, m.ISO2)
+			}
+		}
+
+		var websiteURL *string
+		if b.WebsiteURL != "" {
+			u := b.WebsiteURL
+			websiteURL = &u
+		}
+		var bodyNotes *string
+		if b.Notes != "" {
+			n := b.Notes
+			bodyNotes = &n
+		}
+
+		if _, err := stmtBody.ExecContext(ctx,
+			b.Code, b.Name, b.BodyClass, websiteURL, b.SourceURL, bodyNotes,
+		); err != nil {
+			return Stats{}, fmt.Errorf("seed: upsert regional body %s: %w", b.Code, err)
+		}
+		bodiesUpserted++
+
+		// Retrieve the body's ID (may have been inserted or already existed).
+		var bodyID int64
+		if err := tx.QueryRowContext(ctx,
+			`SELECT id FROM regional_bodies WHERE code=?`, b.Code,
+		).Scan(&bodyID); err != nil {
+			return Stats{}, fmt.Errorf("seed: lookup regional body %s id: %w", b.Code, err)
+		}
+
+		for _, m := range b.Members {
+			cid := countryByISO2[m.ISO2]
+			if _, err := stmtMember.ExecContext(ctx, bodyID, cid, m.Role, b.SourceURL); err != nil {
+				return Stats{}, fmt.Errorf("seed: upsert member %s/%s: %w", b.Code, m.ISO2, err)
+			}
+			membersUpserted++
+		}
+	}
+
+	// ── sources ──────────────────────────────────────────────────────────────
+
+	stmtSource, err := tx.PrepareContext(ctx, `
+		INSERT INTO sources (name, url, canonical_url, source_type, source_tier,
+			robots_policy, copyright_policy_notes)
+		VALUES (?, ?, ?, ?, ?, ?, ?)
+		ON CONFLICT(canonical_url, source_type) DO UPDATE SET
+			name=excluded.name,
+			url=excluded.url,
+			source_tier=excluded.source_tier,
+			robots_policy=excluded.robots_policy,
+			copyright_policy_notes=excluded.copyright_policy_notes
+	`)
+	if err != nil {
+		return Stats{}, fmt.Errorf("seed: prepare sources upsert: %w", err)
+	}
+	defer stmtSource.Close()
+
+	sourcesUpserted := 0
+	for _, s := range sources {
+		var robotsPolicy *string
+		if s.RobotsPolicy != "" {
+			r := s.RobotsPolicy
+			robotsPolicy = &r
+		}
+		var copyrightNotes *string
+		if s.CopyrightPolicyNotes != "" {
+			c := s.CopyrightPolicyNotes
+			copyrightNotes = &c
+		}
+		if _, err := stmtSource.ExecContext(ctx,
+			s.Name, s.URL, s.CanonicalURL, s.SourceType, s.SourceTier,
+			robotsPolicy, copyrightNotes,
+		); err != nil {
+			return Stats{}, fmt.Errorf("seed: upsert source %q: %w", s.Name, err)
+		}
+		sourcesUpserted++
+	}
+
+	// ── aircraft origin routes ────────────────────────────────────────────────
+
+	stmtRoute, err := tx.PrepareContext(ctx, `
+		INSERT INTO aircraft_origin_routes (
+			aircraft_type_pattern, normalized_pattern, manufacturer,
+			state_of_design_country_id, state_of_manufacture_country_id,
+			expected_authority_id, expected_source_name, priority
+		) VALUES (?, ?, ?, ?, ?, NULL, ?, ?)
+		ON CONFLICT(normalized_pattern, expected_source_name) DO UPDATE SET
+			aircraft_type_pattern=excluded.aircraft_type_pattern,
+			manufacturer=excluded.manufacturer,
+			state_of_design_country_id=excluded.state_of_design_country_id,
+			state_of_manufacture_country_id=excluded.state_of_manufacture_country_id,
+			priority=excluded.priority
+	`)
+	if err != nil {
+		return Stats{}, fmt.Errorf("seed: prepare aircraft_origin_routes upsert: %w", err)
+	}
+	defer stmtRoute.Close()
+
+	routesUpserted := 0
+	for _, r := range routes {
+		designID, ok := countryByISO2[r.StateOfDesignISO2]
+		if !ok {
+			return Stats{}, fmt.Errorf("seed: aircraft route state_of_design iso2 %q not found",
+				r.StateOfDesignISO2)
+		}
+		var mfgID *int64
+		if r.StateOfMfgISO2 != "" {
+			id, ok := countryByISO2[r.StateOfMfgISO2]
+			if !ok {
+				return Stats{}, fmt.Errorf("seed: aircraft route state_of_manufacture iso2 %q not found",
+					r.StateOfMfgISO2)
+			}
+			mfgID = &id
+		}
+
+		for _, pattern := range r.Patterns {
+			normalized := model.NormalizeName(pattern)
+			if _, err := stmtRoute.ExecContext(ctx,
+				pattern, normalized, r.Manufacturer,
+				designID, mfgID,
+				r.ExpectedSourceName, r.Priority,
+			); err != nil {
+				return Stats{}, fmt.Errorf("seed: upsert aircraft route %q: %w", pattern, err)
+			}
+			routesUpserted++
 		}
 	}
 
@@ -152,7 +403,13 @@ func Apply(ctx context.Context, db *sql.DB) (Stats, error) {
 		return Stats{}, fmt.Errorf("seed: commit: %w", err)
 	}
 
-	return Stats{Countries: len(countries)}, nil
+	return Stats{
+		Countries:            len(countries),
+		RegionalBodies:       bodiesUpserted,
+		RegionalMembers:      membersUpserted,
+		Sources:              sourcesUpserted,
+		AircraftOriginRoutes: routesUpserted,
+	}, nil
 }
 
 // parseAndValidate deserialises both embedded JSON files and runs structural

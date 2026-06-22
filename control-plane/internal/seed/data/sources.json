@@ -1,0 +1,119 @@
+[
+  {
+    "name": "NTSB Aviation Accident Database",
+    "url": "https://www.ntsb.gov/investigations/accidentreports/Pages/avdata.aspx",
+    "canonical_url": "https://www.ntsb.gov/investigations/accidentreports/Pages/avdata.aspx",
+    "source_type": "official_aai",
+    "source_tier": 1,
+    "robots_policy": "allowed",
+    "copyright_policy_notes": "US federal government work; public domain"
+  },
+  {
+    "name": "BEA Official Accident Reports",
+    "url": "https://www.bea.aero/en/investigation-reports/",
+    "canonical_url": "https://www.bea.aero/en/investigation-reports/",
+    "source_type": "official_aai",
+    "source_tier": 1,
+    "robots_policy": "allowed",
+    "copyright_policy_notes": "Official French aviation accident reports; free public access"
+  },
+  {
+    "name": "ATSB Aviation Safety Investigations",
+    "url": "https://www.atsb.gov.au/aviation/investigations/",
+    "canonical_url": "https://www.atsb.gov.au/aviation/investigations/",
+    "source_type": "official_aai",
+    "source_tier": 1,
+    "robots_policy": "allowed",
+    "copyright_policy_notes": "Australian government copyright; public access permitted"
+  },
+  {
+    "name": "AAIB Investigation Reports",
+    "url": "https://www.gov.uk/aaib-reports",
+    "canonical_url": "https://www.gov.uk/aaib-reports",
+    "source_type": "official_aai",
+    "source_tier": 1,
+    "robots_policy": "allowed",
+    "copyright_policy_notes": "UK Crown copyright; Open Government Licence"
+  },
+  {
+    "name": "TSB Aviation Investigation Reports",
+    "url": "https://www.tsb.gc.ca/eng/enquetes-investigations/aviation/index.html",
+    "canonical_url": "https://www.tsb.gc.ca/eng/enquetes-investigations/aviation/index.html",
+    "source_type": "official_aai",
+    "source_tier": 1,
+    "robots_policy": "allowed",
+    "copyright_policy_notes": "Canadian Crown copyright; public reproduction permitted"
+  },
+  {
+    "name": "TAIC Aviation Accident Reports",
+    "url": "https://www.taic.org.nz/inquiries?category=aviation",
+    "canonical_url": "https://www.taic.org.nz/inquiries?category=aviation",
+    "source_type": "official_aai",
+    "source_tier": 1,
+    "robots_policy": "allowed",
+    "copyright_policy_notes": "New Zealand Crown copyright; public access"
+  },
+  {
+    "name": "ICAO e-Library Final Reports",
+    "url": "https://www.icao.int/safety/airnavigation/AIG/Pages/ADREP-Summary-Accident-Reports.aspx",
+    "canonical_url": "https://www.icao.int/safety/airnavigation/AIG/Pages/ADREP-Summary-Accident-Reports.aspx",
+    "source_type": "icao_elibrary",
+    "source_tier": 3,
+    "robots_policy": "allowed",
+    "copyright_policy_notes": "ICAO copyright; redistribution requires permission"
+  },
+  {
+    "name": "ICAO AIA Member States Page",
+    "url": "https://www.icao.int/safety/airnavigation/AIG/Pages/AIA-States.aspx",
+    "canonical_url": "https://www.icao.int/safety/airnavigation/AIG/Pages/AIA-States.aspx",
+    "source_type": "regulator",
+    "source_tier": 4,
+    "robots_policy": "allowed",
+    "copyright_policy_notes": "ICAO copyright; redistribution requires permission"
+  },
+  {
+    "name": "ICAO RAIO Directory",
+    "url": "https://www.icao.int/safety/airnavigation/AIG/Pages/Regional-Accident-Incident-Investigation-Organizations.aspx",
+    "canonical_url": "https://www.icao.int/safety/airnavigation/AIG/Pages/Regional-Accident-Incident-Investigation-Organizations.aspx",
+    "source_type": "regulator",
+    "source_tier": 4,
+    "robots_policy": "allowed",
+    "copyright_policy_notes": "ICAO copyright; redistribution requires permission"
+  },
+  {
+    "name": "SKYbrary Aviation Safety",
+    "url": "https://skybrary.aero/",
+    "canonical_url": "https://skybrary.aero/",
+    "source_type": "trusted_index",
+    "source_tier": 5,
+    "robots_policy": "allowed",
+    "copyright_policy_notes": "EUROCONTROL custom licence; non-commercial use with attribution"
+  },
+  {
+    "name": "Aviation Safety Network",
+    "url": "https://aviation-safety.net/database/",
+    "canonical_url": "https://aviation-safety.net/database/",
+    "source_type": "trusted_index",
+    "source_tier": 5,
+    "robots_policy": "restricted",
+    "copyright_policy_notes": "ASN copyright; no bulk reproduction"
+  },
+  {
+    "name": "B3A Aviation Accident Database",
+    "url": "https://b3a.de/",
+    "canonical_url": "https://b3a.de/",
+    "source_type": "trusted_index",
+    "source_tier": 5,
+    "robots_policy": "allowed",
+    "copyright_policy_notes": "B3A database; check individual record terms"
+  },
+  {
+    "name": "Aviation Herald",
+    "url": "https://avherald.com/",
+    "canonical_url": "https://avherald.com/",
+    "source_type": "trusted_index",
+    "source_tier": 5,
+    "robots_policy": "allowed",
+    "copyright_policy_notes": "Aviation Herald copyright; no bulk scraping"
+  }
+]
