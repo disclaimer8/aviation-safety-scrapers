@@ -1,0 +1,66 @@
+[
+  {
+    "patterns": ["Boeing", "Cessna", "Piper", "Beechcraft", "Gulfstream", "Lycoming", "Continental"],
+    "manufacturer": "United States design/manufacture",
+    "state_of_design_iso2": "US",
+    "state_of_manufacture_iso2": "US",
+    "expected_source_name": "NTSB",
+    "priority": 100
+  },
+  {
+    "patterns": ["Airbus", "ATR", "Dassault", "Daher-Socata"],
+    "manufacturer": "French design/manufacture",
+    "state_of_design_iso2": "FR",
+    "state_of_manufacture_iso2": "FR",
+    "expected_source_name": "BEA",
+    "priority": 100
+  },
+  {
+    "patterns": ["Bombardier", "de Havilland Canada", "Pratt & Whitney Canada"],
+    "manufacturer": "Canadian design/manufacture",
+    "state_of_design_iso2": "CA",
+    "state_of_manufacture_iso2": "CA",
+    "expected_source_name": "TSB",
+    "priority": 100
+  },
+  {
+    "patterns": ["BAE", "Britten-Norman", "Rolls-Royce"],
+    "manufacturer": "UK design/manufacture",
+    "state_of_design_iso2": "GB",
+    "state_of_manufacture_iso2": "GB",
+    "expected_source_name": "AAIB",
+    "priority": 100
+  },
+  {
+    "patterns": ["Pilatus"],
+    "manufacturer": "Swiss design/manufacture",
+    "state_of_design_iso2": "CH",
+    "state_of_manufacture_iso2": "CH",
+    "expected_source_name": "SUST",
+    "priority": 100
+  },
+  {
+    "patterns": ["Leonardo"],
+    "manufacturer": "Italian design/manufacture",
+    "state_of_design_iso2": "IT",
+    "state_of_manufacture_iso2": "IT",
+    "expected_source_name": "ANSV",
+    "priority": 100
+  },
+  {
+    "patterns": ["Embraer"],
+    "manufacturer": "Brazilian design/manufacture",
+    "state_of_design_iso2": "BR",
+    "state_of_manufacture_iso2": "BR",
+    "expected_source_name": "CENIPA",
+    "priority": 100
+  },
+  {
+    "patterns": ["Antonov"],
+    "manufacturer": "Ukrainian design/manufacture",
+    "state_of_design_iso2": "UA",
+    "state_of_manufacture_iso2": "UA",
+    "expected_source_name": "NBAAI",
+    "priority": 100
+  }
+]

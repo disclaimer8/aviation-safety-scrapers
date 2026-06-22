@@ -65,3 +65,62 @@ func TestPolicyExcludedAndPriorityOverlay(t *testing.T) {
 		t.Fatalf("PA priority=%v", score)
 	}
 }
+
+func TestRequiredRegionalMappings(t *testing.T) {
+	db := testDB(t)
+	if _, err := Apply(context.Background(), db); err != nil {
+		t.Fatal(err)
+	}
+	cases := map[string]int{"ECCAA": 5, "BAGAIA": 7, "IAC": 8}
+	for code, want := range cases {
+		var got int
+		err := db.QueryRow(`
+			SELECT COUNT(*) FROM regional_body_members m
+			JOIN regional_bodies b ON b.id=m.regional_body_id
+			WHERE b.code=?`, code).Scan(&got)
+		if err != nil || got != want {
+			t.Fatalf("%s members=%d want=%d err=%v", code, got, want, err)
+		}
+	}
+}
+
+func TestAircraftOriginAndSourceSeeds(t *testing.T) {
+	db := testDB(t)
+	if _, err := Apply(context.Background(), db); err != nil {
+		t.Fatal(err)
+	}
+	var source string
+	db.QueryRow(`SELECT expected_source_name FROM aircraft_origin_routes
+		WHERE normalized_pattern='boeing'`).Scan(&source)
+	if source != "NTSB" {
+		t.Fatalf("boeing source=%q", source)
+	}
+	var tier int
+	db.QueryRow(`SELECT source_tier FROM sources WHERE name='ICAO e-Library Final Reports'`).
+		Scan(&tier)
+	if tier != 3 {
+		t.Fatalf("ICAO tier=%d", tier)
+	}
+}
+
+func TestSeedIsIdempotentForAllTables(t *testing.T) {
+	db := testDB(t)
+	ctx := context.Background()
+	first, err := Apply(ctx, db)
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := Apply(ctx, db)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if first.RegionalBodies != second.RegionalBodies {
+		t.Fatalf("regional bodies not idempotent: %d vs %d", first.RegionalBodies, second.RegionalBodies)
+	}
+	if first.Sources != second.Sources {
+		t.Fatalf("sources not idempotent: %d vs %d", first.Sources, second.Sources)
+	}
+	if first.AircraftOriginRoutes != second.AircraftOriginRoutes {
+		t.Fatalf("aircraft origin routes not idempotent: %d vs %d", first.AircraftOriginRoutes, second.AircraftOriginRoutes)
+	}
+}

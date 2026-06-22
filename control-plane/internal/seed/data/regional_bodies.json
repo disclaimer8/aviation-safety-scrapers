@@ -1,0 +1,88 @@
+[
+  {
+    "code": "ECCAA",
+    "name": "Eastern Caribbean Civil Aviation Authority",
+    "body_class": "raio",
+    "website_url": "https://www.eccaa.org",
+    "source_url": "https://www.eccaa.org",
+    "notes": "RAIO serving the Eastern Caribbean states",
+    "members": [
+      {"iso2": "DM", "role": "member"},
+      {"iso2": "GD", "role": "member"},
+      {"iso2": "KN", "role": "member"},
+      {"iso2": "LC", "role": "member"},
+      {"iso2": "VC", "role": "member"}
+    ]
+  },
+  {
+    "code": "BAGAIA",
+    "name": "Banjul Accord Group Aviation Industry Authorities",
+    "body_class": "raio",
+    "website_url": "https://www.bagasoo.org",
+    "source_url": "https://www.bagasoo.org",
+    "notes": "RAIO serving West African Banjul Accord Group states",
+    "members": [
+      {"iso2": "CV", "role": "member"},
+      {"iso2": "GM", "role": "member"},
+      {"iso2": "GH", "role": "member"},
+      {"iso2": "GN", "role": "member"},
+      {"iso2": "LR", "role": "member"},
+      {"iso2": "NG", "role": "member"},
+      {"iso2": "SL", "role": "member"}
+    ]
+  },
+  {
+    "code": "IAC",
+    "name": "Interstate Aviation Committee",
+    "body_class": "raio",
+    "website_url": "https://mak.aero",
+    "source_url": "https://mak.aero",
+    "notes": "RAIO for CIS member states; also known as MAK",
+    "members": [
+      {"iso2": "RU", "role": "member"},
+      {"iso2": "AM", "role": "member"},
+      {"iso2": "AZ", "role": "member"},
+      {"iso2": "BY", "role": "member"},
+      {"iso2": "KZ", "role": "member"},
+      {"iso2": "KG", "role": "member"},
+      {"iso2": "TJ", "role": "member"},
+      {"iso2": "TM", "role": "member"}
+    ]
+  },
+  {
+    "code": "ARCM-MENA",
+    "name": "Arab Regional Cooperation Mechanism for the Middle East and North Africa",
+    "body_class": "icm",
+    "website_url": "https://www.icao.int/MID/Pages/ARCM.aspx",
+    "source_url": "https://www.icao.int/MID/Pages/ARCM.aspx",
+    "notes": "ICAO cooperation mechanism for MENA region",
+    "members": []
+  },
+  {
+    "code": "ARCM-SAM",
+    "name": "Regional Cooperation Mechanism for South America",
+    "body_class": "icm",
+    "website_url": "https://www.icao.int/SAM/Pages/default.aspx",
+    "source_url": "https://www.icao.int/SAM/Pages/default.aspx",
+    "notes": "ICAO cooperation mechanism for South America",
+    "members": []
+  },
+  {
+    "code": "ENCASIA",
+    "name": "Eastern and Northern CIS Aviation Safety Initiative",
+    "body_class": "icm",
+    "website_url": "https://www.icao.int/safety/Pages/ENCASIA.aspx",
+    "source_url": "https://www.icao.int/safety/Pages/ENCASIA.aspx",
+    "notes": "ICAO cooperation mechanism for Eastern and Northern CIS states",
+    "members": []
+  },
+  {
+    "code": "GRIAA",
+    "name": "Gulf Region Inter-Authority Agreement on Aviation Safety",
+    "body_class": "icm",
+    "website_url": "https://www.icao.int/MID/Pages/GRIAA.aspx",
+    "source_url": "https://www.icao.int/MID/Pages/GRIAA.aspx",
+    "notes": "ICAO cooperation mechanism for Gulf region aviation safety",
+    "members": []
+  }
+]
