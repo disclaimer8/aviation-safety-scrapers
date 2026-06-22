@@ -2,11 +2,9 @@ package database
 
 import (
 	"context"
+	"os"
 	"path/filepath"
 	"testing"
-	"time"
-
-	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/config"
 )
 
 func TestOpenEnablesForeignKeysAndWAL(t *testing.T) {
@@ -31,27 +29,49 @@ func TestOpenEnablesForeignKeysAndWAL(t *testing.T) {
 	if mode != "wal" {
 		t.Fatalf("journal_mode=%q, want wal", mode)
 	}
+
+	var busyTimeout int
+	if err := db.QueryRowContext(context.Background(), "PRAGMA busy_timeout").Scan(&busyTimeout); err != nil {
+		t.Fatal(err)
+	}
+	if busyTimeout != 10000 {
+		t.Fatalf("busy_timeout=%d, want 10000", busyTimeout)
+	}
 }
 
-func TestDefaultHTTP(t *testing.T) {
-	got := config.DefaultHTTP()
+func TestOpenEscapesReservedPathCharacters(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "coverage?#%.db")
 
-	if got.UserAgent != "aviation-coverage-control-plane/1.0 (+https://github.com/denyskolomiiets/aviation-safety-scrapers)" {
-		t.Fatalf("UserAgent=%q", got.UserAgent)
+	db, err := Open(path)
+	if err != nil {
+		t.Fatal(err)
 	}
-	if got.Timeout != 30*time.Second {
-		t.Fatalf("Timeout=%s, want 30s", got.Timeout)
+	if _, err := db.Exec("CREATE TABLE reserved_path_probe (id INTEGER PRIMARY KEY)"); err != nil {
+		t.Fatal(err)
 	}
-	if got.MaxBytes != 8<<20 {
-		t.Fatalf("MaxBytes=%d, want %d", got.MaxBytes, 8<<20)
+	if err := db.Close(); err != nil {
+		t.Fatal(err)
 	}
-	if got.Retries != 2 {
-		t.Fatalf("Retries=%d, want 2", got.Retries)
+
+	if _, err := os.Stat(path); err != nil {
+		t.Fatalf("stat intended database path: %v", err)
 	}
-	if config.DefaultAIAURL != "https://www.icao.int/safety/AIG/AIA" {
-		t.Fatalf("DefaultAIAURL=%q", config.DefaultAIAURL)
+
+	db, err = Open(path)
+	if err != nil {
+		t.Fatal(err)
 	}
-	if config.DefaultRAIOURL != "https://www.icao.int/safety/regional-safety-cooperation/List-of-RAIOs-and-ICMs" {
-		t.Fatalf("DefaultRAIOURL=%q", config.DefaultRAIOURL)
+	defer db.Close()
+
+	var tables int
+	if err := db.QueryRow(`
+		SELECT count(*)
+		FROM sqlite_master
+		WHERE type = 'table' AND name = 'reserved_path_probe'
+	`).Scan(&tables); err != nil {
+		t.Fatal(err)
+	}
+	if tables != 1 {
+		t.Fatalf("reserved_path_probe tables=%d, want 1", tables)
 	}
 }
