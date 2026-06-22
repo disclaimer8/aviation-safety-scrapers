@@ -5,9 +5,15 @@
 // regional body. There is no machine-readable feed, so the importer reads the
 // HTML structure directly.
 //
-// The parser is deliberately tolerant: malformed or incomplete blocks never
-// crash it. Instead it preserves the complete raw block and emits Warnings so
-// the importer can stage every record and let an operator review the gaps.
+// The real page renders the whole directory as ONE HTML <table> with two columns
+// per row — Country | Address. The first column carries the State label (often
+// with a "(DT)" Dependent-territory or "(NCS)" Non-Contracting-State marker); the
+// second column carries the full raw contact block (authority name(s), postal
+// address, Tel/Fax/AFTN lines, an optional website, and obfuscated emails).
+//
+// The parser is deliberately tolerant: malformed or incomplete rows never crash
+// it. Instead it preserves the complete raw block and emits Warnings so the
+// importer can stage every record and let an operator review the gaps.
 package aia
 
 import (
@@ -20,12 +26,13 @@ import (
 	"time"
 
 	"golang.org/x/net/html"
+	"golang.org/x/net/html/atom"
 )
 
-// Record is one parsed State block from the AIA directory. Every field except
-// the identity (CountryLabel) is best-effort; an empty value simply means the
-// page did not carry that datum for the State. RawContact always holds the
-// complete text of the block so nothing is silently lost.
+// Record is one parsed State row from the AIA directory. Every field except the
+// identity (CountryLabel) is best-effort; an empty value simply means the page
+// did not carry that datum for the State. RawContact always holds the complete
+// text of the Address cell so nothing is silently lost.
 type Record struct {
 	CountryLabel     string
 	AuthorityName    string
@@ -41,151 +48,149 @@ type Record struct {
 	Checksum         string
 }
 
-// contactHeadingRe matches the directory's top heading so we only start parsing
-// State blocks once we are inside the contact section.
-var contactHeadingRe = regexp.MustCompile(`(?i)accident\s+investigation\s+authorities\s+contact\s+information`)
-
-// headingTags are the element names that introduce a State block. The directory
-// uses <h2> per State under a single <h1> section heading; we accept any of the
-// lower heading levels to tolerate markup drift.
-var headingTags = map[string]bool{"h2": true, "h3": true, "h4": true}
-
 var (
 	emailRe   = regexp.MustCompile(`[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}`)
-	phoneRe   = regexp.MustCompile(`(?i)\b(?:tel|phone|fax)\b[:.\s]*\+?[0-9][0-9()\-.\s]{6,}`)
+	phoneRe   = regexp.MustCompile(`(?i)\b(?:tel|phone|fax|mobile)\b\.?[:\s]*\+?[0-9(][0-9()\-.\s/]{5,}`)
 	urlRe     = regexp.MustCompile(`https?://[^\s<>")]+`)
-	referToRe = regexp.MustCompile(`(?i)refer\s+to\s+(?:the\s+)?([A-Za-z][A-Za-z .'\-]+?)\s*[.\n]`)
-	seeBodyRe = regexp.MustCompile(`(?i)\bsee\s+([A-Za-z][A-Za-z .'\-]+?)\s*[.\n]`)
-	updatedRe = regexp.MustCompile(`(?i)(?:icao\s+)?updated[:.\s]*([0-9]{4}-[0-9]{2}-[0-9]{2})`)
+	referToRe = regexp.MustCompile(`(?i)refer\s+to\s+(?:the\s+)?(.+?)\s*(?:\n|$)`)
+	seeBodyRe = regexp.MustCompile(`(?i)^\s*see\s+(.+?)\s*(?:\n|$)`)
+	updatedRe = regexp.MustCompile(`(?i)updated[:\s]*([0-9]{1,2}\s+[A-Za-z]+\s+[0-9]{4}|[0-9]{4}-[0-9]{2}-[0-9]{2})`)
 )
 
-// Parse reads the AIA directory HTML and returns one Record per State block.
-// It never returns an error for malformed individual blocks; a returned error
-// means the document itself could not be parsed as HTML.
+// Parse reads the AIA directory HTML and returns one Record per data row of the
+// Country/Address directory table. It never returns an error for malformed
+// individual rows; a returned error means the document itself could not be
+// parsed as HTML.
 func Parse(r io.Reader) ([]Record, error) {
 	root, err := html.Parse(r)
 	if err != nil {
 		return nil, fmt.Errorf("parse aia html: %w", err)
 	}
 
-	// Flatten the document into an ordered stream of (heading|text) tokens. The
-	// directory is laid out as a flat sequence of per-State headings followed by
-	// their content, so a single in-order walk lets us slice it into blocks. Each
-	// State heading inside the contact section starts a new Record; matching to a
-	// canonical ISO country happens later in the importer against the seeded
-	// countries table (NormalizeName is applied there), so the parser stays
-	// independent of any country list and never silently drops an unknown State.
-	var tokens []token
-	inSection := false
-	collect(root, &tokens, &inSection)
+	table := findDirectoryTable(root)
+	if table == nil {
+		return nil, fmt.Errorf("aia: directory table (Country/Address) not found")
+	}
 
 	var records []Record
-	var cur *blockBuilder
-	flush := func() {
-		if cur != nil {
-			records = append(records, cur.build())
-			cur = nil
-		}
-	}
-
-	for _, tk := range tokens {
-		if tk.isHeading {
-			flush()
-			cur = &blockBuilder{label: normalizeWhitespace(tk.text)}
+	for _, row := range tableRows(table) {
+		cells := rowCells(row)
+		if len(cells) < 2 {
 			continue
 		}
-		if cur != nil {
-			cur.add(tk.text)
+		country := cleanText(cellText(cells[0]))
+		if country == "" {
+			continue // spacer / empty row
 		}
+		if isHeaderRow(country, cleanText(cellText(cells[1]))) {
+			continue
+		}
+		records = append(records, buildRecord(country, cells[1]))
 	}
-	flush()
 
 	return records, nil
 }
 
-// token is one flattened node: either a heading or a run of body text.
-type token struct {
-	isHeading bool
-	text      string
+// findDirectoryTable returns the directory <table> — the one whose header row is
+// Country | Address. It walks every table so the parser is robust to the page's
+// surrounding chrome. If no header matches, it falls back to the first table.
+func findDirectoryTable(root *html.Node) *html.Node {
+	var first, match *html.Node
+	var walk func(*html.Node)
+	walk = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.DataAtom == atom.Table {
+			if first == nil {
+				first = n
+			}
+			if match == nil && tableHasCountryAddressHeader(n) {
+				match = n
+			}
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			walk(c)
+		}
+	}
+	walk(root)
+	if match != nil {
+		return match
+	}
+	return first
 }
 
-// collect walks the DOM in document order, emitting a heading token for each
-// heading element (after the contact section heading is seen) and a text token
-// for each non-empty text node. The contact-section <h1> flips inSection on so
-// preamble headers above it are ignored.
-func collect(n *html.Node, out *[]token, inSection *bool) {
-	if n.Type == html.ElementNode && isHeadingTag(n.Data) {
-		// The contact-section heading flips inSection on; it is itself never a
-		// State block, and any heading above it is preamble we skip.
-		if contactHeadingRe.MatchString(nodeText(n)) {
-			*inSection = true
+// tableHasCountryAddressHeader reports whether the table's first row reads
+// Country | Address (in either <th> or <td>).
+func tableHasCountryAddressHeader(table *html.Node) bool {
+	rows := tableRows(table)
+	if len(rows) == 0 {
+		return false
+	}
+	cells := rowCells(rows[0])
+	if len(cells) < 2 {
+		return false
+	}
+	return isHeaderRow(cleanText(cellText(cells[0])), cleanText(cellText(cells[1])))
+}
+
+func isHeaderRow(col0, col1 string) bool {
+	return strings.EqualFold(col0, "Country") && strings.EqualFold(col1, "Address")
+}
+
+// tableRows returns every <tr> under a table (across thead/tbody).
+func tableRows(table *html.Node) []*html.Node {
+	var rows []*html.Node
+	var walk func(*html.Node)
+	walk = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.DataAtom == atom.Tr {
+			rows = append(rows, n)
 			return
 		}
-		if !*inSection {
-			return
-		}
-		if headingTags[n.Data] {
-			*out = append(*out, token{isHeading: true, text: normalizeWhitespace(nodeText(n))})
-		}
-		return
-	}
-
-	if *inSection && n.Type == html.TextNode {
-		text := normalizeWhitespace(n.Data)
-		if text != "" {
-			*out = append(*out, token{text: text})
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			walk(c)
 		}
 	}
+	walk(table)
+	return rows
+}
 
-	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		collect(c, out, inSection)
+// rowCells returns the direct <td>/<th> children of a row, in order.
+func rowCells(row *html.Node) []*html.Node {
+	var cells []*html.Node
+	for c := row.FirstChild; c != nil; c = c.NextSibling {
+		if c.Type == html.ElementNode && (c.DataAtom == atom.Td || c.DataAtom == atom.Th) {
+			cells = append(cells, c)
+		}
 	}
+	return cells
 }
 
-// isHeadingTag reports whether an element name is any heading level.
-func isHeadingTag(tag string) bool {
-	switch tag {
-	case "h1", "h2", "h3", "h4", "h5", "h6":
-		return true
-	}
-	return false
-}
-
-// blockBuilder accumulates the text lines of one State block before they are
-// distilled into a Record.
-type blockBuilder struct {
-	label string
-	lines []string
-}
-
-func (b *blockBuilder) add(line string) {
-	line = normalizeWhitespace(line)
-	if line != "" {
-		b.lines = append(b.lines, line)
-	}
-}
-
-func (b *blockBuilder) build() Record {
-	raw := strings.Join(b.lines, "\n")
+// buildRecord distils one Address cell into a Record for the given country label.
+func buildRecord(country string, addrCell *html.Node) Record {
 	rec := Record{
-		CountryLabel: b.label,
-		RawContact:   raw,
+		CountryLabel: country,
+		RawContact:   strings.TrimSpace(collapseBlankLines(cellText(addrCell))),
 	}
+	// text is the cleaned, nbsp-/zero-width-free, line-preserving body that the
+	// contact regexes run against. (Go's RE2 \s is ASCII-only, so matching the raw
+	// cell text would miss labels separated from values by a non-breaking space.)
+	text := rec.RawContact
 
-	// Emails: deobfuscate explicit [at]/[dot] forms first, then extract.
-	deob := deobfuscate(raw)
-	seenEmail := map[string]bool{}
-	for _, m := range emailRe.FindAllString(deob, -1) {
-		e := strings.ToLower(strings.Trim(m, ".,;"))
-		if !seenEmail[e] {
-			seenEmail[e] = true
-			rec.Emails = append(rec.Emails, e)
-		}
+	// Emails: prefer the structured spamspan markup (user/domain spans), which is
+	// unambiguous; fall back to plain-text and explicit [at]/[dot] deobfuscation.
+	rec.Emails = extractEmails(addrCell, text)
+
+	// Delegations: a "Refer to X" or "See Y" row delegates and carries no
+	// canonical authority. Detect these before extracting contact data so a
+	// delegation never produces a spurious authority name.
+	if m := referToRe.FindStringSubmatch(text); m != nil {
+		rec.ReferenceCountry = cleanText(m[1])
+	}
+	if m := seeBodyRe.FindStringSubmatch(text); m != nil {
+		rec.ReferenceBody = cleanText(m[1])
 	}
 
 	// Phones.
 	seenPhone := map[string]bool{}
-	for _, m := range phoneRe.FindAllString(raw, -1) {
+	for _, m := range phoneRe.FindAllString(text, -1) {
 		p := cleanPhone(m)
 		if p != "" && !seenPhone[p] {
 			seenPhone[p] = true
@@ -194,35 +199,26 @@ func (b *blockBuilder) build() Record {
 	}
 
 	// Website / archive URL: first http(s) URL in the block.
-	if m := urlRe.FindString(raw); m != "" {
+	if m := urlRe.FindString(text); m != "" {
 		rec.WebsiteURL = strings.Trim(m, ".,;)")
 	}
 
-	// Delegations.
-	if m := referToRe.FindStringSubmatch(raw); m != nil {
-		rec.ReferenceCountry = normalizeWhitespace(m[1])
-	}
-	if m := seeBodyRe.FindStringSubmatch(raw); m != nil {
-		// Avoid mis-capturing "see" inside ordinary prose; only treat the first
-		// "See X" sentence (the directory's delegation marker) as a reference.
-		rec.ReferenceBody = normalizeWhitespace(m[1])
-	}
-
-	// ICAO update date.
-	if m := updatedRe.FindStringSubmatch(raw); m != nil {
-		if ts, err := time.Parse("2006-01-02", m[1]); err == nil {
+	// ICAO update date — the page writes "Updated D Month YYYY"; ISO is accepted
+	// too for resilience.
+	if m := updatedRe.FindStringSubmatch(text); m != nil {
+		if ts, ok := parseUpdated(m[1]); ok {
 			rec.UpdatedAt = &ts
 		} else {
 			rec.Warnings = append(rec.Warnings, "unparsable ICAO update date: "+m[1])
 		}
 	}
 
-	// Authority name: the directory bolds the authority; we approximate that as
-	// the first non-delegation, non-contact line of the block.
-	rec.AuthorityName = guessAuthorityName(b.lines, rec)
+	// Authority name: the first substantive line that is not a delegation marker
+	// or a pure contact/metadata line. Skipped entirely for delegations.
+	if rec.ReferenceCountry == "" && rec.ReferenceBody == "" {
+		rec.AuthorityName = guessAuthorityName(rec.RawContact)
+	}
 
-	// Warnings: a block that is neither a delegation nor carries an authority is
-	// malformed/incomplete. Preserve it (raw is already set) and flag it.
 	if rec.AuthorityName == "" && rec.ReferenceCountry == "" && rec.ReferenceBody == "" {
 		rec.Warnings = append(rec.Warnings, "no authority name or delegation found in block")
 	}
@@ -231,17 +227,116 @@ func (b *blockBuilder) build() Record {
 	return rec
 }
 
-// guessAuthorityName returns the first line of the block that looks like an
-// authority name: not a delegation marker and not a pure contact line.
-func guessAuthorityName(lines []string, rec Record) string {
-	for _, ln := range lines {
+// extractEmails pulls clean addresses out of an Address cell. ICAO obfuscates
+// emails as <span class="spamspan"><span class="u">user</span> [at]
+// <span class="d">domain.tld</span><span class="t">(noise)</span></span>; the t
+// span is a redundant [at]/[dot] hint we must drop or it yields garbage. We read
+// the u+d spans directly, then fall back to plain text / explicit [at]/[dot].
+func extractEmails(cell *html.Node, raw string) []string {
+	seen := map[string]bool{}
+	var out []string
+	add := func(e string) {
+		e = strings.ToLower(strings.Trim(strings.TrimSpace(e), ".,;:"))
+		if e == "" || seen[e] || !emailRe.MatchString(e) {
+			return
+		}
+		seen[e] = true
+		out = append(out, e)
+	}
+
+	// Structured spamspan: combine the .u (user) and .d (domain) spans.
+	var walkSpam func(*html.Node)
+	walkSpam = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.DataAtom == atom.Span && hasClass(n, "spamspan") {
+			user := spanByClass(n, "u")
+			domain := spanByClass(n, "d")
+			if user != "" && domain != "" {
+				add(user + "@" + domain)
+			}
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			walkSpam(c)
+		}
+	}
+	walkSpam(cell)
+
+	// mailto: links (rare but explicit).
+	var walkMailto func(*html.Node)
+	walkMailto = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.DataAtom == atom.A {
+			for _, a := range n.Attr {
+				if a.Key == "href" && strings.HasPrefix(strings.ToLower(a.Val), "mailto:") {
+					add(strings.TrimPrefix(a.Val[len("mailto:"):], ""))
+				}
+			}
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			walkMailto(c)
+		}
+	}
+	walkMailto(cell)
+
+	// Plain-text and explicit [at]/[dot] forms anywhere not already captured.
+	for _, m := range emailRe.FindAllString(deobfuscate(raw), -1) {
+		add(m)
+	}
+	return out
+}
+
+// hasClass reports whether an element node carries the given class token.
+func hasClass(n *html.Node, want string) bool {
+	for _, a := range n.Attr {
+		if a.Key == "class" {
+			for _, f := range strings.Fields(a.Val) {
+				if f == want {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
+// spanByClass returns the trimmed text of the first descendant <span> with the
+// given exact class token.
+func spanByClass(n *html.Node, class string) string {
+	var found string
+	var walk func(*html.Node) bool
+	walk = func(x *html.Node) bool {
+		if x.Type == html.ElementNode && x.DataAtom == atom.Span && hasClass(x, class) {
+			found = strings.TrimSpace(nodeText(x))
+			return true
+		}
+		for c := x.FirstChild; c != nil; c = c.NextSibling {
+			if walk(c) {
+				return true
+			}
+		}
+		return false
+	}
+	walk(n)
+	return found
+}
+
+// guessAuthorityName returns the first block line that looks like an authority
+// name: not a delegation marker and not a pure contact/metadata line.
+func guessAuthorityName(raw string) string {
+	for _, ln := range strings.Split(raw, "\n") {
+		ln = strings.TrimSpace(ln)
 		low := strings.ToLower(ln)
 		switch {
+		case ln == "":
+			continue
 		case strings.HasPrefix(low, "refer to"), strings.HasPrefix(low, "see "):
 			continue
 		case strings.HasPrefix(low, "tel"), strings.HasPrefix(low, "fax"),
-			strings.HasPrefix(low, "phone"), strings.HasPrefix(low, "email"),
-			strings.HasPrefix(low, "website"), strings.HasPrefix(low, "icao updated"),
+			strings.HasPrefix(low, "phone"), strings.HasPrefix(low, "mobile"),
+			strings.HasPrefix(low, "email"), strings.HasPrefix(low, "e-mail"),
+			strings.HasPrefix(low, "e-mails"), strings.HasPrefix(low, "emails"),
+			strings.HasPrefix(low, "website"), strings.HasPrefix(low, "updated"),
+			strings.HasPrefix(low, "aftn"), strings.HasPrefix(low, "sita"),
+			strings.HasPrefix(low, "cable"), strings.HasPrefix(low, "telex"),
+			strings.HasPrefix(low, "address:"),
 			strings.HasPrefix(low, "accident notification"),
 			strings.HasPrefix(low, "general enquiries"):
 			continue
@@ -257,8 +352,19 @@ func guessAuthorityName(lines []string, rec Record) string {
 	return ""
 }
 
-// deobfuscate decodes only explicit [at]/[dot] obfuscation. It does not attempt
-// to repair any other malformed address, per spec §9.
+// parseUpdated parses either "D Month YYYY" or ISO "YYYY-MM-DD".
+func parseUpdated(s string) (time.Time, bool) {
+	s = strings.TrimSpace(s)
+	for _, layout := range []string{"2 January 2006", "2006-01-02"} {
+		if ts, err := time.Parse(layout, s); err == nil {
+			return ts, true
+		}
+	}
+	return time.Time{}, false
+}
+
+// deobfuscate decodes explicit [at]/[dot] (and (at)/(dot)) obfuscation so plain
+// inline addresses resolve. It does not repair any other malformed address.
 func deobfuscate(s string) string {
 	repl := strings.NewReplacer(
 		" [at] ", "@", "[at]", "@",
@@ -272,9 +378,53 @@ func deobfuscate(s string) string {
 // cleanPhone strips the leading label and trailing punctuation from a phone
 // match, collapsing whitespace.
 func cleanPhone(s string) string {
-	s = regexp.MustCompile(`(?i)^(tel|phone|fax)[:.\s]*`).ReplaceAllString(s, "")
-	s = strings.TrimRight(s, ".,; ")
+	s = regexp.MustCompile(`(?i)^(tel|phone|fax|mobile)\.?[:\s]*`).ReplaceAllString(s, "")
+	s = strings.Trim(s, ".,;:/ ")
 	return normalizeWhitespace(s)
+}
+
+// cellText returns the text content of a table cell with <br> and block-level
+// elements rendered as newlines, so the per-line structure survives.
+func cellText(n *html.Node) string {
+	var sb strings.Builder
+	var walk func(*html.Node)
+	walk = func(x *html.Node) {
+		switch x.Type {
+		case html.TextNode:
+			sb.WriteString(x.Data)
+		case html.ElementNode:
+			// Skip the redundant spamspan "(user[at]domain[dot]tld)" hint span; it
+			// would otherwise deobfuscate into a duplicate garbage address.
+			if x.DataAtom == atom.Span && hasClass(x, "t") {
+				return
+			}
+			if x.DataAtom == atom.Br {
+				sb.WriteString("\n")
+				return
+			}
+			block := isBlock(x.DataAtom)
+			if block {
+				sb.WriteString("\n")
+			}
+			for c := x.FirstChild; c != nil; c = c.NextSibling {
+				walk(c)
+			}
+			if block {
+				sb.WriteString("\n")
+			}
+		}
+	}
+	walk(n)
+	return sb.String()
+}
+
+// isBlock reports whether an element introduces a line break in rendered text.
+func isBlock(a atom.Atom) bool {
+	switch a {
+	case atom.Div, atom.P, atom.Li, atom.Tr, atom.H1, atom.H2, atom.H3, atom.H4, atom.H5, atom.H6:
+		return true
+	}
+	return false
 }
 
 // nodeText returns the concatenated text content of a node subtree.
@@ -293,11 +443,39 @@ func nodeText(n *html.Node) string {
 	return sb.String()
 }
 
+// cleanText trims and collapses an inline string to a single line. Used for
+// labels and single-line captures.
+func cleanText(s string) string {
+	return normalizeWhitespace(strings.ReplaceAll(s, "\n", " "))
+}
+
 // normalizeWhitespace trims and collapses internal whitespace runs (including
-// non-breaking spaces) to single ASCII spaces.
+// non-breaking and zero-width spaces) to single ASCII spaces.
 func normalizeWhitespace(s string) string {
-	s = strings.ReplaceAll(s, " ", " ")
+	s = strings.ReplaceAll(s, " ", " ") // nbsp
+	s = strings.ReplaceAll(s, "​", "")  // zero-width space
 	return strings.Join(strings.Fields(s), " ")
+}
+
+// collapseBlankLines trims each line and drops runs of blank lines so RawContact
+// reads cleanly while preserving the one-line-per-datum structure.
+func collapseBlankLines(s string) string {
+	var lines []string
+	prevBlank := false
+	for _, ln := range strings.Split(s, "\n") {
+		ln = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(ln, " ", " "), "​", ""))
+		ln = strings.Join(strings.Fields(ln), " ")
+		if ln == "" {
+			if prevBlank {
+				continue
+			}
+			prevBlank = true
+		} else {
+			prevBlank = false
+		}
+		lines = append(lines, ln)
+	}
+	return strings.Trim(strings.Join(lines, "\n"), "\n")
 }
 
 // checksum is a stable content hash of the identifying + canonical fields of a
