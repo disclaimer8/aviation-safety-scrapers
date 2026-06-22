@@ -175,6 +175,56 @@ func TestRunFlagsPriorityDriftAndOpenConflicts(t *testing.T) {
 	}
 }
 
+// TestRunFlagsMissingRequiredBody verifies that when a required regional body
+// (e.g. ECCAA) is absent from the database, the report contains
+// "regional_body_missing" and HasErrors() returns true.
+func TestRunFlagsMissingRequiredBody(t *testing.T) {
+	db := testDB(t)
+
+	// Delete ECCAA members first (FK), then the body itself.
+	if _, err := db.Exec(`
+		DELETE FROM regional_body_members
+		WHERE regional_body_id = (SELECT id FROM regional_bodies WHERE code = 'ECCAA')
+	`); err != nil {
+		t.Fatalf("delete ECCAA members: %v", err)
+	}
+	if _, err := db.Exec(`DELETE FROM regional_bodies WHERE code = 'ECCAA'`); err != nil {
+		t.Fatalf("delete ECCAA body: %v", err)
+	}
+
+	report := validation.Run(context.Background(), db, validation.Options{})
+	if !report.Contains("regional_body_missing") {
+		t.Fatalf("expected regional_body_missing issue, got: %+v", report.Issues)
+	}
+	if !report.HasErrors() {
+		t.Fatalf("expected HasErrors()=true, got issues: %+v", report.Issues)
+	}
+}
+
+// TestRunFlagsMissingAuthorityProvenance verifies that an authority with a
+// non-empty website_url but no matching authority_field_provenance row is
+// flagged with "authority_provenance_missing".
+func TestRunFlagsMissingAuthorityProvenance(t *testing.T) {
+	db := testDB(t)
+
+	// Insert a country + authority directly (bypassing ApplyAuthority).
+	// Use a country already in the seed (e.g. DE).
+	deID := countryID(t, db, "DE")
+	if _, err := db.Exec(`
+		INSERT INTO authorities (country_id, name, normalized_name, type, website_url,
+			source_url, source_name)
+		VALUES (?, 'Test CAA', 'test caa', 'caa', 'https://testcaa.example',
+			'https://testcaa.example/source', 'Test Source')
+	`, deID); err != nil {
+		t.Fatalf("insert authority: %v", err)
+	}
+
+	report := validation.Run(context.Background(), db, validation.Options{})
+	if !report.Contains("authority_provenance_missing") {
+		t.Fatalf("expected authority_provenance_missing issue, got: %+v", report.Issues)
+	}
+}
+
 // TestRunFlagsSourceTierTypeMismatch verifies that a source with a tier/type
 // mismatch is flagged.
 func TestRunFlagsSourceTierTypeMismatch(t *testing.T) {
