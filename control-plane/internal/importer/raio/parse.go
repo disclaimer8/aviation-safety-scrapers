@@ -60,9 +60,14 @@ var (
 
 	urlRe = regexp.MustCompile(`https?://[^\s<>")]+`)
 
-	// splitRe splits a member/observer run on commas, semicolons, and the literal
-	// connector " and " (e.g. "... Suriname and Venezuela").
-	splitRe = regexp.MustCompile(`\s*(?:[;,]|\band\b)\s*`)
+	// splitRe splits a member/observer run on commas and semicolons only. The
+	// English connector " and " is intentionally excluded: it appears as the last
+	// separator in some real lists ("Suriname and Venezuela") but also occurs
+	// inside multi-word country names ("Trinidad and Tobago", "Bosnia and
+	// Herzegovina") where splitting would produce bogus labels. Callers that need
+	// to handle the trailing " and " pattern should pre-process or use commas in
+	// source data.
+	splitRe = regexp.MustCompile(`\s*[;,]\s*`)
 )
 
 // Parse reads the RAIO/ICM HTML and returns one BodyRecord per data row of the

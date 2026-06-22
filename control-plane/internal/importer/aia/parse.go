@@ -52,7 +52,7 @@ var (
 	emailRe   = regexp.MustCompile(`[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}`)
 	phoneRe   = regexp.MustCompile(`(?i)\b(?:tel|phone|fax|mobile)\b\.?[:\s]*\+?[0-9(][0-9()\-.\s/]{5,}`)
 	urlRe     = regexp.MustCompile(`https?://[^\s<>")]+`)
-	referToRe = regexp.MustCompile(`(?i)refer\s+to\s+(?:the\s+)?(.+?)\s*(?:\n|$)`)
+	referToRe = regexp.MustCompile(`(?im)^\s*refer\s+to\s+(?:the\s+)?(.+?)\s*$`)
 	seeBodyRe = regexp.MustCompile(`(?i)^\s*see\s+(.+?)\s*(?:\n|$)`)
 	updatedRe = regexp.MustCompile(`(?i)updated[:\s]*([0-9]{1,2}\s+[A-Za-z]+\s+[0-9]{4}|[0-9]{4}-[0-9]{2}-[0-9]{2})`)
 )

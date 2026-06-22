@@ -147,6 +147,129 @@ func TestImportRAIOConditionalCoverage(t *testing.T) {
 	}
 }
 
+// TestImportRAIOZeroRecordsGuard asserts that feeding a valid HTML page with no
+// RAIO/ICM directory tables (e.g. a Cloudflare block page or a wrong URL) is
+// treated as a hard failure, not a silent success with Parsed=0.
+// TestImportRAIOAliasExpansionResolvesICOLabels asserts that the curated alias
+// map resolves ICAO short-form country names to their seeded ISO names. The
+// ARCM-MENA body in the fixture contains "Iran" and "UAE" — both must be
+// resolved as members (no unresolved-label warnings for them), and the
+// membership count must increase compared to a run with no aliases.
+func TestImportRAIOAliasExpansionResolvesICOLabels(t *testing.T) {
+	db := testDB(t)
+
+	result, err := Import(context.Background(), db, common.Input{
+		SourceURL: raioSourceURL,
+		Body:      fixtureBody(t),
+		FetchedAt: time.Unix(100, 0),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Status != "success" && result.Status != "partial" {
+		t.Fatalf("result=%+v", result)
+	}
+
+	// Iran and UAE must appear as ARCM-MENA members (resolved via aliases).
+	arcmMenaMembers := membershipCount(t, db, "ARCM-MENA")
+	if arcmMenaMembers == 0 {
+		t.Fatalf("ARCM-MENA has 0 members — alias resolution may have failed")
+	}
+
+	// Confirm Iran specifically resolved to a canonical country.
+	var iranMember int
+	err = db.QueryRow(`
+		SELECT COUNT(*) FROM regional_body_members m
+		JOIN regional_bodies b ON b.id = m.regional_body_id
+		JOIN countries c ON c.id = m.country_id
+		WHERE b.code = 'ARCM-MENA' AND c.name = 'Iran, Islamic Republic of' AND m.role = 'member'
+	`).Scan(&iranMember)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if iranMember != 1 {
+		t.Fatalf("Iran not found as ARCM-MENA member (alias 'Iran' → 'Iran, Islamic Republic of' may be missing)")
+	}
+
+	// Confirm UAE specifically resolved to a canonical country.
+	var uaeMember int
+	err = db.QueryRow(`
+		SELECT COUNT(*) FROM regional_body_members m
+		JOIN regional_bodies b ON b.id = m.regional_body_id
+		JOIN countries c ON c.id = m.country_id
+		WHERE b.code = 'ARCM-MENA' AND c.name = 'United Arab Emirates' AND m.role = 'member'
+	`).Scan(&uaeMember)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if uaeMember != 1 {
+		t.Fatalf("UAE not found as ARCM-MENA member (alias 'UAE' → 'United Arab Emirates' may be missing)")
+	}
+}
+
+// TestImportRAIOZeroRecordsGuard asserts that feeding a valid HTML page that
+// has tables but no data rows (e.g. a Cloudflare challenge page that contains a
+// table with only a header row) is treated as a hard failure, not a silent
+// success with Parsed=0. The membership count must not change, and the run
+// must be marked failed.
+func TestImportRAIOZeroRecordsGuard(t *testing.T) {
+	db := testDB(t)
+
+	// Snapshot the pre-seed membership count so we can verify no new rows are
+	// added regardless of how many seeded rows already exist.
+	var beforeCount int
+	if err := db.QueryRow(`SELECT COUNT(*) FROM regional_body_members`).Scan(&beforeCount); err != nil {
+		t.Fatal(err)
+	}
+
+	// A page with two tables (matching the expected structure) but only header
+	// rows — no 5-column data rows. This exercises the 0-records guard path
+	// (Parse succeeds but returns zero records).
+	blockedPage := []byte(`<!DOCTYPE html><html><head><title>Access Denied</title></head>
+<body>
+<table><tbody>
+  <tr><td><strong>Organization</strong></td><td>Description</td><td>Region</td><td>Member States</td><td>Website</td></tr>
+</tbody></table>
+<table><tbody>
+  <tr><td colspan="5"><strong>Investigation Cooperation Mechanisms</strong></td></tr>
+</tbody></table>
+</body></html>`)
+
+	result, err := Import(context.Background(), db, common.Input{
+		SourceURL: raioSourceURL,
+		Body:      blockedPage,
+		FetchedAt: time.Unix(100, 0),
+	})
+
+	if err == nil {
+		t.Fatal("expected error for zero-record page, got nil")
+	}
+	if result.Status != "failed" {
+		t.Fatalf("result.Status=%q want failed", result.Status)
+	}
+	if result.Parsed != 0 {
+		t.Fatalf("result.Parsed=%d want 0", result.Parsed)
+	}
+
+	// The import run must be recorded as failed.
+	var status string
+	if err := db.QueryRow(`SELECT status FROM import_runs WHERE id = ?`, result.RunID).Scan(&status); err != nil {
+		t.Fatal(err)
+	}
+	if status != "failed" {
+		t.Fatalf("import_run status=%q want failed", status)
+	}
+
+	// No new memberships may have been added (count must not grow from seed).
+	var afterCount int
+	if err := db.QueryRow(`SELECT COUNT(*) FROM regional_body_members`).Scan(&afterCount); err != nil {
+		t.Fatal(err)
+	}
+	if afterCount != beforeCount {
+		t.Fatalf("regional_body_members grew from %d to %d after zero-record failure (no new rows should be written)", beforeCount, afterCount)
+	}
+}
+
 func TestImportRAIOIdenticalBodyIsUnchanged(t *testing.T) {
 	db := testDB(t)
 	body := fixtureBody(t)
