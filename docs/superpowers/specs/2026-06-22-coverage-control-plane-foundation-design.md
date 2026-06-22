@@ -552,3 +552,447 @@ The foundation release is complete when:
 - deterministic JSON export succeeds;
 - operator documentation covers migration, seed, import, validation, export, and live smoke commands;
 - the existing independent scrapers remain unaffected.
+
+## 17. Implementation handoff — stopped on 2026-06-22
+
+Implementation was intentionally stopped before the foundation release was complete.
+Do not merge this branch as a finished feature.
+
+### 17.1 Repository state
+
+- Repository: `/Users/denyskolomiiets/aviation-safety-scrapers`
+- Isolated worktree: `/Users/denyskolomiiets/.config/superpowers/worktrees/aviation-safety-scrapers/coverage-control-plane`
+- Branch: `feat/coverage-control-plane`
+- Base branch and commit: `main` at `d33369b`
+- Current implementation commit before this handoff update: `30b7bf0`
+- No implementation changes were made in the primary `main` checkout.
+- No branch was merged or pushed.
+- The detailed implementation plan remains at
+  `docs/superpowers/plans/2026-06-22-coverage-control-plane-foundation.md`.
+
+Implementation commits:
+
+1. `7b3942c` — `feat(control-plane): bootstrap Go database module`
+2. `6f960f3` — `fix(control-plane): harden database bootstrap`
+3. `30b7bf0` — `feat(control-plane): add canonical SQLite schema`
+
+### 17.2 Verification state at handoff
+
+The following commands passed in `control-plane/` at commit `30b7bf0`:
+
+```text
+go test -count=1 ./...
+go vet ./...
+```
+
+Passing packages:
+
+```text
+internal/config
+internal/database
+internal/migrations
+```
+
+This passing test state does not mean the feature is complete. Only Tasks 1 and
+the initial implementation of Task 2 exist.
+
+### 17.3 Completed and accepted: Task 1
+
+Task 1, Go module and database bootstrap, passed:
+
+- implementer self-review;
+- independent specification-compliance review;
+- independent code-quality review after fixes.
+
+Implemented files:
+
+```text
+control-plane/go.mod
+control-plane/go.sum
+control-plane/internal/config/config.go
+control-plane/internal/config/config_test.go
+control-plane/internal/database/database.go
+control-plane/internal/database/database_test.go
+```
+
+Implemented behavior:
+
+- Go module:
+  `github.com/denyskolomiiets/aviation-safety-scrapers/control-plane`;
+- Go compatibility baseline set to `1.24.0`;
+- pure-Go SQLite through `modernc.org/sqlite`;
+- database connection enables:
+  - `PRAGMA foreign_keys=1`;
+  - `PRAGMA journal_mode=WAL`;
+  - `PRAGMA busy_timeout=10000`;
+  - one maximum open connection;
+- database paths are encoded as file URIs and tested with reserved characters
+  `?`, `#`, and `%`;
+- database handles are closed when initial ping fails;
+- default ICAO AIA and RAIO URLs are defined;
+- default HTTP configuration is:
+  - 30-second timeout;
+  - 8 MiB maximum body;
+  - two retries;
+  - identifiable project User-Agent.
+
+Task 1 test evidence:
+
+```text
+go test -count=1 ./internal/database ./internal/config
+go mod verify
+```
+
+Both passed before Task 1 was accepted.
+
+### 17.4 Implemented but not accepted: Task 2
+
+Task 2 produced an initial migration runner and schema, but its code-quality
+review found important issues. Treat Task 2 as incomplete.
+
+Implemented files:
+
+```text
+control-plane/internal/migrations/migrations.go
+control-plane/internal/migrations/migrations_test.go
+control-plane/internal/migrations/sql/001_core.sql
+control-plane/internal/migrations/sql/002_pipeline.sql
+control-plane/internal/migrations/sql/003_provenance.sql
+```
+
+Implemented behavior:
+
+- embedded SQL migrations through `go:embed`;
+- three migrations:
+  - core country, authority, regional, source, and aircraft routing tables;
+  - event, report, participant, source-link, crawl-job, and crawl-error tables;
+  - import-run, snapshot, staging, override, conflict, and request tables;
+- `schema_migrations` tracking;
+- repeated `Apply` is currently idempotent for unchanged embedded migrations;
+- one transaction per migration;
+- rollback test for a failing migration;
+- tests for representative enum, range, foreign-key, report, event, and
+  authority-snapshot constraints;
+- schema and migration tests currently pass.
+
+The independent specification review approved the table/field coverage.
+The independent code-quality review did not approve Task 2.
+
+### 17.5 Required fixes before Task 2 can be accepted
+
+These issues must be fixed before proceeding to Task 3.
+
+#### A. Harden migration identity and ordering
+
+Current behavior:
+
+- migration files are sorted lexically;
+- arbitrary numeric widths are accepted;
+- an already-recorded version causes a migration to be skipped without checking
+  its stored name or content;
+- duplicate versions in different filenames are not rejected before applying.
+
+Required correction:
+
+- require canonical filenames such as `001_name.sql`;
+- parse and sort by numeric version;
+- reject duplicate versions before applying any new migration;
+- add a migration checksum to `schema_migrations`;
+- verify stored name and checksum for already-applied migrations;
+- fail clearly on migration drift instead of silently skipping it;
+- move the applied-version check into the migration transaction or otherwise
+  serialize concurrent migration execution.
+
+Required tests:
+
+- noncanonical filename rejection;
+- duplicate version rejection;
+- numeric ordering;
+- changed migration name rejection;
+- changed migration checksum rejection;
+- concurrent or transaction-contained version check behavior.
+
+#### B. Add field-level authority provenance
+
+Current behavior:
+
+- `authorities.source_snapshot_id` provides only one snapshot reference for the
+  entire authority row.
+
+Why this is insufficient:
+
+- different authority fields may come from different snapshots;
+- a later website update would incorrectly imply that the same snapshot sourced
+  the authority name, email, phone, and archive URL;
+- deterministic export requires field-level provenance labels.
+
+Required correction:
+
+- replace or supplement the row-level snapshot field with a dedicated authority
+  field-value/provenance table;
+- minimally track:
+  - authority ID;
+  - field name;
+  - effective value;
+  - provenance kind: `seed`, `icao_snapshot`, or `curated_override`;
+  - optional snapshot ID;
+  - optional override ID;
+  - update timestamp;
+- enforce one current provenance record per authority field;
+- design `effective.ApplyAuthority` and export around this table.
+
+Required tests:
+
+- two fields on one authority can reference different snapshots;
+- an override affects only its field;
+- updating one imported field does not change another field's provenance;
+- every exported effective field has resolvable provenance.
+
+#### C. Make source snapshots actually immutable
+
+Current behavior:
+
+- deletion is guarded when an authority references a snapshot;
+- inserts and authority snapshot updates validate snapshot existence;
+- snapshot rows themselves remain updateable;
+- changing a snapshot primary key can bypass the intended reference guarantee.
+
+Required correction:
+
+- reject all updates to immutable snapshot content and identity after insert;
+- at minimum protect:
+  - source ID;
+  - source/final URLs;
+  - HTTP metadata;
+  - fetch time;
+  - checksum;
+  - raw body/artifact path;
+  - byte size;
+- reject snapshot primary-key updates;
+- use real foreign keys from all provenance consumers where possible;
+- keep delete protection or use `ON DELETE RESTRICT`.
+
+Required tests:
+
+- raw body update fails;
+- checksum update fails;
+- source ID update fails;
+- snapshot ID update fails;
+- deleting a referenced snapshot fails;
+- `PRAGMA foreign_key_check` remains clean.
+
+#### D. Enforce SQLite types strictly
+
+Current behavior:
+
+- tables are not declared `STRICT`;
+- SQLite may accept fractional values in columns declared `INTEGER` when range
+  checks still evaluate true.
+
+Required correction:
+
+- use SQLite `STRICT` tables where compatible;
+- verify every boolean, count, score, tier, status timestamp, and foreign-key
+  column rejects incompatible storage classes;
+- where `STRICT` alone is insufficient, use `typeof(column)='integer'` checks.
+
+Required tests:
+
+- reject `coverage_score=2.5`;
+- reject fractional effort, source tier, confidence, and count values;
+- reject textual integers for fields that must be stored as integers;
+- accept nullable integer fields only as integer or null.
+
+#### E. Expand schema verification
+
+Required tests still missing:
+
+- exact required index set;
+- exact required defaults;
+- complete `PRAGMA foreign_key_check`;
+- snapshot immutability;
+- field-level provenance constraints;
+- migration identity drift;
+- duplicate/noncanonical migration files.
+
+### 17.6 Not started: Tasks 3–14
+
+No files or implementation work were started for the following tasks.
+
+#### Task 3 — Domain enums and normalization
+
+Remaining:
+
+- all typed enum constants;
+- authority/name normalization;
+- diacritic handling;
+- priority score calculation;
+- source tier/type compatibility logic;
+- tests.
+
+#### Task 4 — ISO country and policy seeds
+
+Remaining:
+
+- pinned offline ISO 3166 JSON with exactly 249 entries;
+- all A/B/C1/C2/C3/D country overlays;
+- policy, coverage, effort, expected-record, quality, priority, cadence, and
+  notes seeds;
+- idempotent transactional seed application;
+- policy-exclusion and priority tests.
+
+#### Task 5 — Regional, source, and aircraft-origin seeds
+
+Remaining:
+
+- ECCAA, BAGAIA, IAC/MAK, ARCM-MENA, ARCM-SAM, ENCASIA, and GRIAA seeds;
+- official and discovery source metadata and tiers;
+- copyright/robots notes;
+- aircraft-origin routes for NTSB, BEA, TSB, AAIB, SUST, ANSV, CENIPA, and
+  Ukraine legacy routes;
+- referential validation and tests.
+
+#### Task 6 — Bounded HTTP fetcher
+
+Remaining:
+
+- HTTP/HTTPS-only enforcement;
+- timeout per attempt;
+- bounded body;
+- redirect ceiling;
+- retry/backoff for network errors, 429, and 5xx;
+- response metadata capture;
+- tests with `httptest.Server`.
+
+#### Task 7 — Snapshots and import runs
+
+Remaining:
+
+- SHA-256 content idempotency;
+- immutable snapshot insert API;
+- import run lifecycle;
+- unchanged status;
+- run statistics and errors;
+- tests.
+
+This task must use the corrected immutable snapshot schema from section 17.5.
+
+#### Task 8 — Overrides and effective authority values
+
+Remaining:
+
+- active override lookup;
+- field-level effective value resolution;
+- conflict creation;
+- upstream-removal preservation;
+- idempotent conflicts;
+- tests.
+
+This task must use the corrected field-level provenance schema from section 17.5.
+
+#### Task 9 — ICAO AIA importer
+
+Remaining:
+
+- representative offline fixture;
+- HTML parser;
+- contact block preservation;
+- conservative email deobfuscation;
+- country aliases and delegation/reference parsing;
+- staging;
+- transactional apply;
+- partial and unchanged results;
+- tests.
+
+#### Task 10 — ICAO RAIO/ICM importer
+
+Remaining:
+
+- representative offline fixture;
+- separate RAIO and ICM parsing;
+- member/observer parsing;
+- source-derived membership updates;
+- curated membership preservation;
+- conditional coverage updates;
+- partial and unchanged results;
+- tests.
+
+#### Task 11 — Validation
+
+Remaining:
+
+- all specification invariants;
+- deterministic structured issues;
+- excluded-country direct-crawl rejection;
+- priority drift;
+- required regional mappings;
+- source tier/type consistency;
+- provenance completeness;
+- strict conflict mode;
+- tests.
+
+#### Task 12 — Deterministic JSON export
+
+Remaining:
+
+- export document types;
+- stable ordered queries;
+- field-level provenance output;
+- exclusion of raw snapshots, raw contacts, and private notes;
+- atomic file replacement;
+- deterministic tests.
+
+#### Task 13 — CLI
+
+Remaining:
+
+- `migrate`;
+- `seed`;
+- `import-aia`;
+- `import-raio`;
+- `validate`;
+- `export`;
+- common flags;
+- local source-file imports;
+- live fetch integration;
+- exit-code contract;
+- integration tests;
+- binary entrypoint.
+
+#### Task 14 — Documentation and final verification
+
+Remaining:
+
+- control-plane README;
+- root repository catalogue update;
+- offline end-to-end smoke;
+- formatting, vet, tests, and binary build;
+- generated-artifact hygiene;
+- final whole-feature review.
+
+### 17.7 Recommended resume order
+
+Resume from the existing worktree and branch:
+
+```text
+cd /Users/denyskolomiiets/.config/superpowers/worktrees/aviation-safety-scrapers/coverage-control-plane
+git status --short
+git branch --show-current
+```
+
+Then:
+
+1. Fix all Task 2 issues in section 17.5 using tests first.
+2. Re-run an independent specification review.
+3. Re-run an independent code-quality review.
+4. Do not start Task 3 until Task 2 is approved.
+5. Continue Tasks 3–14 in the order in the implementation plan.
+6. Run a final full implementation review before merge.
+
+### 17.8 Current completion assessment
+
+- Design and implementation plan: complete.
+- Task 1: complete and accepted.
+- Task 2: initial implementation exists, tests pass, but quality gate failed.
+- Tasks 3–14: not started.
+- Foundation release: incomplete and not merge-ready.
