@@ -53,7 +53,20 @@ func Import(ctx context.Context, db *sql.DB, input common.Input) (common.Result,
 		return common.Result{}, fmt.Errorf("raio: start run: %w", err)
 	}
 
+	// tx is declared here so fail() can roll it back before calling FinishRun.
+	// With SetMaxOpenConns(1), the single connection is held by the transaction,
+	// so FinishRun (which uses the raw *sql.DB) would deadlock if tx were still
+	// open when it runs.
+	var tx *sql.Tx
+	txDone := false
+
+	// fail rolls back the open transaction (if any) FIRST, freeing the single
+	// connection, then marks the run as failed.
 	fail := func(err error) (common.Result, error) {
+		if tx != nil && !txDone {
+			_ = tx.Rollback()
+			txDone = true
+		}
 		_ = provenance.FinishRun(ctx, db, run.ID, provenance.RunResult{
 			Status: "failed", ErrorSummary: err.Error(),
 		})
@@ -98,13 +111,12 @@ func Import(ctx context.Context, db *sql.DB, input common.Input) (common.Result,
 		return fail(fmt.Errorf("raio: load countries: %w", err))
 	}
 
-	tx, err := db.BeginTx(ctx, nil)
+	tx, err = db.BeginTx(ctx, nil)
 	if err != nil {
 		return fail(fmt.Errorf("raio: begin tx: %w", err))
 	}
-	committed := false
 	defer func() {
-		if !committed {
+		if !txDone {
 			_ = tx.Rollback()
 		}
 	}()
@@ -157,7 +169,7 @@ func Import(ctx context.Context, db *sql.DB, input common.Input) (common.Result,
 	if err := tx.Commit(); err != nil {
 		return fail(fmt.Errorf("raio: commit: %w", err))
 	}
-	committed = true
+	txDone = true
 
 	res.Status = "success"
 	if res.Warnings > 0 {
