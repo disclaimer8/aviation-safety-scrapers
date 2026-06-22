@@ -1,0 +1,10 @@
+# Compiled binary
+/aviation-coverage
+
+# SQLite runtime files
+/*.db
+/*.db-wal
+/*.db-shm
+
+# Generated export output
+/coverage.json
