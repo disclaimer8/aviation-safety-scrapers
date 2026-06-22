@@ -31,7 +31,7 @@ CREATE TABLE countries (
   refresh_cadence TEXT,
   last_checked_at INTEGER,
   notes TEXT
-);
+) STRICT;
 
 CREATE TABLE authorities (
   id INTEGER PRIMARY KEY,
@@ -68,11 +68,16 @@ CREATE TABLE authorities (
     'manual_review_needed',
     'unknown'
   )),
-  source_snapshot_id INTEGER,
+  -- Row-level snapshot reference is retained for backward compatibility, but
+  -- field-level provenance (authority_field_provenance, see 003) is the
+  -- authoritative source of per-field provenance per spec 17.5.B. The FK uses
+  -- ON DELETE RESTRICT so a referenced snapshot cannot be deleted (17.5.C).
+  source_snapshot_id INTEGER
+    REFERENCES source_snapshots(id) ON DELETE RESTRICT,
   last_checked_at INTEGER,
   notes TEXT,
   UNIQUE(country_id, normalized_name, type)
-);
+) STRICT;
 
 CREATE TABLE regional_bodies (
   id INTEGER PRIMARY KEY,
@@ -82,7 +87,7 @@ CREATE TABLE regional_bodies (
   website_url TEXT,
   source_url TEXT NOT NULL,
   notes TEXT
-);
+) STRICT;
 
 CREATE TABLE regional_body_members (
   regional_body_id INTEGER NOT NULL
@@ -91,7 +96,7 @@ CREATE TABLE regional_body_members (
   role TEXT NOT NULL,
   source_url TEXT NOT NULL,
   PRIMARY KEY(regional_body_id, country_id, role)
-);
+) STRICT;
 
 CREATE TABLE sources (
   id INTEGER PRIMARY KEY,
@@ -128,7 +133,7 @@ CREATE TABLE sources (
   )),
   last_checked_at INTEGER,
   UNIQUE(canonical_url, source_type)
-);
+) STRICT;
 
 CREATE TABLE aircraft_origin_routes (
   id INTEGER PRIMARY KEY,
@@ -141,7 +146,7 @@ CREATE TABLE aircraft_origin_routes (
   expected_source_name TEXT NOT NULL,
   priority INTEGER NOT NULL,
   UNIQUE(normalized_pattern, expected_source_name)
-);
+) STRICT;
 
 CREATE INDEX idx_authorities_country ON authorities(country_id);
 CREATE INDEX idx_regional_body_members_country ON regional_body_members(country_id);

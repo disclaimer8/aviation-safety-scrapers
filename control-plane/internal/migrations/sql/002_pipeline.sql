@@ -44,7 +44,7 @@ CREATE TABLE events (
     CHECK(needs_official_confirmation IN (0, 1)),
   created_at INTEGER NOT NULL DEFAULT (CAST(unixepoch('subsec') * 1000 AS INTEGER)),
   updated_at INTEGER NOT NULL DEFAULT (CAST(unixepoch('subsec') * 1000 AS INTEGER))
-);
+) STRICT;
 
 CREATE TABLE reports (
   id INTEGER PRIMARY KEY,
@@ -83,7 +83,7 @@ CREATE TABLE reports (
     'do_not_store_fulltext'
   )),
   notes TEXT
-);
+) STRICT;
 
 CREATE TABLE event_source_links (
   id INTEGER PRIMARY KEY,
@@ -98,7 +98,7 @@ CREATE TABLE event_source_links (
   match_reason TEXT,
   created_at INTEGER NOT NULL DEFAULT (CAST(unixepoch('subsec') * 1000 AS INTEGER)),
   UNIQUE(event_id, source_id, source_url)
-);
+) STRICT;
 
 CREATE UNIQUE INDEX idx_event_source_native_id
   ON event_source_links(source_id, source_event_id)
@@ -122,7 +122,7 @@ CREATE TABLE investigation_participants (
   )),
   source_url TEXT NOT NULL,
   notes TEXT
-);
+) STRICT;
 
 CREATE TABLE crawl_jobs (
   id INTEGER PRIMARY KEY,
@@ -152,7 +152,7 @@ CREATE TABLE crawl_jobs (
   error TEXT,
   stats_json TEXT,
   created_at INTEGER NOT NULL DEFAULT (CAST(unixepoch('subsec') * 1000 AS INTEGER))
-);
+) STRICT;
 
 CREATE TABLE crawl_errors (
   id INTEGER PRIMARY KEY,
@@ -172,7 +172,7 @@ CREATE TABLE crawl_errors (
   )),
   message TEXT NOT NULL,
   created_at INTEGER NOT NULL DEFAULT (CAST(unixepoch('subsec') * 1000 AS INTEGER))
-);
+) STRICT;
 
 CREATE INDEX idx_events_date_registration_country
   ON events(date, aircraft_registration, occurrence_country_id);
