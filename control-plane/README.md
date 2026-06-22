@@ -172,6 +172,42 @@ repository:
 Committed seed data under `internal/seed/data/` (JSON files embedded at compile
 time) is not affected by the `.gitignore` rules.
 
+## Fetching live ICAO pages (Cloudflare)
+
+The default `import-aia`/`import-raio` live fetch **fails** against the real
+ICAO website.  ICAO sits behind Cloudflare, which returns a non-retriable 404
+to Go's stdlib HTTP client based on TLS/HTTP2 fingerprint — this is **not** a
+User-Agent issue: `curl` with any `--user-agent` string gets a 200 from
+a residential or desktop connection, while Go's net/http client (data-centre
+TLS fingerprint) is rejected.  The Go fetcher is correct; this is environmental
+bot-protection.
+
+**Supported operational path:** fetch the page out-of-band where a real
+browser / residential egress is available (the project's mini-PC), save the
+HTML, and import with `--source-file`:
+
+```bash
+# on the mini-PC (residential egress; a real-browser TLS fingerprint passes Cloudflare):
+control-plane/scripts/fetch-icao.sh aia  > /tmp/aia.html
+control-plane/scripts/fetch-icao.sh raio > /tmp/raio.html
+
+# then on the control-plane host:
+aviation-coverage import-aia  --db coverage.db --source-file aia.html  --source-url https://www.icao.int/safety/AIG/AIA
+aviation-coverage import-raio --db coverage.db --source-file raio.html
+```
+
+**Expected import statuses:**
+
+- `partial` — some records applied but unresolved territories or observers
+  remain.  This is **expected**, not a failure:
+  - AIA: dependent territories / non-sovereign entities (e.g. DT/NCS) have no
+    ISO country match.
+  - RAIO: non-country observers such as BEA or NTSB appear in observer lists
+    and cannot be resolved to a seeded ISO country.
+- `failed` — a 0-record result (e.g. a Cloudflare block page or structural
+  change to the ICAO page) is a **hard failure**.  Check the page with
+  `fetch-icao.sh` and compare against the committed fixtures.
+
 ## Running tests
 
 ```bash
