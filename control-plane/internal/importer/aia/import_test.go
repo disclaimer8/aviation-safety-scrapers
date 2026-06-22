@@ -1,0 +1,124 @@
+package aia
+
+import (
+	"context"
+	"database/sql"
+	"os"
+	"testing"
+	"time"
+
+	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/database"
+	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/importer/common"
+	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/migrations"
+	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/seed"
+)
+
+const aiaSourceURL = "https://www.icao.int/safety/airnavigation/AIG/Pages/AIA-States.aspx"
+
+// testDB returns a migrated and seeded database so the AIA source row and the
+// ISO countries the importer resolves against exist.
+func testDB(t *testing.T) *sql.DB {
+	t.Helper()
+	db, err := database.Open(t.TempDir() + "/coverage.db")
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx := context.Background()
+	if err := migrations.Apply(ctx, db); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := seed.Apply(ctx, db); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		if err := db.Close(); err != nil {
+			t.Errorf("close database: %v", err)
+		}
+	})
+	return db
+}
+
+func fixtureBody(t *testing.T) []byte {
+	t.Helper()
+	b, err := os.ReadFile("../../../fixtures/icao/aia.html")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return b
+}
+
+func TestImportStagesAppliesAndReturnsPartialForUnknownRecord(t *testing.T) {
+	db := testDB(t)
+	result, err := Import(context.Background(), db, common.Input{
+		SourceURL: aiaSourceURL,
+		Body:      fixtureBody(t),
+		FetchedAt: time.Unix(100, 0),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Status != "partial" || result.Applied < 6 || result.Warnings == 0 {
+		t.Fatalf("result=%+v", result)
+	}
+
+	// Every parsed record, including delegations and the malformed block, must be
+	// staged — none silently dropped.
+	var staged int
+	if err := db.QueryRow(`SELECT COUNT(*) FROM staged_authorities WHERE import_run_id = ?`,
+		result.RunID).Scan(&staged); err != nil {
+		t.Fatal(err)
+	}
+	if staged != result.Parsed {
+		t.Fatalf("staged=%d, parsed=%d: every record must be staged", staged, result.Parsed)
+	}
+
+	var raw string
+	if err := db.QueryRow(`SELECT raw_contact FROM staged_authorities
+		WHERE country_label = 'Angola' ORDER BY id DESC LIMIT 1`).Scan(&raw); err != nil {
+		t.Fatal(err)
+	}
+	if raw == "" {
+		t.Fatal("missing raw contact for Angola")
+	}
+
+	// The applied Angola authority carries its website via field provenance.
+	var website string
+	if err := db.QueryRow(`
+		SELECT a.website_url FROM authorities a
+		JOIN countries c ON c.id = a.country_id
+		WHERE c.name = 'Angola'`).Scan(&website); err != nil {
+		t.Fatal(err)
+	}
+	if website != "https://initpat.gov.ao" {
+		t.Fatalf("Angola website=%q applied to canonical authority", website)
+	}
+}
+
+func TestImportIdenticalBodyIsUnchanged(t *testing.T) {
+	db := testDB(t)
+	body := fixtureBody(t)
+	in := common.Input{SourceURL: aiaSourceURL, Body: body, FetchedAt: time.Unix(100, 0)}
+
+	if _, err := Import(context.Background(), db, in); err != nil {
+		t.Fatal(err)
+	}
+	second, err := Import(context.Background(), db, common.Input{
+		SourceURL: aiaSourceURL,
+		Body:      body,
+		FetchedAt: time.Unix(200, 0),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !second.Unchanged || second.Status != "unchanged" {
+		t.Fatalf("second import=%+v, want unchanged", second)
+	}
+
+	var snapshots int
+	if err := db.QueryRow(`SELECT COUNT(*) FROM source_snapshots`).Scan(&snapshots); err != nil {
+		t.Fatal(err)
+	}
+	if snapshots != 1 {
+		t.Fatalf("snapshots=%d, want exactly 1 for identical bodies", snapshots)
+	}
+}
