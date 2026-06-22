@@ -137,6 +137,43 @@ func TestParseRecordCount(t *testing.T) {
 	}
 }
 
+// TestReferToReAnchoredNotTriggeredByProse verifies that "refer to" appearing
+// as prose inside an authority block (e.g. in a sentence or URL) does NOT set
+// ReferenceCountry and does NOT suppress the authority name. Only a leading
+// "Refer to <Country>" delegation directive should trigger ReferenceCountry.
+func TestReferToReAnchoredNotTriggeredByProse(t *testing.T) {
+	// Build a fake authority cell whose text contains "refer to" in mid-sentence
+	// but is NOT a leading delegation directive.
+	html := `<html><body>
+<table>
+<tr><th>Country</th><th>Address</th></tr>
+<tr>
+  <td>Testland</td>
+  <td>Testland Civil Aviation Authority<br>
+For instructions refer to our online portal at https://caa.testland.gov<br>
+Tel: +1 234 567 890</td>
+</tr>
+</table>
+</body></html>`
+	records, err := Parse(strings.NewReader(html))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(records) != 1 {
+		t.Fatalf("expected 1 record, got %d", len(records))
+	}
+	rec := records[0]
+
+	// "refer to our online portal" is prose — must NOT set ReferenceCountry.
+	if rec.ReferenceCountry != "" {
+		t.Fatalf("ReferenceCountry=%q want empty (prose 'refer to' must not trigger delegation)", rec.ReferenceCountry)
+	}
+	// The authority name must still be extracted.
+	if rec.AuthorityName == "" {
+		t.Fatalf("AuthorityName empty — delegation guard suppressed a normal authority block")
+	}
+}
+
 // TestParseFullRealPage parses the captured 444 KB live page when present,
 // asserting a high record count. Skipped in CI where the file is absent.
 func TestParseFullRealPage(t *testing.T) {

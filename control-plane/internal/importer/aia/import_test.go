@@ -147,6 +147,60 @@ func TestImportErrorPathNoDeadlock(t *testing.T) {
 	}
 }
 
+// TestImportZeroRecordsGuard asserts that feeding a valid HTML page whose
+// Country/Address table has only a header row (zero data rows) is treated as a
+// hard failure, not a silent success with Parsed=0. This exercises the
+// 0-records guard that catches Cloudflare block pages or wrong-URL responses
+// that return well-formed HTML but no actual directory data. Nothing is applied
+// to the canonical model, and Status is "failed".
+func TestImportZeroRecordsGuard(t *testing.T) {
+	db := testDB(t)
+
+	// A page whose table has the correct Country/Address header but no data rows
+	// — simulates a block or restructured page. Parse succeeds with 0 records,
+	// which the importer must reject as a failure.
+	headerOnlyPage := []byte(`<!DOCTYPE html><html><head><title>AIA States</title></head>
+<body>
+<table>
+<tr><th>Country</th><th>Address</th></tr>
+</table>
+</body></html>`)
+
+	result, err := Import(context.Background(), db, common.Input{
+		SourceURL: aiaSourceURL,
+		Body:      headerOnlyPage,
+		FetchedAt: time.Unix(100, 0),
+	})
+
+	if err == nil {
+		t.Fatal("expected error for zero-record page, got nil")
+	}
+	if result.Status != "failed" {
+		t.Fatalf("result.Status=%q want failed", result.Status)
+	}
+	if result.Parsed != 0 {
+		t.Fatalf("result.Parsed=%d want 0", result.Parsed)
+	}
+
+	// The import run must be recorded as failed.
+	var status string
+	if err := db.QueryRow(`SELECT status FROM import_runs WHERE id = ?`, result.RunID).Scan(&status); err != nil {
+		t.Fatal(err)
+	}
+	if status != "failed" {
+		t.Fatalf("import_run status=%q want failed", status)
+	}
+
+	// No canonical authorities may have been written.
+	var count int
+	if err := db.QueryRow(`SELECT COUNT(*) FROM authorities`).Scan(&count); err != nil {
+		t.Fatal(err)
+	}
+	if count != 0 {
+		t.Fatalf("authorities count=%d want 0 after zero-record failure", count)
+	}
+}
+
 func TestImportIdenticalBodyIsUnchanged(t *testing.T) {
 	db := testDB(t)
 	body := fixtureBody(t)

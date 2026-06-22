@@ -92,6 +92,9 @@ func Import(ctx context.Context, db *sql.DB, input common.Input) (common.Result,
 	if err != nil {
 		return fail(fmt.Errorf("aia: parse: %w", err))
 	}
+	if len(records) == 0 {
+		return fail(fmt.Errorf("0 records parsed — page structure may have changed or the response was a block page"))
+	}
 
 	countries, err := loadCountryAliases(ctx, db)
 	if err != nil {

@@ -117,6 +117,37 @@ func TestParseObserversExcludedFromMembers(t *testing.T) {
 	}
 }
 
+// TestSplitLabelsDoesNotBreakMultiWordCountry verifies that " and " embedded
+// inside a country name (e.g. "Trinidad and Tobago") is NOT treated as a
+// member separator. Only commas and semicolons split the list.
+func TestSplitLabelsDoesNotBreakMultiWordCountry(t *testing.T) {
+	members, observers := splitMembers("Trinidad and Tobago, Jamaica")
+	if len(observers) != 0 {
+		t.Fatalf("expected no observers, got %v", observers)
+	}
+	want := []string{"Trinidad and Tobago", "Jamaica"}
+	if len(members) != len(want) {
+		t.Fatalf("members=%v want %v", members, want)
+	}
+	for i, w := range want {
+		if members[i] != w {
+			t.Fatalf("members[%d]=%q want %q (all=%v)", i, members[i], w, members)
+		}
+	}
+
+	// Also verify "Bosnia and Herzegovina, Croatia" stays intact.
+	m2, _ := splitMembers("Bosnia and Herzegovina, Croatia")
+	if !contains(m2, "Bosnia and Herzegovina") {
+		t.Fatalf("Bosnia and Herzegovina should not be split: %v", m2)
+	}
+	if !contains(m2, "Croatia") {
+		t.Fatalf("Croatia missing: %v", m2)
+	}
+	if contains(m2, "Bosnia") || contains(m2, "Herzegovina") {
+		t.Fatalf("Bosnia and Herzegovina was incorrectly split: %v", m2)
+	}
+}
+
 // TestParseWebsite verifies the website href is captured from the cell's anchor.
 func TestParseWebsite(t *testing.T) {
 	byCode := loadFixtureRecords(t)

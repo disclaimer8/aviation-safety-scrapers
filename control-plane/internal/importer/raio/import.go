@@ -105,6 +105,9 @@ func Import(ctx context.Context, db *sql.DB, input common.Input) (common.Result,
 	if err != nil {
 		return fail(fmt.Errorf("raio: parse: %w", err))
 	}
+	if len(records) == 0 {
+		return fail(fmt.Errorf("0 records parsed — page structure may have changed or the response was a block page"))
+	}
 
 	countries, err := loadCountryNames(ctx, db)
 	if err != nil {
@@ -246,9 +249,21 @@ func loadCountryNames(ctx context.Context, db *sql.DB) (map[string]int64, error)
 }
 
 // curatedCountryAliases maps an ICAO page short form to the seeded ISO name.
+// Only genuine sovereign states are aliased here; non-country observers (BEA,
+// NTSB, EASA, CASSOS, Kosovo) are intentionally absent and remain warnings.
 var curatedCountryAliases = map[string]string{
-	"russia":  "Russian Federation",
-	"moldova": "Republic of Moldova",
+	"russia":               "Russian Federation",
+	"moldova":              "Republic of Moldova",
+	"iran":                 "Iran, Islamic Republic of",
+	"uae":                  "United Arab Emirates",
+	"bolivia":              "Bolivia, Plurinational State of",
+	"venezuela":            "Venezuela, Bolivarian Republic of",
+	"czech republic":       "Czechia",
+	"the netherlands":      "Netherlands, Kingdom of the",
+	"netherlands":          "Netherlands, Kingdom of the",
+	"slovak republic":      "Slovakia",
+	"republic of slovenia": "Slovenia",
+	"palestine":            "Palestine, State of",
 }
 
 // resolveLabels maps a list of raw State labels to seeded country ids. Each
