@@ -122,10 +122,10 @@ func TestImportRAIOConditionalCoverage(t *testing.T) {
 	}
 	setCoverage(t, db, "Ghana", "direct_public_archive")
 
-	// Egypt is an ARCM-MENA (ICM) member with coverage 'unknown'. ICM membership
-	// must never change coverage.
-	if got := coverageStatus(t, db, "Egypt"); got != "unknown" {
-		t.Fatalf("Egypt precondition coverage=%q want unknown", got)
+	// Jordan is a real ARCM-MENA (ICM) member with coverage 'unknown'. ICM
+	// membership must never change coverage.
+	if got := coverageStatus(t, db, "Jordan"); got != "unknown" {
+		t.Fatalf("Jordan precondition coverage=%q want unknown", got)
 	}
 
 	if _, err := Import(context.Background(), db, common.Input{
@@ -142,8 +142,8 @@ func TestImportRAIOConditionalCoverage(t *testing.T) {
 	if got := coverageStatus(t, db, "Ghana"); got != "direct_public_archive" {
 		t.Fatalf("Ghana coverage=%q must not be downgraded", got)
 	}
-	if got := coverageStatus(t, db, "Egypt"); got != "unknown" {
-		t.Fatalf("Egypt coverage=%q ICM membership must not change coverage", got)
+	if got := coverageStatus(t, db, "Jordan"); got != "unknown" {
+		t.Fatalf("Jordan coverage=%q ICM membership must not change coverage", got)
 	}
 }
 

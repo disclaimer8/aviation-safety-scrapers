@@ -1,16 +1,21 @@
 // Package raio parses and imports the ICAO list of Regional Accident and
 // Incident Investigation Organizations (RAIOs) and Investigation Cooperation
-// Mechanisms (ICMs). The page is a single HTML document with two distinct
-// sections — one for RAIOs and one for ICMs — each listing regional bodies with
-// their member States, an optional observer clause, a region label and a
-// website.
+// Mechanisms (ICMs). There is no machine-readable feed, so the parser reads the
+// HTML structure directly.
 //
-// There is no machine-readable feed, so the parser reads the HTML structure
-// directly. It parses the two sections independently: a body's class derives
-// from which section it sits under (RAIO section → "raio", ICM section →
-// "icm"). The parser is deliberately tolerant: a malformed body block never
-// crashes it; unparsable bits become Warnings so the importer can stage every
-// body and let an operator review the gaps.
+// The real page renders the list as TWO HTML <table>s: the FIRST is the RAIOs,
+// the SECOND is the Investigation Cooperation Mechanisms (ICMs). A body's class
+// derives from which table it sits in — RAIO table → "raio", ICM table → "icm".
+// Each data row has five columns: Organization | Description | Region |
+// Member States | Website. The Member States cell carries the member list with
+// any observer clause embedded inline ("+ Observers: ..." or
+// "SPECIAL OBSERVERS: ..."); the Website cell carries an <a> link.
+//
+// The parser is deliberately tolerant: a malformed row never crashes it.
+// Unparsable bits become Warnings so the importer can stage every body and let an
+// operator review the gaps. Members and Observers hold the raw State labels
+// exactly as written — resolution to seeded ISO countries happens in the
+// importer, so the parser never silently drops an unknown label.
 package raio
 
 import (
@@ -22,17 +27,15 @@ import (
 	"strings"
 
 	"golang.org/x/net/html"
+	"golang.org/x/net/html/atom"
 )
 
 // BodyRecord is one parsed regional body. Code and Class form its identity; all
-// other fields are best-effort. Members and Observers hold the raw State labels
-// exactly as written on the page — resolution to seeded ISO countries happens in
-// the importer, so the parser stays independent of any country list and never
-// silently drops an unknown label.
+// other fields are best-effort.
 type BodyRecord struct {
 	Code       string
 	Name       string
-	Class      string // "raio" (RAIO section) or "icm" (ICM section)
+	Class      string // "raio" (RAIO table) or "icm" (ICM table)
 	Region     string
 	Members    []string
 	Observers  []string
@@ -42,143 +45,91 @@ type BodyRecord struct {
 }
 
 var (
-	// raioHeadingRe / icmHeadingRe mark the section a body belongs to. The RAIO
-	// check runs first and is specific to "RAIO"/"Investigation Organization"; the
-	// ICM check is specific to "ICM"/"Cooperation Mechanism".
-	raioHeadingRe = regexp.MustCompile(`(?i)\bRAIO|investigation\s+organization`)
-	icmHeadingRe  = regexp.MustCompile(`(?i)\bICM|cooperation\s+mechanism`)
+	// icmHeadingRe marks the Investigation Cooperation Mechanisms table by its
+	// section heading. The RAIO table carries no such heading, so a table that
+	// contains this phrase is the ICM table.
+	icmHeadingRe = regexp.MustCompile(`(?i)cooperation\s+mechanism`)
 
-	// memberLineRe matches the various lead-ins used for the member list.
-	memberLineRe = regexp.MustCompile(`(?i)^(?:member|participating|cooperating)\s+states\s*:\s*(.*)$`)
-	// regionLineRe matches "Region: X".
-	regionLineRe = regexp.MustCompile(`(?i)^region\s*:\s*(.*)$`)
-	// observerClauseRe captures a parenthesised observer clause anywhere in the
-	// member text, e.g. "(observer: Panama; observers: Mexico)".
-	observerClauseRe = regexp.MustCompile(`(?i)\(\s*observers?\s*:\s*([^)]*)\)`)
-	// observerLabelRe strips a redundant "observer(s):" lead-in that can repeat
-	// inside a single clause, e.g. "Panama; observers: Mexico".
-	observerLabelRe = regexp.MustCompile(`(?i)^\s*observers?\s*:\s*`)
-	// codeHeadingRe splits a body heading "CODE — Name" into its code and name.
-	codeHeadingRe = regexp.MustCompile(`^\s*([A-Z][A-Z0-9-]+)\s*[—–-]\s*(.+)$`)
-	urlRe         = regexp.MustCompile(`https?://[^\s<>")]+`)
-	// splitRe splits a member label run on commas and semicolons.
-	splitRe = regexp.MustCompile(`[;,]`)
+	// observerClauseRe captures every observer clause embedded in a Member States
+	// cell. The page uses two real lead-ins: "+ Observers:" (ENCASIA) and
+	// "SPECIAL OBSERVERS:" (ARCM-SAM). The clause runs to end of the cell.
+	observerClauseRe = regexp.MustCompile(`(?i)(?:\+\s*)?(?:special\s+)?observers?\s*:\s*(.*)$`)
+
+	// headerCellRe matches a column-header cell so header rows are skipped.
+	headerCellRe = regexp.MustCompile(`(?i)^(organization|description|region|member\s+states|website)$`)
+
+	urlRe = regexp.MustCompile(`https?://[^\s<>")]+`)
+
+	// splitRe splits a member/observer run on commas, semicolons, and the literal
+	// connector " and " (e.g. "... Suriname and Venezuela").
+	splitRe = regexp.MustCompile(`\s*(?:[;,]|\band\b)\s*`)
 )
 
-// Parse reads the RAIO/ICM HTML and returns one BodyRecord per body. It never
-// returns an error for an individual malformed body block; a returned error
-// means the document itself could not be parsed as HTML.
+// Parse reads the RAIO/ICM HTML and returns one BodyRecord per data row of the
+// two directory tables. It never returns an error for an individual malformed
+// row; a returned error means the document itself could not be parsed as HTML.
 func Parse(r io.Reader) ([]BodyRecord, error) {
 	root, err := html.Parse(r)
 	if err != nil {
 		return nil, fmt.Errorf("parse raio html: %w", err)
 	}
 
+	tables := findTables(root)
+	if len(tables) == 0 {
+		return nil, fmt.Errorf("raio: no directory tables found")
+	}
+
 	var records []BodyRecord
-	class := "" // current section class; empty until a section heading is seen
-	var cur *bodyBuilder
-
-	flush := func() {
-		if cur != nil {
-			records = append(records, cur.build())
-			cur = nil
-		}
-	}
-
-	var walk func(*html.Node)
-	walk = func(n *html.Node) {
-		if n.Type == html.ElementNode {
-			switch n.Data {
-			case "h2":
-				// A section heading switches the active class. RAIO is checked first
-				// so a heading mentioning both still classifies as RAIO.
-				txt := nodeText(n)
-				switch {
-				case raioHeadingRe.MatchString(txt):
-					class = "raio"
-				case icmHeadingRe.MatchString(txt):
-					class = "icm"
-				}
-				return
-			case "h3":
-				// A body heading inside a section starts a new body block.
-				if class != "" {
-					flush()
-					cur = newBodyBuilder(class, normalizeWhitespace(nodeText(n)))
-				}
-				return
+	for i, table := range tables {
+		class := classForTable(table, i)
+		for _, row := range tableRows(table) {
+			cells := rowCells(row)
+			if len(cells) < 5 {
+				continue // section-heading row or layout spacer
 			}
-		}
-		if cur != nil && n.Type == html.TextNode {
-			cur.add(normalizeWhitespace(n.Data), nodeHref(n))
-		}
-		for c := n.FirstChild; c != nil; c = c.NextSibling {
-			walk(c)
+			code := cleanText(cellText(cells[0]))
+			if code == "" || headerCellRe.MatchString(code) {
+				continue // header row or empty spacer
+			}
+			records = append(records, buildRecord(class, code, cells))
 		}
 	}
-	walk(root)
-	flush()
 
 	return records, nil
 }
 
-// bodyBuilder accumulates the text/href of one body block before it is distilled
-// into a BodyRecord.
-type bodyBuilder struct {
-	class   string
-	heading string
-	lines   []string
-	href    string
+// classForTable returns the class for a table. The Investigation Cooperation
+// Mechanisms table is identified by its section heading; otherwise the first
+// table is the RAIO table and any later one defaults to ICM.
+func classForTable(table *html.Node, index int) string {
+	if icmHeadingRe.MatchString(nodeText(table)) {
+		return "icm"
+	}
+	if index == 0 {
+		return "raio"
+	}
+	return "icm"
 }
 
-func newBodyBuilder(class, heading string) *bodyBuilder {
-	return &bodyBuilder{class: class, heading: heading}
-}
-
-func (b *bodyBuilder) add(line, href string) {
-	if line != "" {
-		b.lines = append(b.lines, line)
-	}
-	if href != "" && b.href == "" {
-		b.href = href
-	}
-}
-
-func (b *bodyBuilder) build() BodyRecord {
-	rec := BodyRecord{Class: b.class}
-
-	// Identity: "CODE — Name". Fall back to the whole heading as the code if the
-	// dash form is absent, so nothing is dropped.
-	if m := codeHeadingRe.FindStringSubmatch(b.heading); m != nil {
-		rec.Code = strings.TrimSpace(m[1])
-		rec.Name = normalizeWhitespace(m[2])
-	} else {
-		rec.Code = normalizeWhitespace(b.heading)
-		rec.Warnings = append(rec.Warnings, "body heading missing CODE — Name form: "+b.heading)
+// buildRecord distils one five-column data row into a BodyRecord.
+// cells = [Organization, Description, Region, Member States, Website].
+func buildRecord(class, code string, cells []*html.Node) BodyRecord {
+	rec := BodyRecord{
+		Code:   code,
+		Name:   cleanText(cellText(cells[1])),
+		Class:  class,
+		Region: cleanText(cellText(cells[2])),
 	}
 
-	for _, ln := range b.lines {
-		if m := regionLineRe.FindStringSubmatch(ln); m != nil {
-			rec.Region = normalizeWhitespace(m[1])
-			continue
-		}
-		if m := memberLineRe.FindStringSubmatch(ln); m != nil {
-			members, observers := splitMembers(m[1])
-			rec.Members = append(rec.Members, members...)
-			rec.Observers = append(rec.Observers, observers...)
-		}
-	}
+	members, observers := splitMembers(cleanText(cellText(cells[3])))
+	rec.Members = members
+	rec.Observers = observers
 
-	// Website: prefer an <a href>; fall back to a bare URL in the text.
-	if b.href != "" {
-		rec.WebsiteURL = strings.Trim(b.href, ".,;)")
-	} else {
-		for _, ln := range b.lines {
-			if m := urlRe.FindString(ln); m != "" {
-				rec.WebsiteURL = strings.Trim(m, ".,;)")
-				break
-			}
-		}
+	// Website: prefer the cell's <a href>; fall back to a bare URL in the text.
+	if href := firstHref(cells[4]); href != "" {
+		rec.WebsiteURL = strings.Trim(href, ".,;)")
+	} else if m := urlRe.FindString(cellText(cells[4])); m != "" {
+		rec.WebsiteURL = strings.Trim(m, ".,;)")
 	}
 
 	if len(rec.Members) == 0 {
@@ -190,26 +141,24 @@ func (b *bodyBuilder) build() BodyRecord {
 }
 
 // splitMembers extracts the observer clause first, then splits the remaining
-// member run on commas and semicolons. Removing observers before splitting keeps
-// observer labels out of Members. Empty and stray-punctuation fragments are
-// dropped.
+// member run. Removing observers before splitting keeps observer labels out of
+// Members. Both real lead-ins ("+ Observers:" and "SPECIAL OBSERVERS:") end the
+// member list and run to the end of the cell.
 func splitMembers(raw string) (members, observers []string) {
-	// Pull out every observer clause and collect its labels separately.
-	for _, m := range observerClauseRe.FindAllStringSubmatch(raw, -1) {
-		observers = append(observers, splitLabels(m[1])...)
+	memberPart := raw
+	if m := observerClauseRe.FindStringSubmatchIndex(raw); m != nil {
+		memberPart = raw[:m[0]]
+		observers = splitLabels(raw[m[2]:m[3]])
 	}
-	// Strip the observer clauses from the member run so they cannot leak in.
-	cleaned := observerClauseRe.ReplaceAllString(raw, "")
-	members = splitLabels(cleaned)
+	members = splitLabels(memberPart)
 	return members, observers
 }
 
-// splitLabels splits a run on commas/semicolons, trims each fragment, strips a
-// trailing period, and drops empties.
+// splitLabels splits a run on commas/semicolons/" and ", trims each fragment,
+// strips a trailing period, and drops empties.
 func splitLabels(raw string) []string {
 	var out []string
 	for _, part := range splitRe.Split(raw, -1) {
-		part = observerLabelRe.ReplaceAllString(part, "")
 		label := strings.TrimRight(normalizeWhitespace(part), ".")
 		label = normalizeWhitespace(label)
 		if label != "" {
@@ -217,6 +166,81 @@ func splitLabels(raw string) []string {
 		}
 	}
 	return out
+}
+
+// findTables returns every <table> in document order.
+func findTables(root *html.Node) []*html.Node {
+	var tables []*html.Node
+	var walk func(*html.Node)
+	walk = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.DataAtom == atom.Table {
+			tables = append(tables, n)
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			walk(c)
+		}
+	}
+	walk(root)
+	return tables
+}
+
+// tableRows returns every <tr> under a table (across thead/tbody).
+func tableRows(table *html.Node) []*html.Node {
+	var rows []*html.Node
+	var walk func(*html.Node)
+	walk = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.DataAtom == atom.Tr {
+			rows = append(rows, n)
+			return
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			walk(c)
+		}
+	}
+	walk(table)
+	return rows
+}
+
+// rowCells returns the direct <td>/<th> children of a row, in order.
+func rowCells(row *html.Node) []*html.Node {
+	var cells []*html.Node
+	for c := row.FirstChild; c != nil; c = c.NextSibling {
+		if c.Type == html.ElementNode && (c.DataAtom == atom.Td || c.DataAtom == atom.Th) {
+			cells = append(cells, c)
+		}
+	}
+	return cells
+}
+
+// firstHref returns the href of the first descendant <a> of a node, if any.
+func firstHref(n *html.Node) string {
+	var href string
+	var walk func(*html.Node) bool
+	walk = func(x *html.Node) bool {
+		if x.Type == html.ElementNode && x.DataAtom == atom.A {
+			for _, a := range x.Attr {
+				if a.Key == "href" && strings.TrimSpace(a.Val) != "" {
+					href = strings.TrimSpace(a.Val)
+					return true
+				}
+			}
+		}
+		for c := x.FirstChild; c != nil; c = c.NextSibling {
+			if walk(c) {
+				return true
+			}
+		}
+		return false
+	}
+	walk(n)
+	return href
+}
+
+// cellText returns the concatenated text content of a table cell. Inline markup
+// (the page splits labels across nested spans) collapses into one run; whitespace
+// cleanup happens in cleanText.
+func cellText(n *html.Node) string {
+	return nodeText(n)
 }
 
 // nodeText returns the concatenated text content of a node subtree.
@@ -235,25 +259,17 @@ func nodeText(n *html.Node) string {
 	return sb.String()
 }
 
-// nodeHref returns the href of the nearest enclosing anchor of a text node, if
-// the text node's parent is an <a>. The walk visits text nodes after their
-// element parents, so an anchor's text node carries the link.
-func nodeHref(n *html.Node) string {
-	if n.Parent == nil || n.Parent.Type != html.ElementNode || n.Parent.Data != "a" {
-		return ""
-	}
-	for _, a := range n.Parent.Attr {
-		if a.Key == "href" {
-			return a.Val
-		}
-	}
-	return ""
+// cleanText trims and collapses an inline string to a single line, dropping
+// non-breaking and zero-width spaces.
+func cleanText(s string) string {
+	return normalizeWhitespace(strings.ReplaceAll(s, "\n", " "))
 }
 
 // normalizeWhitespace trims and collapses internal whitespace runs (including
-// non-breaking spaces) to single ASCII spaces.
+// non-breaking and zero-width spaces) to single ASCII spaces.
 func normalizeWhitespace(s string) string {
-	s = strings.ReplaceAll(s, " ", " ")
+	s = strings.ReplaceAll(s, " ", " ") // nbsp
+	s = strings.ReplaceAll(s, "​", "")  // zero-width space
 	return strings.Join(strings.Fields(s), " ")
 }
 
