@@ -174,7 +174,13 @@ func checkEnumsAndScores(ctx context.Context, db *sql.DB) []Issue {
 	var badCovScore int
 	if err := db.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM countries WHERE coverage_score < 0 OR coverage_score > 5
-	`).Scan(&badCovScore); err == nil && badCovScore > 0 {
+	`).Scan(&badCovScore); err != nil {
+		issues = append(issues, Issue{
+			Code:     "enum_score_check_failed",
+			Severity: Error,
+			Message:  fmt.Sprintf("coverage_score range query failed: %v", err),
+		})
+	} else if badCovScore > 0 {
 		issues = append(issues, Issue{
 			Code:     "coverage_score_out_of_range",
 			Severity: Error,
@@ -186,7 +192,13 @@ func checkEnumsAndScores(ctx context.Context, db *sql.DB) []Issue {
 	var badEffort int
 	if err := db.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM countries WHERE effort_score < 1 OR effort_score > 5
-	`).Scan(&badEffort); err == nil && badEffort > 0 {
+	`).Scan(&badEffort); err != nil {
+		issues = append(issues, Issue{
+			Code:     "enum_score_check_failed",
+			Severity: Error,
+			Message:  fmt.Sprintf("effort_score range query failed: %v", err),
+		})
+	} else if badEffort > 0 {
 		issues = append(issues, Issue{
 			Code:     "effort_score_out_of_range",
 			Severity: Error,
@@ -198,7 +210,13 @@ func checkEnumsAndScores(ctx context.Context, db *sql.DB) []Issue {
 	var badQuality int
 	if err := db.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM countries WHERE expected_source_quality < 1 OR expected_source_quality > 5
-	`).Scan(&badQuality); err == nil && badQuality > 0 {
+	`).Scan(&badQuality); err != nil {
+		issues = append(issues, Issue{
+			Code:     "enum_score_check_failed",
+			Severity: Error,
+			Message:  fmt.Sprintf("expected_source_quality range query failed: %v", err),
+		})
+	} else if badQuality > 0 {
 		issues = append(issues, Issue{
 			Code:     "expected_source_quality_out_of_range",
 			Severity: Error,
@@ -210,7 +228,13 @@ func checkEnumsAndScores(ctx context.Context, db *sql.DB) []Issue {
 	var badConf int
 	if err := db.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM events WHERE confidence_score < 0 OR confidence_score > 100
-	`).Scan(&badConf); err == nil && badConf > 0 {
+	`).Scan(&badConf); err != nil {
+		issues = append(issues, Issue{
+			Code:     "enum_score_check_failed",
+			Severity: Error,
+			Message:  fmt.Sprintf("confidence_score range query failed: %v", err),
+		})
+	} else if badConf > 0 {
 		issues = append(issues, Issue{
 			Code:     "confidence_score_out_of_range",
 			Severity: Error,
@@ -222,7 +246,13 @@ func checkEnumsAndScores(ctx context.Context, db *sql.DB) []Issue {
 	var badTier int
 	if err := db.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM sources WHERE source_tier < 1 OR source_tier > 6
-	`).Scan(&badTier); err == nil && badTier > 0 {
+	`).Scan(&badTier); err != nil {
+		issues = append(issues, Issue{
+			Code:     "enum_score_check_failed",
+			Severity: Error,
+			Message:  fmt.Sprintf("source_tier range query failed: %v", err),
+		})
+	} else if badTier > 0 {
 		issues = append(issues, Issue{
 			Code:     "source_tier_out_of_range",
 			Severity: Error,
@@ -316,7 +346,13 @@ func checkUnknownStagedLabels(ctx context.Context, db *sql.DB) []Issue {
 	var unresolved int
 	if err := db.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM staged_authorities WHERE resolved_country_id IS NULL
-	`).Scan(&unresolved); err == nil && unresolved > 0 {
+	`).Scan(&unresolved); err != nil {
+		issues = append(issues, Issue{
+			Code:     "staged_labels_check_failed",
+			Severity: Error,
+			Message:  fmt.Sprintf("staged_authorities query failed: %v", err),
+		})
+	} else if unresolved > 0 {
 		issues = append(issues, Issue{
 			Code:     "unresolved_staged_authority_country",
 			Severity: Warning,
@@ -382,8 +418,22 @@ func checkRegionalBodyMinimums(ctx context.Context, db *sql.DB) []Issue {
 		var exists int
 		if err := db.QueryRowContext(ctx, `
 			SELECT COUNT(*) FROM regional_bodies WHERE code = ?
-		`, code).Scan(&exists); err != nil || exists == 0 {
-			// Body doesn't exist in seed; skip check conservatively.
+		`, code).Scan(&exists); err != nil {
+			issues = append(issues, Issue{
+				Code:     "regional_body_check_failed",
+				Severity: Error,
+				Entity:   code,
+				Message:  fmt.Sprintf("existence query failed for %s: %v", code, err),
+			})
+			continue
+		}
+		if exists == 0 {
+			issues = append(issues, Issue{
+				Code:     "regional_body_missing",
+				Severity: Error,
+				Entity:   code,
+				Message:  fmt.Sprintf("required regional body %s is absent from the database", code),
+			})
 			continue
 		}
 
@@ -530,7 +580,13 @@ func checkEventRequiredFields(ctx context.Context, db *sql.DB) []Issue {
 	var missingConf int
 	if err := db.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM events WHERE confidence_score IS NULL
-	`).Scan(&missingConf); err == nil && missingConf > 0 {
+	`).Scan(&missingConf); err != nil {
+		issues = append(issues, Issue{
+			Code:     "event_fields_check_failed",
+			Severity: Error,
+			Message:  fmt.Sprintf("confidence_score query failed: %v", err),
+		})
+	} else if missingConf > 0 {
 		issues = append(issues, Issue{
 			Code:     "event_missing_confidence_score",
 			Severity: Error,
@@ -541,7 +597,13 @@ func checkEventRequiredFields(ctx context.Context, db *sql.DB) []Issue {
 	var missingDedup int
 	if err := db.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM events WHERE dedup_status IS NULL OR dedup_status = ''
-	`).Scan(&missingDedup); err == nil && missingDedup > 0 {
+	`).Scan(&missingDedup); err != nil {
+		issues = append(issues, Issue{
+			Code:     "event_fields_check_failed",
+			Severity: Error,
+			Message:  fmt.Sprintf("dedup_status query failed: %v", err),
+		})
+	} else if missingDedup > 0 {
 		issues = append(issues, Issue{
 			Code:     "event_missing_dedup_status",
 			Severity: Error,
@@ -571,14 +633,61 @@ func checkProvenanceSelfConsistency(ctx context.Context, db *sql.DB) []Issue {
 			Message:  fmt.Sprintf("query failed: %v", err),
 		}}
 	}
+
+	var issues []Issue
 	if inconsistent > 0 {
-		return []Issue{{
+		issues = append(issues, Issue{
 			Code:     "provenance_inconsistent",
 			Severity: Error,
 			Message:  fmt.Sprintf("%d authority_field_provenance rows violate kind/reference consistency", inconsistent),
-		}}
+		})
 	}
-	return nil
+
+	// Existence check: every authority with a non-empty contact field must have
+	// a corresponding authority_field_provenance row for that field.
+	contactFields := []string{"website_url", "archive_url", "contact_email", "contact_phone"}
+	for _, field := range contactFields {
+		rows, err := db.QueryContext(ctx, fmt.Sprintf(`
+			SELECT a.id, a.name
+			FROM authorities a
+			WHERE a.%s IS NOT NULL AND a.%s != ''
+			  AND NOT EXISTS (
+				SELECT 1 FROM authority_field_provenance p
+				WHERE p.authority_id = a.id AND p.field_name = ?
+			  )
+		`, field, field), field)
+		if err != nil {
+			issues = append(issues, Issue{
+				Code:     "provenance_check_failed",
+				Severity: Error,
+				Message:  fmt.Sprintf("provenance existence query failed for field %s: %v", field, err),
+			})
+			continue
+		}
+		for rows.Next() {
+			var authID int64
+			var authName string
+			if err := rows.Scan(&authID, &authName); err != nil {
+				continue
+			}
+			issues = append(issues, Issue{
+				Code:     "authority_provenance_missing",
+				Severity: Error,
+				Entity:   fmt.Sprintf("%d/%s", authID, authName),
+				Message:  fmt.Sprintf("authority %q (id=%d) has %s but no provenance row for that field", authName, authID, field),
+			})
+		}
+		rows.Close() //nolint:errcheck
+		if err := rows.Err(); err != nil {
+			issues = append(issues, Issue{
+				Code:     "provenance_check_failed",
+				Severity: Error,
+				Message:  fmt.Sprintf("iterating provenance existence for field %s: %v", field, err),
+			})
+		}
+	}
+
+	return issues
 }
 
 // ── Invariant 13 ────────────────────────────────────────────────────────────
