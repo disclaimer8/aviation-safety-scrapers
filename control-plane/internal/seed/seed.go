@@ -446,6 +446,10 @@ func parseAndValidate() ([]isoEntry, []overlayEntry, error) {
 		seen3[c.ISO3] = true
 	}
 
+	if len(countries) != 249 {
+		return nil, nil, fmt.Errorf("seed: iso3166.json contains %d entries, expected exactly 249", len(countries))
+	}
+
 	var overlays []overlayEntry
 	if err := json.Unmarshal(overlaysJSON, &overlays); err != nil {
 		return nil, nil, fmt.Errorf("seed: parse country_overlays.json: %w", err)

@@ -103,6 +103,16 @@ func TestAircraftOriginAndSourceSeeds(t *testing.T) {
 	}
 }
 
+func TestParseAndValidateGuardExact249(t *testing.T) {
+	countries, _, err := parseAndValidate()
+	if err != nil {
+		t.Fatalf("parseAndValidate: %v", err)
+	}
+	if len(countries) != 249 {
+		t.Fatalf("parseAndValidate returned %d countries, want 249", len(countries))
+	}
+}
+
 func TestSeedIsIdempotentForAllTables(t *testing.T) {
 	db := testDB(t)
 	ctx := context.Background()

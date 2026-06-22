@@ -94,6 +94,59 @@ func TestImportStagesAppliesAndReturnsPartialForUnknownRecord(t *testing.T) {
 	}
 }
 
+func TestImportErrorPathNoDeadlock(t *testing.T) {
+	db := testDB(t)
+	body := fixtureBody(t)
+
+	// Break the schema so that the first in-transaction write (staged_authorities)
+	// fails with a real SQL error. We drop the table AFTER seeding so the source
+	// and country lookups (which happen before BeginTx) still work.
+	if _, err := db.Exec(`DROP TABLE staged_authorities`); err != nil {
+		t.Fatal(err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	start := time.Now()
+	result, err := Import(ctx, db, common.Input{
+		SourceURL: aiaSourceURL,
+		Body:      body,
+		FetchedAt: time.Unix(100, 0),
+	})
+	elapsed := time.Since(start)
+
+	// Must return an error quickly — well under the 3-second timeout.
+	// Against the unfixed code this blocks until the 3s ctx deadline fires.
+	if err == nil {
+		t.Fatal("expected error from broken schema, got nil")
+	}
+	if elapsed >= 2*time.Second {
+		t.Fatalf("Import took %v — possible deadlock (want < 2s)", elapsed)
+	}
+	if result.Status != "failed" {
+		t.Fatalf("result.Status=%q want failed", result.Status)
+	}
+
+	// The import_runs row must be marked failed (not left as 'running').
+	var status string
+	if err := db.QueryRow(`SELECT status FROM import_runs WHERE id = ?`, result.RunID).Scan(&status); err != nil {
+		t.Fatal(err)
+	}
+	if status != "failed" {
+		t.Fatalf("import_run status=%q want failed", status)
+	}
+
+	// No canonical authority rows must have been committed.
+	var count int
+	if err := db.QueryRow(`SELECT COUNT(*) FROM authorities`).Scan(&count); err != nil {
+		t.Fatal(err)
+	}
+	if count != 0 {
+		t.Fatalf("authorities count=%d want 0 (rollback must have cleaned up)", count)
+	}
+}
+
 func TestImportIdenticalBodyIsUnchanged(t *testing.T) {
 	db := testDB(t)
 	body := fixtureBody(t)

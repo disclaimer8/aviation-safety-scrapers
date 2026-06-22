@@ -201,7 +201,7 @@
     "iso2": "BV",
     "iso3": "BVT",
     "name": "Bouvet Island",
-    "region": "Americas"
+    "region": "Antarctica"
   },
   {
     "iso2": "BW",
@@ -1365,7 +1365,7 @@
     "iso2": "TW",
     "iso3": "TWN",
     "name": "Taiwan, Province of China",
-    "region": "Antarctica"
+    "region": "Asia"
   },
   {
     "iso2": "TZ",
