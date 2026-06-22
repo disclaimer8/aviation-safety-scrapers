@@ -2,7 +2,8 @@ CREATE TABLE import_runs (
   id INTEGER PRIMARY KEY,
   importer TEXT NOT NULL,
   source_url TEXT NOT NULL,
-  source_snapshot_id INTEGER REFERENCES source_snapshots(id),
+  source_snapshot_id INTEGER
+    REFERENCES source_snapshots(id) ON DELETE RESTRICT,
   started_at INTEGER NOT NULL,
   finished_at INTEGER,
   status TEXT NOT NULL CHECK(status IN (
@@ -17,7 +18,7 @@ CREATE TABLE import_runs (
   warning_count INTEGER NOT NULL DEFAULT 0 CHECK(warning_count >= 0),
   conflict_count INTEGER NOT NULL DEFAULT 0 CHECK(conflict_count >= 0),
   error_summary TEXT
-);
+) STRICT;
 
 CREATE TABLE source_snapshots (
   id INTEGER PRIMARY KEY,
@@ -33,10 +34,34 @@ CREATE TABLE source_snapshots (
   raw_body BLOB,
   artifact_path TEXT,
   size_bytes INTEGER NOT NULL CHECK(size_bytes >= 0)
-);
+) STRICT;
 
 CREATE UNIQUE INDEX idx_snapshots_source_checksum
   ON source_snapshots(source_id, checksum);
+
+-- 17.5.C: source snapshots are immutable after insert. Any attempt to change the
+-- identity (primary key) or content/provenance columns aborts. This protects
+-- deterministic re-derivation: a recorded provenance reference must always point
+-- at the exact bytes that were fetched.
+CREATE TRIGGER source_snapshots_immutable
+BEFORE UPDATE ON source_snapshots
+WHEN
+  OLD.id IS NOT NEW.id
+  OR OLD.source_id IS NOT NEW.source_id
+  OR OLD.source_url IS NOT NEW.source_url
+  OR OLD.final_url IS NOT NEW.final_url
+  OR OLD.status_code IS NOT NEW.status_code
+  OR OLD.content_type IS NOT NEW.content_type
+  OR OLD.etag IS NOT NEW.etag
+  OR OLD.last_modified IS NOT NEW.last_modified
+  OR OLD.fetched_at IS NOT NEW.fetched_at
+  OR OLD.checksum IS NOT NEW.checksum
+  OR OLD.raw_body IS NOT NEW.raw_body
+  OR OLD.artifact_path IS NOT NEW.artifact_path
+  OR OLD.size_bytes IS NOT NEW.size_bytes
+BEGIN
+  SELECT RAISE(ABORT, 'source_snapshots rows are immutable');
+END;
 
 CREATE TABLE staged_authorities (
   id INTEGER PRIMARY KEY,
@@ -53,7 +78,7 @@ CREATE TABLE staged_authorities (
   warnings_json TEXT,
   record_checksum TEXT NOT NULL,
   UNIQUE(import_run_id, record_checksum)
-);
+) STRICT;
 
 CREATE TABLE staged_regional_bodies (
   id INTEGER PRIMARY KEY,
@@ -68,7 +93,7 @@ CREATE TABLE staged_regional_bodies (
   warnings_json TEXT,
   record_checksum TEXT NOT NULL,
   UNIQUE(import_run_id, record_checksum)
-);
+) STRICT;
 
 CREATE TABLE field_overrides (
   id INTEGER PRIMARY KEY,
@@ -82,11 +107,44 @@ CREATE TABLE field_overrides (
   active INTEGER NOT NULL DEFAULT 1 CHECK(active IN (0, 1)),
   created_at INTEGER NOT NULL DEFAULT (CAST(unixepoch('subsec') * 1000 AS INTEGER)),
   updated_at INTEGER NOT NULL DEFAULT (CAST(unixepoch('subsec') * 1000 AS INTEGER))
-);
+) STRICT;
 
 CREATE UNIQUE INDEX idx_active_field_override
   ON field_overrides(entity_type, entity_id, field_name)
   WHERE active = 1;
+
+-- 17.5.B: field-level authority provenance. Each row records the effective value
+-- of one authority field and where that value came from. Exactly one current
+-- record per (authority_id, field_name) is enforced by the primary key. Optional
+-- snapshot_id / override_id let exports resolve provenance back to immutable
+-- source_snapshots or curated field_overrides. effective.ApplyAuthority (Task 8)
+-- and export (Task 12) build on this table.
+CREATE TABLE authority_field_provenance (
+  authority_id INTEGER NOT NULL REFERENCES authorities(id) ON DELETE CASCADE,
+  field_name TEXT NOT NULL,
+  effective_value TEXT,
+  provenance_kind TEXT NOT NULL CHECK(provenance_kind IN (
+    'seed',
+    'icao_snapshot',
+    'curated_override'
+  )),
+  snapshot_id INTEGER REFERENCES source_snapshots(id) ON DELETE RESTRICT,
+  override_id INTEGER REFERENCES field_overrides(id) ON DELETE RESTRICT,
+  updated_at INTEGER NOT NULL DEFAULT (CAST(unixepoch('subsec') * 1000 AS INTEGER)),
+  PRIMARY KEY (authority_id, field_name),
+  -- A snapshot-sourced field must cite a snapshot; an override-sourced field must
+  -- cite an override; a seed cites neither. Keeps provenance self-consistent.
+  CHECK(
+    (provenance_kind = 'icao_snapshot' AND snapshot_id IS NOT NULL AND override_id IS NULL)
+    OR (provenance_kind = 'curated_override' AND override_id IS NOT NULL AND snapshot_id IS NULL)
+    OR (provenance_kind = 'seed' AND snapshot_id IS NULL AND override_id IS NULL)
+  )
+) STRICT;
+
+CREATE INDEX idx_authority_field_provenance_snapshot
+  ON authority_field_provenance(snapshot_id);
+CREATE INDEX idx_authority_field_provenance_override
+  ON authority_field_provenance(override_id);
 
 CREATE TABLE import_conflicts (
   id INTEGER PRIMARY KEY,
@@ -110,7 +168,7 @@ CREATE TABLE import_conflicts (
   resolution TEXT,
   created_at INTEGER NOT NULL DEFAULT (CAST(unixepoch('subsec') * 1000 AS INTEGER)),
   resolved_at INTEGER
-);
+) STRICT;
 
 CREATE UNIQUE INDEX idx_import_conflicts_idempotent
   ON import_conflicts(
@@ -144,36 +202,7 @@ CREATE TABLE authority_requests (
   response_notes TEXT,
   created_at INTEGER NOT NULL DEFAULT (CAST(unixepoch('subsec') * 1000 AS INTEGER)),
   updated_at INTEGER NOT NULL DEFAULT (CAST(unixepoch('subsec') * 1000 AS INTEGER))
-);
-
-CREATE TRIGGER authorities_snapshot_guard_insert
-BEFORE INSERT ON authorities
-WHEN NEW.source_snapshot_id IS NOT NULL
- AND NOT EXISTS (
-   SELECT 1 FROM source_snapshots WHERE id = NEW.source_snapshot_id
- )
-BEGIN
-  SELECT RAISE(ABORT, 'unknown authority source snapshot');
-END;
-
-CREATE TRIGGER authorities_snapshot_guard
-BEFORE UPDATE OF source_snapshot_id ON authorities
-WHEN NEW.source_snapshot_id IS NOT NULL
- AND NOT EXISTS (
-   SELECT 1 FROM source_snapshots WHERE id = NEW.source_snapshot_id
- )
-BEGIN
-  SELECT RAISE(ABORT, 'unknown authority source snapshot');
-END;
-
-CREATE TRIGGER authorities_snapshot_guard_delete
-BEFORE DELETE ON source_snapshots
-WHEN EXISTS (
-  SELECT 1 FROM authorities WHERE source_snapshot_id = OLD.id
-)
-BEGIN
-  SELECT RAISE(ABORT, 'authority source snapshot is in use');
-END;
+) STRICT;
 
 CREATE INDEX idx_import_runs_snapshot ON import_runs(source_snapshot_id);
 CREATE INDEX idx_source_snapshots_source ON source_snapshots(source_id);
