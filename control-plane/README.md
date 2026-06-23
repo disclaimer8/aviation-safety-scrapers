@@ -194,21 +194,33 @@ archive, staging discovered records into `staged_regional_documents`.
 ./aviation-coverage process-regional --db coverage.db --limit 20
 ```
 
-The three bodies render their listings client-side or sit behind unstable TLS /
-Cloudflare from data-centre IPs (`mak.aero` is a Wix SPA, `eccaa.org` has a brittle
-TLS chain, `bagasoo.org` exposes no public report index), so in practice they are run
-**out-of-band**: export the listing from a real browser and run with `--source-file`.
-Live fetching is attempted as a best-effort fallback.
+The bodies gate their listings behind JS rendering / Cloudflare / TLS
+fingerprinting (`mak-iac.org` is Bitrix, `eccaa.org` has a brittle TLS chain,
+`bagasoo.org` exposes no public report index), which a plain HTTP client can't get
+past. Two ways to fetch them:
 
-An export is body-specific (its relative links are resolved against that body's
-origin), so `--source-file` requires `--body {ECCAA|BAGAIA|IAC}` to scope the run to
-that body's jobs; jobs for the other bodies are left pending. Without `--source-file`,
-all three bodies are processed live and `--body` is optional.
+- **`--render-endpoint <url>`** (preferred): fetch the live listing through the
+  browser-render service (headed Chromium + Cloudflare clearance) running on the
+  mini-PC. Each body fetches its own per-body URL, so `--body` is optional.
 
-```bash
-./aviation-coverage process-regional --db coverage.db --body IAC \
-  --source-file iac-listing.html
-```
+  ```bash
+  # over an SSH local-forward to the mini-PC render service
+  ssh -fN -L 18030:127.0.0.1:8030 minipc
+  ./aviation-coverage process-regional --db coverage.db \
+    --render-endpoint http://127.0.0.1:18030/render
+  ```
+
+- **`--source-file <html>`** (out-of-band): an operator exports the listing from a
+  real browser. An export is body-specific (its relative links resolve against that
+  body's origin), so this **requires `--body {ECCAA|BAGAIA|IAC}`** to scope the run
+  to that body's jobs; other bodies are left pending.
+
+  ```bash
+  ./aviation-coverage process-regional --db coverage.db --body IAC \
+    --source-file iac-listing.html
+  ```
+
+With neither flag, a plain live GET is attempted as a best-effort fallback.
 
 Only `archive_crawl` jobs whose country is `regional_raio` are processed;
 `archive_crawl` jobs for `direct_public_archive` countries are left for a future
