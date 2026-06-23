@@ -10,13 +10,19 @@ func TestRunJobSuccessStagesAndDownloads(t *testing.T) {
 	ctx, db := waybackTestDB(t)
 	target := "example.gov"
 	cid := insertCountry(t, ctx, db, "ZZ", &target)
-	res, _ := db.ExecContext(ctx, `
+	res, err := db.ExecContext(ctx, `
 		INSERT INTO sources (name, url, canonical_url, source_type, source_tier)
 		VALUES ('wb','https://wb/','https://wb/','wayback',5)`)
+	if err != nil {
+		t.Fatal(err)
+	}
 	srcID, _ := res.LastInsertId()
-	res, _ = db.ExecContext(ctx, `
+	res, err = db.ExecContext(ctx, `
 		INSERT INTO crawl_jobs (source_id, country_id, job_type, status)
 		VALUES (?,?, 'wayback_cdx', 'running')`, srcID, cid)
+	if err != nil {
+		t.Fatal(err)
+	}
 	jid, _ := res.LastInsertId()
 
 	cdxBody, err := os.ReadFile("testdata/cdx_sample.json")
@@ -85,15 +91,23 @@ func TestProcessPendingOrdersByPriority(t *testing.T) {
 	hiTarget, loTarget := "hi.gov", "lo.gov"
 	hi := insertCountryPriority(t, ctx, db, "HI", &hiTarget, 100)
 	lo := insertCountryPriority(t, ctx, db, "LO", &loTarget, 1)
-	res, _ := db.ExecContext(ctx, `
+	res, err := db.ExecContext(ctx, `
 		INSERT INTO sources (name, url, canonical_url, source_type, source_tier)
 		VALUES ('wb','https://wb/','https://wb/','wayback',5)`)
+	if err != nil {
+		t.Fatal(err)
+	}
 	srcID, _ := res.LastInsertId()
 	for _, cid := range []int64{lo, hi} {
-		db.ExecContext(ctx, `INSERT INTO crawl_jobs (source_id, country_id, job_type, status)
-			VALUES (?,?, 'wayback_cdx', 'pending')`, srcID, cid)
+		if _, err := db.ExecContext(ctx, `INSERT INTO crawl_jobs (source_id, country_id, job_type, status)
+			VALUES (?,?, 'wayback_cdx', 'pending')`, srcID, cid); err != nil {
+			t.Fatal(err)
+		}
 	}
-	cdxBody, _ := os.ReadFile("testdata/cdx_sample.json")
+	cdxBody, err := os.ReadFile("testdata/cdx_sample.json")
+	if err != nil {
+		t.Fatal(err)
+	}
 	f := &fixtureFetcher{CDXBody: cdxBody}
 	processed, err := ProcessPending(ctx, db, f, t.TempDir(), 1) // limit 1 → only highest priority
 	if err != nil {
@@ -111,5 +125,74 @@ func TestProcessPendingOrdersByPriority(t *testing.T) {
 	}
 	if loStatus != "pending" {
 		t.Errorf("LO status = %q, want pending (limit 1, lower priority)", loStatus)
+	}
+}
+
+func TestProcessPendingResumesStaleRunningJob(t *testing.T) {
+	ctx, db := waybackTestDB(t)
+
+	// Stale country: running job started 2 hours ago — should be re-picked.
+	staleTarget := "stale.gov"
+	staleCID := insertCountryPriority(t, ctx, db, "ST", &staleTarget, 50)
+	res, err := db.ExecContext(ctx, `
+		INSERT INTO sources (name, url, canonical_url, source_type, source_tier)
+		VALUES ('wb','https://wb/','https://wb/','wayback',5)`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	srcID, _ := res.LastInsertId()
+	res, err = db.ExecContext(ctx, `
+		INSERT INTO crawl_jobs (source_id, country_id, job_type, status, started_at)
+		VALUES (?,?, 'wayback_cdx', 'running',
+		        CAST(unixepoch('subsec')*1000 AS INTEGER) - 7200000)`,
+		srcID, staleCID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	staleJobID, _ := res.LastInsertId()
+
+	// Fresh country: running job started just now — must NOT be re-picked.
+	freshTarget := "fresh.gov"
+	freshCID := insertCountryPriority(t, ctx, db, "FR", &freshTarget, 10)
+	res, err = db.ExecContext(ctx, `
+		INSERT INTO crawl_jobs (source_id, country_id, job_type, status, started_at)
+		VALUES (?,?, 'wayback_cdx', 'running',
+		        CAST(unixepoch('subsec')*1000 AS INTEGER))`,
+		srcID, freshCID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	freshJobID, _ := res.LastInsertId()
+
+	cdxBody, err := os.ReadFile("testdata/cdx_sample.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	f := &fixtureFetcher{CDXBody: cdxBody}
+
+	processed, err := ProcessPending(ctx, db, f, t.TempDir(), 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if processed != 1 {
+		t.Fatalf("processed = %d, want 1 (only stale job)", processed)
+	}
+
+	// Stale job must be finalized (success or partial).
+	var staleStatus string
+	if err := db.QueryRowContext(ctx, `SELECT status FROM crawl_jobs WHERE id=?`, staleJobID).Scan(&staleStatus); err != nil {
+		t.Fatal(err)
+	}
+	if staleStatus != "success" && staleStatus != "partial" {
+		t.Errorf("stale job status = %q, want success or partial", staleStatus)
+	}
+
+	// Fresh job must remain running — not touched.
+	var freshStatus string
+	if err := db.QueryRowContext(ctx, `SELECT status FROM crawl_jobs WHERE id=?`, freshJobID).Scan(&freshStatus); err != nil {
+		t.Fatal(err)
+	}
+	if freshStatus != "running" {
+		t.Errorf("fresh job status = %q, want running (recent started_at, must not be re-picked)", freshStatus)
 	}
 }

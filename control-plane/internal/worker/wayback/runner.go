@@ -27,6 +27,7 @@ type jobStats struct {
 func RunJob(ctx context.Context, db *sql.DB, f Fetcher, storeDir string, job Job) error {
 	target, ok, err := ResolveTarget(ctx, db, job.CountryID)
 	if err != nil {
+		_ = finalize(ctx, db, job.ID, "failed", jobStats{})
 		return err
 	}
 	if !ok {
@@ -49,11 +50,13 @@ func RunJob(ctx context.Context, db *sql.DB, f Fetcher, storeDir string, job Job
 
 	staged, err := StageSnapshots(ctx, db, job.ID, job.CountryID, snaps)
 	if err != nil {
+		_ = finalize(ctx, db, job.ID, "failed", jobStats{})
 		return err
 	}
 
 	docs, err := PendingDocs(ctx, db, job.CountryID)
 	if err != nil {
+		_ = finalize(ctx, db, job.ID, "failed", jobStats{})
 		return err
 	}
 	downloaded, dlErrors := 0, 0
@@ -81,7 +84,12 @@ func ProcessPending(ctx context.Context, db *sql.DB, f Fetcher, storeDir string,
 		SELECT cj.id, c.id, c.iso2
 		  FROM crawl_jobs cj
 		  JOIN countries c ON c.id = cj.country_id
-		 WHERE cj.job_type = 'wayback_cdx' AND cj.status = 'pending'
+		 WHERE cj.job_type = 'wayback_cdx'
+		   AND (
+		         cj.status = 'pending'
+		      OR (cj.status = 'running' AND cj.started_at IS NOT NULL
+		          AND cj.started_at < (CAST(unixepoch('subsec') * 1000 AS INTEGER) - 3600000))
+		       )
 		 ORDER BY c.priority_score DESC, c.iso2 ASC`
 	if limit > 0 {
 		q += fmt.Sprintf(" LIMIT %d", limit)

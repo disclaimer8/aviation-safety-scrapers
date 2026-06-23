@@ -161,6 +161,20 @@ OCR of the downloaded PDFs and extraction into `events`/`reports` is a later
 stage (Spec 2). Flags: `--limit N` (0 = no cap), `--store-dir DIR` (default
 `./wayback-store`). The store directory is a runtime artifact and is gitignored.
 
+## Operational notes
+
+- **Stale-running recovery** is automatic: `process-wayback` re-picks any
+  `running` job whose `started_at` is older than 1 hour and resumes it (staging
+  is idempotent, so no double-work). For an immediate manual re-queue:
+  ```sql
+  UPDATE crawl_jobs SET status='pending' WHERE status='running' AND job_type='wayback_cdx';
+  ```
+- **No per-job document cap yet**: a single high-capture country can stage and
+  download hundreds of PDFs (hundreds of MB) in one job. A `--max-docs-per-job`
+  bound is a planned follow-up before broad country expansion.
+- **CDX transport errors** are recorded with `error_type='unknown'`; finer
+  mapping to timeout/dns/tls/http_* variants is a planned follow-up.
+
 ## Override precedence
 
 For every mutable authority field (website URL, archive URL, contact email,

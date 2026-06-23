@@ -52,17 +52,17 @@ func DownloadStaged(ctx context.Context, db *sql.DB, f Fetcher, storeDir, iso2 s
 		markFailed(ctx, db, doc.ID)
 		return fmt.Errorf("wayback: mkdir %s: %w", dir, err)
 	}
-	path := filepath.Join(dir, doc.Digest+".pdf")
-	if err := os.WriteFile(path, body, 0o644); err != nil {
+	destPath := filepath.Join(dir, doc.Digest+".pdf")
+	if err := os.WriteFile(destPath, body, 0o644); err != nil {
 		markFailed(ctx, db, doc.ID)
-		return fmt.Errorf("wayback: write %s: %w", path, err)
+		return fmt.Errorf("wayback: write %s: %w", destPath, err)
 	}
 	sum := sha256.Sum256(body)
 	checksum := hex.EncodeToString(sum[:])
 	if _, err := db.ExecContext(ctx, `
 		UPDATE staged_wayback_documents
 		   SET local_file_path = ?, checksum = ?, download_status = 'downloaded'
-		 WHERE id = ?`, path, checksum, doc.ID); err != nil {
+		 WHERE id = ?`, destPath, checksum, doc.ID); err != nil {
 		return fmt.Errorf("wayback: mark downloaded %d: %w", doc.ID, err)
 	}
 	return nil

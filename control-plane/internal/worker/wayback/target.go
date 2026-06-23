@@ -30,8 +30,5 @@ func ResolveTarget(ctx context.Context, db *sql.DB, countryID int64) (string, bo
 	if err != nil {
 		return "", false, fmt.Errorf("wayback: resolve authority archive %d: %w", countryID, err)
 	}
-	if archive.Valid && archive.String != "" {
-		return archive.String, true, nil
-	}
-	return "", false, nil
+	return archive.String, true, nil
 }

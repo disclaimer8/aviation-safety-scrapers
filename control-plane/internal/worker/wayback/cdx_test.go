@@ -5,6 +5,12 @@ import (
 	"testing"
 )
 
+func TestParseCDXErrorsOnNonArrayBody(t *testing.T) {
+	if _, _, err := ParseCDX([]byte(`{"a":1}`)); err == nil {
+		t.Fatal("expected error on object body (non-array)")
+	}
+}
+
 func TestParseCDXFiltersAndCollapses(t *testing.T) {
 	raw, err := os.ReadFile("testdata/cdx_sample.json")
 	if err != nil {
@@ -34,6 +40,13 @@ func TestParseCDXFiltersAndCollapses(t *testing.T) {
 	}
 	if a.Length != 1024 {
 		t.Errorf("Length = %d, want 1024", a.Length)
+	}
+	b, ok := byDigest["DIGESTB"]
+	if !ok {
+		t.Fatal("DIGESTB missing")
+	}
+	if b.Length != 2048 {
+		t.Errorf("DIGESTB Length = %d, want 2048", b.Length)
 	}
 }
 
