@@ -65,6 +65,7 @@ func TestApplyCreatesCompleteSchemaAndIsIdempotent(t *testing.T) {
 		"staged_regional_bodies",
 		"staged_wayback_documents",
 		"staged_regional_documents",
+		"staged_manufacturer_documents",
 		"field_overrides",
 		"import_conflicts",
 		"authority_requests",
