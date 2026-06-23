@@ -80,7 +80,7 @@ func TestProcessPendingResumesStaleRunning(t *testing.T) {
 	ctx, db := foreignTestDB(t)
 	// stale running (2h old) + fresh running (now)
 	_, staleJid := insertForeignJob(t, ctx, db, "ST", "ntsb_foreign_search", 100, "running", 7200000)
-	_, freshJid := insertForeignJob(t, ctx, db, "FR", "ntsb_foreign_search", 10, "running", 0)
+	_, freshJid := insertForeignJob(t, ctx, db, "FR", "ntsb_foreign_search", 10, "running", 1000)
 	clients := Clients{NTSB: &fixtureClient{Records: []ForeignRecord{{ForeignRef: "X1", Title: "A", OriginalURL: "https://n/1"}}}}
 	processed, err := ProcessPending(ctx, db, clients, 0)
 	if err != nil {
