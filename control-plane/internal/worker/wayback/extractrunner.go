@@ -9,7 +9,6 @@ import (
 
 // ExtractStats is the aggregate result of a batch run.
 type ExtractStats struct {
-	OCRDone   int
 	Extracted int
 	Skipped   int
 	Failed    int
@@ -55,7 +54,7 @@ func ExtractOne(ctx context.Context, db *sql.DB, ocr OCRClient, llm LLMClient, s
 		return "skipped", nil
 	}
 	if _, _, err := PromoteDocument(ctx, db, doc, e); err != nil {
-		return "", err
+		return recordExtractFailure(ctx, db, doc, doc.ArchivedURL, err)
 	}
 	return "extracted", nil
 }
@@ -125,8 +124,6 @@ func ProcessExtractPending(ctx context.Context, db *sql.DB, ocr OCRClient, llm L
 			stats.Skipped++
 		case "failed":
 			stats.Failed++
-		case "ocr_done":
-			stats.OCRDone++
 		}
 	}
 	return stats, nil
