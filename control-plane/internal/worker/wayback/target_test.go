@@ -81,3 +81,18 @@ func TestResolveTargetNoneWhenNeither(t *testing.T) {
 		t.Fatalf("ResolveTarget = (%q,%v), want (\"\",false)", got, ok)
 	}
 }
+
+func insertCountryPriority(t *testing.T, ctx context.Context, db *sql.DB, iso2 string, target *string, priority float64) int64 {
+	t.Helper()
+	res, err := db.ExecContext(ctx, `
+		INSERT INTO countries
+			(iso2, iso3, name, region, policy_status, coverage_status,
+			 coverage_score, effort_score, priority_score, wayback_target)
+		VALUES (?, ?, 'N','R','allowed','no_public_archive',1,3, ?, ?)`,
+		iso2, iso2+"X", priority, target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	id, _ := res.LastInsertId()
+	return id
+}
