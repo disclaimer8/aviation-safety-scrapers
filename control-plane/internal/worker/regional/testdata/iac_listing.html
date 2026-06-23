@@ -1,29 +1,666 @@
-<!DOCTYPE html>
-<!-- Representative IAC (МАК / mak.aero) investigation-report listing.
-     mak.aero renders its real listing client-side (Wix), so production runs
-     this body out-of-band via --source-file from an operator browser export.
-     This fixture mirrors the entry shape: a report page link + title + date. -->
-<html lang="ru">
-<head><meta charset="utf-8"><title>Расследования — МАК</title></head>
-<body>
-  <nav>
-    <a href="/">Главная</a>
-    <a href="/about">О МАК</a>
-    <a href="https://www.iac.aero/">Внешний сайт</a>
-  </nav>
-  <main>
-    <h1>Отчёты о расследовании авиационных происшествий</h1>
-    <ul class="reports">
-      <li>
-        <a href="/rassledovaniya/2024-ra-0012">Авиационное происшествие с самолётом Ан-2 RA-40123, 02.01.2024</a>
-      </li>
-      <li>
-        <a href="/rassledovaniya/2023-ra-0098">Катастрофа вертолёта Ми-8 EX-08009, 15.11.2023</a>
-      </li>
-      <li>
-        <a href="https://www.mak.aero/upload/iblock/2022-ra-0451-final.pdf">Окончательный отчёт по происшествию с Boeing 737, 2022-07-21</a>
-      </li>
-    </ul>
-  </main>
-</body>
-</html>
+<html><head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">		
+														<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+		<![endif]-->
+		<link href="//fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700&amp;subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+		<link href="//fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic&amp;subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="robots" content="index, follow">
+<meta name="keywords" content="авиационное расследование, расследование авиационных происшествий, расследование авиационных инцидентов">
+<link href="/bitrix/cache/css/s1/mak/page_85f9a6baf9a33a9f2c2b36043198b93c/page_85f9a6baf9a33a9f2c2b36043198b93c_v1.css?16747262601212" type="text/css" rel="stylesheet">
+<link href="/bitrix/cache/css/s1/mak/template_32f45cf21f303540c1aa308526647594/template_32f45cf21f303540c1aa308526647594_v1.css?1674726260156815" type="text/css" data-template-style="true" rel="stylesheet">
+<script type="text/javascript" async="" src="https://bitrix.info/ba.js"></script><script type="text/javascript">(window.BX||top.BX).message({'pull_server_enabled':'N','pull_config_timestamp':'0','pull_guest_mode':'N','pull_guest_user_id':'0'});(window.BX||top.BX).message({'PULL_OLD_REVISION':'Для продолжения корректной работы с сайтом необходимо перезагрузить страницу.'});</script>
+
+<script type="text/javascript" src="/bitrix/js/pull/protobuf/protobuf.min.js?164967901176433"></script>
+<script type="text/javascript" src="/bitrix/js/pull/protobuf/model.min.js?164967901114190"></script>
+<script type="text/javascript" src="/bitrix/js/main/core/core_promise.min.js?15705348852490"></script>
+<script type="text/javascript" src="/bitrix/js/rest/client/rest.client.min.js?16496802549240"></script>
+<script type="text/javascript" src="/bitrix/js/pull/client/pull.client.min.js?164968061144687"></script>
+<script type="text/javascript" src="//yandex.st/jquery/2.1.0/jquery.min.js"></script>
+<script type="text/javascript" src="//yastatic.net/jquery-ui/1.11.2/jquery-ui.min.js"></script>
+
+
+<script type="text/javascript" src="/bitrix/cache/js/s1/mak/template_d60a3568441338d1bf0523b7db399731/template_d60a3568441338d1bf0523b7db399731_v1.js?167472626078591"></script>
+<script type="text/javascript" src="/bitrix/cache/js/s1/mak/page_666185a0c522598b2a4f475283775b49/page_666185a0c522598b2a4f475283775b49_v1.js?167472626018367"></script>
+<script type="text/javascript">var _ba = _ba || []; _ba.push(["aid", "c72a0172a425e702015ce6a08275371c"]); _ba.push(["host", "mak-iac.org"]); (function() {var ba = document.createElement("script"); ba.type = "text/javascript"; ba.async = true;ba.src = (document.location.protocol == "https:" ? "https://" : "http://") + "bitrix.info/ba.js";var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(ba, s);})();</script>
+
+
+		<title>Расследования авиационных происшествий и инцидентов | МАК</title>
+	</head>
+	<body>
+				<div id="header">
+			<div class="container" style="padding-bottom:50px;">
+				<a href="//mak-iac.org">
+					<div id="logo" class="text-center col-lg-4 col-md-4 col-sm-12">
+						<img src="/bitrix/templates/mak/images/mak_logo.png">
+					</div>	
+				</a>
+
+				<div id="decor" class="col-lg-8 col-md-8 hidden-xs hidden-sm">
+					<!--img src="/bitrix/templates/mak/images/wing_top.png" class="up-layer">
+					<img src="/bitrix/templates/mak/images/wings_top.png" class="down-layer"-->
+					<div class="title">mak-iac.org</div>
+				</div>
+				<div id="search">
+					<div class="hidden-sm hidden-xs">
+	<div class="search-wrap">
+		<form action="/search/">
+							<input type="text" name="q" value="" size="15" maxlength="50" class="search-inp">
+				<span class="search-sub glyphicon glyphicon-search"></span>
+						<!--input name="s" type="submit" value="" class="search-sub" /-->
+		</form>
+	</div>
+</div>
+
+<div class="hidden-lg hidden-md">
+	<div class="clearfix"></div>
+	<div class="mob-search-wrap">
+		<form action="/search/">
+							<input type="text" name="q" value="" size="15" maxlength="50" class="mob-search-inp">
+				<span class="search-sub glyphicon glyphicon-search"></span>
+						<!--input name="s" type="submit" value="" class="search-sub" /-->
+		</form>
+	</div>
+			<div class="clearfix"></div>
+</div>
+				</div>
+				<div class="lang-mod text-center hidden-sm hidden-xs"><a href="/">RU</a> | <a href="/en/">EN</a></div>
+				<div class="text-center hidden-lg hidden-md" style="font-size:22px;"><a href="/" style="color:#fff">RU</a> | <a href="/en/" style="color:#fff">EN</a></div><br>
+				<div class="text-center" style="position:absolute; bottom:0;font-size:16px; color:#fff;"></div>
+			</div>
+
+
+			 <div id="menu">
+				
+
+
+<nav class="navbar navbar-default" role="navigation">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu-top" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+		</div>
+		<div class="collapse navbar-collapse row" id="menu-top">
+			<ul class="nav-justified">
+															<li class="menu-item"><a href="/o-mak/"><nobr>О МАК</nobr></a></li>
+																				<li class="menu-item"><a href="/press-tsentr/"><nobr>ПРЕСС ЦЕНТР</nobr></a></li>
+																				<li class="menu-item"><a href="/sovet/"><nobr>СОВЕТ</nobr></a></li>
+																				<li class="menu-item active"><a href="/rassledovaniya/"><nobr>РАССЛЕДОВАНИЯ</nobr></a></li>
+																				<li class="menu-item"><a href="/deyatelnost/"><nobr>ДЕЯТЕЛЬНОСТЬ</nobr></a></li>
+												</ul>
+		</div>
+	</div>
+</nav>
+
+
+
+
+
+
+
+
+
+
+
+
+			</div>	
+		</div>
+		<div class="container">
+
+<div class="col-lg-3 col-md-3 col-sm-3 col-lg-push-9 col-md-push-9 col-sm-push-9 col-xs-12" style="font-weight:bold;">
+	
+<div class="right-menu">
+
+			<p class="menu-item">База по расследованиям</p>
+		
+		<p class="menu-item"><a href="/rassledovaniya/bezopasnost-poletov/">Безопасность полетов</a></p>
+		
+		<p class="menu-item"><a href="/rassledovaniya/o-komissii/">О расследовании АП</a></p>
+		
+		<p class="menu-item"><a href="/rassledovaniya/tekhnicheskaya-laboratoriya/">Техническая лаборатория</a></p>
+		
+
+</div>
+</div>
+
+<div class="col-lg-9 col-md-9 col-sm-9 col-lg-pull-3 col-md-pull-3 col-sm-pull-3 col-xs-12">
+
+	<div class="well text-center">
+		<span class="section" style="display:inline-block">
+            <span class="form-control">Отфильтровать по году: </span>
+        </span>
+		
+        <span class="section" style="display:inline-block">
+			<form method="post">
+            	<select class="filter-block form-control" name="YEAR" onchange="submit();">
+					<option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option><option value="2018">2018</option><option value="2017">2017</option><option value="2016">2016</option><option value="2015">2015</option><option value="2014">2014</option><option value="2013">2013</option><option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option>				</select>
+		</form>
+        </span>
+    </div>
+<table id="inv_list" class="inv-list" width="100%">
+	<thead>
+	<tr>
+		<th class="inv-date header headerSortUp">
+			 <a>					Дата</a>
+		</th>
+		<th class="sorter-false">
+			Место происшествия
+		</th>
+		<th class="inv-type header">
+			<a>Тип ВС</a>
+		</th>
+		<th class="inv-operator">
+			Эксплуатант
+		</th>
+		<th class="inv-victims header headerSortDown">
+			<a>Ущерб</a>
+		</th>
+	</tr>
+	</thead>
+	<tbody>
+
+	 	
+	<tr>
+					<td>
+<strong><a href="/rassledovaniya/tangero-ra-3285g-17-06-2026/">17.06.2026</a></strong>
+					</td>
+					<td>
+						<i>в районе посадочной площадки Вихрево Московской области</i>
+					</td>
+					<td>
+						<strong>Тангеро</strong>
+						<p>RA-3285G</p>
+					</td>
+					<td>
+						<i>
+							Частное лицо
+						</i>
+					</td>
+					<td data-victims="2">
+						<p><span class="inv-red"><strong>Погибших: 2</strong></span> </p>
+						<p>
+							<i>
+								ВС повреждено
+							</i>
+						</p>
+					</td>
+				</tr><tr>
+					<td>
+<strong><a href="/rassledovaniya/as-350-b3-ra-07518-16-06-2026/">16.06.2026</a></strong>
+					</td>
+					<td>
+						<i>в районе населенного пункта Архыз Карачаево-Черкесской Республики</i>
+					</td>
+					<td>
+						<strong>AS 350 B3</strong>
+						<p>RA-07518</p>
+					</td>
+					<td>
+						<i>
+							АО ЦА «СОЛЯРИС»
+						</i>
+					</td>
+					<td data-victims="0">
+						<p><span class="inv-green"><strong>Без жертв</strong></span> </p>
+						<p>
+							<i>
+								ВС повреждено
+							</i>
+						</p>
+					</td>
+				</tr><tr>
+					<td>
+<strong><a href="/rassledovaniya/sp-38k-ra-1215g-13-06-2026/">13.06.2026</a></strong>
+					</td>
+					<td>
+						<i>в районе населенного пункта Алешкин Волгоградской области</i>
+					</td>
+					<td>
+						<strong>СП-38K</strong>
+						<p>RA-1215G</p>
+					</td>
+					<td>
+						<i>
+							Индивидуальный предприниматель
+						</i>
+					</td>
+					<td data-victims="0">
+						<p><span class="inv-green"><strong>Без жертв</strong></span> (данные уточняются)</p>
+						<p>
+							<i>
+								Значительные повреждения ВС
+							</i>
+						</p>
+					</td>
+				</tr><tr>
+					<td>
+<strong><a href="/rassledovaniya/sa-319b-ra-05724-07-06-2026/">07.06.2026</a></strong>
+					</td>
+					<td>
+						<i>в районе населенного пункта Верхнее Рыболово Архангельской области</i>
+					</td>
+					<td>
+						<strong>SA 319B</strong>
+						<p>RA-05724</p>
+					</td>
+					<td>
+						<i>
+							ООО «СЕВЕР ФЛОТ»
+						</i>
+					</td>
+					<td data-victims="0">
+						<p><span class="inv-green"><strong>Без жертв</strong></span> (данные уточняются)</p>
+						<p>
+							<i>
+								ВС повреждено
+							</i>
+						</p>
+					</td>
+				</tr><tr>
+					<td>
+<strong><a href="/rassledovaniya/samodelnoe-vs-bez-registratsionnogo-nomera-06-06-2026/">06.06.2026</a></strong>
+					</td>
+					<td>
+						<i>Российская Федерация, район села Казанбаш,  Урнякское сельское поселение, Арский район, Республика Татарстан</i>
+					</td>
+					<td>
+						<strong>Самодельное ВС</strong>
+						<p>б/н</p>
+					</td>
+					<td>
+						<i>
+							Частное лицо
+						</i>
+					</td>
+					<td data-victims="1">
+						<p><span class="inv-red"><strong>Погибших: 1</strong></span> </p>
+						<p>
+							<i>
+								ВС разрушено
+							</i>
+						</p>
+					</td>
+				</tr><tr>
+					<td>
+<strong><a href="/rassledovaniya/gulfstream-iv-n899al-27-05-2026/">27.05.2026</a></strong>
+					</td>
+					<td>
+						<i>в полете</i>
+					</td>
+					<td>
+						<strong>Gulfstream IV </strong>
+						<p>N899AL</p>
+					</td>
+					<td>
+						<i>
+							
+						</i>
+					</td>
+					<td data-victims="0">
+						<p><span class="inv-green"><strong>Без жертв</strong></span> (данные уточняются)</p>
+						<p>
+							<i>
+								
+							</i>
+						</p>
+					</td>
+				</tr><tr>
+					<td>
+<strong><a href="/rassledovaniya/aeroprakt-22l2-ra-0127a-25-05-2026/">25.05.2026</a></strong>
+					</td>
+					<td>
+						<i>РФ, на удалении около 1 км юго-восточнее н. п.  Осиновый Мыс Богучанского района Красноярского края</i>
+					</td>
+					<td>
+						<strong>Аэропракт-22L2</strong>
+						<p>RA-0127A</p>
+					</td>
+					<td>
+						<i>
+							
+						</i>
+					</td>
+					<td data-victims="0">
+						<p><span class="inv-green"><strong>Без жертв</strong></span> </p>
+						<p>
+							<i>
+								ВС разрушено
+							</i>
+						</p>
+					</td>
+				</tr><tr>
+					<td>
+<strong><a href="/rassledovaniya/an-2-ra-40440-19-05-2026/">19.05.2026</a></strong>
+					</td>
+					<td>
+						<i>Российская Федерация, Республика Саха (Якутия),  Томпонский район, в районе аэродрома Теплый Ключ</i>
+					</td>
+					<td>
+						<strong>Ан-2</strong>
+						<p>RA-40440</p>
+					</td>
+					<td>
+						<i>
+							ООО АП «МиАн»
+						</i>
+					</td>
+					<td data-victims="0">
+						<p><span class="inv-green"><strong>Без жертв</strong></span> </p>
+						<p>
+							<i>
+								ВС уничтожено
+							</i>
+						</p>
+					</td>
+				</tr><tr>
+					<td>
+<strong><a href="/rassledovaniya/eevs-samolet-ms893a-ra-3132g-15-05-2026/">15.05.2026</a></strong>
+					</td>
+					<td>
+						<i>РФ, район н. п. Черное Вагайского муниципального округа Тюменской области</i>
+					</td>
+					<td>
+						<strong>MS893A</strong>
+						<p>RA-3132G</p>
+					</td>
+					<td>
+						<i>
+							ООО «Капитал-Джет»
+						</i>
+					</td>
+					<td data-victims="0">
+						<p><span class="inv-green"><strong>Без жертв</strong></span> </p>
+						<p>
+							<i>
+								Значительные повреждения ВС
+							</i>
+						</p>
+					</td>
+				</tr><tr>
+					<td>
+<strong><a href="/rassledovaniya/aeroprakt-22l2-ra-1718g-06-05-2026/">06.05.2026</a></strong>
+					</td>
+					<td>
+						<i>д. Кошкарево, Омская обл., РФ</i>
+					</td>
+					<td>
+						<strong>Аэропракт-22L2</strong>
+						<p>RA-1718G</p>
+					</td>
+					<td>
+						<i>
+							ООО «Авиабаза»
+						</i>
+					</td>
+					<td data-victims="2">
+						<p><span class="inv-red"><strong>Погибших: 2</strong></span> </p>
+						<p>
+							<i>
+								ВС разрушено
+							</i>
+						</p>
+					</td>
+				</tr><tr>
+					<td>
+<strong><a href="/rassledovaniya/mi-8t-ra-22909-01-05-2026/">01.05.2026</a></strong>
+					</td>
+					<td>
+						<i>РФ, п. п. Уса-37, г. Усинск, Республика Коми</i>
+					</td>
+					<td>
+						<strong>Ми-8Т</strong>
+						<p>RA-22909</p>
+					</td>
+					<td>
+						<i>
+							АО «Авиапредприятие «Ельцовка»
+						</i>
+					</td>
+					<td data-victims="0">
+						<p><span class="inv-green"><strong>Без жертв</strong></span> (данные уточняются)</p>
+						<p>
+							<i>
+								ВС разрушено
+							</i>
+						</p>
+					</td>
+				</tr><tr>
+					<td>
+<strong><a href="/rassledovaniya/fregat-ew-307sl-14-04-2026/">14.04.2026</a></strong>
+					</td>
+					<td>
+						<i>в районе населенного пункта Озерцо Минской области Республики Беларусь </i>
+					</td>
+					<td>
+						<strong>Фрегат</strong>
+						<p>EW-307SL</p>
+					</td>
+					<td>
+						<i>
+							
+						</i>
+					</td>
+					<td data-victims="2">
+						<p><span class="inv-red"><strong>Погибших: 2</strong></span> (данные уточняются)</p>
+						<p>
+							<i>
+								ВС разрушено
+							</i>
+						</p>
+					</td>
+				</tr><tr>
+					<td>
+<strong><a href="/rassledovaniya/an-2-ra-84629-20-03-2026/">20.03.2026</a></strong>
+					</td>
+					<td>
+						<i>в районе посадочной площадки Камышин Волгоградской области</i>
+					</td>
+					<td>
+						<strong>Ан-2</strong>
+						<p>RA-84629</p>
+					</td>
+					<td>
+						<i>
+							ООО «Авиационное предприятие «Регионавиа»
+						</i>
+					</td>
+					<td data-victims="0">
+						<p><span class="inv-green"><strong>Без жертв</strong></span> (данные уточняются)</p>
+						<p>
+							<i>
+								Значительные повреждения ВС
+							</i>
+						</p>
+					</td>
+				</tr><tr>
+					<td>
+<strong><a href="/rassledovaniya/alto-ng-ra-3401g-20-03-2026/">20.03.2026</a></strong>
+					</td>
+					<td>
+						<i>в районе городского округа Коломна Московской области </i>
+					</td>
+					<td>
+						<strong>Alto NG</strong>
+						<p>RA-3401G</p>
+					</td>
+					<td>
+						<i>
+							
+						</i>
+					</td>
+					<td data-victims="2">
+						<p><span class="inv-red"><strong>Погибших: 2</strong></span> (данные уточняются)</p>
+						<p>
+							<i>
+								ВС разрушено
+							</i>
+						</p>
+					</td>
+				</tr><tr>
+					<td>
+<strong><a href="/rassledovaniya/mi-8t-ra-24166-21-02-2026/">21.02.2026</a></strong>
+					</td>
+					<td>
+						<i>РФ, Ямало-Ненецкий автономный округ, Ямальский  район, 280 м от посадочной площадки Панаевск</i>
+					</td>
+					<td>
+						<strong>Ми-8Т</strong>
+						<p>RA-24166</p>
+					</td>
+					<td>
+						<i>
+							ООО «Авиационная компания «Ямал»
+						</i>
+					</td>
+					<td data-victims="0">
+						<p><span class="inv-green"><strong>Без жертв</strong></span> </p>
+						<p>
+							<i>
+								ВС повреждено
+							</i>
+						</p>
+					</td>
+				</tr><tr>
+					<td>
+<strong><a href="/rassledovaniya/r44-ra-04261-19-02-2026/">19.02.2026</a></strong>
+					</td>
+					<td>
+						<i>РФ, Бурейский муниципальный округ Амурской области</i>
+					</td>
+					<td>
+						<strong>Robinson R44</strong>
+						<p>RA-04261</p>
+					</td>
+					<td>
+						<i>
+							Частное лицо
+						</i>
+					</td>
+					<td data-victims="3">
+						<p><span class="inv-red"><strong>Погибших: 3</strong></span> </p>
+						<p>
+							<i>
+								ВС уничтожено
+							</i>
+						</p>
+					</td>
+				</tr><tr>
+					<td>
+<strong><a href="/rassledovaniya/da-40-ng-ra-02673-02-02-2026/">02.02.2026</a></strong>
+					</td>
+					<td>
+						<i>в районе населенного пункта Джанаталап Орского района Оренбургской области</i>
+					</td>
+					<td>
+						<strong>DA 40 NG</strong>
+						<p>RA-02673</p>
+					</td>
+					<td>
+						<i>
+							ФГБОУ ВО СПБГУ ГА
+						</i>
+					</td>
+					<td data-victims="3">
+						<p><span class="inv-red"><strong>Погибших: 3</strong></span> </p>
+						<p>
+							<i>
+								Значительные повреждения ВС
+							</i>
+						</p>
+					</td>
+				</tr><tr>
+					<td>
+<strong><a href="/rassledovaniya/r44-ra-04389-07-01-2026-/">07.01.2026</a></strong>
+					</td>
+					<td>
+						<i>Российская Федерация, Пермский край, Бардымский муниципальный округ, база отдыха «Ашатли парк»</i>
+					</td>
+					<td>
+						<strong>Robinson R44</strong>
+						<p>RA-04389</p>
+					</td>
+					<td>
+						<i>
+							ООО «Таттранском»
+						</i>
+					</td>
+					<td data-victims="2">
+						<p><span class="inv-red"><strong>Погибших: 2</strong></span> </p>
+						<p>
+							<i>
+								ВС разрушено
+							</i>
+						</p>
+					</td>
+				</tr></tbody>
+	</table>
+	 <!--news-list-->
+</div></div><br>
+ <!--container--> 
+
+<div id="footer">
+	<div class="container">
+		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+			<a href="http://mak-iac.org">
+				<div class="logo">
+ 					<img src="/bitrix/templates/mak/images/mak_logo.png"> <br>
+				 	МЕЖГОСУДАРСТВЕННЫЙ<br>
+				 	АВИАЦИОННЫЙ КОМИТЕТ
+				</div>
+			</a>
+		</div>
+		<div class="contacts col-lg-4 col-md-4 col-sm-4 col-xs-12">
+			<p>
+				 Большая Ордынка ул., д.22/2<br>
+				 муниципальный округ Якиманка вн. тер. г.,<br>
+				г. Москва, Россия, 119017<br>
+				Эл. почта: mak@mak.ru
+			</p>
+			<p>
+				 Тел.: +7(495)953-12-44<br>
+				 Факс: +7(495)953-35-08
+			</p>
+			<!--p>
+				 <a data-toggle="modal" data-target="#modal_feedabck" >
+                            Форма обратной связи
+                        </a>
+			</p-->
+		</div>
+		<div class="info col-lg-4 col-md-4 col-sm-4 col-xs-12">
+			<p>
+				 <a href="/karta-sayta/">
+                            Карта сайта
+                        </a>
+			</p>
+			<p>
+				Пресс-служба МАК: press@mak.ru<br><br>
+				Контакты для уведомлений об авиационных событиях:<br> Email: oper@mak.ru<br> Тел.: +7(495)9535251<br> Факс: +7(495)9531145, 9538889<br> АФТН: УУУУЛНЬЬ, УУУУЗЬДД                                    
+			</p>
+		</div>
+	</div>
+</div>
+
+<script>
+$(document).ready(function(){
+	var url = document.location.toString();
+	if (url.match('#')) {
+		$('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
+		console.log(url);
+	} 
+
+	// Change hash for page-reload
+	$('.nav-tabs a').on('shown.bs.tab', function (e) {
+		window.location.hash = e.target.hash;
+	})
+})
+</script>
+<meta name="creator" content="InDeWeb">
+
+</body></html>
