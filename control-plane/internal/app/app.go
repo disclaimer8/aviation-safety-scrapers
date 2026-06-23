@@ -23,6 +23,7 @@ import (
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/planner"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/seed"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/validation"
+	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/wayback"
 )
 
 // Exit codes.
@@ -37,7 +38,7 @@ const (
 func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 	if len(args) == 0 {
 		fmt.Fprintln(stderr, "usage: aviation-coverage <command> [flags]")
-		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan")
+		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback")
 		return exitUsage
 	}
 
@@ -59,9 +60,11 @@ func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		return runExport(ctx, rest, stderr)
 	case "plan":
 		return runPlan(ctx, rest, stdout, stderr)
+	case "process-wayback":
+		return runProcessWayback(ctx, rest, stderr)
 	default:
 		fmt.Fprintf(stderr, "unknown command %q\n", cmd)
-		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan")
+		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback")
 		return exitUsage
 	}
 }
@@ -381,5 +384,39 @@ func runPlan(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "plan: encode: %v\n", err)
 		return exitFailure
 	}
+	return exitOK
+}
+
+// ── process-wayback ──────────────────────────────────────────────────────────
+
+func runProcessWayback(ctx context.Context, args []string, stderr io.Writer) int {
+	fs := flag.NewFlagSet("process-wayback", flag.ContinueOnError)
+	fs.SetOutput(stderr)
+	dbPath := fs.String("db", "", "path to SQLite database file (required)")
+	limit := fs.Int("limit", 0, "max pending jobs to process (0 = no cap)")
+	storeDir := fs.String("store-dir", "./wayback-store", "directory for downloaded PDFs")
+	if err := fs.Parse(args); err != nil {
+		return exitUsage
+	}
+	if *dbPath == "" {
+		fmt.Fprintln(stderr, "process-wayback: --db is required")
+		fs.Usage()
+		return exitUsage
+	}
+
+	db, err := database.Open(*dbPath)
+	if err != nil {
+		fmt.Fprintf(stderr, "process-wayback: open db: %v\n", err)
+		return exitFailure
+	}
+	defer db.Close()
+
+	fetcher := wayback.NewHTTPFetcher(30 * time.Second)
+	processed, err := wayback.ProcessPending(ctx, db, fetcher, *storeDir, *limit)
+	if err != nil {
+		fmt.Fprintf(stderr, "process-wayback: %v\n", err)
+		return exitFailure
+	}
+	fmt.Fprintf(stderr, "processed %d\n", processed)
 	return exitOK
 }
