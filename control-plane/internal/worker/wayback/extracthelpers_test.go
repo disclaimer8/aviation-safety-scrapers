@@ -3,6 +3,7 @@ package wayback
 import (
 	"context"
 	"database/sql"
+	"path/filepath"
 	"testing"
 
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/migrations"
@@ -28,6 +29,8 @@ func newExtractTestDB(t *testing.T) *sql.DB {
 
 // seedDownloadedDoc inserts a country, a source, a crawl_job, and one
 // downloaded staged document. Returns the document id and country id.
+// local_file_path is placed under t.TempDir() so tests that read the file can
+// write to it without hitting macOS path restrictions.
 func seedDownloadedDoc(t *testing.T, db *sql.DB, iso2, digest string) (docID, countryID int64) {
 	t.Helper()
 	ctx := context.Background()
@@ -55,6 +58,7 @@ func seedDownloadedDoc(t *testing.T, db *sql.DB, iso2, digest string) (docID, co
 		t.Fatal(err)
 	}
 	jobID, _ := res.LastInsertId()
+	localFilePath := filepath.Join(t.TempDir(), iso2, digest+".pdf")
 	res, err = db.ExecContext(ctx, `
 		INSERT INTO staged_wayback_documents
 			(crawl_job_id, country_id, original_url, archived_url, timestamp, mimetype, digest,
@@ -64,7 +68,7 @@ func seedDownloadedDoc(t *testing.T, db *sql.DB, iso2, digest string) (docID, co
 		"https://caa.example/report.pdf",
 		"https://web.archive.org/web/20200101id_/https://caa.example/report.pdf",
 		"20200101000000", "application/pdf", digest,
-		"/store/"+iso2+"/"+digest+".pdf", "checksum-"+digest)
+		localFilePath, "checksum-"+digest)
 	if err != nil {
 		t.Fatal(err)
 	}
