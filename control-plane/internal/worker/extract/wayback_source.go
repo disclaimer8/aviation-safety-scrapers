@@ -107,9 +107,10 @@ func (WaybackSource) MarkSkipped(ctx context.Context, db *sql.DB, id int64) erro
 	return nil
 }
 
-// MarkExtracted links the document to its event and advances it to 'extracted'.
-func (WaybackSource) MarkExtracted(ctx context.Context, db *sql.DB, id, eventID int64) error {
-	if _, err := db.ExecContext(ctx, `
+// MarkExtractedTx links the document to its event and advances it to 'extracted'
+// inside the caller's transaction, so it commits atomically with the promotion.
+func (WaybackSource) MarkExtractedTx(ctx context.Context, tx *sql.Tx, id, eventID int64) error {
+	if _, err := tx.ExecContext(ctx, `
 		UPDATE staged_wayback_documents SET event_id=?, extraction_status='extracted' WHERE id=?`,
 		eventID, id); err != nil {
 		return fmt.Errorf("wayback: mark extracted %d: %w", id, err)

@@ -90,8 +90,11 @@ type StagedDocSource interface {
 	ResolveSource(ctx context.Context, q execQuerier, doc ExtractDoc) (sourceID int64, tier int, copyright string, err error)
 	// MarkSkipped advances the row to a terminal non-accident state.
 	MarkSkipped(ctx context.Context, db *sql.DB, id int64) error
-	// MarkExtracted links the row to its event and advances it to 'extracted'.
-	MarkExtracted(ctx context.Context, db *sql.DB, id, eventID int64) error
+	// MarkExtractedTx links the row to its event and advances it to 'extracted',
+	// running inside the caller's transaction so promotion (events+reports) and the
+	// staged-row mark commit atomically. If the tx rolls back, the doc stays
+	// pending and is re-selected — no duplicate events/reports.
+	MarkExtractedTx(ctx context.Context, tx *sql.Tx, id, eventID int64) error
 	// RecordFailure marks the row failed, bumps its attempt counter, and logs a
 	// crawl_errors row with the classified errType (transport/ocr/llm/parse).
 	RecordFailure(ctx context.Context, db *sql.DB, doc ExtractDoc, url, errType string, cause error) error

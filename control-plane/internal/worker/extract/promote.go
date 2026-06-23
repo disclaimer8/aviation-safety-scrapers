@@ -31,10 +31,12 @@ func normalizeReg(s string) string {
 	return strings.ToUpper(strings.TrimSpace(s))
 }
 
-// PromoteDocument inserts or links an event and inserts a report (one
-// transaction), then advances the staged document to 'extracted' via the
-// source's MarkExtracted. Returns the event id and whether it linked to an
-// existing event.
+// PromoteDocument inserts or links an event, inserts a report, and advances the
+// staged document to 'extracted' — all in ONE transaction (via the source's
+// MarkExtractedTx). A crash before commit rolls everything back, so the doc is
+// re-selected next run rather than leaving an extracted event with the staged row
+// still pending (which would re-promote and duplicate). Returns the event id and
+// whether it linked to an existing event.
 func PromoteDocument(ctx context.Context, db *sql.DB, src StagedDocSource, doc ExtractDoc, e ExtractedEvent) (int64, bool, error) {
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
@@ -94,12 +96,12 @@ func PromoteDocument(ctx context.Context, db *sql.DB, src StagedDocSource, doc E
 		return 0, false, fmt.Errorf("extract: insert report: %w", err)
 	}
 
-	if err := tx.Commit(); err != nil {
-		return 0, false, fmt.Errorf("extract: promote commit: %w", err)
+	if err := src.MarkExtractedTx(ctx, tx, doc.ID, eventID); err != nil {
+		return 0, false, err
 	}
 
-	if err := src.MarkExtracted(ctx, db, doc.ID, eventID); err != nil {
-		return 0, false, err
+	if err := tx.Commit(); err != nil {
+		return 0, false, fmt.Errorf("extract: promote commit: %w", err)
 	}
 	return eventID, linked, nil
 }

@@ -97,6 +97,53 @@ func TestProcessExtractPendingResumesFromOCRText(t *testing.T) {
 	}
 }
 
+// TestExtractOneOCRFailureWritesCrawlError drives one extraction failure through
+// the wayback adapter and asserts a crawl_errors row IS written with an
+// error_type that satisfies the CHECK constraint. This is the regression guard
+// for the bug where the four extract classifications ("transport"/"ocr"/"llm"/
+// "parse") violated the CHECK and were silently swallowed (no row written).
+func TestExtractOneOCRFailureWritesCrawlError(t *testing.T) {
+	ctx := context.Background()
+	db := newExtractTestDB(t)
+	docID, _ := seedDownloadedDoc(t, db, "KE", "k1")
+	writePDF(t, db, docID)
+	doc := loadDoc(t, db, docID)
+
+	// Injected OCR client that errors — forces the failure path.
+	status, err := extractOne(ctx, db, WaybackSource{}, &fixtureOCRClient{Err: errors.New("ocr boom")}, &fixtureLLMClient{}, t.TempDir(), doc)
+	if err != nil {
+		t.Fatalf("extractOne returned err: %v", err)
+	}
+	if status != "failed" {
+		t.Fatalf("status=%q want failed", status)
+	}
+
+	var n int
+	var errType, message string
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM crawl_errors`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 1 {
+		t.Fatalf("crawl_errors rows=%d want 1 (row was silently dropped by CHECK violation)", n)
+	}
+	if err := db.QueryRowContext(ctx, `SELECT error_type, message FROM crawl_errors LIMIT 1`).Scan(&errType, &message); err != nil {
+		t.Fatal(err)
+	}
+	// The CHECK accepts these; the OCR/LLM/transport cause has no granular member
+	// so it maps to 'unknown', with the detail carried in message.
+	valid := map[string]bool{
+		"tls_error": true, "timeout": true, "dns_error": true, "nx_domain": true,
+		"http_403": true, "http_404": true, "http_500": true, "parse_error": true,
+		"robots_blocked": true, "unknown": true,
+	}
+	if !valid[errType] {
+		t.Fatalf("error_type=%q violates crawl_errors CHECK constraint", errType)
+	}
+	if message == "" {
+		t.Fatalf("message empty: detailed cause must be preserved in message text")
+	}
+}
+
 // writePDF creates a file at the doc's local_file_path so the runner can read it.
 func writePDF(t *testing.T, db *sql.DB, docID int64) {
 	t.Helper()

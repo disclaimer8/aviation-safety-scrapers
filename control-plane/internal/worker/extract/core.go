@@ -9,11 +9,16 @@ import (
 )
 
 // Error-type classifications recorded on crawl_errors for a failed extraction.
+// Values MUST satisfy the crawl_errors.error_type CHECK constraint (see
+// migrations/sql/002_pipeline.sql). No granular enum members exist for
+// transport/OCR/LLM failures, so they map to 'unknown' — the detailed cause is
+// preserved in the crawl_errors.message text. Promotion failures map to the real
+// 'parse_error' member.
 const (
-	errTypeTransport = "transport" // file fetch / read failures
-	errTypeOCR       = "ocr"       // OCR step failures
-	errTypeLLM       = "llm"       // LLM extraction failures
-	errTypeParse     = "parse"     // promotion / persistence failures
+	errTypeTransport = "unknown"     // file fetch / read failures
+	errTypeOCR       = "unknown"     // OCR step failures
+	errTypeLLM       = "unknown"     // LLM extraction failures
+	errTypeParse     = "parse_error" // promotion / persistence failures
 )
 
 // extractOne runs one document through the state machine: ensure-downloaded, OCR
