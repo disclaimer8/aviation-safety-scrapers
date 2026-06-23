@@ -92,3 +92,59 @@ func (r *SourceResolver) Resolve(jobType model.CrawlJobType) (int64, bool) {
 	id, ok := r.byJobType[jobType]
 	return id, ok
 }
+
+const dayMs = int64(24 * 60 * 60 * 1000)
+
+func cadenceDurationMs(cadence string) int64 {
+	switch cadence {
+	case "weekly":
+		return 7 * dayMs
+	case "biweekly":
+		return 14 * dayMs
+	case "monthly":
+		return 30 * dayMs
+	case "quarterly":
+		return 90 * dayMs
+	default:
+		return 90 * dayMs
+	}
+}
+
+func cadenceElapsed(nowMs, lastFinishedMs int64, cadence string) bool {
+	return nowMs-lastFinishedMs >= cadenceDurationMs(cadence)
+}
+
+// JobState summarises the existing crawl_jobs for a (country, job_type) pair.
+type JobState struct {
+	HasActive        bool  // a pending or running job exists
+	HasTerminal      bool  // at least one success/failed/partial job exists
+	LastFinishedAtMs int64 // max(finished_at) among terminal jobs (0 if none)
+}
+
+// JobStateFor inspects crawl_jobs for the given country and job type.
+func JobStateFor(ctx context.Context, db *sql.DB, countryID int64, jobType model.CrawlJobType) (JobState, error) {
+	var st JobState
+	var active int
+	if err := db.QueryRowContext(ctx, `
+		SELECT COUNT(*) FROM crawl_jobs
+		 WHERE country_id = ? AND job_type = ? AND status IN ('pending','running')
+	`, countryID, string(jobType)).Scan(&active); err != nil {
+		return st, fmt.Errorf("planner: job active count: %w", err)
+	}
+	st.HasActive = active > 0
+
+	var cnt int
+	var maxFinished sql.NullInt64
+	if err := db.QueryRowContext(ctx, `
+		SELECT COUNT(*), MAX(finished_at) FROM crawl_jobs
+		 WHERE country_id = ? AND job_type = ?
+		   AND status IN ('success','failed','partial')
+	`, countryID, string(jobType)).Scan(&cnt, &maxFinished); err != nil {
+		return st, fmt.Errorf("planner: job terminal state: %w", err)
+	}
+	st.HasTerminal = cnt > 0
+	if maxFinished.Valid {
+		st.LastFinishedAtMs = maxFinished.Int64
+	}
+	return st, nil
+}
