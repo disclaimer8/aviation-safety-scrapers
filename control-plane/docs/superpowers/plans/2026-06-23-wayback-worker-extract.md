@@ -24,7 +24,7 @@
 
 ## Task 1: Migration `006_wayback_extract.sql`
 
-Adds the six extraction columns to `staged_wayback_documents`.
+Adds the five extraction columns to `staged_wayback_documents`.
 
 **Files:**
 - Create: `internal/migrations/sql/006_wayback_extract.sql`
