@@ -473,12 +473,27 @@ func runProcessRegional(ctx context.Context, args []string, stderr io.Writer) in
 	dbPath := fs.String("db", "", "path to SQLite database file (required)")
 	limit := fs.Int("limit", 0, "max pending jobs to process (0 = no cap)")
 	sourceFile := fs.String("source-file", "", "out-of-band listing export (for Cloudflare/TLS-blocked bodies)")
+	body := fs.String("body", "", "restrict to one body (ECCAA|BAGAIA|IAC); required with --source-file")
 	if err := fs.Parse(args); err != nil {
 		return exitUsage
 	}
 	if *dbPath == "" {
 		fmt.Fprintln(stderr, "process-regional: --db is required")
 		fs.Usage()
+		return exitUsage
+	}
+	// An out-of-band export is body-specific: feeding it to the other bodies'
+	// clients would mis-parse its relative links against the wrong origin and
+	// stage records under the wrong body. Require --body to scope the run.
+	if *sourceFile != "" && *body == "" {
+		fmt.Fprintln(stderr, "process-regional: --body is required with --source-file (an export is body-specific)")
+		fs.Usage()
+		return exitUsage
+	}
+	switch *body {
+	case "", "ECCAA", "BAGAIA", "IAC":
+	default:
+		fmt.Fprintf(stderr, "process-regional: invalid --body %q (want ECCAA|BAGAIA|IAC)\n", *body)
 		return exitUsage
 	}
 
@@ -494,7 +509,7 @@ func runProcessRegional(ctx context.Context, args []string, stderr io.Writer) in
 		BAGAIA: regional.NewBAGAIAClient(30*time.Second, *sourceFile),
 		IAC:    regional.NewIACClient(30*time.Second, *sourceFile),
 	}
-	processed, err := regional.ProcessPending(ctx, db, clients, *limit)
+	processed, err := regional.ProcessPending(ctx, db, clients, *limit, *body)
 	if err != nil {
 		fmt.Fprintf(stderr, "process-regional: %v\n", err)
 		return exitFailure

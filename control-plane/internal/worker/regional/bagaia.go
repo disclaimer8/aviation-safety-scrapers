@@ -28,16 +28,16 @@ func NewBAGAIAClient(timeout time.Duration, sourceFile string) RegionalClient {
 	return &bagaiaClient{timeout: timeout, sourceFile: sourceFile}
 }
 
-func (c *bagaiaClient) Search(ctx context.Context, countryISO2 string) ([]RegionalRecord, error) {
+func (c *bagaiaClient) Search(ctx context.Context, countryISO2 string) ([]RegionalRecord, int, error) {
 	raw, err := loadListing(ctx, c.timeout, c.sourceFile, bagaiaListingURL)
 	if err != nil {
-		return nil, fmt.Errorf("regional: BAGAIA search: %w", err)
+		return nil, 0, fmt.Errorf("regional: BAGAIA search: %w", err)
 	}
-	recs, _, err := parseBAGAIA(raw)
+	recs, warnings, err := parseBAGAIA(raw)
 	if err != nil {
-		return nil, fmt.Errorf("regional: BAGAIA search: %w", err)
+		return nil, 0, fmt.Errorf("regional: BAGAIA search: %w", err)
 	}
-	return recs, nil
+	return recs, warnings, nil
 }
 
 // parseBAGAIA extracts report records from a bagasoo.org report listing.

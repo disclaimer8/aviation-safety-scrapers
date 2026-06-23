@@ -100,7 +100,7 @@ func TestProcessPendingOnlyRegionalRaioAndResumesStale(t *testing.T) {
 	usJid, _ := res.LastInsertId()
 
 	clients := Clients{IAC: &fixtureClient{Records: []RegionalRecord{{Ref: "X1", Title: "A", OriginalURL: "https://mak.aero/1"}}}}
-	processed, err := ProcessPending(ctx, db, clients, 0)
+	processed, err := ProcessPending(ctx, db, clients, 0, "")
 	if err != nil {
 		t.Fatal(err)
 	}

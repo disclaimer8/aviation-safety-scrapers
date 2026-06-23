@@ -16,6 +16,8 @@ type RegionalRecord struct {
 }
 
 // RegionalClient queries one regional body for accidents in a member country.
+// It returns the discovered records and a count of warnings (listing entries
+// that matched but lacked a usable title/ref); a warning marks the job partial.
 type RegionalClient interface {
-	Search(ctx context.Context, countryISO2 string) ([]RegionalRecord, error)
+	Search(ctx context.Context, countryISO2 string) ([]RegionalRecord, int, error)
 }
