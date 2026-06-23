@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestMigration006ForeignSchema(t *testing.T) {
+func TestMigration008ForeignSchema(t *testing.T) {
 	db := applyTestSchema(t)
 	ctx := context.Background()
 

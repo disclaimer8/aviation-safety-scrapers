@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<!-- Representative IAC (МАК / mak.aero) investigation-report listing.
+     mak.aero renders its real listing client-side (Wix), so production runs
+     this body out-of-band via --source-file from an operator browser export.
+     This fixture mirrors the entry shape: a report page link + title + date. -->
+<html lang="ru">
+<head><meta charset="utf-8"><title>Расследования — МАК</title></head>
+<body>
+  <nav>
+    <a href="/">Главная</a>
+    <a href="/about">О МАК</a>
+    <a href="https://www.iac.aero/">Внешний сайт</a>
+  </nav>
+  <main>
+    <h1>Отчёты о расследовании авиационных происшествий</h1>
+    <ul class="reports">
+      <li>
+        <a href="/rassledovaniya/2024-ra-0012">Авиационное происшествие с самолётом Ан-2 RA-40123, 02.01.2024</a>
+      </li>
+      <li>
+        <a href="/rassledovaniya/2023-ra-0098">Катастрофа вертолёта Ми-8 EX-08009, 15.11.2023</a>
+      </li>
+      <li>
+        <a href="https://www.mak.aero/upload/iblock/2022-ra-0451-final.pdf">Окончательный отчёт по происшествию с Boeing 737, 2022-07-21</a>
+      </li>
+    </ul>
+  </main>
+</body>
+</html>
