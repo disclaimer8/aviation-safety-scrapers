@@ -115,10 +115,10 @@ func TestImportRAIOPreservesCuratedECCAAAndAppliesICAOMembers(t *testing.T) {
 func TestImportRAIOConditionalCoverage(t *testing.T) {
 	db := testDB(t)
 
-	// Nigeria is a BAGAIA (RAIO) member seeded with coverage 'unknown' → becomes
-	// regional_raio. Ghana we pin to 'direct_public_archive' → must NOT downgrade.
-	// Nigeria is now seeded as a BAGAIA RAIO member (regional_raio); reset it to
-	// 'unknown' to exercise the importer's conditional upgrade unknown -> regional_raio.
+	// Nigeria is seeded as a regional_raio RAIO member (BAGAIA), so reset it to
+	// 'unknown' here to exercise the importer's conditional upgrade unknown →
+	// regional_raio. Ghana is pinned to 'direct_public_archive' to prove that the
+	// importer never downgrades an already-richer coverage status.
 	setCoverage(t, db, "Nigeria", "unknown")
 	setCoverage(t, db, "Ghana", "direct_public_archive")
 

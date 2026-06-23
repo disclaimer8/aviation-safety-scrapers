@@ -3,6 +3,7 @@ package planner
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 
@@ -77,7 +78,7 @@ func NewSourceResolver(ctx context.Context, db *sql.DB) (*SourceResolver, error)
 	for jt, name := range sourceNameByJobType {
 		var id int64
 		err := db.QueryRowContext(ctx, `SELECT id FROM sources WHERE name = ?`, name).Scan(&id)
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			continue
 		}
 		if err != nil {
@@ -204,7 +205,13 @@ func BuildPlan(ctx context.Context, db *sql.DB, nowMs int64, limit int) (Plan, e
 	}
 
 	for _, c := range cands {
-		for _, jt := range JobTypesFor(c.CoverageStatus, c.DelegateISO2) {
+		jobTypes := JobTypesFor(c.CoverageStatus, c.DelegateISO2)
+		if len(jobTypes) == 0 {
+			plan.Warnings = append(plan.Warnings,
+				fmt.Sprintf("%s: coverage_status %q yields no job types", c.ISO2, c.CoverageStatus))
+			continue
+		}
+		for _, jt := range jobTypes {
 			pj := PlannedJob{
 				CountryID:      c.CountryID,
 				ISO2:           c.ISO2,
