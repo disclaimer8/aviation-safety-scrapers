@@ -6,15 +6,16 @@ import (
 )
 
 type fixtureClient struct {
-	Records []RegionalRecord
-	Err     error
+	Records  []RegionalRecord
+	Warnings int
+	Err      error
 }
 
-func (f *fixtureClient) Search(ctx context.Context, countryISO2 string) ([]RegionalRecord, error) {
+func (f *fixtureClient) Search(ctx context.Context, countryISO2 string) ([]RegionalRecord, int, error) {
 	if f.Err != nil {
-		return nil, f.Err
+		return nil, 0, f.Err
 	}
-	return f.Records, nil
+	return f.Records, f.Warnings, nil
 }
 
 var _ RegionalClient = (*fixtureClient)(nil)

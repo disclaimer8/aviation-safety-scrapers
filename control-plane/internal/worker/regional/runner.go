@@ -60,7 +60,7 @@ func RunJob(ctx context.Context, db *sql.DB, c Clients, job Job) error {
 		return finalize(ctx, db, job.ID, "failed", jobStats{})
 	}
 
-	recs, err := client.Search(ctx, job.ISO2)
+	recs, warnings, err := client.Search(ctx, job.ISO2)
 	if err != nil {
 		recordError(ctx, db, job.ID, "regional://"+job.BodyCode, "unknown", err.Error())
 		return finalize(ctx, db, job.ID, "failed", jobStats{})
@@ -72,12 +72,20 @@ func RunJob(ctx context.Context, db *sql.DB, c Clients, job Job) error {
 		return err
 	}
 
-	return finalize(ctx, db, job.ID, "success", jobStats{Found: len(recs), Staged: staged})
+	status := "success"
+	if warnings > 0 {
+		status = "partial"
+	}
+	return finalize(ctx, db, job.ID, status, jobStats{Found: len(recs), Staged: staged, Errors: warnings})
 }
 
 // ProcessPending runs up to limit pending/stale archive_crawl jobs whose country
 // is regional_raio, highest country priority first. limit <= 0 means no cap.
-func ProcessPending(ctx context.Context, db *sql.DB, c Clients, limit int) (int, error) {
+// bodyFilter, when non-empty (ECCAA/BAGAIA/IAC), restricts processing to jobs
+// whose resolved body matches; others are left pending. This is required with an
+// out-of-band --source-file, which is body-specific and would otherwise be
+// mis-parsed against the wrong body's origin.
+func ProcessPending(ctx context.Context, db *sql.DB, c Clients, limit int, bodyFilter string) (int, error) {
 	q := `
 		SELECT cj.id, c.id, c.iso2
 		  FROM crawl_jobs cj
@@ -117,6 +125,11 @@ func ProcessPending(ctx context.Context, db *sql.DB, c Clients, limit int) (int,
 		code, ok, err := ResolveBody(ctx, db, j.CountryID)
 		if err != nil {
 			return processed, err
+		}
+		if bodyFilter != "" && code != bodyFilter {
+			// Not the targeted body (covers the no-body case too); leave pending
+			// for a run that targets its body. Do not count as processed.
+			continue
 		}
 		if !ok {
 			recordError(ctx, db, j.ID, "regional://"+j.ISO2, "unknown",

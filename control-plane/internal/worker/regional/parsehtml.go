@@ -80,23 +80,37 @@ func cleanText(s string) string {
 	return strings.TrimSpace(s)
 }
 
+// knownExts are the page/document extensions stripped from a ref's trailing
+// segment; any other trailing dot (e.g. "report.2024-final") is left intact.
+var knownExts = map[string]bool{
+	".pdf": true, ".html": true, ".htm": true,
+	".php": true, ".aspx": true, ".asp": true, ".jsp": true,
+}
+
 // refFromURL derives a stable record id from the last path segment of the URL,
-// stripping a trailing file extension.
+// stripping a known file extension and folding in the query string so reports
+// that differ only by query (e.g. ?p=123 on WordPress/Wix) get distinct refs.
 func refFromURL(raw string) string {
 	u, err := url.Parse(raw)
 	if err != nil {
 		return ""
 	}
-	p := strings.Trim(u.Path, "/")
-	if p == "" {
-		return ""
+	seg := ""
+	if p := strings.Trim(u.Path, "/"); p != "" {
+		seg = p
+		if i := strings.LastIndex(p, "/"); i >= 0 {
+			seg = p[i+1:]
+		}
+		if i := strings.LastIndex(seg, "."); i > 0 && knownExts[strings.ToLower(seg[i:])] {
+			seg = seg[:i]
+		}
 	}
-	seg := p
-	if i := strings.LastIndex(p, "/"); i >= 0 {
-		seg = p[i+1:]
-	}
-	if i := strings.LastIndex(seg, "."); i > 0 {
-		seg = seg[:i]
+	if q := u.RawQuery; q != "" {
+		if seg == "" {
+			seg = q
+		} else {
+			seg = seg + "?" + q
+		}
 	}
 	return seg
 }
@@ -110,15 +124,30 @@ func isPDF(raw string) bool {
 }
 
 // extractDate finds the first yyyy-mm-dd / yyyy/mm/dd or dd.mm.yyyy date in s and
-// returns it in ISO yyyy-mm-dd form, or "" when none is present.
+// returns it in ISO yyyy-mm-dd form, or "" when none is present or the matched
+// digits are not a real calendar date (e.g. a "2023-45-67" report number).
 func extractDate(s string) string {
-	if m := isoDateRe.FindStringSubmatch(s); m != nil {
-		return fmt.Sprintf("%s-%s-%s", m[1], m[2], m[3])
-	}
-	if m := dmyDateRe.FindStringSubmatch(s); m != nil {
-		return fmt.Sprintf("%s-%s-%s", m[3], m[2], m[1])
+	for _, m := range [][]string{
+		firstNonNil(isoDateRe.FindStringSubmatch(s), 1, 2, 3),
+		firstNonNil(dmyDateRe.FindStringSubmatch(s), 3, 2, 1),
+	} {
+		if m == nil {
+			continue
+		}
+		if t, err := time.Parse("2006-01-02", fmt.Sprintf("%s-%s-%s", m[0], m[1], m[2])); err == nil {
+			return t.Format("2006-01-02")
+		}
 	}
 	return ""
+}
+
+// firstNonNil reorders a regexp submatch into [year, month, day] order using the
+// given 1-based group indices, or returns nil when there was no match.
+func firstNonNil(m []string, y, mo, d int) []string {
+	if m == nil {
+		return nil
+	}
+	return []string{m[y], m[mo], m[d]}
 }
 
 // hostMatch reports whether abs is hosted on wantHost or a subdomain of it.

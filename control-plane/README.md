@@ -200,6 +200,16 @@ TLS chain, `bagasoo.org` exposes no public report index), so in practice they ar
 **out-of-band**: export the listing from a real browser and run with `--source-file`.
 Live fetching is attempted as a best-effort fallback.
 
+An export is body-specific (its relative links are resolved against that body's
+origin), so `--source-file` requires `--body {ECCAA|BAGAIA|IAC}` to scope the run to
+that body's jobs; jobs for the other bodies are left pending. Without `--source-file`,
+all three bodies are processed live and `--body` is optional.
+
+```bash
+./aviation-coverage process-regional --db coverage.db --body IAC \
+  --source-file iac-listing.html
+```
+
 Only `archive_crawl` jobs whose country is `regional_raio` are processed;
 `archive_crawl` jobs for `direct_public_archive` countries are left for a future
 authority-archive worker. Jobs are finalized `success`/`failed` with
