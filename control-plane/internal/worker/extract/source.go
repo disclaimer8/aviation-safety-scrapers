@@ -70,6 +70,10 @@ type ExtractDoc struct {
 	Attempts      int
 	CrawlJobID    int64
 	Priority      int64
+	// SourceRef carries a source-specific identifier used by adapters to credit
+	// the originating body. RegionalSource stores body_code (e.g. "ECCAA");
+	// ForeignSource stores the authority code. Empty for WaybackSource.
+	SourceRef string
 }
 
 // StagedDocSource abstracts a staging table behind the generic extract core. The
