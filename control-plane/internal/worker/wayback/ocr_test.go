@@ -46,9 +46,11 @@ func TestPersistOCRText(t *testing.T) {
 		t.Fatalf("text=%q", string(b))
 	}
 	var status, gotPath string
-	db.QueryRowContext(ctx, `
+	if err := db.QueryRowContext(ctx, `
 		SELECT extraction_status, ocr_text_path FROM staged_wayback_documents WHERE id=?`, docID).
-		Scan(&status, &gotPath)
+		Scan(&status, &gotPath); err != nil {
+		t.Fatalf("scan row: %v", err)
+	}
 	if status != "ocr_done" || gotPath != want {
 		t.Fatalf("status=%q ocr_text_path=%q", status, gotPath)
 	}
