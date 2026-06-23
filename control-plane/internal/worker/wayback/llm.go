@@ -63,7 +63,12 @@ func NewHTTPLLMClient(endpoint, model string, maxInputChars int, timeout time.Du
 }
 
 // extractSchema is the JSON-Schema handed to Ollama's `format` field so the model
-// is grammar-constrained to emit exactly the ExtractedEvent shape.
+// is grammar-constrained to emit exactly the ExtractedEvent shape. EVERY property
+// is listed in `required`: Ollama's grammar lets the model omit non-required keys,
+// and in practice it does — omitting e.g. aircraft_registration/aircraft_type even
+// when they are plainly in the text, which then fails the promotion gate. Requiring
+// all keys forces the model to fill each field from the document (empty/null when
+// genuinely absent). Verified against a real Honduras AHAC report.
 var extractSchema = json.RawMessage(`{
   "type":"object",
   "properties":{
@@ -87,7 +92,12 @@ var extractSchema = json.RawMessage(`{
     "language":{"type":"string"},
     "published_date":{"type":"string"}
   },
-  "required":["is_aviation_accident"]
+  "required":[
+    "is_aviation_accident","date","date_precision","location","latitude","longitude",
+    "aircraft_registration","aircraft_type","manufacturer","operator_name","flight_number",
+    "fatalities","injuries","event_type","investigation_status","report_type","title",
+    "language","published_date"
+  ]
 }`)
 
 func (h *httpLLMClient) Extract(ctx context.Context, text string) (ExtractedEvent, error) {

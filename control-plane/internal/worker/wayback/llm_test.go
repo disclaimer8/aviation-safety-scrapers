@@ -25,6 +25,33 @@ func (f *fixtureLLMClient) Extract(ctx context.Context, text string) (ExtractedE
 var _ LLMClient = (*fixtureLLMClient)(nil)
 var _ LLMClient = (*httpLLMClient)(nil)
 
+// TestExtractSchemaRequiresAllProperties guards against the model omitting fields.
+// Ollama's grammar lets it drop any property not in `required`, and qwen3.6-rw does
+// — omitting aircraft_registration/aircraft_type even when present, which fails the
+// promotion gate (caught in a live smoke against a real Honduras report). Every
+// property must be required so the model fills each field from the document.
+func TestExtractSchemaRequiresAllProperties(t *testing.T) {
+	var s struct {
+		Properties map[string]json.RawMessage `json:"properties"`
+		Required   []string                   `json:"required"`
+	}
+	if err := json.Unmarshal(extractSchema, &s); err != nil {
+		t.Fatalf("extractSchema is not valid JSON: %v", err)
+	}
+	required := make(map[string]bool, len(s.Required))
+	for _, r := range s.Required {
+		required[r] = true
+	}
+	for prop := range s.Properties {
+		if !required[prop] {
+			t.Errorf("property %q is not in `required` — Ollama may omit it", prop)
+		}
+	}
+	if len(s.Required) != len(s.Properties) {
+		t.Errorf("required lists %d fields but schema has %d properties", len(s.Required), len(s.Properties))
+	}
+}
+
 func TestHTTPLLMClientParsesOllamaResponse(t *testing.T) {
 	// Ollama /api/generate returns {"response":"<json string>"} when format is set.
 	inner := `{"is_aviation_accident":true,"date":"2019-03-10","date_precision":"exact",` +
