@@ -191,6 +191,10 @@ func TestRegionalPendingDocsLimitRespected(t *testing.T) {
 // ─── EnsureDownloaded ────────────────────────────────────────────────────────
 
 func TestRegionalEnsureDownloadedFetchesAndUpdatesRow(t *testing.T) {
+	// EnsureDownloaded calls DownloadReportURL which uses the SSRF guard by
+	// default. Allow loopback so the httptest server is reachable in tests.
+	allowLoopback(t)
+
 	ctx := context.Background()
 	db := newExtractTestDB(t)
 
@@ -274,6 +278,10 @@ func TestRegionalEnsureDownloadedFailureMarksRow(t *testing.T) {
 //     still returned by PendingDocs (for the extraction phase).
 //  3. A row with extraction_status='extracted' is NOT returned.
 func TestRegionalPendingDocsTwoPhaseFlow(t *testing.T) {
+	// EnsureDownloaded calls DownloadReportURL which uses the SSRF guard by
+	// default. Allow loopback so the httptest server is reachable in tests.
+	allowLoopback(t)
+
 	ctx := context.Background()
 	db := newExtractTestDB(t)
 
