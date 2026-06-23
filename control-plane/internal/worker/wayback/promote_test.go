@@ -93,4 +93,12 @@ func TestPromoteDocumentLinksDuplicate(t *testing.T) {
 	if n != 1 {
 		t.Fatalf("event count=%d want 1", n)
 	}
+	// Report row created for linked event.
+	var reportCount int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM reports WHERE event_id=?`, existing).Scan(&reportCount); err != nil {
+		t.Fatalf("count reports: %v", err)
+	}
+	if reportCount != 1 {
+		t.Fatalf("want 1 report for linked event, got %d", reportCount)
+	}
 }
