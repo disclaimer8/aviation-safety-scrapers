@@ -122,11 +122,10 @@ func TestImportRAIOConditionalCoverage(t *testing.T) {
 	setCoverage(t, db, "Nigeria", "unknown")
 	setCoverage(t, db, "Ghana", "direct_public_archive")
 
-	// Jordan is a real ARCM-MENA (ICM) member with coverage 'unknown'. ICM
-	// membership must never change coverage.
-	if got := coverageStatus(t, db, "Jordan"); got != "unknown" {
-		t.Fatalf("Jordan precondition coverage=%q want unknown", got)
-	}
+	// Jordan is a real ARCM-MENA (ICM) member, now seeded with a coverage status
+	// by the expansion overlays; reset it to 'unknown' here to verify ICM
+	// membership never changes coverage.
+	setCoverage(t, db, "Jordan", "unknown")
 
 	if _, err := Import(context.Background(), db, common.Input{
 		SourceURL: raioSourceURL,
