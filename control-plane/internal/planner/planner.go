@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/model"
 )
@@ -147,4 +148,95 @@ func JobStateFor(ctx context.Context, db *sql.DB, countryID int64, jobType model
 		st.LastFinishedAtMs = maxFinished.Int64
 	}
 	return st, nil
+}
+
+// Decision records why a candidate job is or is not enqueued.
+type Decision string
+
+const (
+	DecisionWouldEnqueue    Decision = "would_enqueue"
+	DecisionSkippedActive   Decision = "skipped_active"
+	DecisionSkippedCadence  Decision = "skipped_cadence"
+	DecisionSkippedNoSource Decision = "skipped_no_source"
+)
+
+// PlannedJob is one (country, job_type) decision.
+type PlannedJob struct {
+	CountryID      int64                `json:"-"`
+	ISO2           string               `json:"iso2"`
+	PriorityScore  float64              `json:"priority_score"`
+	CoverageStatus model.CoverageStatus `json:"coverage_status"`
+	JobType        model.CrawlJobType   `json:"job_type"`
+	SourceID       int64                `json:"source_id"`
+	Decision       Decision             `json:"decision"`
+}
+
+// Plan is the full scheduling plan.
+type Plan struct {
+	GeneratedAt        time.Time    `json:"generated_at"`
+	CandidateCountries int          `json:"candidate_countries"`
+	JobsPlanned        int          `json:"jobs_planned"`
+	Jobs               []PlannedJob `json:"jobs"`
+	Warnings           []string     `json:"warnings"`
+}
+
+// BuildPlan ranks gaps and produces a decision per (country, job_type). It does
+// not write anything; pass the result to Enqueue to persist would_enqueue rows.
+// limit <= 0 means no country cap.
+func BuildPlan(ctx context.Context, db *sql.DB, nowMs int64, limit int) (Plan, error) {
+	cands, err := Candidates(ctx, db)
+	if err != nil {
+		return Plan{}, err
+	}
+	if limit > 0 && len(cands) > limit {
+		cands = cands[:limit]
+	}
+	resolver, err := NewSourceResolver(ctx, db)
+	if err != nil {
+		return Plan{}, err
+	}
+
+	plan := Plan{
+		GeneratedAt:        time.UnixMilli(nowMs).UTC(),
+		CandidateCountries: len(cands),
+		Warnings:           []string{},
+		Jobs:               []PlannedJob{},
+	}
+
+	for _, c := range cands {
+		for _, jt := range JobTypesFor(c.CoverageStatus, c.DelegateISO2) {
+			pj := PlannedJob{
+				CountryID:      c.CountryID,
+				ISO2:           c.ISO2,
+				PriorityScore:  c.PriorityScore,
+				CoverageStatus: c.CoverageStatus,
+				JobType:        jt,
+			}
+			sourceID, ok := resolver.Resolve(jt)
+			if !ok {
+				pj.Decision = DecisionSkippedNoSource
+				plan.Warnings = append(plan.Warnings,
+					fmt.Sprintf("%s/%s: no source resolved", c.ISO2, jt))
+				plan.Jobs = append(plan.Jobs, pj)
+				continue
+			}
+			pj.SourceID = sourceID
+
+			state, err := JobStateFor(ctx, db, c.CountryID, jt)
+			if err != nil {
+				return Plan{}, err
+			}
+			switch {
+			case state.HasActive:
+				pj.Decision = DecisionSkippedActive
+			case state.HasTerminal && !cadenceElapsed(nowMs, state.LastFinishedAtMs, c.RefreshCadence):
+				pj.Decision = DecisionSkippedCadence
+			default:
+				pj.Decision = DecisionWouldEnqueue
+				plan.JobsPlanned++
+			}
+			plan.Jobs = append(plan.Jobs, pj)
+		}
+	}
+	return plan, nil
 }
