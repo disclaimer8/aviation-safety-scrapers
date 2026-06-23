@@ -17,6 +17,14 @@ func TestHasCriticalFields(t *testing.T) {
 	if HasCriticalFields(noCraft) {
 		t.Fatal("year precision + no aircraft should fail gate")
 	}
+	monthOK := ExtractedEvent{Date: "2019-03", DatePrecision: "month", AircraftRegistration: "ET-AVJ"}
+	if !HasCriticalFields(monthOK) {
+		t.Fatal("month precision + registration should pass gate")
+	}
+	noAircraft := ExtractedEvent{Date: "2019-03-10", DatePrecision: "exact"}
+	if HasCriticalFields(noAircraft) {
+		t.Fatal("usable date but no aircraft/registration should fail gate")
+	}
 }
 
 func TestConfidenceScore(t *testing.T) {
@@ -52,5 +60,9 @@ func TestNormalizeEvent(t *testing.T) {
 	}
 	if e.DatePrecision != "unknown" {
 		t.Fatalf("date_precision=%q want unknown", e.DatePrecision)
+	}
+	keep := NormalizeEvent(ExtractedEvent{EventType: "accident", InvestigationStatus: "investigation_open", ReportType: "preliminary", DatePrecision: "exact"})
+	if keep.EventType != "accident" || keep.InvestigationStatus != "investigation_open" || keep.ReportType != "preliminary" || keep.DatePrecision != "exact" {
+		t.Fatalf("valid values must pass through unchanged: %+v", keep)
 	}
 }
