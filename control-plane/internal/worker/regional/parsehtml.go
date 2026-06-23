@@ -40,13 +40,20 @@ func parseListing(raw []byte, base string, match func(abs string) bool) ([]Regio
 	warnings := 0
 	for _, m := range anchorRe.FindAllSubmatch(raw, -1) {
 		href := strings.TrimSpace(html.UnescapeString(string(m[1])))
-		if href == "" || strings.HasPrefix(href, "#") || strings.HasPrefix(strings.ToLower(href), "javascript:") {
+		if href == "" || strings.HasPrefix(href, "#") {
 			continue
 		}
-		abs := href
-		if u, err := baseURL.Parse(href); err == nil {
-			abs = u.String()
+		u, err := url.Parse(href)
+		if err != nil {
+			continue
 		}
+		resolved := baseURL.ResolveReference(u)
+		// Allow-list the safe web schemes only; this drops javascript:, data:,
+		// vbscript:, mailto:, etc. without enumerating every dangerous scheme.
+		if resolved.Scheme != "http" && resolved.Scheme != "https" {
+			continue
+		}
+		abs := resolved.String()
 		if match != nil && !match(abs) {
 			continue
 		}
