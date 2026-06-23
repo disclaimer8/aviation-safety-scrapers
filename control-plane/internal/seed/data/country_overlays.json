@@ -8,6 +8,7 @@
     "effort_score": 2,
     "expected_records": 5,
     "expected_source_quality": 4,
+    "delegate_iso2": "FR",
     "refresh_cadence": "quarterly",
     "notes": "Route through Spain CIAIAC and France BEA."
   },

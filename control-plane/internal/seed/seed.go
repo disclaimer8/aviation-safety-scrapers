@@ -54,6 +54,7 @@ type overlayEntry struct {
 	EffortScore           int    `json:"effort_score"`
 	ExpectedRecords       int    `json:"expected_records"`
 	ExpectedSourceQuality int    `json:"expected_source_quality"`
+	DelegateISO2          string `json:"delegate_iso2"`
 	RefreshCadence        string `json:"refresh_cadence"`
 	Notes                 string `json:"notes"`
 }
@@ -137,6 +138,13 @@ func Apply(ctx context.Context, db *sql.DB) (Stats, error) {
 	}
 	defer func() { _ = tx.Rollback() }()
 
+	// Defer FK checks to commit so self-referencing country rows (e.g.
+	// delegate_iso2 → countries.iso2) can be inserted in any order within the
+	// transaction and still satisfy the constraint once all rows are present.
+	if _, err := tx.ExecContext(ctx, `PRAGMA defer_foreign_keys = ON`); err != nil {
+		return Stats{}, fmt.Errorf("seed: enable defer_foreign_keys: %w", err)
+	}
+
 	// ── countries ────────────────────────────────────────────────────────────
 
 	stmtCountry, err := tx.PrepareContext(ctx, `
@@ -146,8 +154,9 @@ func Apply(ctx context.Context, db *sql.DB) (Stats, error) {
 			coverage_score, effort_score,
 			expected_records, expected_source_quality,
 			priority_score, country_group,
-			refresh_cadence, notes
-		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+			refresh_cadence, notes,
+			delegate_iso2
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		ON CONFLICT(iso2) DO UPDATE SET
 			iso3=excluded.iso3,
 			name=excluded.name,
@@ -161,7 +170,8 @@ func Apply(ctx context.Context, db *sql.DB) (Stats, error) {
 			priority_score=excluded.priority_score,
 			country_group=excluded.country_group,
 			refresh_cadence=excluded.refresh_cadence,
-			notes=excluded.notes
+			notes=excluded.notes,
+			delegate_iso2=excluded.delegate_iso2
 	`)
 	if err != nil {
 		return Stats{}, fmt.Errorf("seed: prepare country upsert: %w", err)
@@ -179,6 +189,7 @@ func Apply(ctx context.Context, db *sql.DB) (Stats, error) {
 		var groupVal *string
 		var refreshCadence *string
 		var notes *string
+		var delegateISO2 *string
 		priority := model.PriorityScore(expectedRecords, expectedSourceQuality, effortScore)
 
 		if o, ok := overlayMap[c.ISO2]; ok {
@@ -201,6 +212,10 @@ func Apply(ctx context.Context, db *sql.DB) (Stats, error) {
 				n := o.Notes
 				notes = &n
 			}
+			if o.DelegateISO2 != "" {
+				d := o.DelegateISO2
+				delegateISO2 = &d
+			}
 		}
 
 		if _, err := stmtCountry.ExecContext(ctx,
@@ -210,6 +225,7 @@ func Apply(ctx context.Context, db *sql.DB) (Stats, error) {
 			expectedRecords, expectedSourceQuality,
 			priority, groupVal,
 			refreshCadence, notes,
+			delegateISO2,
 		); err != nil {
 			return Stats{}, fmt.Errorf("seed: upsert country %s: %w", c.ISO2, err)
 		}
