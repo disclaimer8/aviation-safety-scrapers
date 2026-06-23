@@ -23,6 +23,7 @@ import (
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/planner"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/seed"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/validation"
+	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/regional"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/wayback"
 )
 
@@ -38,7 +39,7 @@ const (
 func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 	if len(args) == 0 {
 		fmt.Fprintln(stderr, "usage: aviation-coverage <command> [flags]")
-		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-wayback-extract")
+		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-wayback-extract, process-regional")
 		return exitUsage
 	}
 
@@ -64,9 +65,11 @@ func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		return runProcessWayback(ctx, rest, stderr)
 	case "process-wayback-extract":
 		return runProcessWaybackExtract(ctx, rest, stderr)
+	case "process-regional":
+		return runProcessRegional(ctx, rest, stderr)
 	default:
 		fmt.Fprintf(stderr, "unknown command %q\n", cmd)
-		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-wayback-extract")
+		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-wayback-extract, process-regional")
 		return exitUsage
 	}
 }
@@ -456,6 +459,44 @@ func runProcessWayback(ctx context.Context, args []string, stderr io.Writer) int
 	processed, err := wayback.ProcessPending(ctx, db, fetcher, *storeDir, *limit)
 	if err != nil {
 		fmt.Fprintf(stderr, "process-wayback: %v\n", err)
+		return exitFailure
+	}
+	fmt.Fprintf(stderr, "processed %d\n", processed)
+	return exitOK
+}
+
+// ── process-regional ──────────────────────────────────────────────────────────
+
+func runProcessRegional(ctx context.Context, args []string, stderr io.Writer) int {
+	fs := flag.NewFlagSet("process-regional", flag.ContinueOnError)
+	fs.SetOutput(stderr)
+	dbPath := fs.String("db", "", "path to SQLite database file (required)")
+	limit := fs.Int("limit", 0, "max pending jobs to process (0 = no cap)")
+	sourceFile := fs.String("source-file", "", "out-of-band listing export (for Cloudflare/TLS-blocked bodies)")
+	if err := fs.Parse(args); err != nil {
+		return exitUsage
+	}
+	if *dbPath == "" {
+		fmt.Fprintln(stderr, "process-regional: --db is required")
+		fs.Usage()
+		return exitUsage
+	}
+
+	db, err := database.Open(*dbPath)
+	if err != nil {
+		fmt.Fprintf(stderr, "process-regional: open db: %v\n", err)
+		return exitFailure
+	}
+	defer db.Close()
+
+	clients := regional.Clients{
+		ECCAA:  regional.NewECCAAClient(30*time.Second, *sourceFile),
+		BAGAIA: regional.NewBAGAIAClient(30*time.Second, *sourceFile),
+		IAC:    regional.NewIACClient(30*time.Second, *sourceFile),
+	}
+	processed, err := regional.ProcessPending(ctx, db, clients, *limit)
+	if err != nil {
+		fmt.Fprintf(stderr, "process-regional: %v\n", err)
 		return exitFailure
 	}
 	fmt.Fprintf(stderr, "processed %d\n", processed)
