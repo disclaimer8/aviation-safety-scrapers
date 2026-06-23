@@ -115,5 +115,13 @@
     "source_tier": 5,
     "robots_policy": "allowed",
     "copyright_policy_notes": "Aviation Herald copyright; no bulk scraping"
-  }
+  },
+  { "name": "Authority Health Check (method)", "url": "https://control-plane.local/method/health-check", "canonical_url": "https://control-plane.local/method/health-check", "source_type": "regulator", "source_tier": 4, "robots_policy": "allowed", "copyright_policy_notes": "Internal method channel: authority liveness probe" },
+  { "name": "Authority Archive Crawl (method)", "url": "https://control-plane.local/method/archive-crawl", "canonical_url": "https://control-plane.local/method/archive-crawl", "source_type": "regulator", "source_tier": 4, "robots_policy": "allowed", "copyright_policy_notes": "Internal method channel: official archive crawl" },
+  { "name": "Wayback Machine CDX (method)", "url": "https://web.archive.org/cdx/search/cdx", "canonical_url": "https://web.archive.org/cdx/search/cdx", "source_type": "wayback", "source_tier": 5, "robots_policy": "allowed", "copyright_policy_notes": "Internet Archive CDX index of archived regulator pages" },
+  { "name": "Scholarly PDF Discovery (method)", "url": "https://control-plane.local/method/pdf-discovery", "canonical_url": "https://control-plane.local/method/pdf-discovery", "source_type": "trusted_index", "source_tier": 5, "robots_policy": "allowed", "copyright_policy_notes": "Internal method channel: scholarly/Google-Scholar PDF discovery" },
+  { "name": "Direct Authority Request (method)", "url": "https://control-plane.local/method/direct-request", "canonical_url": "https://control-plane.local/method/direct-request", "source_type": "ministry", "source_tier": 4, "robots_policy": "allowed", "copyright_policy_notes": "Internal method channel: direct authority data request" },
+  { "name": "NTSB Foreign Investigations (method)", "url": "https://www.ntsb.gov/investigations/Pages/foreign.aspx", "canonical_url": "https://www.ntsb.gov/investigations/Pages/foreign.aspx", "source_type": "official_foreign_accredited_rep", "source_tier": 2, "robots_policy": "allowed", "copyright_policy_notes": "NTSB as accredited representative; US government public domain" },
+  { "name": "BEA Foreign Investigations (method)", "url": "https://www.bea.aero/en/investigation-reports/foreign/", "canonical_url": "https://www.bea.aero/en/investigation-reports/foreign/", "source_type": "official_foreign_accredited_rep", "source_tier": 2, "robots_policy": "allowed", "copyright_policy_notes": "BEA as accredited representative; public access" },
+  { "name": "ATSB Foreign Investigations (method)", "url": "https://www.atsb.gov.au/aviation/foreign/", "canonical_url": "https://www.atsb.gov.au/aviation/foreign/", "source_type": "official_foreign_accredited_rep", "source_tier": 2, "robots_policy": "allowed", "copyright_policy_notes": "ATSB as accredited representative; Australian government copyright" }
 ]
