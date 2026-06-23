@@ -1,7 +1,9 @@
 package regional
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"html"
 	"io"
@@ -187,15 +189,20 @@ func looksLikeReport(abs string) bool {
 	return yearRe.MatchString(u.Path)
 }
 
-// loadListing returns the listing bytes from sourceFile when set (out-of-band
-// operator export), else live-fetches liveURL.
-func loadListing(ctx context.Context, timeout time.Duration, sourceFile, liveURL string) ([]byte, error) {
+// loadListing returns the listing HTML for liveURL. Precedence: an out-of-band
+// sourceFile export wins; otherwise, when renderEndpoint is set, the page is
+// fetched through the browser-render service (defeats JS-render/Cloudflare/TLS
+// fingerprinting); otherwise a plain HTTP GET is the best-effort fallback.
+func loadListing(ctx context.Context, timeout time.Duration, sourceFile, renderEndpoint, liveURL string) ([]byte, error) {
 	if sourceFile != "" {
 		b, err := os.ReadFile(sourceFile)
 		if err != nil {
 			return nil, fmt.Errorf("regional: read source-file %q: %w", sourceFile, err)
 		}
 		return b, nil
+	}
+	if renderEndpoint != "" {
+		return renderListing(ctx, renderEndpoint, liveURL)
 	}
 	client := &http.Client{Timeout: timeout}
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, liveURL, nil)
@@ -214,6 +221,36 @@ func loadListing(ctx context.Context, timeout time.Duration, sourceFile, liveURL
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("regional: read %s: %w", liveURL, err)
+	}
+	return body, nil
+}
+
+// renderListing fetches targetURL through the browser-render service
+// (POST {"url","wait"} -> rendered HTML). Rendering is inherently slow (headed
+// browser + Cloudflare settle), so it uses a generous fixed timeout independent
+// of the per-listing HTTP timeout.
+func renderListing(ctx context.Context, endpoint, targetURL string) ([]byte, error) {
+	payload, err := json.Marshal(map[string]any{"url": targetURL, "wait": 7})
+	if err != nil {
+		return nil, fmt.Errorf("regional: render encode %s: %w", targetURL, err)
+	}
+	client := &http.Client{Timeout: 180 * time.Second}
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(payload))
+	if err != nil {
+		return nil, fmt.Errorf("regional: render build request %s: %w", endpoint, err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("regional: render %s via %s: %w", targetURL, endpoint, err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("regional: render %s: status %d", targetURL, resp.StatusCode)
+	}
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("regional: render read %s: %w", targetURL, err)
 	}
 	return body, nil
 }

@@ -18,18 +18,19 @@ const (
 )
 
 type bagaiaClient struct {
-	timeout    time.Duration
-	sourceFile string
+	timeout        time.Duration
+	sourceFile     string
+	renderEndpoint string
 }
 
 // NewBAGAIAClient returns a RegionalClient for BAGAIA. When sourceFile is set the
 // listing is read from disk (out-of-band); otherwise it is fetched live.
-func NewBAGAIAClient(timeout time.Duration, sourceFile string) RegionalClient {
-	return &bagaiaClient{timeout: timeout, sourceFile: sourceFile}
+func NewBAGAIAClient(timeout time.Duration, sourceFile, renderEndpoint string) RegionalClient {
+	return &bagaiaClient{timeout: timeout, sourceFile: sourceFile, renderEndpoint: renderEndpoint}
 }
 
 func (c *bagaiaClient) Search(ctx context.Context, countryISO2 string) ([]RegionalRecord, int, error) {
-	raw, err := loadListing(ctx, c.timeout, c.sourceFile, bagaiaListingURL)
+	raw, err := loadListing(ctx, c.timeout, c.sourceFile, c.renderEndpoint, bagaiaListingURL)
 	if err != nil {
 		return nil, 0, fmt.Errorf("regional: BAGAIA search: %w", err)
 	}
