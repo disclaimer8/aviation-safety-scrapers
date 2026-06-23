@@ -195,9 +195,13 @@ aviation-coverage process-wayback-extract --db coverage.db [--limit N] \
 - A document at `extraction_attempts >= 3` is left `failed` and never re-picked.
 - The batch never panics on a single document — every failure degrades that one
   document and is counted.
-- **Aggregate output:** print `{"ocr_done":O,"extracted":X,"skipped":K,"failed":F}`
-  to stdout (the durable per-document record is the status columns themselves; no
-  separate job ledger).
+- **Aggregate output:** print `extracted=X skipped=K failed=F` to **stderr**
+  (matching the sibling `process-wayback` command's operational-output convention).
+  The durable per-document record is the status columns themselves; there is no
+  separate job ledger. (`ocr_done` is intentionally absent: because OCR and extract
+  run in one `ExtractOne` invocation, a document never terminates a run at
+  `ocr_done`, so that counter would always be zero — it was dropped rather than
+  shipped dead. The `ocr_done` DB status still exists for crash-resume.)
 
 ### 5.1 Critical fields (the accident gate)
 
