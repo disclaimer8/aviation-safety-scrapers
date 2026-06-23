@@ -17,8 +17,10 @@ func TestMigration009ManufacturerTable(t *testing.T) {
 	defer rows.Close()
 	got := map[string]bool{}
 	for rows.Next() { var n string; if err := rows.Scan(&n); err != nil { t.Fatal(err) }; got[n] = true }
-	for _, c := range []string{"manufacturer","publication","issue_ref","title","publication_date",
-		"original_url","report_url","download_status","extraction_status","event_id"} {
+	// Assert all required columns (base + download/extraction state columns)
+	for _, c := range []string{"id","manufacturer","publication","issue_ref","title","publication_date",
+		"original_url","report_url","mimetype","download_status","local_file_path","digest","ocr_text_path",
+		"extraction_status","extraction_error","extraction_attempts","event_id","created_at"} {
 		if !got[c] { t.Errorf("missing column %s", c) }
 	}
 }
