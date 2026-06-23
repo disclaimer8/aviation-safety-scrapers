@@ -2,6 +2,7 @@ package regional
 
 import (
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -14,35 +15,33 @@ func TestParseIAC(t *testing.T) {
 	if err != nil {
 		t.Fatalf("parseIAC: %v", err)
 	}
-	if len(recs) == 0 {
-		t.Fatal("expected records from the IAC fixture, got 0")
+	// The real mak-iac.org/rassledovaniya/ snapshot holds many dated reports.
+	if len(recs) < 10 {
+		t.Fatalf("expected the dated IAC reports, got %d", len(recs))
 	}
 	for _, r := range recs {
 		if r.Ref == "" || r.OriginalURL == "" || r.Title == "" {
 			t.Errorf("record missing required field: %+v", r)
 		}
-	}
-	// External + nav links must be excluded; the three report entries kept.
-	if len(recs) != 3 {
-		t.Fatalf("kept %d records, want 3: %+v", len(recs), recs)
-	}
-	// Relative hrefs absolute-ified against the mak.aero origin.
-	for _, r := range recs {
-		if got := r.OriginalURL[:8]; got != "https://" {
-			t.Errorf("OriginalURL not absolute: %q", r.OriginalURL)
+		if !strings.HasPrefix(r.OriginalURL, "https://mak-iac.org/rassledovaniya/") {
+			t.Errorf("OriginalURL not an absolute mak-iac.org report URL: %q", r.OriginalURL)
+		}
+		// Navigation pages under /rassledovaniya/ must be excluded.
+		if r.Ref == "o-komissii" || r.Ref == "bezopasnost-poletov" || r.Ref == "tekhnicheskaya-laboratoriya" {
+			t.Errorf("navigation page leaked as a report: %q", r.Ref)
 		}
 	}
-	// Date parsed from a dd.mm.yyyy title into ISO.
+	// A known report carries its date, parsed from the dd.mm.yyyy link text.
 	var found bool
 	for _, r := range recs {
-		if r.Ref == "2024-ra-0012" {
+		if r.Ref == "an-2-ra-40440-19-05-2026" {
 			found = true
-			if r.OccurrenceDate != "2024-01-02" {
-				t.Errorf("date = %q, want 2024-01-02", r.OccurrenceDate)
+			if r.OccurrenceDate != "2026-05-19" {
+				t.Errorf("date = %q, want 2026-05-19", r.OccurrenceDate)
 			}
 		}
 	}
 	if !found {
-		t.Error("expected record 2024-ra-0012")
+		t.Error("expected report an-2-ra-40440-19-05-2026")
 	}
 }
