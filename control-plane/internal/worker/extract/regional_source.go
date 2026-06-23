@@ -35,8 +35,11 @@ func (RegionalSource) PendingDocs(ctx context.Context, db *sql.DB, limit int) ([
 		  FROM staged_regional_documents d
 		  JOIN countries c ON c.id = d.country_id
 		 WHERE d.report_url IS NOT NULL AND d.report_url != ''
-		   AND d.download_status IN ('pending','failed')
-		   AND d.extraction_status IN ('pending','ocr_done','failed')
+		   AND (
+		     (d.download_status IN ('pending','failed') AND d.extraction_status = 'pending')
+		     OR
+		     (d.download_status = 'downloaded' AND d.extraction_status IN ('pending','ocr_done','failed'))
+		   )
 		   AND d.extraction_attempts < 3
 		 ORDER BY c.priority_score DESC, d.id ASC`
 	if limit > 0 {

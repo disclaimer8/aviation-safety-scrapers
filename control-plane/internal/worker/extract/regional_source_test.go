@@ -268,6 +268,91 @@ func TestRegionalEnsureDownloadedFailureMarksRow(t *testing.T) {
 	}
 }
 
+// TestRegionalPendingDocsTwoPhaseFlow verifies the two-phase PendingDocs contract:
+//  1. A freshly seeded doc (download_status='pending') is returned by PendingDocs.
+//  2. After EnsureDownloaded sets download_status='downloaded', the SAME row is
+//     still returned by PendingDocs (for the extraction phase).
+//  3. A row with extraction_status='extracted' is NOT returned.
+func TestRegionalPendingDocsTwoPhaseFlow(t *testing.T) {
+	ctx := context.Background()
+	db := newExtractTestDB(t)
+
+	// Serve a fake PDF over HTTP.
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/pdf")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, "%PDF-1.4 fake regional two-phase report")
+	}))
+	defer srv.Close()
+
+	docID, _ := seedRegionalDoc(t, db, "TZ", "ECCAA", srv.URL+"/phase-report.pdf")
+	src := RegionalSource{HTTP: srv.Client()}
+
+	// ── Phase 1: row with download_status='pending' must be returned ──────────
+	docs, err := src.PendingDocs(ctx, db, 0)
+	if err != nil {
+		t.Fatalf("phase1 PendingDocs: %v", err)
+	}
+	var found bool
+	for _, d := range docs {
+		if d.ID == docID {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Fatalf("phase1: doc %d with download_status='pending' not returned by PendingDocs", docID)
+	}
+
+	// ── EnsureDownloaded: sets download_status='downloaded' ───────────────────
+	doc := docs[0]
+	storeDir := t.TempDir()
+	if err := src.EnsureDownloaded(ctx, db, storeDir, &doc); err != nil {
+		t.Fatalf("EnsureDownloaded: %v", err)
+	}
+
+	// Verify DB state after download.
+	var dbStatus string
+	if err := db.QueryRowContext(ctx,
+		`SELECT download_status FROM staged_regional_documents WHERE id=?`, docID).Scan(&dbStatus); err != nil {
+		t.Fatalf("scan download_status: %v", err)
+	}
+	if dbStatus != "downloaded" {
+		t.Fatalf("expected download_status='downloaded', got %q", dbStatus)
+	}
+
+	// ── Phase 2: same row (now download_status='downloaded', extraction_status='pending')
+	//            must still be returned by PendingDocs ─────────────────────────
+	docs2, err := src.PendingDocs(ctx, db, 0)
+	if err != nil {
+		t.Fatalf("phase2 PendingDocs: %v", err)
+	}
+	found = false
+	for _, d := range docs2 {
+		if d.ID == docID {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Fatalf("phase2: doc %d with download_status='downloaded' NOT returned by PendingDocs (extraction phase blocked)", docID)
+	}
+
+	// ── Phase 3: after marking extracted, row must NOT be returned ────────────
+	db.ExecContext(ctx,
+		`UPDATE staged_regional_documents SET extraction_status='extracted' WHERE id=?`, docID)
+
+	docs3, err := src.PendingDocs(ctx, db, 0)
+	if err != nil {
+		t.Fatalf("phase3 PendingDocs: %v", err)
+	}
+	for _, d := range docs3 {
+		if d.ID == docID {
+			t.Fatalf("phase3: extracted doc %d must NOT be returned by PendingDocs", docID)
+		}
+	}
+}
+
 // ─── ResolveSource ───────────────────────────────────────────────────────────
 
 func TestRegionalResolveSourceCreatesRegionalBodySource(t *testing.T) {
