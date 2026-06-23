@@ -67,4 +67,23 @@ func TestMigration006ExtractSchema(t *testing.T) {
 	if err == nil {
 		t.Fatal("expected CHECK to reject bogus extraction_status")
 	}
+
+	// event_id FK rejects a non-existent event.
+	_, err = db.ExecContext(ctx, `
+		UPDATE staged_wayback_documents SET event_id=9999 WHERE digest='d1'`)
+	if err == nil {
+		t.Fatal("expected FK violation for non-existent event_id")
+	}
+
+	// Nullable columns default to NULL.
+	var ocrTextPath, extractionError sql.NullString
+	if err := db.QueryRowContext(ctx, `
+		SELECT ocr_text_path, extraction_error FROM staged_wayback_documents WHERE digest='d1'`).
+		Scan(&ocrTextPath, &extractionError); err != nil {
+		t.Fatalf("read nullable columns: %v", err)
+	}
+	if ocrTextPath.Valid || extractionError.Valid {
+		t.Fatalf("nullable columns should be NULL: ocr_text_path.Valid=%v extraction_error.Valid=%v",
+			ocrTextPath.Valid, extractionError.Valid)
+	}
 }
