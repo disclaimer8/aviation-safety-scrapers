@@ -2,6 +2,29 @@ package regional
 
 import "testing"
 
+func TestParseListingAllowsOnlyHTTPSchemes(t *testing.T) {
+	raw := []byte(`
+		<a href="javascript:void(0)">JS report 2024</a>
+		<a href="data:text/html,report 2024">data report 2024</a>
+		<a href="vbscript:msgbox('2024')">vb report 2024</a>
+		<a href="/reports/2024-real-01">real report 2024-01-02</a>
+	`)
+	recs, _, err := parseListing(raw, "https://x.org", func(abs string) bool {
+		return hostMatch(abs, "x.org") && looksLikeReport(abs)
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(recs) != 1 || recs[0].Ref != "2024-real-01" {
+		t.Fatalf("expected only the http(s) report kept, got %+v", recs)
+	}
+	for _, r := range recs {
+		if r.OriginalURL[:5] != "https" {
+			t.Errorf("non-http(s) URL leaked: %q", r.OriginalURL)
+		}
+	}
+}
+
 func TestExtractDateValidatesCalendar(t *testing.T) {
 	cases := map[string]string{
 		"crash on 2024-01-02":         "2024-01-02",
