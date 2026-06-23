@@ -117,9 +117,9 @@ func TestImportRAIOConditionalCoverage(t *testing.T) {
 
 	// Nigeria is a BAGAIA (RAIO) member seeded with coverage 'unknown' → becomes
 	// regional_raio. Ghana we pin to 'direct_public_archive' → must NOT downgrade.
-	if got := coverageStatus(t, db, "Nigeria"); got != "unknown" {
-		t.Fatalf("Nigeria precondition coverage=%q want unknown", got)
-	}
+	// Nigeria is now seeded as a BAGAIA RAIO member (regional_raio); reset it to
+	// 'unknown' to exercise the importer's conditional upgrade unknown -> regional_raio.
+	setCoverage(t, db, "Nigeria", "unknown")
 	setCoverage(t, db, "Ghana", "direct_public_archive")
 
 	// Jordan is a real ARCM-MENA (ICM) member with coverage 'unknown'. ICM
