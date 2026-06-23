@@ -45,7 +45,7 @@ func TestSeedRAIOBatch(t *testing.T) {
 			t.Errorf("%s priority_score = %v, want > 0", iso2, priority)
 		}
 		if group == nil {
-			t.Errorf("%s country_group is NULL, want C/D", iso2)
+			t.Errorf("%s country_group is NULL, want C2/C3/D", iso2)
 		}
 	}
 }
