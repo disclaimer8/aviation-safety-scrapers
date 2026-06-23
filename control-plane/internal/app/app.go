@@ -38,7 +38,7 @@ const (
 func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 	if len(args) == 0 {
 		fmt.Fprintln(stderr, "usage: aviation-coverage <command> [flags]")
-		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback")
+		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-wayback-extract")
 		return exitUsage
 	}
 
@@ -62,9 +62,11 @@ func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		return runPlan(ctx, rest, stdout, stderr)
 	case "process-wayback":
 		return runProcessWayback(ctx, rest, stderr)
+	case "process-wayback-extract":
+		return runProcessWaybackExtract(ctx, rest, stderr)
 	default:
 		fmt.Fprintf(stderr, "unknown command %q\n", cmd)
-		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback")
+		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-wayback-extract")
 		return exitUsage
 	}
 }
@@ -384,6 +386,45 @@ func runPlan(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "plan: encode: %v\n", err)
 		return exitFailure
 	}
+	return exitOK
+}
+
+// ── process-wayback-extract ──────────────────────────────────────────────────
+
+func runProcessWaybackExtract(ctx context.Context, args []string, stderr io.Writer) int {
+	fs := flag.NewFlagSet("process-wayback-extract", flag.ContinueOnError)
+	fs.SetOutput(stderr)
+	dbPath := fs.String("db", "", "path to SQLite database file (required)")
+	limit := fs.Int("limit", 0, "max documents to process (0 = no cap)")
+	storeDir := fs.String("store-dir", "./wayback-store", "directory for OCR text artifacts")
+	ocrEndpoint := fs.String("ocr-endpoint", "http://127.0.0.1:8021/ocr", "OCR HTTP endpoint")
+	llmEndpoint := fs.String("llm-endpoint", "http://127.0.0.1:11434/api/generate", "Ollama generate endpoint")
+	llmModel := fs.String("llm-model", "qwen3.6-rw", "LLM model name")
+	maxInputChars := fs.Int("max-input-chars", 24000, "truncate OCR text to this many chars before LLM")
+	if err := fs.Parse(args); err != nil {
+		return exitUsage
+	}
+	if *dbPath == "" {
+		fmt.Fprintln(stderr, "process-wayback-extract: --db is required")
+		fs.Usage()
+		return exitUsage
+	}
+
+	db, err := database.Open(*dbPath)
+	if err != nil {
+		fmt.Fprintf(stderr, "process-wayback-extract: open db: %v\n", err)
+		return exitFailure
+	}
+	defer db.Close()
+
+	ocr := wayback.NewHTTPOCRClient(*ocrEndpoint, 600*time.Second)
+	llm := wayback.NewHTTPLLMClient(*llmEndpoint, *llmModel, *maxInputChars, 120*time.Second)
+	stats, err := wayback.ProcessExtractPending(ctx, db, ocr, llm, *storeDir, *limit)
+	if err != nil {
+		fmt.Fprintf(stderr, "process-wayback-extract: %v\n", err)
+		return exitFailure
+	}
+	fmt.Fprintf(stderr, "extracted=%d skipped=%d failed=%d\n", stats.Extracted, stats.Skipped, stats.Failed)
 	return exitOK
 }
 
