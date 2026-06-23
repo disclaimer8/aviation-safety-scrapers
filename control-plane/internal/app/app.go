@@ -20,6 +20,7 @@ import (
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/importer/common"
 	raio "github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/importer/raio"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/migrations"
+	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/planner"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/seed"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/validation"
 )
@@ -36,7 +37,7 @@ const (
 func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 	if len(args) == 0 {
 		fmt.Fprintln(stderr, "usage: aviation-coverage <command> [flags]")
-		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export")
+		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan")
 		return exitUsage
 	}
 
@@ -56,9 +57,11 @@ func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		return runValidate(ctx, rest, stdout, stderr)
 	case "export":
 		return runExport(ctx, rest, stderr)
+	case "plan":
+		return runPlan(ctx, rest, stdout, stderr)
 	default:
 		fmt.Fprintf(stderr, "unknown command %q\n", cmd)
-		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export")
+		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan")
 		return exitUsage
 	}
 }
@@ -314,6 +317,68 @@ func runExport(ctx context.Context, args []string, stderr io.Writer) int {
 
 	if err := export.WriteJSON(ctx, db, *output, genAt); err != nil {
 		fmt.Fprintf(stderr, "export: %v\n", err)
+		return exitFailure
+	}
+	return exitOK
+}
+
+// ── plan ─────────────────────────────────────────────────────────────────────
+
+func runPlan(ctx context.Context, args []string, stdout, stderr io.Writer) int {
+	fs := flag.NewFlagSet("plan", flag.ContinueOnError)
+	fs.SetOutput(stderr)
+	dbPath := fs.String("db", "", "path to SQLite database file (required)")
+	enqueue := fs.Bool("enqueue", false, "write pending crawl_jobs instead of dry-run")
+	limit := fs.Int("limit", 0, "cap to the top-N ranked countries (0 = no cap)")
+	generatedAt := fs.String("generated-at", "", "RFC3339 timestamp for generated_at (default: now)")
+	if err := fs.Parse(args); err != nil {
+		return exitUsage
+	}
+	if *dbPath == "" {
+		fmt.Fprintln(stderr, "plan: --db is required")
+		fs.Usage()
+		return exitUsage
+	}
+
+	var nowT time.Time
+	if *generatedAt != "" {
+		t, err := time.Parse(time.RFC3339, *generatedAt)
+		if err != nil {
+			fmt.Fprintf(stderr, "plan: --generated-at: invalid RFC3339 value %q: %v\n", *generatedAt, err)
+			return exitUsage
+		}
+		nowT = t.UTC()
+	} else {
+		nowT = time.Now().UTC()
+	}
+
+	db, err := database.Open(*dbPath)
+	if err != nil {
+		fmt.Fprintf(stderr, "plan: open db: %v\n", err)
+		return exitFailure
+	}
+	defer db.Close()
+
+	p, err := planner.BuildPlan(ctx, db, nowT.UnixMilli(), *limit)
+	if err != nil {
+		fmt.Fprintf(stderr, "plan: %v\n", err)
+		return exitFailure
+	}
+
+	if *enqueue {
+		inserted, err := planner.Enqueue(ctx, db, p)
+		if err != nil {
+			fmt.Fprintf(stderr, "plan: enqueue: %v\n", err)
+			return exitFailure
+		}
+		fmt.Fprintf(stderr, "enqueued %d, skipped %d\n", inserted, len(p.Jobs)-inserted)
+		return exitOK
+	}
+
+	enc := json.NewEncoder(stdout)
+	enc.SetIndent("", "  ")
+	if err := enc.Encode(p); err != nil {
+		fmt.Fprintf(stderr, "plan: encode: %v\n", err)
 		return exitFailure
 	}
 	return exitOK
