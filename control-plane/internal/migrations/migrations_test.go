@@ -64,6 +64,7 @@ func TestApplyCreatesCompleteSchemaAndIsIdempotent(t *testing.T) {
 		"staged_authorities",
 		"staged_regional_bodies",
 		"staged_wayback_documents",
+		"staged_regional_documents",
 		"field_overrides",
 		"import_conflicts",
 		"authority_requests",
@@ -107,8 +108,8 @@ func TestApplyCreatesCompleteSchemaAndIsIdempotent(t *testing.T) {
 	if err := rows.Err(); err != nil {
 		t.Fatal(err)
 	}
-	if len(migrations) != 6 {
-		t.Fatalf("migration rows=%d, want 6 (%v)", len(migrations), migrations)
+	if len(migrations) != 7 {
+		t.Fatalf("migration rows=%d, want 7 (%v)", len(migrations), migrations)
 	}
 }
 
