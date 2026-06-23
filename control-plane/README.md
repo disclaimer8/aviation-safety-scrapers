@@ -107,6 +107,36 @@ excluded.
   --generated-at 2026-06-22T12:00:00Z   # optional; defaults to now
 ```
 
+### plan
+
+Ranks coverage gaps by ROI (`priority_score = expected_records ×
+expected_source_quality ÷ effort_score`) and produces a scheduling plan. For each
+non-policy-excluded country, the applicable crawl-job types (derived from its
+`coverage_status`, and for delegated countries its `delegate_iso2`) are emitted as
+`crawl_jobs`.
+
+**Dry-run (default)** prints a deterministic JSON plan to stdout; nothing is
+written:
+
+```bash
+./aviation-coverage plan --db coverage.db
+./aviation-coverage plan --db coverage.db --limit 50
+```
+
+**Enqueue** writes one `pending` `crawl_jobs` row per `would_enqueue` decision and
+prints `enqueued N, skipped M` to stderr:
+
+```bash
+./aviation-coverage plan --db coverage.db --enqueue
+```
+
+The planner is idempotent: a (country, job_type) pair with a `pending`/`running`
+job is `skipped_active`; a completed pair is re-emitted only after its
+`refresh_cadence` window elapses (`skipped_cadence`). A pair whose source cannot be
+resolved is `skipped_no_source` and listed under `warnings`.
+
+Flags: `--enqueue`, `--limit N` (0 = no cap), `--generated-at <RFC3339>`.
+
 ## Override precedence
 
 For every mutable authority field (website URL, archive URL, contact email,
