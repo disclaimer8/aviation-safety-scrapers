@@ -24,6 +24,7 @@ import (
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/seed"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/validation"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/foreignsearch"
+	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/regional"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/wayback"
 )
 
@@ -39,7 +40,7 @@ const (
 func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 	if len(args) == 0 {
 		fmt.Fprintln(stderr, "usage: aviation-coverage <command> [flags]")
-		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-foreign-search")
+		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-wayback-extract, process-regional, process-foreign-search")
 		return exitUsage
 	}
 
@@ -63,11 +64,15 @@ func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		return runPlan(ctx, rest, stdout, stderr)
 	case "process-wayback":
 		return runProcessWayback(ctx, rest, stderr)
+	case "process-wayback-extract":
+		return runProcessWaybackExtract(ctx, rest, stderr)
+	case "process-regional":
+		return runProcessRegional(ctx, rest, stderr)
 	case "process-foreign-search":
 		return runProcessForeign(ctx, rest, stderr)
 	default:
 		fmt.Fprintf(stderr, "unknown command %q\n", cmd)
-		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-foreign-search")
+		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-wayback-extract, process-regional, process-foreign-search")
 		return exitUsage
 	}
 }
@@ -390,40 +395,42 @@ func runPlan(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 	return exitOK
 }
 
-// ── process-foreign-search ───────────────────────────────────────────────────
+// ── process-wayback-extract ──────────────────────────────────────────────────
 
-func runProcessForeign(ctx context.Context, args []string, stderr io.Writer) int {
-	fs := flag.NewFlagSet("process-foreign-search", flag.ContinueOnError)
+func runProcessWaybackExtract(ctx context.Context, args []string, stderr io.Writer) int {
+	fs := flag.NewFlagSet("process-wayback-extract", flag.ContinueOnError)
 	fs.SetOutput(stderr)
 	dbPath := fs.String("db", "", "path to SQLite database file (required)")
-	limit := fs.Int("limit", 0, "max pending jobs to process (0 = no cap)")
-	sourceFile := fs.String("source-file", "", "ATSB out-of-band export file (required for atsb_search jobs)")
+	limit := fs.Int("limit", 0, "max documents to process (0 = no cap)")
+	storeDir := fs.String("store-dir", "./wayback-store", "directory for OCR text artifacts")
+	ocrEndpoint := fs.String("ocr-endpoint", "http://127.0.0.1:8021/ocr", "OCR HTTP endpoint")
+	llmEndpoint := fs.String("llm-endpoint", "http://127.0.0.1:11434/api/generate", "Ollama generate endpoint")
+	llmModel := fs.String("llm-model", "qwen3.6-rw", "LLM model name")
+	maxInputChars := fs.Int("max-input-chars", 24000, "truncate OCR text to this many chars before LLM")
 	if err := fs.Parse(args); err != nil {
 		return exitUsage
 	}
 	if *dbPath == "" {
-		fmt.Fprintln(stderr, "process-foreign-search: --db is required")
+		fmt.Fprintln(stderr, "process-wayback-extract: --db is required")
 		fs.Usage()
 		return exitUsage
 	}
+
 	db, err := database.Open(*dbPath)
 	if err != nil {
-		fmt.Fprintf(stderr, "process-foreign-search: open db: %v\n", err)
+		fmt.Fprintf(stderr, "process-wayback-extract: open db: %v\n", err)
 		return exitFailure
 	}
 	defer db.Close()
 
-	clients := foreignsearch.Clients{
-		NTSB: foreignsearch.NewNTSBClient(30 * time.Second),
-		BEA:  foreignsearch.NewBEAClient(30 * time.Second),
-		ATSB: foreignsearch.NewATSBClient(*sourceFile),
-	}
-	processed, err := foreignsearch.ProcessPending(ctx, db, clients, *limit)
+	ocr := wayback.NewHTTPOCRClient(*ocrEndpoint, 600*time.Second)
+	llm := wayback.NewHTTPLLMClient(*llmEndpoint, *llmModel, *maxInputChars, 120*time.Second)
+	stats, err := wayback.ProcessExtractPending(ctx, db, ocr, llm, *storeDir, *limit)
 	if err != nil {
-		fmt.Fprintf(stderr, "process-foreign-search: %v\n", err)
+		fmt.Fprintf(stderr, "process-wayback-extract: %v\n", err)
 		return exitFailure
 	}
-	fmt.Fprintf(stderr, "processed %d\n", processed)
+	fmt.Fprintf(stderr, "extracted=%d skipped=%d failed=%d\n", stats.Extracted, stats.Skipped, stats.Failed)
 	return exitOK
 }
 
@@ -455,6 +462,96 @@ func runProcessWayback(ctx context.Context, args []string, stderr io.Writer) int
 	processed, err := wayback.ProcessPending(ctx, db, fetcher, *storeDir, *limit)
 	if err != nil {
 		fmt.Fprintf(stderr, "process-wayback: %v\n", err)
+		return exitFailure
+	}
+	fmt.Fprintf(stderr, "processed %d\n", processed)
+	return exitOK
+}
+
+// ── process-regional ──────────────────────────────────────────────────────────
+
+func runProcessRegional(ctx context.Context, args []string, stderr io.Writer) int {
+	fs := flag.NewFlagSet("process-regional", flag.ContinueOnError)
+	fs.SetOutput(stderr)
+	dbPath := fs.String("db", "", "path to SQLite database file (required)")
+	limit := fs.Int("limit", 0, "max pending jobs to process (0 = no cap)")
+	sourceFile := fs.String("source-file", "", "out-of-band listing export (for Cloudflare/TLS-blocked bodies)")
+	body := fs.String("body", "", "restrict to one body (ECCAA|BAGAIA|IAC); required with --source-file")
+	if err := fs.Parse(args); err != nil {
+		return exitUsage
+	}
+	if *dbPath == "" {
+		fmt.Fprintln(stderr, "process-regional: --db is required")
+		fs.Usage()
+		return exitUsage
+	}
+	// An out-of-band export is body-specific: feeding it to the other bodies'
+	// clients would mis-parse its relative links against the wrong origin and
+	// stage records under the wrong body. Require --body to scope the run.
+	if *sourceFile != "" && *body == "" {
+		fmt.Fprintln(stderr, "process-regional: --body is required with --source-file (an export is body-specific)")
+		fs.Usage()
+		return exitUsage
+	}
+	switch *body {
+	case "", "ECCAA", "BAGAIA", "IAC":
+	default:
+		fmt.Fprintf(stderr, "process-regional: invalid --body %q (want ECCAA|BAGAIA|IAC)\n", *body)
+		return exitUsage
+	}
+
+	db, err := database.Open(*dbPath)
+	if err != nil {
+		fmt.Fprintf(stderr, "process-regional: open db: %v\n", err)
+		return exitFailure
+	}
+	defer db.Close()
+
+	clients := regional.Clients{
+		ECCAA:  regional.NewECCAAClient(30*time.Second, *sourceFile),
+		BAGAIA: regional.NewBAGAIAClient(30*time.Second, *sourceFile),
+		IAC:    regional.NewIACClient(30*time.Second, *sourceFile),
+	}
+	processed, err := regional.ProcessPending(ctx, db, clients, *limit, *body)
+	if err != nil {
+		fmt.Fprintf(stderr, "process-regional: %v\n", err)
+		return exitFailure
+	}
+	fmt.Fprintf(stderr, "processed %d\n", processed)
+	return exitOK
+}
+
+// ── process-foreign-search ───────────────────────────────────────────────────
+
+func runProcessForeign(ctx context.Context, args []string, stderr io.Writer) int {
+	fs := flag.NewFlagSet("process-foreign-search", flag.ContinueOnError)
+	fs.SetOutput(stderr)
+	dbPath := fs.String("db", "", "path to SQLite database file (required)")
+	limit := fs.Int("limit", 0, "max pending jobs to process (0 = no cap)")
+	sourceFile := fs.String("source-file", "", "ATSB out-of-band export file (required for atsb_search jobs)")
+	if err := fs.Parse(args); err != nil {
+		return exitUsage
+	}
+	if *dbPath == "" {
+		fmt.Fprintln(stderr, "process-foreign-search: --db is required")
+		fs.Usage()
+		return exitUsage
+	}
+	db, err := database.Open(*dbPath)
+	if err != nil {
+		fmt.Fprintf(stderr, "process-foreign-search: open db: %v\n", err)
+		return exitFailure
+	}
+	defer db.Close()
+
+	clients := foreignsearch.Clients{
+		NTSB: foreignsearch.NewNTSBClient(30 * time.Second),
+		BEA:  foreignsearch.NewBEAClient(30 * time.Second),
+		ATSB: foreignsearch.NewATSBClient(*sourceFile),
+	}
+	processed, err := foreignsearch.ProcessPending(ctx, db, clients, *limit)
+	if err != nil {
+		fmt.Fprintf(stderr, "process-foreign-search: %v\n", err)
 		return exitFailure
 	}
 	fmt.Fprintf(stderr, "processed %d\n", processed)
