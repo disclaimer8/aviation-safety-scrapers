@@ -240,3 +240,37 @@ func BuildPlan(ctx context.Context, db *sql.DB, nowMs int64, limit int) (Plan, e
 	}
 	return plan, nil
 }
+
+// Enqueue inserts a pending crawl_jobs row for every would_enqueue decision in
+// the plan, inside one transaction. Returns the number of rows inserted.
+func Enqueue(ctx context.Context, db *sql.DB, plan Plan) (int, error) {
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		return 0, fmt.Errorf("planner: begin tx: %w", err)
+	}
+	defer tx.Rollback()
+
+	stmt, err := tx.PrepareContext(ctx, `
+		INSERT INTO crawl_jobs (source_id, country_id, job_type, status)
+		VALUES (?, ?, ?, 'pending')
+	`)
+	if err != nil {
+		return 0, fmt.Errorf("planner: prepare insert: %w", err)
+	}
+	defer stmt.Close()
+
+	inserted := 0
+	for _, j := range plan.Jobs {
+		if j.Decision != DecisionWouldEnqueue {
+			continue
+		}
+		if _, err := stmt.ExecContext(ctx, j.SourceID, j.CountryID, string(j.JobType)); err != nil {
+			return 0, fmt.Errorf("planner: insert %s/%s: %w", j.ISO2, j.JobType, err)
+		}
+		inserted++
+	}
+	if err := tx.Commit(); err != nil {
+		return 0, fmt.Errorf("planner: commit: %w", err)
+	}
+	return inserted, nil
+}
