@@ -66,7 +66,7 @@ func SourceTierAllowsType(tier int, typ SourceType) bool {
 		return typ == SourceRegulator || typ == SourceMinistry ||
 			typ == SourceOperator || typ == SourceManufacturer || typ == SourceRegionalBody
 	case 5:
-		return typ == SourceTrustedIndex
+		return typ == SourceTrustedIndex || typ == SourceWayback
 	case 6:
 		return typ == SourceMedia
 	default:
