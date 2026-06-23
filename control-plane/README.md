@@ -182,6 +182,41 @@ reaches 3). The resume point is decided by `ocr_text_path` — a re-run never re
 completed OCR. The OCR endpoint is a thin HTTP wrapper around `ocrmypdf` (see the
 spec, §9); endpoints are passed by flag and are never hardcoded.
 
+### process-regional
+
+Drains pending `archive_crawl` crawl jobs for `regional_raio` countries (created by
+`plan --enqueue`) — states covered by a regional investigation body. For each job
+(highest country priority first), it resolves the country's regional body
+(ECCAA / BAGAIA / IAC via `regional_body_members`) and queries that body's accident
+archive, staging discovered records into `staged_regional_documents`.
+
+```bash
+./aviation-coverage process-regional --db coverage.db --limit 20
+```
+
+The three bodies render their listings client-side or sit behind unstable TLS /
+Cloudflare from data-centre IPs (`mak.aero` is a Wix SPA, `eccaa.org` has a brittle
+TLS chain, `bagasoo.org` exposes no public report index), so in practice they are run
+**out-of-band**: export the listing from a real browser and run with `--source-file`.
+Live fetching is attempted as a best-effort fallback.
+
+An export is body-specific (its relative links are resolved against that body's
+origin), so `--source-file` requires `--body {ECCAA|BAGAIA|IAC}` to scope the run to
+that body's jobs; jobs for the other bodies are left pending. Without `--source-file`,
+all three bodies are processed live and `--body` is optional.
+
+```bash
+./aviation-coverage process-regional --db coverage.db --body IAC \
+  --source-file iac-listing.html
+```
+
+Only `archive_crawl` jobs whose country is `regional_raio` are processed;
+`archive_crawl` jobs for `direct_public_archive` countries are left for a future
+authority-archive worker. Jobs are finalized `success`/`failed` with
+`stats_json{found,staged,errors}`; staging is idempotent (`UNIQUE(body_code, ref)`); a
+job left `running` > 1h is auto-resumed. Report download + promotion into
+`events`/`reports` is a later stage.
+
 ## Operational notes
 
 - **Stale-running recovery** is automatic: `process-wayback` re-picks any
