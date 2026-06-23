@@ -225,6 +225,10 @@ func TestForeignEnsureDownloadedFetchesAndUpdatesRow(t *testing.T) {
 }
 
 func TestForeignEnsureDownloadedFailureMarksRow(t *testing.T) {
+	// EnsureDownloaded calls DownloadReportURL which uses the SSRF guard by
+	// default. Allow loopback so the httptest server is reachable in tests.
+	allowLoopback(t)
+
 	ctx := context.Background()
 	db := newExtractTestDB(t)
 
@@ -335,6 +339,87 @@ func TestForeignPendingDocsTwoPhaseFlow(t *testing.T) {
 	for _, d := range docs3 {
 		if d.ID == docID {
 			t.Fatalf("phase3: extracted doc %d must NOT be returned by PendingDocs", docID)
+		}
+	}
+}
+
+// TestForeignPendingDocsRetryAfterDownloadFailure is the regression test for
+// blocker I-1: rows with download_status='failed' AND extraction_status='failed'
+// must still be returned by PendingDocs while extraction_attempts < 3.
+func TestForeignPendingDocsRetryAfterDownloadFailure(t *testing.T) {
+	// allowLoopback so EnsureDownloaded can actually reach the httptest 404 server.
+	allowLoopback(t)
+
+	ctx := context.Background()
+	db := newExtractTestDB(t)
+
+	// Serve a permanent 404.
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+	}))
+	defer srv.Close()
+
+	docID, _ := seedForeignDoc(t, db, "KE", "ntsb", srv.URL+"/missing.pdf")
+	src := ForeignSource{HTTP: srv.Client()}
+
+	// Simulate a prior failed download: set both statuses to 'failed', attempts=1.
+	// (This is the state extractOne leaves the row in after EnsureDownloaded fails
+	// and RecordFailure is called: download_status='failed', extraction_status='failed'.)
+	db.ExecContext(ctx, `
+		UPDATE staged_foreign_documents
+		   SET download_status='failed', extraction_status='failed', extraction_attempts=1
+		 WHERE id=?`, docID)
+
+	// ── Assert: row IS returned by PendingDocs (retryable, attempts=1 < 3) ──────
+	docs, err := src.PendingDocs(ctx, db, 0)
+	if err != nil {
+		t.Fatalf("PendingDocs after 1st failure: %v", err)
+	}
+	var found bool
+	for _, d := range docs {
+		if d.ID == docID {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Fatalf("doc %d (download_status='failed', extraction_status='failed', attempts=1) must be returned by PendingDocs (retryable)", docID)
+	}
+
+	// Simulate a second failure: attempts=2.
+	db.ExecContext(ctx, `
+		UPDATE staged_foreign_documents
+		   SET download_status='failed', extraction_status='failed', extraction_attempts=2
+		 WHERE id=?`, docID)
+
+	docs, err = src.PendingDocs(ctx, db, 0)
+	if err != nil {
+		t.Fatalf("PendingDocs after 2nd failure: %v", err)
+	}
+	found = false
+	for _, d := range docs {
+		if d.ID == docID {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Fatalf("doc %d (attempts=2) must still be returned by PendingDocs (retryable)", docID)
+	}
+
+	// ── Assert: after attempts=3 the row is NO LONGER returned ──────────────────
+	db.ExecContext(ctx, `
+		UPDATE staged_foreign_documents
+		   SET extraction_attempts=3
+		 WHERE id=?`, docID)
+
+	docs, err = src.PendingDocs(ctx, db, 0)
+	if err != nil {
+		t.Fatalf("PendingDocs after 3rd failure (exhausted): %v", err)
+	}
+	for _, d := range docs {
+		if d.ID == docID {
+			t.Fatalf("doc %d (attempts=3) must NOT be returned by PendingDocs (exhausted)", docID)
 		}
 	}
 }

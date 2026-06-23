@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"os"
 )
 
 // ForeignSource is the StagedDocSource adapter for staged_foreign_documents.
@@ -48,7 +49,7 @@ func (ForeignSource) PendingDocs(ctx context.Context, db *sql.DB, limit int) ([]
 		  JOIN countries c ON c.id = d.country_id
 		 WHERE d.report_url IS NOT NULL AND d.report_url != ''
 		   AND (
-		     (d.download_status IN ('pending','failed') AND d.extraction_status = 'pending')
+		     (d.download_status IN ('pending','failed') AND d.extraction_status IN ('pending','failed'))
 		     OR
 		     (d.download_status = 'downloaded' AND d.extraction_status IN ('pending','ocr_done','failed'))
 		   )
@@ -92,7 +93,15 @@ func (ForeignSource) PendingDocs(ctx context.Context, db *sql.DB, limit int) ([]
 // EnsureDownloaded downloads doc.ArchivedURL (the report_url), writes it to
 // <storeDir>/<iso2>/<sha256hex>.pdf, and updates download_status/local_file_path/digest
 // on the staged row. On error the row is set to download_status='failed'.
+// If the row already has download_status='downloaded' and the local file exists on
+// disk, the download is skipped (idempotent).
 func (s ForeignSource) EnsureDownloaded(ctx context.Context, db *sql.DB, storeDir string, doc *ExtractDoc) error {
+	// Idempotency: skip re-download if already downloaded and file is on disk.
+	if doc.LocalFilePath != "" {
+		if _, err := os.Stat(doc.LocalFilePath); err == nil {
+			return nil
+		}
+	}
 	localPath, digest, err := DownloadReportURL(ctx, s.HTTP, doc.ArchivedURL, storeDir, doc.ISO2)
 	if err != nil {
 		if _, ue := db.ExecContext(ctx, `

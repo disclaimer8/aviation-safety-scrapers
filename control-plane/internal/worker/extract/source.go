@@ -100,7 +100,8 @@ type StagedDocSource interface {
 	// pending and is re-selected — no duplicate events/reports.
 	MarkExtractedTx(ctx context.Context, tx *sql.Tx, id, eventID int64) error
 	// RecordFailure marks the row failed, bumps its attempt counter, and logs a
-	// crawl_errors row with the classified errType (transport/ocr/llm/parse).
+	// crawl_errors row with the classified errType. Transport, OCR, and LLM
+	// failures all map to 'unknown'; parse/promotion failures map to 'parse_error'.
 	RecordFailure(ctx context.Context, db *sql.DB, doc ExtractDoc, url, errType string, cause error) error
 	// PersistOCRPath records the OCR text path and advances the row to 'ocr_done'.
 	PersistOCRPath(ctx context.Context, db *sql.DB, id int64, path string) error
