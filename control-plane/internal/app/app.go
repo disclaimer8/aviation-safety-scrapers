@@ -23,6 +23,7 @@ import (
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/planner"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/seed"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/validation"
+	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/extract"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/foreignsearch"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/regional"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/wayback"
@@ -425,7 +426,7 @@ func runProcessWaybackExtract(ctx context.Context, args []string, stderr io.Writ
 
 	ocr := wayback.NewHTTPOCRClient(*ocrEndpoint, 600*time.Second)
 	llm := wayback.NewHTTPLLMClient(*llmEndpoint, *llmModel, *maxInputChars, 120*time.Second)
-	stats, err := wayback.ProcessExtractPending(ctx, db, ocr, llm, *storeDir, *limit)
+	stats, err := extract.ProcessExtractPending(ctx, db, ocr, llm, *storeDir, *limit, extract.WaybackSource{})
 	if err != nil {
 		fmt.Fprintf(stderr, "process-wayback-extract: %v\n", err)
 		return exitFailure

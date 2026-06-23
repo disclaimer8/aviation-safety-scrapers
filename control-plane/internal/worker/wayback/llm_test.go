@@ -7,23 +7,11 @@ import (
 	"net/http/httptest"
 	"testing"
 	"time"
+
+	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/extract"
 )
 
-// fixtureLLMClient is the offline LLMClient for tests.
-type fixtureLLMClient struct {
-	Event ExtractedEvent
-	Err   error
-}
-
-func (f *fixtureLLMClient) Extract(ctx context.Context, text string) (ExtractedEvent, error) {
-	if f.Err != nil {
-		return ExtractedEvent{}, f.Err
-	}
-	return f.Event, nil
-}
-
-var _ LLMClient = (*fixtureLLMClient)(nil)
-var _ LLMClient = (*httpLLMClient)(nil)
+var _ extract.LLMClient = (*httpLLMClient)(nil)
 
 // TestExtractSchemaRequiresAllProperties guards against the model omitting fields.
 // Ollama's grammar lets it drop any property not in `required`, and qwen3.6-rw does

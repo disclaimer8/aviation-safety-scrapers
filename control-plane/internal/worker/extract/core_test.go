@@ -1,4 +1,4 @@
-package wayback
+package extract
 
 import (
 	"context"
@@ -25,7 +25,7 @@ func TestExtractOneHappyPath(t *testing.T) {
 	writePDF(t, db, docID)
 	doc := loadDoc(t, db, docID)
 
-	status, err := ExtractOne(ctx, db, &fixtureOCRClient{Text: "REPORT"}, &fixtureLLMClient{Event: goodEvent()}, t.TempDir(), doc)
+	status, err := extractOne(ctx, db, WaybackSource{}, &fixtureOCRClient{Text: "REPORT"}, &fixtureLLMClient{Event: goodEvent()}, t.TempDir(), doc)
 	if err != nil {
 		t.Fatalf("ExtractOne: %v", err)
 	}
@@ -46,7 +46,7 @@ func TestExtractOneSkipsNonAccident(t *testing.T) {
 	writePDF(t, db, docID)
 	doc := loadDoc(t, db, docID)
 
-	status, err := ExtractOne(ctx, db, &fixtureOCRClient{Text: "INDEX"}, &fixtureLLMClient{Event: ExtractedEvent{IsAviationAccident: false}}, t.TempDir(), doc)
+	status, err := extractOne(ctx, db, WaybackSource{}, &fixtureOCRClient{Text: "INDEX"}, &fixtureLLMClient{Event: ExtractedEvent{IsAviationAccident: false}}, t.TempDir(), doc)
 	if err != nil {
 		t.Fatalf("ExtractOne: %v", err)
 	}
@@ -62,7 +62,7 @@ func TestExtractOneOCRFailureCountsAttempt(t *testing.T) {
 	writePDF(t, db, docID)
 	doc := loadDoc(t, db, docID)
 
-	status, err := ExtractOne(ctx, db, &fixtureOCRClient{Err: errors.New("boom")}, &fixtureLLMClient{}, t.TempDir(), doc)
+	status, err := extractOne(ctx, db, WaybackSource{}, &fixtureOCRClient{Err: errors.New("boom")}, &fixtureLLMClient{}, t.TempDir(), doc)
 	if err != nil {
 		t.Fatalf("ExtractOne returned err: %v", err) // data failures are recorded, not returned
 	}
@@ -83,12 +83,12 @@ func TestProcessExtractPendingResumesFromOCRText(t *testing.T) {
 	docID, _ := seedDownloadedDoc(t, db, "KE", "k1")
 	// Simulate a crashed-after-OCR doc: text already persisted, status ocr_done.
 	store := t.TempDir()
-	if _, err := PersistOCRText(ctx, db, store, "KE", "k1", docID, "REPORT"); err != nil {
+	if _, err := PersistOCRText(ctx, db, WaybackSource{}, store, "KE", "k1", docID, "REPORT"); err != nil {
 		t.Fatal(err)
 	}
 	// OCR client that would error if called — proves OCR is skipped on resume.
 	stats, err := ProcessExtractPending(ctx, db, &fixtureOCRClient{Err: errors.New("should not be called")},
-		&fixtureLLMClient{Event: goodEvent()}, store, 0)
+		&fixtureLLMClient{Event: goodEvent()}, store, 0, WaybackSource{})
 	if err != nil {
 		t.Fatalf("ProcessExtractPending: %v", err)
 	}

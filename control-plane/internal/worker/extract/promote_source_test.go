@@ -1,4 +1,4 @@
-package wayback
+package extract
 
 import (
 	"context"
@@ -17,7 +17,8 @@ func TestResolveSourceOfficial(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	id, tier, cr, err := ResolveSource(ctx, db, countryID, "aaid.ke")
+	doc := ExtractDoc{CountryID: countryID, WaybackTarget: "aaid.ke"}
+	id, tier, cr, err := WaybackSource{}.ResolveSource(ctx, db, doc)
 	if err != nil {
 		t.Fatalf("ResolveSource: %v", err)
 	}
@@ -25,7 +26,7 @@ func TestResolveSourceOfficial(t *testing.T) {
 		t.Fatalf("got id=%d tier=%d cr=%q", id, tier, cr)
 	}
 	// Second call reuses the same source (ON CONFLICT), no duplicate.
-	id2, _, _, _ := ResolveSource(ctx, db, countryID, "aaid.ke")
+	id2, _, _, _ := WaybackSource{}.ResolveSource(ctx, db, doc)
 	if id2 != id {
 		t.Fatalf("second resolve made a new source: %d vs %d", id2, id)
 	}
@@ -40,7 +41,8 @@ func TestResolveSourceWaybackFallback(t *testing.T) {
 	ctx := context.Background()
 	db := newExtractTestDB(t)
 	_, countryID := seedDownloadedDoc(t, db, "ZW", "z1") // no authority
-	id, tier, cr, err := ResolveSource(ctx, db, countryID, "caa.gov.zw")
+	doc := ExtractDoc{CountryID: countryID, WaybackTarget: "caa.gov.zw"}
+	id, tier, cr, err := WaybackSource{}.ResolveSource(ctx, db, doc)
 	if err != nil {
 		t.Fatalf("ResolveSource: %v", err)
 	}
