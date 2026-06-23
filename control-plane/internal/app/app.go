@@ -23,6 +23,7 @@ import (
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/planner"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/seed"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/validation"
+	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/foreignsearch"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/regional"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/wayback"
 )
@@ -39,7 +40,7 @@ const (
 func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 	if len(args) == 0 {
 		fmt.Fprintln(stderr, "usage: aviation-coverage <command> [flags]")
-		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-wayback-extract, process-regional")
+		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-wayback-extract, process-regional, process-foreign-search")
 		return exitUsage
 	}
 
@@ -67,9 +68,11 @@ func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		return runProcessWaybackExtract(ctx, rest, stderr)
 	case "process-regional":
 		return runProcessRegional(ctx, rest, stderr)
+	case "process-foreign-search":
+		return runProcessForeign(ctx, rest, stderr)
 	default:
 		fmt.Fprintf(stderr, "unknown command %q\n", cmd)
-		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-wayback-extract, process-regional")
+		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-wayback-extract, process-regional, process-foreign-search")
 		return exitUsage
 	}
 }
@@ -512,6 +515,43 @@ func runProcessRegional(ctx context.Context, args []string, stderr io.Writer) in
 	processed, err := regional.ProcessPending(ctx, db, clients, *limit, *body)
 	if err != nil {
 		fmt.Fprintf(stderr, "process-regional: %v\n", err)
+		return exitFailure
+	}
+	fmt.Fprintf(stderr, "processed %d\n", processed)
+	return exitOK
+}
+
+// ── process-foreign-search ───────────────────────────────────────────────────
+
+func runProcessForeign(ctx context.Context, args []string, stderr io.Writer) int {
+	fs := flag.NewFlagSet("process-foreign-search", flag.ContinueOnError)
+	fs.SetOutput(stderr)
+	dbPath := fs.String("db", "", "path to SQLite database file (required)")
+	limit := fs.Int("limit", 0, "max pending jobs to process (0 = no cap)")
+	sourceFile := fs.String("source-file", "", "ATSB out-of-band export file (required for atsb_search jobs)")
+	if err := fs.Parse(args); err != nil {
+		return exitUsage
+	}
+	if *dbPath == "" {
+		fmt.Fprintln(stderr, "process-foreign-search: --db is required")
+		fs.Usage()
+		return exitUsage
+	}
+	db, err := database.Open(*dbPath)
+	if err != nil {
+		fmt.Fprintf(stderr, "process-foreign-search: open db: %v\n", err)
+		return exitFailure
+	}
+	defer db.Close()
+
+	clients := foreignsearch.Clients{
+		NTSB: foreignsearch.NewNTSBClient(30 * time.Second),
+		BEA:  foreignsearch.NewBEAClient(30 * time.Second),
+		ATSB: foreignsearch.NewATSBClient(*sourceFile),
+	}
+	processed, err := foreignsearch.ProcessPending(ctx, db, clients, *limit)
+	if err != nil {
+		fmt.Fprintf(stderr, "process-foreign-search: %v\n", err)
 		return exitFailure
 	}
 	fmt.Fprintf(stderr, "processed %d\n", processed)
