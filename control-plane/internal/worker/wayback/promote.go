@@ -74,6 +74,103 @@ func normalizeReg(s string) string {
 	return strings.ToUpper(strings.TrimSpace(s))
 }
 
+// ExtractDoc is a staged document ready for the extract step.
+type ExtractDoc struct {
+	ID            int64
+	CountryID     int64
+	ISO2          string
+	Digest        string
+	LocalFilePath string
+	OriginalURL   string
+	ArchivedURL   string
+	OCRTextPath   sql.NullString
+	Checksum      sql.NullString
+	WaybackTarget string
+	Attempts      int
+}
+
+// PromoteDocument inserts or links an event, inserts a report, and advances the
+// document to 'extracted', all in one transaction. Returns the event id and
+// whether it linked to an existing event.
+func PromoteDocument(ctx context.Context, db *sql.DB, doc ExtractDoc, e ExtractedEvent) (int64, bool, error) {
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		return 0, false, fmt.Errorf("wayback: promote begin tx: %w", err)
+	}
+	defer tx.Rollback()
+
+	sourceID, tier, copyright, err := ResolveSource(ctx, tx, doc.CountryID, doc.WaybackTarget)
+	if err != nil {
+		return 0, false, err
+	}
+	official := tier == 1
+
+	eventID, linked, err := FindDuplicateEvent(ctx, tx, e)
+	if err != nil {
+		return 0, false, err
+	}
+	if linked {
+		if _, err := tx.ExecContext(ctx, `
+			UPDATE events SET dedup_status='soft_linked', updated_at=unixepoch('subsec')*1000
+			 WHERE id=? AND dedup_status='unreviewed'`, eventID); err != nil {
+			return 0, false, fmt.Errorf("wayback: soft-link event %d: %w", eventID, err)
+		}
+	} else {
+		conf := ConfidenceScore(e, official)
+		res, err := tx.ExecContext(ctx, `
+			INSERT INTO events
+				(date, date_precision, occurrence_country_id, location, latitude, longitude,
+				 aircraft_registration, aircraft_type, manufacturer, operator_name, flight_number,
+				 fatalities, injuries, event_type, investigation_status, confidence_score, dedup_status)
+			VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, 'unreviewed')`,
+			nullStr(e.Date), e.DatePrecision, doc.CountryID, nullStr(e.Location), e.Latitude, e.Longitude,
+			nullStr(e.AircraftRegistration), nullStr(e.AircraftType), nullStr(e.Manufacturer),
+			nullStr(e.OperatorName), nullStr(e.FlightNumber), e.Fatalities, e.Injuries,
+			e.EventType, e.InvestigationStatus, conf)
+		if err != nil {
+			return 0, false, fmt.Errorf("wayback: insert event: %w", err)
+		}
+		eventID, _ = res.LastInsertId()
+	}
+
+	title := e.Title
+	if title == "" {
+		title = doc.ISO2 + " accident report"
+	}
+	language := e.Language
+	if language == "" {
+		language = "en"
+	}
+	if _, err := tx.ExecContext(ctx, `
+		INSERT INTO reports
+			(event_id, source_id, report_type, title, language, original_url, archived_url, pdf_url,
+			 published_date, accessed_at, checksum, local_file_path, source_tier, extraction_status, copyright_status)
+		VALUES (?,?,?,?,?,?,?,?,?, unixepoch('subsec')*1000, ?, ?, ?, 'extracted', ?)`,
+		eventID, sourceID, e.ReportType, title, language, doc.OriginalURL, doc.ArchivedURL, doc.OriginalURL,
+		nullStr(e.PublishedDate), doc.Checksum, doc.LocalFilePath, tier, copyright); err != nil {
+		return 0, false, fmt.Errorf("wayback: insert report: %w", err)
+	}
+
+	if _, err := tx.ExecContext(ctx, `
+		UPDATE staged_wayback_documents SET event_id=?, extraction_status='extracted' WHERE id=?`,
+		eventID, doc.ID); err != nil {
+		return 0, false, fmt.Errorf("wayback: mark extracted %d: %w", doc.ID, err)
+	}
+
+	if err := tx.Commit(); err != nil {
+		return 0, false, fmt.Errorf("wayback: promote commit: %w", err)
+	}
+	return eventID, linked, nil
+}
+
+// nullStr returns nil for an empty string so an empty optional column stays NULL.
+func nullStr(s string) any {
+	if s == "" {
+		return nil
+	}
+	return s
+}
+
 // FindDuplicateEvent looks for an existing event that is the same occurrence.
 // Key 1 (when the candidate has a registration): same exact date AND same
 // normalized registration. Key 2 (when registration is absent): same exact date
