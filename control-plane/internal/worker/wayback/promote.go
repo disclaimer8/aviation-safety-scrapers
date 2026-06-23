@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
 )
 
 // execQuerier is satisfied by *sql.DB and *sql.Tx, so promotion helpers work
@@ -66,4 +67,50 @@ func upsertSource(ctx context.Context, q execQuerier, name, url, canonical, sour
 		return 0, fmt.Errorf("wayback: select source %s: %w", canonical, err)
 	}
 	return id, nil
+}
+
+// normalizeReg upper-cases and trims an aircraft registration for comparison.
+func normalizeReg(s string) string {
+	return strings.ToUpper(strings.TrimSpace(s))
+}
+
+// FindDuplicateEvent looks for an existing event that is the same occurrence.
+// Key 1 (when the candidate has a registration): same exact date AND same
+// normalized registration. Key 2 (when registration is absent): same exact date
+// AND same operator AND same fatalities. Only exact-precision candidate dates
+// participate.
+func FindDuplicateEvent(ctx context.Context, q execQuerier, e ExtractedEvent) (int64, bool, error) {
+	if e.DatePrecision != "exact" || e.Date == "" {
+		return 0, false, nil
+	}
+	reg := normalizeReg(e.AircraftRegistration)
+	if reg != "" {
+		var id int64
+		err := q.QueryRowContext(ctx, `
+			SELECT id FROM events
+			 WHERE date = ? AND upper(trim(aircraft_registration)) = ?
+			 ORDER BY id ASC LIMIT 1`, e.Date, reg).Scan(&id)
+		if err == sql.ErrNoRows {
+			return 0, false, nil
+		}
+		if err != nil {
+			return 0, false, fmt.Errorf("wayback: dedup key1: %w", err)
+		}
+		return id, true, nil
+	}
+	if e.OperatorName != "" && e.Fatalities != nil {
+		var id int64
+		err := q.QueryRowContext(ctx, `
+			SELECT id FROM events
+			 WHERE date = ? AND operator_name = ? AND fatalities = ?
+			 ORDER BY id ASC LIMIT 1`, e.Date, e.OperatorName, *e.Fatalities).Scan(&id)
+		if err == sql.ErrNoRows {
+			return 0, false, nil
+		}
+		if err != nil {
+			return 0, false, fmt.Errorf("wayback: dedup key2: %w", err)
+		}
+		return id, true, nil
+	}
+	return 0, false, nil
 }
