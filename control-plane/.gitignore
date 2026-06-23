@@ -8,3 +8,6 @@
 
 # Generated export output
 /coverage.json
+
+# Wayback worker local PDF store (runtime artifact)
+wayback-store/
