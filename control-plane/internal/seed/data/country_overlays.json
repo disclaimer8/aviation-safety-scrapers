@@ -299,5 +299,83 @@
     "expected_source_quality": 3,
     "refresh_cadence": "quarterly",
     "notes": "ECCAA member; route via regional RAIO + Wayback."
+  },
+  {
+    "iso2": "BO",
+    "group": "D",
+    "policy_status": "allowed",
+    "coverage_status": "no_public_archive",
+    "coverage_score": 1,
+    "effort_score": 4,
+    "expected_records": 15,
+    "expected_source_quality": 2,
+    "refresh_cadence": "quarterly",
+    "wayback_target": "dgac.gob.bo",
+    "notes": "Defunct/weak AAI web presence; recover via Wayback CDX."
+  },
+  {
+    "iso2": "PY",
+    "group": "D",
+    "policy_status": "allowed",
+    "coverage_status": "no_public_archive",
+    "coverage_score": 1,
+    "effort_score": 4,
+    "expected_records": 15,
+    "expected_source_quality": 2,
+    "refresh_cadence": "quarterly",
+    "wayback_target": "dinac.gov.py",
+    "notes": "Defunct/weak AAI web presence; recover via Wayback CDX."
+  },
+  {
+    "iso2": "HN",
+    "group": "D",
+    "policy_status": "allowed",
+    "coverage_status": "no_public_archive",
+    "coverage_score": 1,
+    "effort_score": 4,
+    "expected_records": 15,
+    "expected_source_quality": 2,
+    "refresh_cadence": "quarterly",
+    "wayback_target": "ahac.gob.hn",
+    "notes": "Defunct/weak AAI web presence; recover via Wayback CDX."
+  },
+  {
+    "iso2": "CM",
+    "group": "D",
+    "policy_status": "allowed",
+    "coverage_status": "no_public_archive",
+    "coverage_score": 1,
+    "effort_score": 4,
+    "expected_records": 15,
+    "expected_source_quality": 2,
+    "refresh_cadence": "quarterly",
+    "wayback_target": "ccaa.aero",
+    "notes": "Defunct/weak AAI web presence; recover via Wayback CDX."
+  },
+  {
+    "iso2": "MZ",
+    "group": "D",
+    "policy_status": "allowed",
+    "coverage_status": "no_public_archive",
+    "coverage_score": 1,
+    "effort_score": 4,
+    "expected_records": 15,
+    "expected_source_quality": 2,
+    "refresh_cadence": "quarterly",
+    "wayback_target": "anac.gov.mz",
+    "notes": "Defunct/weak AAI web presence; recover via Wayback CDX. Swapped for CD (DRC) which has no verified Wayback PDF captures."
+  },
+  {
+    "iso2": "MG",
+    "group": "D",
+    "policy_status": "allowed",
+    "coverage_status": "no_public_archive",
+    "coverage_score": 1,
+    "effort_score": 4,
+    "expected_records": 15,
+    "expected_source_quality": 2,
+    "refresh_cadence": "quarterly",
+    "wayback_target": "acm.mg",
+    "notes": "Defunct/weak AAI web presence; recover via Wayback CDX."
   }
 ]
