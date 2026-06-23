@@ -49,3 +49,46 @@ func Candidates(ctx context.Context, db *sql.DB) ([]Candidate, error) {
 	}
 	return out, nil
 }
+
+// sourceNameByJobType maps each job type to the name of the sources row that
+// represents its acquisition channel. Names must match the seeded rows.
+var sourceNameByJobType = map[model.CrawlJobType]string{
+	model.CrawlJobTypeAuthorityHealthCheck: "Authority Health Check (method)",
+	model.CrawlJobTypeArchiveCrawl:         "Authority Archive Crawl (method)",
+	model.CrawlJobTypeWaybackCDX:           "Wayback Machine CDX (method)",
+	model.CrawlJobTypePDFDiscovery:         "Scholarly PDF Discovery (method)",
+	model.CrawlJobTypeICAOELibrarySearch:   "ICAO e-Library Final Reports",
+	model.CrawlJobTypeDirectRequestNeeded:  "Direct Authority Request (method)",
+	model.CrawlJobTypeNTSBForeignSearch:    "NTSB Foreign Investigations (method)",
+	model.CrawlJobTypeBEAForeignSearch:     "BEA Foreign Investigations (method)",
+	model.CrawlJobTypeATSBSearch:           "ATSB Foreign Investigations (method)",
+}
+
+// SourceResolver maps a job type to a sources.id, loaded once from the DB.
+type SourceResolver struct {
+	byJobType map[model.CrawlJobType]int64
+}
+
+// NewSourceResolver loads the job-type → source-id map. A job type whose source
+// row is missing is simply absent from the map (Resolve returns false).
+func NewSourceResolver(ctx context.Context, db *sql.DB) (*SourceResolver, error) {
+	r := &SourceResolver{byJobType: make(map[model.CrawlJobType]int64, len(sourceNameByJobType))}
+	for jt, name := range sourceNameByJobType {
+		var id int64
+		err := db.QueryRowContext(ctx, `SELECT id FROM sources WHERE name = ?`, name).Scan(&id)
+		if err == sql.ErrNoRows {
+			continue
+		}
+		if err != nil {
+			return nil, fmt.Errorf("planner: resolve source %q: %w", name, err)
+		}
+		r.byJobType[jt] = id
+	}
+	return r, nil
+}
+
+// Resolve returns the source id for a job type, or false if none is mapped.
+func (r *SourceResolver) Resolve(jobType model.CrawlJobType) (int64, bool) {
+	id, ok := r.byJobType[jobType]
+	return id, ok
+}
