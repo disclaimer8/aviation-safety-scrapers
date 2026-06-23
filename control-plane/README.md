@@ -137,6 +137,44 @@ resolved is `skipped_no_source` and listed under `warnings`.
 
 Flags: `--enqueue`, `--limit N` (0 = no cap), `--generated-at <RFC3339>`.
 
+### process-wayback
+
+Drains pending `wayback_cdx` crawl jobs (created by `plan --enqueue`). For each
+job, highest-country-priority first, it resolves the country's defunct-archive
+target (overlay `wayback_target`, falling back to the country's authority
+`archive_url`), queries the Internet Archive CDX index for archived PDFs, stages
+the discovered captures into `staged_wayback_documents`, and downloads them to a
+local store with SHA-256 checksums.
+
+```bash
+./aviation-coverage process-wayback --db coverage.db --limit 20 --store-dir ./wayback-store
+```
+
+Each job is finalized as `success` (all staged docs downloaded, no warnings),
+`partial` (some downloads failed or malformed CDX rows skipped), or `failed` (no
+resolvable target or a CDX transport error), with a `stats_json` of
+`{found, staged, downloaded, errors}` and a `crawl_errors` row per failure.
+Staging is idempotent — `UNIQUE(country_id, digest)` means a re-run never
+double-stages a capture.
+
+OCR of the downloaded PDFs and extraction into `events`/`reports` is a later
+stage (Spec 2). Flags: `--limit N` (0 = no cap), `--store-dir DIR` (default
+`./wayback-store`). The store directory is a runtime artifact and is gitignored.
+
+## Operational notes
+
+- **Stale-running recovery** is automatic: `process-wayback` re-picks any
+  `running` job whose `started_at` is older than 1 hour and resumes it (staging
+  is idempotent, so no double-work). For an immediate manual re-queue:
+  ```sql
+  UPDATE crawl_jobs SET status='pending' WHERE status='running' AND job_type='wayback_cdx';
+  ```
+- **No per-job document cap yet**: a single high-capture country can stage and
+  download hundreds of PDFs (hundreds of MB) in one job. A `--max-docs-per-job`
+  bound is a planned follow-up before broad country expansion.
+- **CDX transport errors** are recorded with `error_type='unknown'`; finer
+  mapping to timeout/dns/tls/http_* variants is a planned follow-up.
+
 ## Override precedence
 
 For every mutable authority field (website URL, archive URL, contact email,
