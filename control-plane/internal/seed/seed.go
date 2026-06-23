@@ -55,6 +55,7 @@ type overlayEntry struct {
 	ExpectedRecords       int    `json:"expected_records"`
 	ExpectedSourceQuality int    `json:"expected_source_quality"`
 	DelegateISO2          string `json:"delegate_iso2"`
+	WaybackTarget         string `json:"wayback_target"`
 	RefreshCadence        string `json:"refresh_cadence"`
 	Notes                 string `json:"notes"`
 }
@@ -155,8 +156,8 @@ func Apply(ctx context.Context, db *sql.DB) (Stats, error) {
 			expected_records, expected_source_quality,
 			priority_score, country_group,
 			refresh_cadence, notes,
-			delegate_iso2
-		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+			delegate_iso2, wayback_target
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		ON CONFLICT(iso2) DO UPDATE SET
 			iso3=excluded.iso3,
 			name=excluded.name,
@@ -171,7 +172,8 @@ func Apply(ctx context.Context, db *sql.DB) (Stats, error) {
 			country_group=excluded.country_group,
 			refresh_cadence=excluded.refresh_cadence,
 			notes=excluded.notes,
-			delegate_iso2=excluded.delegate_iso2
+			delegate_iso2=excluded.delegate_iso2,
+			wayback_target=excluded.wayback_target
 	`)
 	if err != nil {
 		return Stats{}, fmt.Errorf("seed: prepare country upsert: %w", err)
@@ -190,6 +192,7 @@ func Apply(ctx context.Context, db *sql.DB) (Stats, error) {
 		var refreshCadence *string
 		var notes *string
 		var delegateISO2 *string
+		var waybackTarget *string
 		priority := model.PriorityScore(expectedRecords, expectedSourceQuality, effortScore)
 
 		if o, ok := overlayMap[c.ISO2]; ok {
@@ -216,6 +219,10 @@ func Apply(ctx context.Context, db *sql.DB) (Stats, error) {
 				d := o.DelegateISO2
 				delegateISO2 = &d
 			}
+			if o.WaybackTarget != "" {
+				w := o.WaybackTarget
+				waybackTarget = &w
+			}
 		}
 
 		if _, err := stmtCountry.ExecContext(ctx,
@@ -225,7 +232,7 @@ func Apply(ctx context.Context, db *sql.DB) (Stats, error) {
 			expectedRecords, expectedSourceQuality,
 			priority, groupVal,
 			refreshCadence, notes,
-			delegateISO2,
+			delegateISO2, waybackTarget,
 		); err != nil {
 			return Stats{}, fmt.Errorf("seed: upsert country %s: %w", c.ISO2, err)
 		}
