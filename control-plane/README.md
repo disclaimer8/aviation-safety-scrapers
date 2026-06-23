@@ -161,6 +161,36 @@ OCR of the downloaded PDFs and extraction into `events`/`reports` is a later
 stage (Spec 2). Flags: `--limit N` (0 = no cap), `--store-dir DIR` (default
 `./wayback-store`). The store directory is a runtime artifact and is gitignored.
 
+### process-foreign-search
+
+Drains pending `ntsb_foreign_search` / `bea_foreign_search` / `atsb_search` crawl
+jobs (created by `plan --enqueue`) for countries whose investigations are
+delegated to a foreign authority (`delegate_iso2`). For each job, highest-country-
+priority first, it queries the delegate authority's accident records for the
+occurrence country and stages them into `staged_foreign_documents`.
+
+```bash
+./aviation-coverage process-foreign-search --db coverage.db --limit 20
+```
+
+- **NTSB** (US delegates) and **BEA** (FR delegates) are queried live.
+- **ATSB** (AU delegates) sits behind Akamai bot-protection and is **out-of-band**:
+  export the country's investigations JSON from a real browser (the project's
+  mini-PC), then run with `--source-file`:
+
+  ```bash
+  ./aviation-coverage process-foreign-search --db coverage.db --source-file atsb_export.json
+  ```
+
+  An `atsb_search` job with no `--source-file` is finalized `failed` with a clear
+  message.
+
+Jobs are finalized `success` / `partial` / `failed` with `stats_json` of
+`{found, staged, errors}` and a `crawl_errors` row per failure. Staging is
+idempotent — `UNIQUE(authority, foreign_ref)`. Like the Wayback worker, a job left
+`running` > 1h is automatically re-selected and resumed. Downloading the staged
+`report_url` PDFs and promotion into `events`/`reports` is a later stage.
+
 ## Operational notes
 
 - **Stale-running recovery** is automatic: `process-wayback` re-picks any
