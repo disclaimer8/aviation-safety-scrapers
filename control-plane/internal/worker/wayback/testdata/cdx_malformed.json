@@ -1,0 +1,3 @@
+[["urlkey","timestamp","original","mimetype","statuscode","digest","length"],
+ ["gov,example)/e.pdf","20100101000000","http://example.gov/e.pdf","application/pdf","200","DIGESTE"],
+ ["gov,example)/f.pdf","20100101000000","http://example.gov/f.pdf","application/pdf","200","DIGESTF","notanumber"]]

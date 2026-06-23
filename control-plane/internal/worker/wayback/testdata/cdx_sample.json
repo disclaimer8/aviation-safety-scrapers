@@ -1,0 +1,6 @@
+[["urlkey","timestamp","original","mimetype","statuscode","digest","length"],
+ ["gov,example)/a.pdf","20100101000000","http://example.gov/a.pdf","application/pdf","200","DIGESTA","1024"],
+ ["gov,example)/a.pdf","20120101000000","http://example.gov/a.pdf","application/pdf","200","DIGESTA","1024"],
+ ["gov,example)/b.pdf","20110101000000","http://example.gov/b.pdf","application/pdf","200","DIGESTB","2048"],
+ ["gov,example)/c.htm","20110101000000","http://example.gov/c.htm","text/html","200","DIGESTC","100"],
+ ["gov,example)/d.pdf","20110101000000","http://example.gov/d.pdf","application/pdf","404","DIGESTD","0"]]
