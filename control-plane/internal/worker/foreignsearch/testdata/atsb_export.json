@@ -1,0 +1,39 @@
+{
+  "investigations": [
+    {
+      "InvestigationNumber": "AO-2023-021",
+      "Title": "Collision with terrain involving Cessna 172S, VH-XYZ, near Broken Hill, New South Wales, 14 March 2023",
+      "OccurrenceDate": "2023-03-14",
+      "InvestigationPageURL": "https://www.atsb.gov.au/publications/investigation_reports/2023/aair/ao-2023-021",
+      "ReportPDFURL": "https://www.atsb.gov.au/media/atsb/publications/investigation_reports/2023/aair/ao-2023-021.pdf"
+    },
+    {
+      "InvestigationNumber": "AO-2023-047",
+      "Title": "Runway excursion involving Boeing 737-800, VH-ABC, Sydney Airport, New South Wales, 5 July 2023",
+      "OccurrenceDate": "2023-07-05",
+      "InvestigationPageURL": "https://www.atsb.gov.au/publications/investigation_reports/2023/aair/ao-2023-047",
+      "ReportPDFURL": ""
+    },
+    {
+      "InvestigationNumber": "AO-2022-084",
+      "Title": "Serious incident involving Airbus A330-200, VH-DEF, en route Melbourne to Singapore, 18 November 2022",
+      "OccurrenceDate": "2022-11-18",
+      "InvestigationPageURL": "https://www.atsb.gov.au/publications/investigation_reports/2022/aair/ao-2022-084",
+      "ReportPDFURL": "https://www.atsb.gov.au/media/atsb/publications/investigation_reports/2022/aair/ao-2022-084.pdf"
+    },
+    {
+      "InvestigationNumber": "",
+      "Title": "Draft entry missing investigation number — should be counted as warning",
+      "OccurrenceDate": "2024-01-01",
+      "InvestigationPageURL": "https://www.atsb.gov.au/publications/investigation_reports/2024/aair/draft",
+      "ReportPDFURL": ""
+    },
+    {
+      "InvestigationNumber": "AO-2024-001",
+      "Title": "Bird strike involving Robinson R44, VH-RST, Cairns Airport, Queensland, 3 January 2024",
+      "OccurrenceDate": "2024-01-03",
+      "InvestigationPageURL": "https://www.atsb.gov.au/publications/investigation_reports/2024/aair/ao-2024-001",
+      "ReportPDFURL": ""
+    }
+  ]
+}
