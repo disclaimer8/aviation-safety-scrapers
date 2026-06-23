@@ -6,8 +6,10 @@ import (
 	_ "embed"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
+	"unicode/utf8"
 )
 
 //go:embed prompts/extract.txt
@@ -89,8 +91,8 @@ var extractSchema = json.RawMessage(`{
 }`)
 
 func (h *httpLLMClient) Extract(ctx context.Context, text string) (ExtractedEvent, error) {
-	if h.maxChars > 0 && len(text) > h.maxChars {
-		text = text[:h.maxChars]
+	if h.maxChars > 0 && utf8.RuneCountInString(text) > h.maxChars {
+		text = string([]rune(text)[:h.maxChars])
 	}
 	reqBody := map[string]any{
 		"model":  h.model,
@@ -114,7 +116,8 @@ func (h *httpLLMClient) Extract(ctx context.Context, text string) (ExtractedEven
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		return ExtractedEvent{}, fmt.Errorf("wayback: llm status %d", resp.StatusCode)
+		snippet, _ := io.ReadAll(io.LimitReader(resp.Body, 512))
+		return ExtractedEvent{}, fmt.Errorf("wayback: llm status %d: %s", resp.StatusCode, snippet)
 	}
 	var wrap struct {
 		Response string `json:"response"`
