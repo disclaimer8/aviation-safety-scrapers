@@ -53,3 +53,28 @@ func TestFindDuplicateEventNoMatch(t *testing.T) {
 		t.Fatalf("expected no match: found=%v err=%v", found, err)
 	}
 }
+
+func TestFindDuplicateEventRegPresentSkipsKey2(t *testing.T) {
+	ctx := context.Background()
+	db := newExtractTestDB(t)
+	// Stored row has a registration AND operator+fatalities that would match key2.
+	insertEvent(t, db, "2019-03-10", "ET-AVJ", "Ethiopian", intp(157))
+	// Candidate has a DIFFERENT registration but the SAME operator+fatalities.
+	cand := ExtractedEvent{Date: "2019-03-10", DatePrecision: "exact",
+		AircraftRegistration: "N99999", OperatorName: "Ethiopian", Fatalities: intp(157)}
+	_, found, err := FindDuplicateEvent(ctx, db, cand)
+	if err != nil || found {
+		t.Fatalf("reg present must use key1 only (no key2 fallthrough): found=%v err=%v", found, err)
+	}
+}
+
+func TestFindDuplicateEventNonExactPrecisionSkips(t *testing.T) {
+	ctx := context.Background()
+	db := newExtractTestDB(t)
+	insertEvent(t, db, "2019-03-10", "ET-AVJ", "Ethiopian", intp(157))
+	cand := ExtractedEvent{Date: "2019-03-10", DatePrecision: "month", AircraftRegistration: "ET-AVJ"}
+	_, found, err := FindDuplicateEvent(ctx, db, cand)
+	if err != nil || found {
+		t.Fatalf("non-exact precision must skip dedup: found=%v err=%v", found, err)
+	}
+}
