@@ -473,6 +473,7 @@ func runProcessRegional(ctx context.Context, args []string, stderr io.Writer) in
 	dbPath := fs.String("db", "", "path to SQLite database file (required)")
 	limit := fs.Int("limit", 0, "max pending jobs to process (0 = no cap)")
 	sourceFile := fs.String("source-file", "", "out-of-band listing export (for Cloudflare/TLS-blocked bodies)")
+	renderEndpoint := fs.String("render-endpoint", "", "browser-render service URL (e.g. http://127.0.0.1:18030/render) used to fetch JS/Cloudflare-gated listings live")
 	body := fs.String("body", "", "restrict to one body (ECCAA|BAGAIA|IAC); required with --source-file")
 	if err := fs.Parse(args); err != nil {
 		return exitUsage
@@ -505,9 +506,9 @@ func runProcessRegional(ctx context.Context, args []string, stderr io.Writer) in
 	defer db.Close()
 
 	clients := regional.Clients{
-		ECCAA:  regional.NewECCAAClient(30*time.Second, *sourceFile),
-		BAGAIA: regional.NewBAGAIAClient(30*time.Second, *sourceFile),
-		IAC:    regional.NewIACClient(30*time.Second, *sourceFile),
+		ECCAA:  regional.NewECCAAClient(30*time.Second, *sourceFile, *renderEndpoint),
+		BAGAIA: regional.NewBAGAIAClient(30*time.Second, *sourceFile, *renderEndpoint),
+		IAC:    regional.NewIACClient(30*time.Second, *sourceFile, *renderEndpoint),
 	}
 	processed, err := regional.ProcessPending(ctx, db, clients, *limit, *body)
 	if err != nil {

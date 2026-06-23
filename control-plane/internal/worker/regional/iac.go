@@ -21,18 +21,19 @@ const (
 )
 
 type iacClient struct {
-	timeout    time.Duration
-	sourceFile string
+	timeout        time.Duration
+	sourceFile     string
+	renderEndpoint string
 }
 
 // NewIACClient returns a RegionalClient for the IAC. When sourceFile is set the
 // listing is read from disk (out-of-band); otherwise it is fetched live.
-func NewIACClient(timeout time.Duration, sourceFile string) RegionalClient {
-	return &iacClient{timeout: timeout, sourceFile: sourceFile}
+func NewIACClient(timeout time.Duration, sourceFile, renderEndpoint string) RegionalClient {
+	return &iacClient{timeout: timeout, sourceFile: sourceFile, renderEndpoint: renderEndpoint}
 }
 
 func (c *iacClient) Search(ctx context.Context, countryISO2 string) ([]RegionalRecord, int, error) {
-	raw, err := loadListing(ctx, c.timeout, c.sourceFile, iacListingURL)
+	raw, err := loadListing(ctx, c.timeout, c.sourceFile, c.renderEndpoint, iacListingURL)
 	if err != nil {
 		return nil, 0, fmt.Errorf("regional: IAC search: %w", err)
 	}
