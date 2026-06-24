@@ -34,10 +34,12 @@ func TestParseSafetyFirstListing(t *testing.T) {
 		}
 	}
 
-	// Pin the fixture: the listing currently holds 43 entries (issues 1–41 + 2 special editions).
-	// If the count grows on the next fetch, update this lower-bound assertion.
-	if len(recs) < 43 {
-		t.Errorf("expected at least 43 records, got %d", len(recs))
+	// Pin the fixture exactly: the snapshot holds 43 entries (issues 1–41 + 2
+	// special editions). The fixture is frozen, so the parser must yield exactly
+	// 43 — fewer means a dropped/over-eager regex, more means a dedup regression.
+	// Update this when the testdata snapshot is refreshed.
+	if len(recs) != 43 {
+		t.Errorf("expected exactly 43 records, got %d", len(recs))
 	}
 
 	// Pin issue #41 (highest numbered issue as of 2026-06-23).
