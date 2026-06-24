@@ -7,7 +7,7 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-func TestMigration009ManufacturerTable(t *testing.T) {
+func TestMigration010ManufacturerTable(t *testing.T) {
 	db, err := sql.Open("sqlite", ":memory:")
 	if err != nil { t.Fatal(err) }
 	defer db.Close()
