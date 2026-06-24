@@ -288,8 +288,7 @@ unless the HTTP client fails:
 ```
 
 Prints `found=N staged=N errors=N` to stderr. Staging is idempotent —
-`UNIQUE(manufacturer, publication, issue_ref)` means a re-run never double-stages
-an issue.
+`UNIQUE(publication, issue_ref)` means a re-run never double-stages an issue.
 
 **Reprint / attribution note:** Airbus Safety First is published under a
 reprint-with-attribution licence. Consumers of the staged `report_url` PDFs must
