@@ -108,8 +108,8 @@ func TestApplyCreatesCompleteSchemaAndIsIdempotent(t *testing.T) {
 	if err := rows.Err(); err != nil {
 		t.Fatal(err)
 	}
-	if len(migrations) != 8 {
-		t.Fatalf("migration rows=%d, want 8 (%v)", len(migrations), migrations)
+	if len(migrations) != 9 {
+		t.Fatalf("migration rows=%d, want 9 (%v)", len(migrations), migrations)
 	}
 }
 

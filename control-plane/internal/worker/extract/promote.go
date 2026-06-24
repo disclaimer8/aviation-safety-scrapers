@@ -1,4 +1,4 @@
-package wayback
+package extract
 
 import (
 	"context"
@@ -7,64 +7,21 @@ import (
 	"strings"
 )
 
-// execQuerier is satisfied by *sql.DB and *sql.Tx, so promotion helpers work
-// inside or outside a transaction.
-type execQuerier interface {
-	ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error)
-	QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row
-}
-
-// ResolveSource returns the source to credit for a recovered report. It prefers
-// the country's national_aai authority (else caa) as an official_aai tier-1
-// source; failing that it falls back to a per-country wayback tier-2 source built
-// from waybackTarget. Lookup-or-create keys on UNIQUE(canonical_url, source_type).
-func ResolveSource(ctx context.Context, q execQuerier, countryID int64, waybackTarget string) (int64, int, string, error) {
-	var name, website, archive sql.NullString
-	err := q.QueryRowContext(ctx, `
-		SELECT name, website_url, archive_url FROM authorities
-		 WHERE country_id = ? AND type IN ('national_aai','caa')
-		 ORDER BY CASE type WHEN 'national_aai' THEN 0 ELSE 1 END, id ASC
-		 LIMIT 1`, countryID).Scan(&name, &website, &archive)
-	if err != nil && err != sql.ErrNoRows {
-		return 0, 0, "", fmt.Errorf("wayback: lookup authority %d: %w", countryID, err)
-	}
-
-	if err == nil && name.Valid {
-		canonical := archive.String
-		if canonical == "" {
-			canonical = website.String
-		}
-		if canonical != "" {
-			id, e := upsertSource(ctx, q, name.String, website.String, canonical, "official_aai", 1)
-			if e != nil {
-				return 0, 0, "", e
-			}
-			return id, 1, "official_public", nil
-		}
-	}
-
-	// Fallback: wayback source from the target domain.
-	canonical := "wayback://" + waybackTarget
-	id, e := upsertSource(ctx, q, "Internet Archive: "+waybackTarget, "https://"+waybackTarget, canonical, "wayback", 2)
-	if e != nil {
-		return 0, 0, "", e
-	}
-	return id, 2, "unknown", nil
-}
-
+// upsertSource looks-up-or-creates a source keyed on UNIQUE(canonical_url,
+// source_type) and returns its id. Adapters reuse it from ResolveSource.
 func upsertSource(ctx context.Context, q execQuerier, name, url, canonical, sourceType string, tier int) (int64, error) {
 	if _, err := q.ExecContext(ctx, `
 		INSERT INTO sources (name, url, canonical_url, source_type, source_tier)
 		VALUES (?, ?, ?, ?, ?)
 		ON CONFLICT(canonical_url, source_type) DO NOTHING`,
 		name, url, canonical, sourceType, tier); err != nil {
-		return 0, fmt.Errorf("wayback: upsert source %s: %w", canonical, err)
+		return 0, fmt.Errorf("extract: upsert source %s: %w", canonical, err)
 	}
 	var id int64
 	if err := q.QueryRowContext(ctx, `
 		SELECT id FROM sources WHERE canonical_url = ? AND source_type = ?`,
 		canonical, sourceType).Scan(&id); err != nil {
-		return 0, fmt.Errorf("wayback: select source %s: %w", canonical, err)
+		return 0, fmt.Errorf("extract: select source %s: %w", canonical, err)
 	}
 	return id, nil
 }
@@ -74,32 +31,20 @@ func normalizeReg(s string) string {
 	return strings.ToUpper(strings.TrimSpace(s))
 }
 
-// ExtractDoc is a staged document ready for the extract step.
-type ExtractDoc struct {
-	ID            int64
-	CountryID     int64
-	ISO2          string
-	Digest        string
-	LocalFilePath string
-	OriginalURL   string
-	ArchivedURL   string
-	OCRTextPath   sql.NullString
-	Checksum      sql.NullString
-	WaybackTarget string
-	Attempts      int
-}
-
 // PromoteDocument inserts or links an event, inserts a report, and advances the
-// document to 'extracted', all in one transaction. Returns the event id and
+// staged document to 'extracted' — all in ONE transaction (via the source's
+// MarkExtractedTx). A crash before commit rolls everything back, so the doc is
+// re-selected next run rather than leaving an extracted event with the staged row
+// still pending (which would re-promote and duplicate). Returns the event id and
 // whether it linked to an existing event.
-func PromoteDocument(ctx context.Context, db *sql.DB, doc ExtractDoc, e ExtractedEvent) (int64, bool, error) {
+func PromoteDocument(ctx context.Context, db *sql.DB, src StagedDocSource, doc ExtractDoc, e ExtractedEvent) (int64, bool, error) {
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
-		return 0, false, fmt.Errorf("wayback: promote begin tx: %w", err)
+		return 0, false, fmt.Errorf("extract: promote begin tx: %w", err)
 	}
 	defer tx.Rollback()
 
-	sourceID, tier, copyright, err := ResolveSource(ctx, tx, doc.CountryID, doc.WaybackTarget)
+	sourceID, tier, copyright, err := src.ResolveSource(ctx, tx, doc)
 	if err != nil {
 		return 0, false, err
 	}
@@ -113,7 +58,7 @@ func PromoteDocument(ctx context.Context, db *sql.DB, doc ExtractDoc, e Extracte
 		if _, err := tx.ExecContext(ctx, `
 			UPDATE events SET dedup_status='soft_linked', updated_at=unixepoch('subsec')*1000
 			 WHERE id=? AND dedup_status='unreviewed'`, eventID); err != nil {
-			return 0, false, fmt.Errorf("wayback: soft-link event %d: %w", eventID, err)
+			return 0, false, fmt.Errorf("extract: soft-link event %d: %w", eventID, err)
 		}
 	} else {
 		conf := ConfidenceScore(e, official)
@@ -128,7 +73,7 @@ func PromoteDocument(ctx context.Context, db *sql.DB, doc ExtractDoc, e Extracte
 			nullStr(e.OperatorName), nullStr(e.FlightNumber), e.Fatalities, e.Injuries,
 			e.EventType, e.InvestigationStatus, conf)
 		if err != nil {
-			return 0, false, fmt.Errorf("wayback: insert event: %w", err)
+			return 0, false, fmt.Errorf("extract: insert event: %w", err)
 		}
 		eventID, _ = res.LastInsertId()
 	}
@@ -148,17 +93,15 @@ func PromoteDocument(ctx context.Context, db *sql.DB, doc ExtractDoc, e Extracte
 		VALUES (?,?,?,?,?,?,?,?,?, unixepoch('subsec')*1000, ?, ?, ?, 'extracted', ?)`,
 		eventID, sourceID, e.ReportType, title, language, doc.OriginalURL, doc.ArchivedURL, doc.OriginalURL,
 		nullStr(e.PublishedDate), doc.Checksum, doc.LocalFilePath, tier, copyright); err != nil {
-		return 0, false, fmt.Errorf("wayback: insert report: %w", err)
+		return 0, false, fmt.Errorf("extract: insert report: %w", err)
 	}
 
-	if _, err := tx.ExecContext(ctx, `
-		UPDATE staged_wayback_documents SET event_id=?, extraction_status='extracted' WHERE id=?`,
-		eventID, doc.ID); err != nil {
-		return 0, false, fmt.Errorf("wayback: mark extracted %d: %w", doc.ID, err)
+	if err := src.MarkExtractedTx(ctx, tx, doc.ID, eventID); err != nil {
+		return 0, false, err
 	}
 
 	if err := tx.Commit(); err != nil {
-		return 0, false, fmt.Errorf("wayback: promote commit: %w", err)
+		return 0, false, fmt.Errorf("extract: promote commit: %w", err)
 	}
 	return eventID, linked, nil
 }
@@ -191,7 +134,7 @@ func FindDuplicateEvent(ctx context.Context, q execQuerier, e ExtractedEvent) (i
 			return 0, false, nil
 		}
 		if err != nil {
-			return 0, false, fmt.Errorf("wayback: dedup key1: %w", err)
+			return 0, false, fmt.Errorf("extract: dedup key1: %w", err)
 		}
 		return id, true, nil
 	}
@@ -205,7 +148,7 @@ func FindDuplicateEvent(ctx context.Context, q execQuerier, e ExtractedEvent) (i
 			return 0, false, nil
 		}
 		if err != nil {
-			return 0, false, fmt.Errorf("wayback: dedup key2: %w", err)
+			return 0, false, fmt.Errorf("extract: dedup key2: %w", err)
 		}
 		return id, true, nil
 	}

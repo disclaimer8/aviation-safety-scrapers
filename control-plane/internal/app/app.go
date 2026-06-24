@@ -23,6 +23,7 @@ import (
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/planner"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/seed"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/validation"
+	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/extract"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/foreignsearch"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/regional"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/wayback"
@@ -40,7 +41,7 @@ const (
 func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 	if len(args) == 0 {
 		fmt.Fprintln(stderr, "usage: aviation-coverage <command> [flags]")
-		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-wayback-extract, process-regional, process-foreign-search")
+		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-extract, process-wayback-extract, process-regional, process-foreign-search")
 		return exitUsage
 	}
 
@@ -64,15 +65,17 @@ func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		return runPlan(ctx, rest, stdout, stderr)
 	case "process-wayback":
 		return runProcessWayback(ctx, rest, stderr)
+	case "process-extract":
+		return runProcessExtract(ctx, rest, stderr)
 	case "process-wayback-extract":
-		return runProcessWaybackExtract(ctx, rest, stderr)
+		return runProcessWaybackExtractAlias(ctx, rest, stderr)
 	case "process-regional":
 		return runProcessRegional(ctx, rest, stderr)
 	case "process-foreign-search":
 		return runProcessForeign(ctx, rest, stderr)
 	default:
 		fmt.Fprintf(stderr, "unknown command %q\n", cmd)
-		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-wayback-extract, process-regional, process-foreign-search")
+		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-extract, process-wayback-extract, process-regional, process-foreign-search")
 		return exitUsage
 	}
 }
@@ -395,43 +398,90 @@ func runPlan(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 	return exitOK
 }
 
-// ── process-wayback-extract ──────────────────────────────────────────────────
+// ── process-extract ───────────────────────────────────────────────────────────
 
-func runProcessWaybackExtract(ctx context.Context, args []string, stderr io.Writer) int {
-	fs := flag.NewFlagSet("process-wayback-extract", flag.ContinueOnError)
+// extractFlags holds the shared flag values used by process-extract and its
+// deprecated alias process-wayback-extract.
+type extractFlags struct {
+	dbPath        string
+	limit         int
+	storeDir      string
+	ocrEndpoint   string
+	llmEndpoint   string
+	llmModel      string
+	maxInputChars int
+}
+
+// parseExtractFlags parses the common extraction flags for the given command
+// name. Returns exitUsage on parse error or missing --db.
+func parseExtractFlags(cmdName string, args []string, stderr io.Writer) (*extractFlags, int) {
+	fs := flag.NewFlagSet(cmdName, flag.ContinueOnError)
 	fs.SetOutput(stderr)
-	dbPath := fs.String("db", "", "path to SQLite database file (required)")
-	limit := fs.Int("limit", 0, "max documents to process (0 = no cap)")
-	storeDir := fs.String("store-dir", "./wayback-store", "directory for OCR text artifacts")
-	ocrEndpoint := fs.String("ocr-endpoint", "http://127.0.0.1:8021/ocr", "OCR HTTP endpoint")
-	llmEndpoint := fs.String("llm-endpoint", "http://127.0.0.1:11434/api/generate", "Ollama generate endpoint")
-	llmModel := fs.String("llm-model", "qwen3.6-rw", "LLM model name")
-	maxInputChars := fs.Int("max-input-chars", 24000, "truncate OCR text to this many chars before LLM")
+	f := &extractFlags{}
+	fs.StringVar(&f.dbPath, "db", "", "path to SQLite database file (required)")
+	fs.IntVar(&f.limit, "limit", 0, "max documents to process (0 = no cap)")
+	fs.StringVar(&f.storeDir, "store-dir", "./wayback-store", "directory for OCR text artifacts")
+	fs.StringVar(&f.ocrEndpoint, "ocr-endpoint", "http://127.0.0.1:8021/ocr", "OCR HTTP endpoint")
+	fs.StringVar(&f.llmEndpoint, "llm-endpoint", "http://127.0.0.1:11434/api/generate", "Ollama generate endpoint")
+	fs.StringVar(&f.llmModel, "llm-model", "qwen3.6-rw", "LLM model name")
+	fs.IntVar(&f.maxInputChars, "max-input-chars", 24000, "truncate OCR text to this many chars before LLM")
 	if err := fs.Parse(args); err != nil {
-		return exitUsage
+		return nil, exitUsage
 	}
-	if *dbPath == "" {
-		fmt.Fprintln(stderr, "process-wayback-extract: --db is required")
+	if f.dbPath == "" {
+		fmt.Fprintf(stderr, "%s: --db is required\n", cmdName)
 		fs.Usage()
-		return exitUsage
+		return nil, exitUsage
 	}
+	return f, exitOK
+}
 
-	db, err := database.Open(*dbPath)
+// runExtract opens the DB, builds OCR/LLM clients and the given sources, then
+// runs extract.ProcessExtractPending. Prints extracted=/skipped=/failed= to stderr.
+func runExtract(ctx context.Context, cmdName string, f *extractFlags, stderr io.Writer, sources []extract.StagedDocSource) int {
+	db, err := database.Open(f.dbPath)
 	if err != nil {
-		fmt.Fprintf(stderr, "process-wayback-extract: open db: %v\n", err)
+		fmt.Fprintf(stderr, "%s: open db: %v\n", cmdName, err)
 		return exitFailure
 	}
 	defer db.Close()
 
-	ocr := wayback.NewHTTPOCRClient(*ocrEndpoint, 600*time.Second)
-	llm := wayback.NewHTTPLLMClient(*llmEndpoint, *llmModel, *maxInputChars, 120*time.Second)
-	stats, err := wayback.ProcessExtractPending(ctx, db, ocr, llm, *storeDir, *limit)
+	ocr := wayback.NewHTTPOCRClient(f.ocrEndpoint, 600*time.Second)
+	llm := wayback.NewHTTPLLMClient(f.llmEndpoint, f.llmModel, f.maxInputChars, 120*time.Second)
+	stats, err := extract.ProcessExtractPending(ctx, db, ocr, llm, f.storeDir, f.limit, sources...)
 	if err != nil {
-		fmt.Fprintf(stderr, "process-wayback-extract: %v\n", err)
+		fmt.Fprintf(stderr, "%s: %v\n", cmdName, err)
 		return exitFailure
 	}
 	fmt.Fprintf(stderr, "extracted=%d skipped=%d failed=%d\n", stats.Extracted, stats.Skipped, stats.Failed)
 	return exitOK
+}
+
+// runProcessExtract implements the process-extract command: OCR+extract pending
+// documents from all three sources (wayback, regional, foreign).
+func runProcessExtract(ctx context.Context, args []string, stderr io.Writer) int {
+	f, code := parseExtractFlags("process-extract", args, stderr)
+	if code != exitOK {
+		return code
+	}
+	hc := &http.Client{Timeout: 120 * time.Second}
+	sources := []extract.StagedDocSource{
+		extract.WaybackSource{},
+		extract.RegionalSource{HTTP: hc},
+		extract.ForeignSource{HTTP: hc},
+	}
+	return runExtract(ctx, "process-extract", f, stderr, sources)
+}
+
+// runProcessWaybackExtractAlias is the deprecated alias for process-extract
+// restricted to wayback documents only. Prints a deprecation note and delegates.
+func runProcessWaybackExtractAlias(ctx context.Context, args []string, stderr io.Writer) int {
+	fmt.Fprintln(stderr, "process-wayback-extract is deprecated; use process-extract")
+	f, code := parseExtractFlags("process-wayback-extract", args, stderr)
+	if code != exitOK {
+		return code
+	}
+	return runExtract(ctx, "process-wayback-extract", f, stderr, []extract.StagedDocSource{extract.WaybackSource{}})
 }
 
 // ── process-wayback ──────────────────────────────────────────────────────────

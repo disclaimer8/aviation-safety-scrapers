@@ -161,13 +161,50 @@ OCR of the downloaded PDFs and extraction into `events`/`reports` is a later
 stage (Spec 2). Flags: `--limit N` (0 = no cap), `--store-dir DIR` (default
 `./wayback-store`). The store directory is a runtime artifact and is gitignored.
 
-### process-wayback-extract
+### process-extract
 
-Drains downloaded Wayback PDFs (`staged_wayback_documents.download_status='downloaded'`)
-into structured `events`/`reports`. Per document, highest-country-priority first, it
-OCRs the PDF (persisting the text under `<store-dir>/<iso2>/<digest>.txt`), extracts
-event fields with an LLM, and promotes the result with a deterministic confidence
-score and deterministic dedup.
+Drains pending documents from **all three staging tables** (wayback, regional, and
+foreign) into structured `events`/`reports`. Per document, highest-country-priority
+first, it ensures the PDF is on disk (downloading it from the staging row's
+`report_url` for regional and foreign sources), OCRs the PDF (persisting the text
+under `<store-dir>/<iso2>/<digest>.txt`), extracts event fields with an LLM, and
+promotes the result with a deterministic confidence score and deterministic dedup.
+
+```bash
+./aviation-coverage process-extract --db coverage.db --limit 50 \
+  --store-dir ./wayback-store \
+  --ocr-endpoint https://<ocr-host>/ocr \
+  --llm-endpoint http://127.0.0.1:11434/api/generate --llm-model qwen3.6-rw
+```
+
+Flags:
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--db` | *(required)* | Path to the SQLite database file |
+| `--limit N` | 0 (no cap) | Max documents to process across all sources |
+| `--store-dir DIR` | `./wayback-store` | Directory for PDF artifacts and OCR text files |
+| `--ocr-endpoint URL` | `http://127.0.0.1:8021/ocr` | OCR HTTP endpoint |
+| `--llm-endpoint URL` | `http://127.0.0.1:11434/api/generate` | Ollama generate endpoint |
+| `--llm-model NAME` | `qwen3.6-rw` | LLM model name |
+| `--max-input-chars N` | 24000 | Truncate OCR text to this many chars before LLM |
+
+A document is `extracted` (promoted), `skipped` (not an aviation accident or missing
+critical fields), or `failed` (OCR/LLM error; retried until `extraction_attempts`
+reaches 3). The resume point is decided by `ocr_text_path` — a re-run never repeats a
+completed OCR. The OCR endpoint is a thin HTTP wrapper around `ocrmypdf` (see the
+spec, §9); endpoints are passed by flag and are never hardcoded. The HTTP client used
+for regional/foreign PDF downloads is a plain client — SSRF guards and response-size
+caps already live inside `DownloadReportURL`.
+
+Prints `extracted=N skipped=N failed=N` to stderr on success; exits 0.
+
+### process-wayback-extract *(deprecated)*
+
+**Deprecated alias for `process-extract` restricted to wayback documents only.**
+Prints a deprecation notice to stderr and then behaves identically to
+`process-extract` with only the `WaybackSource` adapter active. All flags are
+identical so existing cron entries keep working without changes.
 
 ```bash
 ./aviation-coverage process-wayback-extract --db coverage.db --limit 50 \
@@ -176,11 +213,7 @@ score and deterministic dedup.
   --llm-endpoint http://127.0.0.1:11434/api/generate --llm-model qwen3.6-rw
 ```
 
-A document is `extracted` (promoted), `skipped` (not an aviation accident or missing
-critical fields), or `failed` (OCR/LLM error; retried until `extraction_attempts`
-reaches 3). The resume point is decided by `ocr_text_path` — a re-run never repeats a
-completed OCR. The OCR endpoint is a thin HTTP wrapper around `ocrmypdf` (see the
-spec, §9); endpoints are passed by flag and are never hardcoded.
+Migrate cron entries to `process-extract` at your earliest convenience.
 
 ### process-regional
 

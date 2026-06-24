@@ -1,4 +1,4 @@
-package wayback
+package extract
 
 import (
 	"context"
@@ -35,7 +35,7 @@ func TestPromoteDocumentNewEvent(t *testing.T) {
 		OperatorName: "Ethiopian", Fatalities: intp(157), EventType: "accident",
 		ReportType: "final", Title: "Final Report", Language: "en",
 	})
-	eventID, linked, err := PromoteDocument(ctx, db, doc, e)
+	eventID, linked, err := PromoteDocument(ctx, db, WaybackSource{}, doc, e)
 	if err != nil {
 		t.Fatalf("PromoteDocument: %v", err)
 	}
@@ -75,7 +75,7 @@ func TestPromoteDocumentLinksDuplicate(t *testing.T) {
 		IsAviationAccident: true, Date: "2019-03-10", DatePrecision: "exact",
 		AircraftRegistration: "ET-AVJ", AircraftType: "B738", ReportType: "final", Language: "en",
 	})
-	eventID, linked, err := PromoteDocument(ctx, db, doc, e)
+	eventID, linked, err := PromoteDocument(ctx, db, WaybackSource{}, doc, e)
 	if err != nil {
 		t.Fatalf("PromoteDocument: %v", err)
 	}
