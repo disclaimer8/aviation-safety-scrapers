@@ -2,10 +2,16 @@ package extract
 
 import (
 	"context"
+	"crypto/sha256"
 	"database/sql"
+	"encoding/hex"
 	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
+	"strings"
+
+	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/atomicfile"
 )
 
 // RegionalSource is the StagedDocSource adapter for staged_regional_documents.
@@ -21,21 +27,23 @@ var _ StagedDocSource = RegionalSource{}
 // Name identifies this source for logging.
 func (RegionalSource) Name() string { return "regional" }
 
-// PendingDocs returns staged_regional_documents rows that have a report_url
-// (page-only docs without a downloadable report are MVP-deferred), have not
-// yet been fully extracted, and have fewer than 3 extraction attempts.
-// Results are ordered by country priority descending, then document id ascending.
+// PendingDocs returns staged_regional_documents rows that have either a
+// report_url (PDF download path) or an original_url (html report page, e.g.
+// IAC/МАК), have not yet been fully extracted, and have fewer than 3
+// extraction attempts. Results are ordered by country priority descending,
+// then document id ascending.
 func (RegionalSource) PendingDocs(ctx context.Context, db *sql.DB, limit int) ([]ExtractDoc, error) {
 	q := `
 		SELECT d.id, d.country_id, c.iso2,
 		       coalesce(d.digest,''), coalesce(d.local_file_path,''),
-		       d.original_url, d.report_url,
+		       d.original_url, coalesce(d.report_url,''),
 		       d.ocr_text_path, d.digest,
 		       d.extraction_attempts, d.crawl_job_id, c.priority_score,
 		       d.body_code
 		  FROM staged_regional_documents d
 		  JOIN countries c ON c.id = d.country_id
-		 WHERE d.report_url IS NOT NULL AND d.report_url != ''
+		 WHERE ((d.report_url IS NOT NULL AND d.report_url != '')
+		        OR (d.original_url IS NOT NULL AND d.original_url != ''))
 		   AND (
 		     (d.download_status IN ('pending','failed') AND d.extraction_status IN ('pending','failed'))
 		     OR
@@ -78,11 +86,19 @@ func (RegionalSource) PendingDocs(ctx context.Context, db *sql.DB, limit int) ([
 	return docs, nil
 }
 
-// EnsureDownloaded downloads doc.ArchivedURL (the report_url), writes it to
-// <storeDir>/<iso2>/<sha256hex>.pdf, and updates download_status/local_file_path/digest
-// on the staged row. On error the row is set to download_status='failed'.
-// If the row already has download_status='downloaded' and the local file exists on
-// disk, the download is skipped (idempotent).
+// EnsureDownloaded prepares the document text for LLM extraction.
+//
+// For PDF docs (doc.ArchivedURL / report_url is non-empty): downloads the PDF,
+// writes it to <storeDir>/<iso2>/<sha256hex>.pdf, and updates
+// download_status/local_file_path/digest. The core then OCRs the PDF to text.
+//
+// For html-page docs (doc.ArchivedURL is empty, doc.OriginalURL is set, e.g.
+// IAC/МАК pages): fetches the page via the SSRF-guarded fetchGuarded helper,
+// strips HTML to plain text, writes a .txt file, and sets ocr_text_path so the
+// extract core skips OCR and reads the text file directly.
+//
+// Idempotent: skips re-fetch when a local file already exists on disk.
+// On error the row is set to download_status='failed'.
 func (s RegionalSource) EnsureDownloaded(ctx context.Context, db *sql.DB, storeDir string, doc *ExtractDoc) error {
 	// Idempotency: skip re-download if already downloaded and file is on disk.
 	if doc.LocalFilePath != "" {
@@ -90,22 +106,69 @@ func (s RegionalSource) EnsureDownloaded(ctx context.Context, db *sql.DB, storeD
 			return nil
 		}
 	}
-	localPath, digest, err := DownloadReportURL(ctx, s.HTTP, doc.ArchivedURL, storeDir, doc.ISO2)
+
+	if doc.ArchivedURL != "" {
+		// ── PDF path (existing behaviour, unchanged) ──────────────────────────────
+		localPath, digest, err := DownloadReportURL(ctx, s.HTTP, doc.ArchivedURL, storeDir, doc.ISO2)
+		if err != nil {
+			if _, ue := db.ExecContext(ctx, `
+				UPDATE staged_regional_documents SET download_status='failed' WHERE id=?`, doc.ID); ue != nil {
+				return fmt.Errorf("regional: mark download failed %d: %w", doc.ID, ue)
+			}
+			return fmt.Errorf("regional: download %s: %w", doc.ArchivedURL, err)
+		}
+		if _, err := db.ExecContext(ctx, `
+			UPDATE staged_regional_documents
+			   SET download_status='downloaded', local_file_path=?, digest=?
+			 WHERE id=?`, localPath, digest, doc.ID); err != nil {
+			return fmt.Errorf("regional: update after download %d: %w", doc.ID, err)
+		}
+		doc.LocalFilePath = localPath
+		doc.Digest = digest
+		return nil
+	}
+
+	// ── Html-page path (IAC/МАК and similar) ─────────────────────────────────
+	body, err := fetchGuarded(ctx, s.HTTP, doc.OriginalURL)
 	if err != nil {
 		if _, ue := db.ExecContext(ctx, `
 			UPDATE staged_regional_documents SET download_status='failed' WHERE id=?`, doc.ID); ue != nil {
-			return fmt.Errorf("regional: mark download failed %d: %w", doc.ID, ue)
+			return fmt.Errorf("regional: mark html download failed %d: %w", doc.ID, ue)
 		}
-		return fmt.Errorf("regional: download %s: %w", doc.ArchivedURL, err)
+		return fmt.Errorf("regional: fetch html %s: %w", doc.OriginalURL, err)
 	}
+
+	text := htmlToText(body)
+	if strings.TrimSpace(text) == "" {
+		if _, ue := db.ExecContext(ctx, `
+			UPDATE staged_regional_documents SET download_status='failed' WHERE id=?`, doc.ID); ue != nil {
+			return fmt.Errorf("regional: mark html empty failed %d: %w", doc.ID, ue)
+		}
+		return fmt.Errorf("regional: html page %s stripped to empty text", doc.OriginalURL)
+	}
+
+	// Use sha256 of the raw page bytes for a content-addressed, stable filename.
+	sum := sha256.Sum256(body)
+	hexDigest := hex.EncodeToString(sum[:])
+
+	dir := filepath.Join(storeDir, doc.ISO2)
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		return fmt.Errorf("regional: mkdir %s: %w", dir, err)
+	}
+	textPath := filepath.Join(dir, hexDigest+".txt")
+	if err := atomicfile.Write(textPath, []byte(text)); err != nil {
+		return fmt.Errorf("regional: write html text %s: %w", textPath, err)
+	}
+
 	if _, err := db.ExecContext(ctx, `
 		UPDATE staged_regional_documents
-		   SET download_status='downloaded', local_file_path=?, digest=?
-		 WHERE id=?`, localPath, digest, doc.ID); err != nil {
-		return fmt.Errorf("regional: update after download %d: %w", doc.ID, err)
+		   SET download_status='downloaded', ocr_text_path=?, local_file_path=?
+		 WHERE id=?`, textPath, textPath, doc.ID); err != nil {
+		return fmt.Errorf("regional: update after html fetch %d: %w", doc.ID, err)
 	}
-	doc.LocalFilePath = localPath
-	doc.Digest = digest
+	doc.OCRTextPath = sql.NullString{String: textPath, Valid: true}
+	doc.LocalFilePath = textPath
+	doc.Digest = hexDigest
 	return nil
 }
 

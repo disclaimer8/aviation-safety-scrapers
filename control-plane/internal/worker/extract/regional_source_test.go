@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -118,32 +120,45 @@ func TestRegionalPendingDocsReturnsDocWithReportURL(t *testing.T) {
 	}
 }
 
-func TestRegionalPendingDocsExcludesDocWithoutReportURL(t *testing.T) {
+// TestRegionalPendingDocsIncludesHtmlOnlyDoc verifies the new behaviour: a doc
+// with original_url set and report_url NULL (html-page/IAC pattern) IS returned
+// by PendingDocs. The schema mandates original_url NOT NULL so every row has it;
+// what distinguishes pdf vs html is whether report_url is populated.
+func TestRegionalPendingDocsIncludesHtmlOnlyDoc(t *testing.T) {
 	ctx := context.Background()
 	db := newExtractTestDB(t)
-	// Seed a doc with NULL report_url (page-only, MVP deferred).
-	_, countryID := seedRegionalDoc(t, db, "KE", "ECCAA", "https://eccaa.example/001.pdf")
-	// Insert another doc with no report_url.
+	// Seed the PDF doc (report_url set).
+	pdfDocID, countryID := seedRegionalDoc(t, db, "KE", "ECCAA", "https://eccaa.example/001.pdf")
+	// Insert an html-only doc (report_url NULL, original_url set).
 	var srcID, jobID int64
 	db.QueryRowContext(ctx, `SELECT id FROM sources WHERE canonical_url='regional://ECCAA'`).Scan(&srcID)
 	res, _ := db.ExecContext(ctx, `INSERT INTO crawl_jobs (source_id, country_id, job_type, status) VALUES (?,?,'pdf_discovery','running')`, srcID, countryID)
 	jobID, _ = res.LastInsertId()
-	db.ExecContext(ctx, `
+	r2, err := db.ExecContext(ctx, `
 		INSERT INTO staged_regional_documents
 			(crawl_job_id, country_id, body_code, ref, title, original_url)
-		VALUES (?, ?, 'ECCAA', 'ref-no-report', 'No Report', 'https://eccaa.example/no-report')`,
+		VALUES (?, ?, 'ECCAA', 'ref-html-only', 'HTML Only Doc', 'https://eccaa.example/html-report')`,
 		jobID, countryID)
+	if err != nil {
+		t.Fatalf("insert html doc: %v", err)
+	}
+	htmlDocID, _ := r2.LastInsertId()
 
 	src := RegionalSource{HTTP: http.DefaultClient}
 	docs, err := src.PendingDocs(ctx, db, 0)
 	if err != nil {
 		t.Fatalf("PendingDocs: %v", err)
 	}
-	// Only the doc with a report_url should be returned.
+	// Both docs must be returned.
+	found := map[int64]bool{}
 	for _, d := range docs {
-		if d.SourceRef == "ECCAA" && d.ArchivedURL == "" {
-			t.Fatalf("doc without report_url must not be returned")
-		}
+		found[d.ID] = true
+	}
+	if !found[pdfDocID] {
+		t.Fatalf("pdf doc %d must be returned", pdfDocID)
+	}
+	if !found[htmlDocID] {
+		t.Fatalf("html-only doc %d (report_url=NULL, original_url set) must be returned", htmlDocID)
 	}
 }
 
@@ -616,5 +631,254 @@ func TestRegionalPersistOCRPath(t *testing.T) {
 	}
 	if status != "ocr_done" {
 		t.Fatalf("extraction_status=%q want ocr_done", status)
+	}
+}
+
+// ─── IAC html-page support (no report_url, original_url only) ────────────────
+
+// seedRegionalHtmlDoc inserts a staged_regional_documents row with original_url
+// set and report_url NULL — the IAC html-page pattern.
+func seedRegionalHtmlDoc(t *testing.T, db *sql.DB, iso2, bodyCode, originalURL string) (docID, countryID int64) {
+	t.Helper()
+	ctx := context.Background()
+
+	res, err := db.ExecContext(ctx, `
+		INSERT INTO countries
+			(iso2, iso3, name, region, policy_status, coverage_status,
+			 coverage_score, effort_score)
+		VALUES (?, ?, ?, 'R', 'allowed', 'no_public_archive', 1, 3)`,
+		iso2, iso2+"Y", iso2+"htmland")
+	if err != nil {
+		t.Fatal(err)
+	}
+	countryID, _ = res.LastInsertId()
+
+	_, err = db.ExecContext(ctx, `
+		INSERT OR IGNORE INTO regional_bodies (code, name, body_class, website_url, source_url)
+		VALUES (?, ?, 'regional_body', ?, ?)`,
+		bodyCode, bodyCode+" Body HTML",
+		fmt.Sprintf("https://%s.html.example", bodyCode),
+		fmt.Sprintf("https://%s.html.example/reports", bodyCode))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	res, err = db.ExecContext(ctx, `
+		INSERT OR IGNORE INTO sources (name, url, canonical_url, source_type, source_tier)
+		VALUES (?, ?, ?, 'regional_body', 2)`,
+		bodyCode+"html", fmt.Sprintf("https://%s.html.example", bodyCode),
+		fmt.Sprintf("regional://%s", bodyCode))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var srcID int64
+	if err := db.QueryRowContext(ctx, `SELECT id FROM sources WHERE canonical_url=?`,
+		fmt.Sprintf("regional://%s", bodyCode)).Scan(&srcID); err != nil {
+		t.Fatal(err)
+	}
+
+	res, err = db.ExecContext(ctx, `
+		INSERT INTO crawl_jobs (source_id, country_id, job_type, status)
+		VALUES (?, ?, 'pdf_discovery', 'running')`, srcID, countryID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	jobID, _ := res.LastInsertId()
+
+	// Insert row with original_url set, report_url NULL.
+	res, err = db.ExecContext(ctx, `
+		INSERT INTO staged_regional_documents
+			(crawl_job_id, country_id, body_code, ref, title, original_url)
+		VALUES (?, ?, ?, ?, ?, ?)`,
+		jobID, countryID, bodyCode,
+		fmt.Sprintf("ref-%s-html-001", bodyCode),
+		"HTML Report 001",
+		originalURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	docID, _ = res.LastInsertId()
+	return docID, countryID
+}
+
+// TestRegionalPendingDocsReturnsHtmlDoc verifies that a staged doc with
+// original_url set and report_url NULL is returned by PendingDocs (IAC pattern).
+func TestRegionalPendingDocsReturnsHtmlDoc(t *testing.T) {
+	ctx := context.Background()
+	db := newExtractTestDB(t)
+	originalURL := "https://mak-iac.example/rassledovaniya/an-2-ra-40440-19-05-2026/"
+	docID, _ := seedRegionalHtmlDoc(t, db, "RU", "IAC", originalURL)
+
+	src := RegionalSource{HTTP: http.DefaultClient}
+	docs, err := src.PendingDocs(ctx, db, 0)
+	if err != nil {
+		t.Fatalf("PendingDocs: %v", err)
+	}
+	var found bool
+	for _, d := range docs {
+		if d.ID == docID {
+			found = true
+			// ArchivedURL (report_url) must be empty for html-page docs.
+			if d.ArchivedURL != "" {
+				t.Fatalf("ArchivedURL=%q want empty for html-page doc", d.ArchivedURL)
+			}
+			// OriginalURL must be set.
+			if d.OriginalURL != originalURL {
+				t.Fatalf("OriginalURL=%q want %q", d.OriginalURL, originalURL)
+			}
+			if d.SourceRef != "IAC" {
+				t.Fatalf("SourceRef=%q want IAC", d.SourceRef)
+			}
+			break
+		}
+	}
+	if !found {
+		t.Fatalf("html-page doc %d not returned by PendingDocs", docID)
+	}
+}
+
+// TestRegionalEnsureDownloadedHtmlPage verifies that EnsureDownloaded handles
+// the IAC html-page path: fetches original_url, strips HTML to text, writes
+// a .txt file, sets ocr_text_path in the DB, sets doc.OCRTextPath.Valid=true,
+// and sets download_status='downloaded'.
+func TestRegionalEnsureDownloadedHtmlPage(t *testing.T) {
+	allowLoopback(t)
+
+	ctx := context.Background()
+	db := newExtractTestDB(t)
+
+	// IAC-style HTML report page with structured accident fields.
+	const iacHTML = `<html><head>
+		<title>Расследование — Ан-2 RA-40440</title>
+		<style>.nav { display: none; }</style>
+		<script>analytics();</script>
+	</head><body>
+		<h1>Расследование авиационного происшествия</h1>
+		<table>
+			<tr><td>Дата:</td><td>19.05.2026</td></tr>
+			<tr><td>Воздушное судно:</td><td>Ан-2</td></tr>
+			<tr><td>Регистрация:</td><td>RA-40440</td></tr>
+			<tr><td>Оператор:</td><td>ООО &quot;Авиапром&quot;</td></tr>
+			<tr><td>Погибших:</td><td>0</td></tr>
+		</table>
+		<p>Самолёт выполнял авиационные работы.</p>
+	</body></html>`
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, iacHTML)
+	}))
+	defer srv.Close()
+
+	docID, _ := seedRegionalHtmlDoc(t, db, "RU", "IAC", srv.URL+"/rassledovaniya/an-2-ra-40440/")
+	src := RegionalSource{HTTP: srv.Client()}
+
+	docs, err := src.PendingDocs(ctx, db, 0)
+	if err != nil {
+		t.Fatalf("PendingDocs: %v", err)
+	}
+	var doc ExtractDoc
+	for _, d := range docs {
+		if d.ID == docID {
+			doc = d
+			break
+		}
+	}
+	if doc.ID == 0 {
+		t.Fatalf("html-page doc %d not found in PendingDocs", docID)
+	}
+
+	storeDir := t.TempDir()
+	if err := src.EnsureDownloaded(ctx, db, storeDir, &doc); err != nil {
+		t.Fatalf("EnsureDownloaded (html): %v", err)
+	}
+
+	// doc.OCRTextPath must be set (signals core to skip OCR).
+	if !doc.OCRTextPath.Valid || doc.OCRTextPath.String == "" {
+		t.Fatal("doc.OCRTextPath must be set after EnsureDownloaded on html-page doc")
+	}
+
+	// The .txt file must exist and contain the visible field text.
+	textBytes, err := os.ReadFile(doc.OCRTextPath.String)
+	if err != nil {
+		t.Fatalf("read text file %q: %v", doc.OCRTextPath.String, err)
+	}
+	textContent := string(textBytes)
+	for _, want := range []string{"RA-40440", "19.05.2026", "Ан-2", "Самолёт"} {
+		if !strings.Contains(textContent, want) {
+			t.Errorf("text file missing %q\nfull content: %q", want, textContent)
+		}
+	}
+	// Script/style content must be stripped.
+	for _, mustNot := range []string{"analytics", "display: none"} {
+		if strings.Contains(textContent, mustNot) {
+			t.Errorf("text file must not contain %q\nfull content: %q", mustNot, textContent)
+		}
+	}
+
+	// DB row must have download_status='downloaded' and ocr_text_path set.
+	var dbStatus, dbOCRPath string
+	if err := db.QueryRowContext(ctx,
+		`SELECT download_status, coalesce(ocr_text_path,'') FROM staged_regional_documents WHERE id=?`, docID).
+		Scan(&dbStatus, &dbOCRPath); err != nil {
+		t.Fatalf("scan row: %v", err)
+	}
+	if dbStatus != "downloaded" {
+		t.Fatalf("download_status=%q want downloaded", dbStatus)
+	}
+	if dbOCRPath == "" {
+		t.Fatal("ocr_text_path must be set in DB for html-page doc")
+	}
+	if dbOCRPath != doc.OCRTextPath.String {
+		t.Fatalf("DB ocr_text_path=%q, doc.OCRTextPath=%q — must match", dbOCRPath, doc.OCRTextPath.String)
+	}
+
+	// Path must be absolute.
+	if !filepath.IsAbs(doc.OCRTextPath.String) {
+		t.Fatalf("OCRTextPath must be absolute, got %q", doc.OCRTextPath.String)
+	}
+}
+
+// TestRegionalEnsureDownloadedHtmlPageFailsOnEmptyBody verifies that an
+// html-page that strips to empty text is treated as a download failure.
+func TestRegionalEnsureDownloadedHtmlPageFailsOnEmptyBody(t *testing.T) {
+	allowLoopback(t)
+
+	ctx := context.Background()
+	db := newExtractTestDB(t)
+
+	// Serve a page with no visible text.
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, `<html><head><style>body{}</style></head><body>   </body></html>`)
+	}))
+	defer srv.Close()
+
+	docID, _ := seedRegionalHtmlDoc(t, db, "RU", "IAC", srv.URL+"/empty-page/")
+	src := RegionalSource{HTTP: srv.Client()}
+
+	docs, _ := src.PendingDocs(ctx, db, 0)
+	var doc ExtractDoc
+	for _, d := range docs {
+		if d.ID == docID {
+			doc = d
+			break
+		}
+	}
+	if doc.ID == 0 {
+		t.Fatalf("html-page doc %d not found in PendingDocs", docID)
+	}
+
+	err := src.EnsureDownloaded(ctx, db, t.TempDir(), &doc)
+	if err == nil {
+		t.Fatal("expected error for empty-text html page, got nil")
+	}
+
+	var dbStatus string
+	db.QueryRowContext(ctx, `SELECT download_status FROM staged_regional_documents WHERE id=?`, docID).Scan(&dbStatus)
+	if dbStatus != "failed" {
+		t.Fatalf("download_status=%q want failed for empty-text page", dbStatus)
 	}
 }
