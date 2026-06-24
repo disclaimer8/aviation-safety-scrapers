@@ -33,7 +33,7 @@ func seedForeignDoc(t *testing.T, db *sql.DB, iso2, authority, reportURL string)
 	// the foreign authority (foreign://<authority> with official_foreign_accredited_rep).
 	res, err = db.ExecContext(ctx, `
 		INSERT OR IGNORE INTO sources (name, url, canonical_url, source_type, source_tier)
-		VALUES (?, ?, ?, 'wayback', 2)`,
+		VALUES (?, ?, ?, 'wayback', 5)`,
 		authority+"-seed",
 		fmt.Sprintf("https://%s.seed.example", authority),
 		fmt.Sprintf("wayback://%s-%s", authority, iso2))

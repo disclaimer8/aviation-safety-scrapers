@@ -11,16 +11,19 @@ import (
 
 // manufacturerTier is the source_tier credited to manufacturer safety
 // publications (e.g. Airbus Safety First). They are authoritative but secondary
-// — not official accident-investigation authorities — so they sit below the
-// tier-2 government bodies (regional/foreign) and never count as "official"
-// (promote.go treats only tier==1 as official).
-const manufacturerTier = 3
+// — not official accident-investigation authorities — so they never count as
+// "official" (promote.go treats only tier==1 as official). Tier 4 is the only
+// tier model.SourceTierAllowsType permits for source_type='manufacturer', so the
+// upserted source row passes the Invariant-9 (source_tier_type) validator.
+const manufacturerTier = 4
 
 // manufacturerPriority orders manufacturer docs within the cross-source extract
 // queue. Manufacturer documents carry no country and therefore no
-// countries.priority_score; the corpus is small and finite (one publication's
-// back-issues), so a single high constant lets it drain promptly in a few passes
-// rather than being perpetually starved behind the unbounded country backlog.
+// countries.priority_score (which is expectedRecords*quality/effort and routinely
+// reaches the hundreds), so they are given a fixed mid-range constant. They
+// interleave with country docs rather than always preempting them; because the
+// corpus is small and finite (one publication's back-issues) it still drains over
+// a few passes instead of sitting pending forever.
 const manufacturerPriority = 100.0
 
 // ManufacturerSource is the StagedDocSource adapter for

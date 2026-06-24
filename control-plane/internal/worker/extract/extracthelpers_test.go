@@ -46,7 +46,7 @@ func seedDownloadedDoc(t *testing.T, db *sql.DB, iso2, digest string) (docID, co
 	countryID, _ = res.LastInsertId()
 	res, err = db.ExecContext(ctx, `
 		INSERT INTO sources (name, url, canonical_url, source_type, source_tier)
-		VALUES ('seed','u','c-`+digest+`','wayback',2)`)
+		VALUES ('seed','u','c-`+digest+`','wayback',5)`)
 	if err != nil {
 		t.Fatal(err)
 	}

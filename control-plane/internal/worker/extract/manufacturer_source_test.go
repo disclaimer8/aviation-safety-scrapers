@@ -149,10 +149,14 @@ func TestManufacturerPendingDocsTwoPhaseFlow(t *testing.T) {
 		t.Fatalf("EnsureDownloaded: %v", err)
 	}
 
-	// Phase 2: same row still returned (extraction phase).
+	// Phase 2: same row still returned (extraction phase), now carrying the
+	// digest persisted at download so the OCR step can name <digest>.txt.
 	docs2, _ := src.PendingDocs(ctx, db, 0)
 	if len(docs2) != 1 || docs2[0].ID != docID {
 		t.Fatalf("phase2: downloaded doc must still be returned, got %d docs", len(docs2))
+	}
+	if docs2[0].Digest == "" || docs2[0].Digest != doc.Digest {
+		t.Fatalf("phase2: re-selected digest=%q want %q (carried from download)", docs2[0].Digest, doc.Digest)
 	}
 
 	// Phase 3: extracted row not returned.
