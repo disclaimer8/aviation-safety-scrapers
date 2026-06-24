@@ -262,6 +262,41 @@ authority-archive worker. Jobs are finalized `success`/`failed` with
 job left `running` > 1h is auto-resumed. Report download + promotion into
 `events`/`reports` is a later stage.
 
+### process-manufacturer
+
+Discovers and stages all issues of the **Airbus Safety First** magazine into the
+`staged_manufacturer_documents` table. Unlike the country-driven workers,
+`process-manufacturer` is a global, standalone command — it does not consume
+`crawl_jobs` or require a country argument.
+
+**Live (default):** fetches the Safety First listing page
+(`https://safetyfirst.airbus.com/magazine/`) and probes for the next unpublished
+issue:
+
+```bash
+./aviation-coverage process-manufacturer --db coverage.db
+```
+
+**Out-of-band (`--source-file`):** when the live listing is inaccessible (e.g.
+behind bot-protection), save the listing HTML from a real browser and pass it in.
+No network request is made for the discovery step; the next-issue probe still runs
+unless the HTTP client fails:
+
+```bash
+./aviation-coverage process-manufacturer --db coverage.db \
+  --source-file safetyfirst_listing.html
+```
+
+Prints `found=N staged=N errors=N` to stderr. Staging is idempotent —
+`UNIQUE(manufacturer, publication, issue_ref)` means a re-run never double-stages
+an issue.
+
+**Reprint / attribution note:** Airbus Safety First is published under a
+reprint-with-attribution licence. Consumers of the staged `report_url` PDFs must
+credit Airbus S.A.S. when reproducing or redistributing content.
+
+Flags: `--db` (required), `--source-file` (optional), `--timeout` (default 30s).
+
 ### process-foreign-search
 
 Drains pending `ntsb_foreign_search` / `bea_foreign_search` / `atsb_search` crawl
