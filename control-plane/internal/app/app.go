@@ -25,6 +25,7 @@ import (
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/validation"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/extract"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/foreignsearch"
+	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/manufacturer"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/regional"
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/worker/wayback"
 )
@@ -41,7 +42,7 @@ const (
 func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 	if len(args) == 0 {
 		fmt.Fprintln(stderr, "usage: aviation-coverage <command> [flags]")
-		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-extract, process-wayback-extract, process-regional, process-foreign-search")
+		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-extract, process-wayback-extract, process-regional, process-foreign-search, process-manufacturer")
 		return exitUsage
 	}
 
@@ -73,9 +74,11 @@ func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		return runProcessRegional(ctx, rest, stderr)
 	case "process-foreign-search":
 		return runProcessForeign(ctx, rest, stderr)
+	case "process-manufacturer":
+		return runProcessManufacturer(ctx, rest, stderr)
 	default:
 		fmt.Fprintf(stderr, "unknown command %q\n", cmd)
-		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-extract, process-wayback-extract, process-regional, process-foreign-search")
+		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-extract, process-wayback-extract, process-regional, process-foreign-search, process-manufacturer")
 		return exitUsage
 	}
 }
@@ -606,5 +609,39 @@ func runProcessForeign(ctx context.Context, args []string, stderr io.Writer) int
 		return exitFailure
 	}
 	fmt.Fprintf(stderr, "processed %d\n", processed)
+	return exitOK
+}
+
+// ── process-manufacturer ──────────────────────────────────────────────────────
+
+func runProcessManufacturer(ctx context.Context, args []string, stderr io.Writer) int {
+	fs := flag.NewFlagSet("process-manufacturer", flag.ContinueOnError)
+	fs.SetOutput(stderr)
+	dbPath := fs.String("db", "", "path to SQLite database file (required)")
+	sourceFile := fs.String("source-file", "", "out-of-band Airbus Safety First listing HTML (skips live fetch)")
+	timeout := fs.Duration("timeout", 30*time.Second, "HTTP request timeout")
+	if err := fs.Parse(args); err != nil {
+		return exitUsage
+	}
+	if *dbPath == "" {
+		fmt.Fprintln(stderr, "process-manufacturer: --db is required")
+		fs.Usage()
+		return exitUsage
+	}
+
+	db, err := database.Open(*dbPath)
+	if err != nil {
+		fmt.Fprintf(stderr, "process-manufacturer: open db: %v\n", err)
+		return exitFailure
+	}
+	defer db.Close()
+
+	client := manufacturer.NewClient(*timeout, *sourceFile)
+	result, err := manufacturer.ProcessManufacturer(ctx, db, client)
+	if err != nil {
+		fmt.Fprintf(stderr, "process-manufacturer: %v\n", err)
+		return exitFailure
+	}
+	fmt.Fprintf(stderr, "found=%d staged=%d errors=%d\n", result.Found, result.Staged, result.Errors)
 	return exitOK
 }
