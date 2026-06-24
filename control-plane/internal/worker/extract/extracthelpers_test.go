@@ -1,4 +1,4 @@
-package wayback
+package extract
 
 import (
 	"context"

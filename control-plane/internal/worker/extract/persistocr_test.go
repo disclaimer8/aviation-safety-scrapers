@@ -1,4 +1,4 @@
-package wayback
+package extract
 
 import (
 	"context"
@@ -7,22 +7,6 @@ import (
 	"testing"
 )
 
-// fixtureOCRClient is the offline OCRClient for tests.
-type fixtureOCRClient struct {
-	Text string
-	Err  error
-}
-
-func (f *fixtureOCRClient) OCR(ctx context.Context, pdf []byte) (string, error) {
-	if f.Err != nil {
-		return "", f.Err
-	}
-	return f.Text, nil
-}
-
-var _ OCRClient = (*fixtureOCRClient)(nil)
-var _ OCRClient = (*httpOCRClient)(nil)
-
 func TestPersistOCRText(t *testing.T) {
 	ctx := context.Background()
 	db := newExtractTestDB(t) // helper defined in extracthelpers_test.go
@@ -30,7 +14,7 @@ func TestPersistOCRText(t *testing.T) {
 	_ = countryID
 
 	store := t.TempDir()
-	path, err := PersistOCRText(ctx, db, store, "US", "deadbeef", docID, "REPORT TEXT")
+	path, err := PersistOCRText(ctx, db, WaybackSource{}, store, "US", "deadbeef", docID, "REPORT TEXT")
 	if err != nil {
 		t.Fatalf("PersistOCRText: %v", err)
 	}
