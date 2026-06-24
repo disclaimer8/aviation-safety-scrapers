@@ -16,8 +16,8 @@ func TestDiscover_SourceFile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Discover error: %v", err)
 	}
-	if len(recs) < 43 {
-		t.Fatalf("expected at least 43 records, got %d", len(recs))
+	if len(recs) != 43 {
+		t.Fatalf("expected exactly 43 records (frozen fixture), got %d", len(recs))
 	}
 	// Issue 41 must be present.
 	var found bool
