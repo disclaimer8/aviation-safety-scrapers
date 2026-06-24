@@ -46,7 +46,7 @@ func TestResolveSourceWaybackFallback(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ResolveSource: %v", err)
 	}
-	if id == 0 || tier != 2 || cr != "unknown" {
+	if id == 0 || tier != 5 || cr != "unknown" {
 		t.Fatalf("fallback got id=%d tier=%d cr=%q", id, tier, cr)
 	}
 	var st string

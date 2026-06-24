@@ -62,7 +62,9 @@ func (WaybackSource) EnsureDownloaded(ctx context.Context, db *sql.DB, storeDir 
 
 // ResolveSource prefers the country's national_aai authority (else caa) as an
 // official_aai tier-1 source; failing that it falls back to a per-country wayback
-// tier-2 source built from the country's wayback_target. Lookup-or-create keys on
+// tier-5 source built from the country's wayback_target. Tier 5 is the only tier
+// model.SourceTierAllowsType permits for source_type='wayback', so the fallback
+// row passes the Invariant-9 validator. Lookup-or-create keys on
 // UNIQUE(canonical_url, source_type).
 func (WaybackSource) ResolveSource(ctx context.Context, q execQuerier, doc ExtractDoc) (int64, int, string, error) {
 	var name, website, archive sql.NullString
@@ -91,11 +93,11 @@ func (WaybackSource) ResolveSource(ctx context.Context, q execQuerier, doc Extra
 
 	// Fallback: wayback source from the target domain.
 	canonical := "wayback://" + doc.WaybackTarget
-	id, e := upsertSource(ctx, q, "Internet Archive: "+doc.WaybackTarget, "https://"+doc.WaybackTarget, canonical, "wayback", 2)
+	id, e := upsertSource(ctx, q, "Internet Archive: "+doc.WaybackTarget, "https://"+doc.WaybackTarget, canonical, "wayback", 5)
 	if e != nil {
 		return 0, 0, "", e
 	}
-	return id, 2, "unknown", nil
+	return id, 5, "unknown", nil
 }
 
 // MarkSkipped advances the document to extraction_status='skipped'.

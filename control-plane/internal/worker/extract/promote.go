@@ -68,7 +68,7 @@ func PromoteDocument(ctx context.Context, db *sql.DB, src StagedDocSource, doc E
 				 aircraft_registration, aircraft_type, manufacturer, operator_name, flight_number,
 				 fatalities, injuries, event_type, investigation_status, confidence_score, dedup_status)
 			VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, 'unreviewed')`,
-			nullStr(e.Date), e.DatePrecision, doc.CountryID, nullStr(e.Location), e.Latitude, e.Longitude,
+			nullStr(e.Date), e.DatePrecision, nullInt64(doc.CountryID), nullStr(e.Location), e.Latitude, e.Longitude,
 			nullStr(e.AircraftRegistration), nullStr(e.AircraftType), nullStr(e.Manufacturer),
 			nullStr(e.OperatorName), nullStr(e.FlightNumber), e.Fatalities, e.Injuries,
 			e.EventType, e.InvestigationStatus, conf)
@@ -112,6 +112,17 @@ func nullStr(s string) any {
 		return nil
 	}
 	return s
+}
+
+// nullInt64 returns nil for a non-positive id so an absent foreign key (e.g. a
+// country-less manufacturer document, doc.CountryID==0) writes NULL instead of 0,
+// which would violate the events.occurrence_country_id REFERENCES countries(id)
+// constraint. Country-driven sources always pass a real id and are unaffected.
+func nullInt64(i int64) any {
+	if i <= 0 {
+		return nil
+	}
+	return i
 }
 
 // FindDuplicateEvent looks for an existing event that is the same occurrence.

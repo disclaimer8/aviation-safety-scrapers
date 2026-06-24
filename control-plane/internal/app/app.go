@@ -472,6 +472,7 @@ func runProcessExtract(ctx context.Context, args []string, stderr io.Writer) int
 		extract.WaybackSource{},
 		extract.RegionalSource{HTTP: hc},
 		extract.ForeignSource{HTTP: hc},
+		extract.ManufacturerSource{HTTP: hc},
 	}
 	return runExtract(ctx, "process-extract", f, stderr, sources)
 }
