@@ -15,6 +15,7 @@ package manufacturer
 
 import (
 	"fmt"
+	"html"
 	"net/url"
 	"regexp"
 	"strings"
@@ -43,7 +44,7 @@ var (
 // ParseSafetyFirstListing parses the HTML listing page and returns one
 // ManufacturerRecord per magazine issue found.  baseURL is used to resolve any
 // relative hrefs (in practice all hrefs are already absolute).
-func ParseSafetyFirstListing(html []byte, baseURL string) ([]ManufacturerRecord, error) {
+func ParseSafetyFirstListing(page []byte, baseURL string) ([]ManufacturerRecord, error) {
 	base, err := url.Parse(baseURL)
 	if err != nil {
 		return nil, fmt.Errorf("manufacturer: parse baseURL %q: %w", baseURL, err)
@@ -52,13 +53,15 @@ func ParseSafetyFirstListing(html []byte, baseURL string) ([]ManufacturerRecord,
 	seen := map[string]bool{}
 	var recs []ManufacturerRecord
 
-	for _, m := range magazineHrefRe.FindAllSubmatch(html, -1) {
+	for _, m := range magazineHrefRe.FindAllSubmatch(page, -1) {
 		// The alternation gives two capture groups; exactly one will be non-empty.
 		rawHref := string(m[1])
 		if rawHref == "" {
 			rawHref = string(m[2])
 		}
-		rawHref = strings.TrimSpace(rawHref)
+		// Decode HTML entities (e.g. &amp; in query strings) before parsing —
+		// parity with regional/parsehtml.go.
+		rawHref = strings.TrimSpace(html.UnescapeString(rawHref))
 		if rawHref == "" {
 			continue
 		}
