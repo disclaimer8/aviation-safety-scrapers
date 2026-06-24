@@ -69,7 +69,7 @@ type ExtractDoc struct {
 	WaybackTarget string
 	Attempts      int
 	CrawlJobID    int64
-	Priority      int64
+	Priority      float64 // countries.priority_score is REAL — scanning into int64 fails on non-integer scores
 	// SourceRef carries a source-specific identifier used by adapters to credit
 	// the originating body. RegionalSource stores body_code (e.g. "ECCAA");
 	// ForeignSource stores the authority code. Empty for WaybackSource.
