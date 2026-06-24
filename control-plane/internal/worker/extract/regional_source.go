@@ -174,7 +174,9 @@ func (s RegionalSource) EnsureDownloaded(ctx context.Context, db *sql.DB, storeD
 
 // ResolveSource credits the regional body identified by doc.SourceRef (body_code).
 // It looks up the body in regional_bodies by code, then upserts a source row with
-// source_type='regional_body'. Returns tier=2 and copyright="official_public".
+// source_type='regional_body'. Returns tier=4 and copyright="official_public".
+// Tier 4 is the only tier model.SourceTierAllowsType permits for
+// source_type='regional_body', so the row passes the Invariant-9 validator.
 func (RegionalSource) ResolveSource(ctx context.Context, q execQuerier, doc ExtractDoc) (int64, int, string, error) {
 	var name, websiteURL, sourceURL string
 	err := q.QueryRowContext(ctx, `
@@ -193,11 +195,11 @@ func (RegionalSource) ResolveSource(ctx context.Context, q execQuerier, doc Extr
 		url = sourceURL
 	}
 	canonical := "regional://" + doc.SourceRef
-	id, e := upsertSource(ctx, q, name, url, canonical, "regional_body", 2)
+	id, e := upsertSource(ctx, q, name, url, canonical, "regional_body", 4)
 	if e != nil {
 		return 0, 0, "", e
 	}
-	return id, 2, "official_public", nil
+	return id, 4, "official_public", nil
 }
 
 // MarkSkipped advances the document to extraction_status='skipped'.

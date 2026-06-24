@@ -49,7 +49,7 @@ func seedRegionalDoc(t *testing.T, db *sql.DB, iso2, bodyCode, reportURL string)
 	// We need a source row for crawl_jobs FK — seed a minimal one.
 	res, err = db.ExecContext(ctx, `
 		INSERT OR IGNORE INTO sources (name, url, canonical_url, source_type, source_tier)
-		VALUES (?, ?, ?, 'regional_body', 2)`,
+		VALUES (?, ?, ?, 'regional_body', 4)`,
 		bodyCode, fmt.Sprintf("https://%s.example", bodyCode),
 		fmt.Sprintf("regional://%s", bodyCode))
 	if err != nil {
@@ -478,8 +478,8 @@ func TestRegionalResolveSourceCreatesRegionalBodySource(t *testing.T) {
 	if id == 0 {
 		t.Fatal("expected non-zero source id")
 	}
-	if tier != 2 {
-		t.Fatalf("tier=%d want 2", tier)
+	if tier != 4 {
+		t.Fatalf("tier=%d want 4", tier)
 	}
 	if copyright != "official_public" {
 		t.Fatalf("copyright=%q want official_public", copyright)
@@ -665,7 +665,7 @@ func seedRegionalHtmlDoc(t *testing.T, db *sql.DB, iso2, bodyCode, originalURL s
 
 	res, err = db.ExecContext(ctx, `
 		INSERT OR IGNORE INTO sources (name, url, canonical_url, source_type, source_tier)
-		VALUES (?, ?, ?, 'regional_body', 2)`,
+		VALUES (?, ?, ?, 'regional_body', 4)`,
 		bodyCode+"html", fmt.Sprintf("https://%s.html.example", bodyCode),
 		fmt.Sprintf("regional://%s", bodyCode))
 	if err != nil {

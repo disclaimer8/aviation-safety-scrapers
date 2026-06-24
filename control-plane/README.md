@@ -163,12 +163,20 @@ stage (Spec 2). Flags: `--limit N` (0 = no cap), `--store-dir DIR` (default
 
 ### process-extract
 
-Drains pending documents from **all three staging tables** (wayback, regional, and
-foreign) into structured `events`/`reports`. Per document, highest-country-priority
-first, it ensures the PDF is on disk (downloading it from the staging row's
-`report_url` for regional and foreign sources), OCRs the PDF (persisting the text
-under `<store-dir>/<iso2>/<digest>.txt`), extracts event fields with an LLM, and
-promotes the result with a deterministic confidence score and deterministic dedup.
+Drains pending documents from **all four staging tables** (wayback, regional,
+foreign, and manufacturer) into structured `events`/`reports`. Per document,
+highest-country-priority first, it ensures the PDF is on disk (downloading it from
+the staging row's `report_url` for regional, foreign, and manufacturer sources),
+OCRs the PDF (persisting the text under `<store-dir>/<iso2>/<digest>.txt`),
+extracts event fields with an LLM, and promotes the result with a deterministic
+confidence score and deterministic dedup.
+
+Manufacturer documents (e.g. Airbus Safety First) are **global**: they carry no
+country, so they are credited to the manufacturer publication itself
+(`source_type='manufacturer'`, `copyright_status='metadata_only'`), promoted with a
+NULL `occurrence_country_id`, and stored under a `<store-dir>/<manufacturer-slug>/`
+sub-directory. Having no crawl job, their failures are recorded on the staged row's
+`extraction_error` (not `crawl_errors`).
 
 ```bash
 ./aviation-coverage process-extract --db coverage.db --limit 50 \
