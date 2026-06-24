@@ -8,12 +8,12 @@ import (
 
 // fakeDiscoverer is a test double for the Discoverer interface.
 type fakeDiscoverer struct {
-	records      []ManufacturerRecord
-	discoverErr  error
-	probeRecord  ManufacturerRecord
-	probeFound   bool
-	probeErr     error
-	highestSeen  int // records the highestKnown passed to ProbeNextIssue
+	records     []ManufacturerRecord
+	discoverErr error
+	probeRecord ManufacturerRecord
+	probeFound  bool
+	probeErr    error
+	highestSeen int // records the highestKnown passed to ProbeNextIssue
 }
 
 func (f *fakeDiscoverer) Discover(_ context.Context) ([]ManufacturerRecord, error) {
