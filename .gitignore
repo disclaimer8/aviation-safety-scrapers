@@ -44,3 +44,8 @@ sources-go/**/aircrash-parser
 *.swp
 .idea/
 .vscode/
+
+# Internal planning/report scratch dirs — never committed (may describe
+# internal infrastructure topology not relevant to this public repo)
+.superpowers/
+docs/superpowers/

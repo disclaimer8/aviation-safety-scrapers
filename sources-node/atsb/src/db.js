@@ -40,7 +40,30 @@ function openDb(dbPath) {
 
 // Upsert one investigation: factual columns from parseDetail + composed
 // narrative_text / probable_cause (may be null for non-final reports).
+//
+// Two guards against a parse-empty detail page clobbering previously-good
+// data. A detail fetch that returns a challenge/interstitial page, or a page
+// the parser can't read, yields a factRow with almost nothing set:
+//
+//   1. Refuse the upsert outright when the parsed row has neither an
+//      occurrence_date nor a title — those are the two fields every real
+//      ATSB investigation page carries; their absence means parseDetail was
+//      fed something that isn't a real record.
+//   2. For rows that DO pass guard 1, fact/narrative columns use
+//      `COALESCE(excluded.col, col)` instead of a blind `col = excluded.col`.
+//      A field that's genuinely null in an otherwise-valid fresh parse (e.g.
+//      an optional field the redesign dropped) leaves the existing stored
+//      value in place rather than nulling it — only a real, non-null new
+//      value overwrites what's stored. fetched_at/updated_at always advance.
 function upsert(db, factRow, { narrative_text, probable_cause }, now) {
+  if (!factRow.occurrence_date && !factRow.title) {
+    throw new Error(
+      `atsb upsert refused for ${factRow.investigation_id || '(unknown id)'}: ` +
+      'parseDetail produced neither occurrence_date nor title — treating as a ' +
+      'parse failure (challenge page / unrecognised layout), not a real record.'
+    );
+  }
+
   const row = {};
   for (const c of FACT_COLUMNS) {
     let v = factRow[c];
@@ -51,9 +74,16 @@ function upsert(db, factRow, { narrative_text, probable_cause }, now) {
   row.probable_cause = probable_cause ?? null;
   row.fetched_at = now;
   row.updated_at = now;
+
+  const coalesceCols = [...FACT_COLUMNS, 'narrative_text', 'probable_cause']
+    .filter((c) => c !== 'investigation_id');
+  const setClause = [
+    ...coalesceCols.map((c) => `${c} = COALESCE(excluded.${c}, ${c})`),
+    'fetched_at = excluded.fetched_at',
+    'updated_at = excluded.updated_at',
+  ].join(',\n      ');
+
   const allCols = [...FACT_COLUMNS, ...EXTRA_COLUMNS];
-  const setClause = allCols.filter((c) => c !== 'investigation_id')
-    .map((c) => `${c} = excluded.${c}`).join(',\n      ');
   db.prepare(`
     INSERT INTO accidents (${allCols.join(', ')})
     VALUES (${allCols.map((c) => '@' + c).join(', ')})

@@ -10,7 +10,7 @@ import (
 
 // IAC (Interstate Aviation Committee / МАК) publishes investigation reports at
 // mak-iac.org/rassledovaniya/ (Bitrix CMS, server-rendered). The site is reached
-// via the minipc browser-render service (--render-endpoint) or an operator export
+// via a browser-render service (--render-endpoint) or an operator export
 // (--source-file); a plain live fetch is the best-effort fallback.
 //
 // NB: mak.aero is an unrelated "MAK Aviation Services" company, NOT the IAC.

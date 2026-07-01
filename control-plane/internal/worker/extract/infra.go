@@ -9,8 +9,8 @@ import (
 // InfraAbortError signals that an extract pass stopped early because the
 // OCR or LLM endpoint itself is unreachable (dial refused/timeout, network
 // unreachable — as opposed to a problem with the specific document). This is
-// GO-CP-3: a 3-day home-PC tunnel outage ("dial tcp 127.0.0.1:11434: connect:
-// connection refused") burned the extraction_attempts budget of every fresh
+// GO-CP-3: a 3-day LLM-endpoint tunnel outage ("dial tcp 127.0.0.1:11434:
+// connect: connection refused") burned the extraction_attempts budget of every fresh
 // IAC doc in the queue, permanently retiring documents that had done nothing
 // wrong. When the endpoint itself is down, every other document in the batch
 // would fail identically, so extractOne does NOT call RecordFailure (the
