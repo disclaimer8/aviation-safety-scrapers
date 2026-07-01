@@ -6,6 +6,7 @@ package app
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -42,7 +43,7 @@ const (
 func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 	if len(args) == 0 {
 		fmt.Fprintln(stderr, "usage: aviation-coverage <command> [flags]")
-		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-extract, process-wayback-extract, process-regional, process-foreign-search, process-manufacturer")
+		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-extract, process-wayback-extract, process-regional, process-foreign-search, process-manufacturer, reset-failed")
 		return exitUsage
 	}
 
@@ -76,9 +77,11 @@ func Run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		return runProcessForeign(ctx, rest, stderr)
 	case "process-manufacturer":
 		return runProcessManufacturer(ctx, rest, stderr)
+	case "reset-failed":
+		return runResetFailed(ctx, rest, stderr)
 	default:
 		fmt.Fprintf(stderr, "unknown command %q\n", cmd)
-		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-extract, process-wayback-extract, process-regional, process-foreign-search, process-manufacturer")
+		fmt.Fprintln(stderr, "commands: migrate, seed, import-aia, import-raio, validate, export, plan, process-wayback, process-extract, process-wayback-extract, process-regional, process-foreign-search, process-manufacturer, reset-failed")
 		return exitUsage
 	}
 }
@@ -453,7 +456,20 @@ func runExtract(ctx context.Context, cmdName string, f *extractFlags, stderr io.
 	llm := wayback.NewHTTPLLMClient(f.llmEndpoint, f.llmModel, f.maxInputChars, 120*time.Second)
 	stats, err := extract.ProcessExtractPending(ctx, db, ocr, llm, f.storeDir, f.limit, sources...)
 	if err != nil {
-		fmt.Fprintf(stderr, "%s: %v\n", cmdName, err)
+		// GO-CP-3: an *extract.InfraAbortError means the OCR/LLM endpoint itself
+		// is unreachable and the batch stopped early on purpose (see core.go);
+		// any other error is an unexpected DB failure. Either way, log loudly
+		// with whatever partial progress was made before the abort, so an
+		// operator/notification layer scraping stderr can tell a real outage
+		// apart from "nothing needed doing".
+		var infraErr *extract.InfraAbortError
+		if errors.As(err, &infraErr) {
+			fmt.Fprintf(stderr, "%s: ABORTED on infra error: %v (extracted=%d skipped=%d failed=%d before abort)\n",
+				cmdName, err, stats.Extracted, stats.Skipped, stats.Failed)
+		} else {
+			fmt.Fprintf(stderr, "%s: %v (extracted=%d skipped=%d failed=%d before abort)\n",
+				cmdName, err, stats.Extracted, stats.Skipped, stats.Failed)
+		}
 		return exitFailure
 	}
 	fmt.Fprintf(stderr, "extracted=%d skipped=%d failed=%d\n", stats.Extracted, stats.Skipped, stats.Failed)
@@ -486,6 +502,46 @@ func runProcessWaybackExtractAlias(ctx context.Context, args []string, stderr io
 		return code
 	}
 	return runExtract(ctx, "process-wayback-extract", f, stderr, []extract.StagedDocSource{extract.WaybackSource{}})
+}
+
+// ── reset-failed ─────────────────────────────────────────────────────────────
+
+// runResetFailed implements the reset-failed command (GO-CP-3): the operator
+// recovery path for documents whose extraction_attempts was burned by a
+// transient infra outage (OCR/LLM endpoint unreachable) before this fix
+// classified those errors separately. It resets extraction_status back to
+// 'pending' and extraction_attempts to 0 for every row in --store whose
+// extraction_error matches the --error-like SQL LIKE pattern, so the next
+// process-extract run picks them back up.
+func runResetFailed(ctx context.Context, args []string, stderr io.Writer) int {
+	fs := flag.NewFlagSet("reset-failed", flag.ContinueOnError)
+	fs.SetOutput(stderr)
+	dbPath := fs.String("db", "", "path to SQLite database file (required)")
+	store := fs.String("store", "", "staged doc store to reset: wayback, regional, foreign, manufacturer (required)")
+	errLike := fs.String("error-like", "", "SQL LIKE pattern matched against extraction_error, e.g. '%connection refused%' (required)")
+	if err := fs.Parse(args); err != nil {
+		return exitUsage
+	}
+	if *dbPath == "" || *store == "" || *errLike == "" {
+		fmt.Fprintln(stderr, "reset-failed: --db, --store, and --error-like are all required")
+		fs.Usage()
+		return exitUsage
+	}
+
+	db, err := database.Open(*dbPath)
+	if err != nil {
+		fmt.Fprintf(stderr, "reset-failed: open db: %v\n", err)
+		return exitFailure
+	}
+	defer db.Close()
+
+	n, err := extract.ResetFailed(ctx, db, *store, *errLike)
+	if err != nil {
+		fmt.Fprintf(stderr, "reset-failed: %v\n", err)
+		return exitFailure
+	}
+	fmt.Fprintf(stderr, "reset-failed: reset %d document(s) in store %q matching %q\n", n, *store, *errLike)
+	return exitOK
 }
 
 // ── process-wayback ──────────────────────────────────────────────────────────

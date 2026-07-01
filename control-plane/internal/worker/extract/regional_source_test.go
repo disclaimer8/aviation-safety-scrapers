@@ -203,6 +203,110 @@ func TestRegionalPendingDocsLimitRespected(t *testing.T) {
 	}
 }
 
+// seedRegionalDocNoCountry inserts a staged_regional_documents row with
+// country_id NULL — the GO-CP-1 body-wide-listing case (ECCAA/BAGAIA/IAC stage
+// every record this way; see regional/stage.go). The owning crawl_job still
+// carries a real country (crawl_jobs.country_id is NOT NULL — it identifies
+// which job ran the body-wide fetch, not the record's occurrence country).
+func seedRegionalDocNoCountry(t *testing.T, db *sql.DB, jobCountryISO2, bodyCode, reportURL string) (docID int64) {
+	t.Helper()
+	ctx := context.Background()
+
+	res, err := db.ExecContext(ctx, `
+		INSERT INTO countries
+			(iso2, iso3, name, region, policy_status, coverage_status,
+			 coverage_score, effort_score)
+		VALUES (?, ?, ?, 'R', 'allowed', 'no_public_archive', 1, 3)`,
+		jobCountryISO2, jobCountryISO2+"X", jobCountryISO2+"land")
+	if err != nil {
+		t.Fatal(err)
+	}
+	jobCountryID, _ := res.LastInsertId()
+
+	if _, err := db.ExecContext(ctx, `
+		INSERT OR IGNORE INTO regional_bodies (code, name, body_class, website_url, source_url)
+		VALUES (?, ?, 'regional_body', ?, ?)`,
+		bodyCode, bodyCode+" Body", fmt.Sprintf("https://%s.example", bodyCode),
+		fmt.Sprintf("https://%s.example/reports", bodyCode)); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `
+		INSERT OR IGNORE INTO sources (name, url, canonical_url, source_type, source_tier)
+		VALUES (?, ?, ?, 'regional_body', 4)`,
+		bodyCode, fmt.Sprintf("https://%s.example", bodyCode),
+		fmt.Sprintf("regional://%s", bodyCode)); err != nil {
+		t.Fatal(err)
+	}
+	var srcID int64
+	if err := db.QueryRowContext(ctx, `SELECT id FROM sources WHERE canonical_url=?`,
+		fmt.Sprintf("regional://%s", bodyCode)).Scan(&srcID); err != nil {
+		t.Fatal(err)
+	}
+
+	res, err = db.ExecContext(ctx, `
+		INSERT INTO crawl_jobs (source_id, country_id, job_type, status)
+		VALUES (?, ?, 'pdf_discovery', 'running')`, srcID, jobCountryID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	jobID, _ := res.LastInsertId()
+
+	// country_id NULL: the GO-CP-1 fix — a body-wide record stages with no
+	// country claim, even though its owning job has a real country above.
+	res, err = db.ExecContext(ctx, `
+		INSERT INTO staged_regional_documents
+			(crawl_job_id, country_id, body_code, ref, title, original_url, report_url)
+		VALUES (?, NULL, ?, ?, ?, ?, ?)`,
+		jobID, bodyCode,
+		fmt.Sprintf("ref-%s-nocountry", bodyCode),
+		"Unattributed Accident Report",
+		fmt.Sprintf("https://%s.example/accidents/nocountry", bodyCode),
+		reportURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	docID, _ = res.LastInsertId()
+	return docID
+}
+
+// TestRegionalPendingDocsIncludesCountryLessRow is the GO-CP-1 regression test
+// for the extract queue: before the fix, PendingDocs INNER JOINed countries,
+// so a row with country_id NULL (every body-wide record, post-fix) would be
+// silently dropped from the extract queue forever — the row would never reach
+// OCR/LLM/promotion at all. It must be returned, with a usable ISO2 (falls
+// back to the body code) and a usable Priority (falls back to a fixed
+// constant) so downstream sorting and store-dir placement still work.
+func TestRegionalPendingDocsIncludesCountryLessRow(t *testing.T) {
+	ctx := context.Background()
+	db := newExtractTestDB(t)
+	docID := seedRegionalDocNoCountry(t, db, "BY", "IAC", "https://iac.example/nocountry.pdf")
+
+	src := RegionalSource{HTTP: http.DefaultClient}
+	docs, err := src.PendingDocs(ctx, db, 0)
+	if err != nil {
+		t.Fatalf("PendingDocs: %v", err)
+	}
+	var found *ExtractDoc
+	for i := range docs {
+		if docs[i].ID == docID {
+			found = &docs[i]
+			break
+		}
+	}
+	if found == nil {
+		t.Fatalf("country-less doc %d must be returned by PendingDocs (was silently dropped before GO-CP-1 fix)", docID)
+	}
+	if found.CountryID != 0 {
+		t.Fatalf("CountryID=%d want 0 (NULL country_id, not the owning job's country)", found.CountryID)
+	}
+	if found.ISO2 != "iac" {
+		t.Fatalf("ISO2=%q want %q (fallback to lower-cased body_code)", found.ISO2, "iac")
+	}
+	if found.Priority != regionalUnattributedPriority {
+		t.Fatalf("Priority=%v want %v (fallback constant)", found.Priority, regionalUnattributedPriority)
+	}
+}
+
 // ─── EnsureDownloaded ────────────────────────────────────────────────────────
 
 func TestRegionalEnsureDownloadedFetchesAndUpdatesRow(t *testing.T) {

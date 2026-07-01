@@ -1,6 +1,9 @@
 package extract
 
-import "math"
+import (
+	"math"
+	"strings"
+)
 
 // HasCriticalFields is the accident-promotion gate: a usable date (exact or
 // month precision) AND at least one of registration / aircraft type.
@@ -57,5 +60,24 @@ func NormalizeEvent(e ExtractedEvent) ExtractedEvent {
 		[]string{"final", "preliminary", "interim", "factual"}, "final")
 	e.DatePrecision = normalizeEnum(e.DatePrecision,
 		[]string{"exact", "month", "year", "unknown"}, "unknown")
+	e.Country = normalizeISO2(e.Country)
 	return e
+}
+
+// normalizeISO2 upper-cases and trims a country code, returning "" for
+// anything that isn't exactly two letters after trimming — a model that
+// returns a country name, a lower-cased code, or garbage should map to
+// "unknown" (NULL at promote time) rather than a malformed value reaching a
+// countries.iso2 lookup.
+func normalizeISO2(s string) string {
+	s = strings.ToUpper(strings.TrimSpace(s))
+	if len(s) != 2 {
+		return ""
+	}
+	for _, r := range s {
+		if r < 'A' || r > 'Z' {
+			return ""
+		}
+	}
+	return s
 }

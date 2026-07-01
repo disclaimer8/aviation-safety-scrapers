@@ -13,6 +13,14 @@ type RegionalRecord struct {
 	OriginalURL    string // the human page for the record
 	ReportURL      string // direct report/PDF URL when present, else ""
 	Mimetype       string
+	// CountryISO2 is the occurrence country when the listing itself carries a
+	// deterministic per-record indicator (e.g. a member-state column/field the
+	// body publishes alongside each entry). Empty when the listing is body-wide
+	// with no such signal, which is the case for every parser currently wired
+	// (ECCAA/BAGAIA/IAC parse only title/URL/date; none carry a per-record
+	// country field yet). StageRecords prefers this over the crawling job's
+	// country whenever it resolves to a known ISO2.
+	CountryISO2 string
 }
 
 // RegionalClient queries one regional body for accidents in a member country.

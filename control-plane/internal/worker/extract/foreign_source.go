@@ -30,23 +30,37 @@ var foreignAuthorityMeta = map[string]struct {
 	"atsb": {"Australian Transport Safety Bureau", "https://www.atsb.gov.au"},
 }
 
+// foreignUnattributedPriority is the fixed priority for a staged foreign
+// document with no country_id — the BEA case (GO-CP-1: BEA's notified-events
+// listing is body-wide, not filtered per country, so it stages with country_id
+// NULL; see foreignsearch/bea.go and foreignsearch/runner.go). Mirrors
+// regionalUnattributedPriority/manufacturerPriority.
+const foreignUnattributedPriority = 100.0
+
 // Name identifies this source for logging.
 func (ForeignSource) Name() string { return "foreign" }
 
 // PendingDocs returns staged_foreign_documents rows that have a report_url
 // (page-only docs without a downloadable report are MVP-deferred), have not
 // yet been fully extracted, and have fewer than 3 extraction attempts.
-// Results are ordered by country priority descending, then document id ascending.
+// Results are ordered by country priority descending, then document id
+// ascending.
+//
+// country_id is nullable (GO-CP-1: BEA's body-wide listing stages without a
+// country claim), so the countries join is LEFT, not INNER — an INNER join
+// would silently drop every unattributed row from the extract queue entirely.
+// For a NULL country_id, ISO2 falls back to the authority code and priority
+// falls back to foreignUnattributedPriority.
 func (ForeignSource) PendingDocs(ctx context.Context, db *sql.DB, limit int) ([]ExtractDoc, error) {
 	q := `
-		SELECT d.id, d.country_id, c.iso2,
+		SELECT d.id, coalesce(d.country_id, 0), coalesce(c.iso2, d.authority),
 		       coalesce(d.digest,''), coalesce(d.local_file_path,''),
 		       d.original_url, d.report_url,
 		       d.ocr_text_path, d.digest,
-		       d.extraction_attempts, d.crawl_job_id, c.priority_score,
+		       d.extraction_attempts, d.crawl_job_id, coalesce(c.priority_score, ?),
 		       d.authority
 		  FROM staged_foreign_documents d
-		  JOIN countries c ON c.id = d.country_id
+		  LEFT JOIN countries c ON c.id = d.country_id
 		 WHERE d.report_url IS NOT NULL AND d.report_url != ''
 		   AND (
 		     (d.download_status IN ('pending','failed') AND d.extraction_status IN ('pending','failed'))
@@ -54,11 +68,12 @@ func (ForeignSource) PendingDocs(ctx context.Context, db *sql.DB, limit int) ([]
 		     (d.download_status = 'downloaded' AND d.extraction_status IN ('pending','ocr_done','failed'))
 		   )
 		   AND d.extraction_attempts < 3
-		 ORDER BY c.priority_score DESC, d.id ASC`
+		 ORDER BY coalesce(c.priority_score, ?) DESC, d.id ASC`
+	args := []any{foreignUnattributedPriority, foreignUnattributedPriority}
 	if limit > 0 {
 		q += fmt.Sprintf(" LIMIT %d", limit)
 	}
-	rows, err := db.QueryContext(ctx, q)
+	rows, err := db.QueryContext(ctx, q, args...)
 	if err != nil {
 		return nil, fmt.Errorf("foreign: select pending extract docs: %w", err)
 	}
