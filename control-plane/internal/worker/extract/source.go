@@ -8,10 +8,17 @@ import (
 // ExtractedEvent is the structured result of LLM extraction. Pointer fields are
 // nullable (unknown).
 type ExtractedEvent struct {
-	IsAviationAccident   bool     `json:"is_aviation_accident"`
-	Date                 string   `json:"date"`
-	DatePrecision        string   `json:"date_precision"`
-	Location             string   `json:"location"`
+	IsAviationAccident bool   `json:"is_aviation_accident"`
+	Date               string `json:"date"`
+	DatePrecision      string `json:"date_precision"`
+	Location           string `json:"location"`
+	// Country is the ISO 3166-1 alpha-2 code (e.g. "BY", "KZ") of the country
+	// where the occurrence took place, per the model's reading of the report
+	// text. Empty when the model cannot determine it confidently. Used at
+	// promote time to resolve events.occurrence_country_id for body-wide
+	// sources (regional bodies, BEA) whose staged document carries no country
+	// claim of its own (GO-CP-1) — see promote.go's resolveOccurrenceCountryID.
+	Country              string   `json:"country"`
 	Latitude             *float64 `json:"latitude"`
 	Longitude            *float64 `json:"longitude"`
 	AircraftRegistration string   `json:"aircraft_registration"`

@@ -54,7 +54,15 @@ func RunJob(ctx context.Context, db *sql.DB, c Clients, job Job) error {
 		recordError(ctx, db, job.ID, authority+"://"+job.ISO2, "unknown", err.Error())
 		return finalize(ctx, db, job.ID, "failed", jobStats{})
 	}
-	staged, err := StageRecords(ctx, db, job.ID, job.CountryID, authority, recs)
+	// BEA's notified-events listing is body-wide (not filtered per country — see
+	// bea.go's Search doc comment), so its records must stage without the job's
+	// country claim (GO-CP-1); NTSB (CAROL Country query param) and ATSB
+	// (pre-filtered --source-file export) are genuinely per-country already.
+	stageCountryID := job.CountryID
+	if authority == "bea" {
+		stageCountryID = 0
+	}
+	staged, err := StageRecords(ctx, db, job.ID, stageCountryID, authority, recs)
 	if err != nil {
 		_ = finalize(ctx, db, job.ID, "failed", jobStats{})
 		return err

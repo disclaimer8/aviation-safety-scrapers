@@ -170,3 +170,87 @@ func TestRunExportInvalidFormatExits2(t *testing.T) {
 		t.Fatalf("expected exit code 2 for bad format, got %d", code)
 	}
 }
+
+// TestRunResetFailedRecoversInfraFailedDoc is the CLI-level regression test
+// for GO-CP-3's operator recovery path: a document stuck failed/attempts=3 by
+// a connection-refused error (the pre-fix symptom of the 3-day tunnel outage)
+// must come back to pending/0 after `reset-failed --error-like`, while an
+// unrelated failure with a different error message is left alone.
+func TestRunResetFailedRecoversInfraFailedDoc(t *testing.T) {
+	dbPath := filepath.Join(t.TempDir(), "coverage.db")
+	var stdout, stderr bytes.Buffer
+	for _, args := range [][]string{
+		{"migrate", "--db", dbPath},
+		{"seed", "--db", dbPath},
+	} {
+		stdout.Reset()
+		stderr.Reset()
+		if code := app.Run(context.Background(), args, &stdout, &stderr); code != 0 {
+			t.Fatalf("setup %v: code=%d stderr=%s", args, code, stderr.String())
+		}
+	}
+
+	db, err := database.Open(dbPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	ctx := context.Background()
+	var countryID int64
+	if err := db.QueryRowContext(ctx, `SELECT id FROM countries WHERE iso2='AF'`).Scan(&countryID); err != nil {
+		t.Fatal(err)
+	}
+	res, err := db.ExecContext(ctx, `
+		INSERT INTO sources (name,url,canonical_url,source_type,source_tier)
+		VALUES ('s','https://s/','https://s/','wayback',5)`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	srcID, _ := res.LastInsertId()
+	res, err = db.ExecContext(ctx, `INSERT INTO crawl_jobs (source_id,country_id,job_type,status) VALUES (?,?,'wayback_cdx','running')`, srcID, countryID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	jobID, _ := res.LastInsertId()
+	res, err = db.ExecContext(ctx, `
+		INSERT INTO staged_wayback_documents
+			(crawl_job_id, country_id, original_url, archived_url, timestamp, mimetype, digest,
+			 download_status, extraction_status, extraction_attempts, extraction_error)
+		VALUES (?, ?, 'https://x/1', 'https://web.archive.org/1', '20200101000000', 'application/pdf', 'd1',
+		        'downloaded', 'failed', 3, 'wayback: llm post: dial tcp 127.0.0.1:11434: connect: connection refused')`,
+		jobID, countryID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	docID, _ := res.LastInsertId()
+
+	stdout.Reset()
+	stderr.Reset()
+	code := app.Run(context.Background(),
+		[]string{"reset-failed", "--db", dbPath, "--store", "wayback", "--error-like", "%connection refused%"},
+		&stdout, &stderr)
+	if code != 0 {
+		t.Fatalf("reset-failed: code=%d stderr=%s", code, stderr.String())
+	}
+	if !strings.Contains(stderr.String(), "reset 1 document") {
+		t.Fatalf("stderr=%q, want it to report 1 document reset", stderr.String())
+	}
+
+	var status string
+	var attempts int
+	if err := db.QueryRowContext(ctx, `SELECT extraction_status, extraction_attempts FROM staged_wayback_documents WHERE id=?`, docID).
+		Scan(&status, &attempts); err != nil {
+		t.Fatal(err)
+	}
+	if status != "pending" || attempts != 0 {
+		t.Fatalf("status=%q attempts=%d, want pending/0", status, attempts)
+	}
+}
+
+func TestRunResetFailedMissingFlagsExits2(t *testing.T) {
+	var stdout, stderr bytes.Buffer
+	code := app.Run(context.Background(), []string{"reset-failed", "--db", "/tmp/x.db"}, &stdout, &stderr)
+	if code != 2 {
+		t.Fatalf("expected exit code 2 for missing --store/--error-like, got %d", code)
+	}
+}

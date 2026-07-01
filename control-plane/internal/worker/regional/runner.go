@@ -66,7 +66,11 @@ func RunJob(ctx context.Context, db *sql.DB, c Clients, job Job) error {
 		return finalize(ctx, db, job.ID, "failed", jobStats{})
 	}
 
-	staged, err := StageRecords(ctx, db, job.ID, job.CountryID, job.BodyCode, recs)
+	// Every wired body (ECCAA/BAGAIA/IAC) publishes one body-wide listing, not
+	// filtered per country (see the Search doc comments in eccaa.go/bagaia.go/
+	// iac.go), so the job's own country must NOT be stamped on the records it
+	// stages — see StageRecords' doc comment for why (GO-CP-1).
+	staged, err := StageRecords(ctx, db, job.ID, 0, job.BodyCode, recs)
 	if err != nil {
 		_ = finalize(ctx, db, job.ID, "failed", jobStats{})
 		return err

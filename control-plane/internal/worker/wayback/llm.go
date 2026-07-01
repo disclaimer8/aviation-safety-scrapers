@@ -51,6 +51,7 @@ var extractSchema = json.RawMessage(`{
     "date":{"type":"string"},
     "date_precision":{"type":"string"},
     "location":{"type":"string"},
+    "country":{"type":"string"},
     "latitude":{"type":["number","null"]},
     "longitude":{"type":["number","null"]},
     "aircraft_registration":{"type":"string"},
@@ -68,7 +69,7 @@ var extractSchema = json.RawMessage(`{
     "published_date":{"type":"string"}
   },
   "required":[
-    "is_aviation_accident","date","date_precision","location","latitude","longitude",
+    "is_aviation_accident","date","date_precision","location","country","latitude","longitude",
     "aircraft_registration","aircraft_type","manufacturer","operator_name","flight_number",
     "fatalities","injuries","event_type","investigation_status","report_type","title",
     "language","published_date"

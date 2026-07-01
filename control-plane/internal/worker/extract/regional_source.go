@@ -24,6 +24,14 @@ type RegionalSource struct {
 
 var _ StagedDocSource = RegionalSource{}
 
+// regionalUnattributedPriority is the fixed priority given to a staged regional
+// document with no country_id (the body-wide-listing case: ECCAA/BAGAIA/IAC
+// stage every record with country_id NULL — see stage.go). Mirrors
+// manufacturerPriority's rationale: these docs have no countries.priority_score
+// to sort by, so they get a fixed mid-range constant and interleave with
+// country-attributed docs rather than always winning or losing the sort.
+const regionalUnattributedPriority = 100.0
+
 // Name identifies this source for logging.
 func (RegionalSource) Name() string { return "regional" }
 
@@ -32,16 +40,23 @@ func (RegionalSource) Name() string { return "regional" }
 // IAC/МАК), have not yet been fully extracted, and have fewer than 3
 // extraction attempts. Results are ordered by country priority descending,
 // then document id ascending.
+//
+// country_id is nullable (GO-CP-1: body-wide listings stage without a country
+// claim), so the countries join is LEFT, not INNER — an INNER join would
+// silently drop every unattributed row from the extract queue entirely. For a
+// NULL country_id, ISO2 falls back to the lower-cased body_code (still a valid
+// store-directory segment) and priority falls back to
+// regionalUnattributedPriority.
 func (RegionalSource) PendingDocs(ctx context.Context, db *sql.DB, limit int) ([]ExtractDoc, error) {
 	q := `
-		SELECT d.id, d.country_id, c.iso2,
+		SELECT d.id, coalesce(d.country_id, 0), coalesce(c.iso2, lower(d.body_code)),
 		       coalesce(d.digest,''), coalesce(d.local_file_path,''),
 		       d.original_url, coalesce(d.report_url,''),
 		       d.ocr_text_path, d.digest,
-		       d.extraction_attempts, d.crawl_job_id, c.priority_score,
+		       d.extraction_attempts, d.crawl_job_id, coalesce(c.priority_score, ?),
 		       d.body_code
 		  FROM staged_regional_documents d
-		  JOIN countries c ON c.id = d.country_id
+		  LEFT JOIN countries c ON c.id = d.country_id
 		 WHERE ((d.report_url IS NOT NULL AND d.report_url != '')
 		        OR (d.original_url IS NOT NULL AND d.original_url != ''))
 		   AND (
@@ -50,11 +65,12 @@ func (RegionalSource) PendingDocs(ctx context.Context, db *sql.DB, limit int) ([
 		     (d.download_status = 'downloaded' AND d.extraction_status IN ('pending','ocr_done','failed'))
 		   )
 		   AND d.extraction_attempts < 3
-		 ORDER BY c.priority_score DESC, d.id ASC`
+		 ORDER BY coalesce(c.priority_score, ?) DESC, d.id ASC`
+	args := []any{regionalUnattributedPriority, regionalUnattributedPriority}
 	if limit > 0 {
 		q += fmt.Sprintf(" LIMIT %d", limit)
 	}
-	rows, err := db.QueryContext(ctx, q)
+	rows, err := db.QueryContext(ctx, q, args...)
 	if err != nil {
 		return nil, fmt.Errorf("regional: select pending extract docs: %w", err)
 	}
