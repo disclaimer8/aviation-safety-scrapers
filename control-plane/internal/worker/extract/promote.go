@@ -26,9 +26,52 @@ func upsertSource(ctx context.Context, q execQuerier, name, url, canonical, sour
 	return id, nil
 }
 
-// normalizeReg upper-cases and trims an aircraft registration for comparison.
+// normalizeReg upper-cases and trims an aircraft registration for comparison
+// and for storage (dashes are kept intact — project convention, see
+// reference_aircraft-livery-tracking.md: "reg=UPPER keep-dashes").
 func normalizeReg(s string) string {
 	return strings.ToUpper(strings.TrimSpace(s))
+}
+
+// placeholderRegs is the set of normalized (normalizeReg'd) values that stand
+// in for "no registration known" rather than a real tail number. Live regional
+// data includes the Cyrillic "б/н" ("bez nomera" / without number) placeholder
+// alongside the usual English variants (GO-CP-5b). Matched case-insensitively
+// via normalizeReg before lookup, so this map only needs the upper-cased form.
+var placeholderRegs = map[string]bool{
+	"":        true,
+	"N/A":     true,
+	"NA":      true,
+	"N.A.":    true,
+	"UNKNOWN": true,
+	"UNK":     true,
+	"NONE":    true,
+	"NIL":     true,
+	"-":       true,
+	"—":       true,
+	"Б/Н":     true, // Cyrillic "without number"
+	"БН":      true,
+}
+
+// isPlaceholderReg reports whether a normalizeReg'd registration is a known
+// placeholder (not a real tail number) and must not participate in dedup
+// key-1 matching — otherwise every "б/н"/"N/A" record in the same body-wide
+// listing would collapse onto one event.
+func isPlaceholderReg(normalized string) bool {
+	return placeholderRegs[normalized]
+}
+
+// matchesNonEmpty reports whether a and b are both non-empty and equal after
+// trimming, case-insensitively. Used to corroborate a weak dedup key-2 match
+// (date+operator+fatalities) against aircraft_type or location before
+// treating it as the same occurrence.
+func matchesNonEmpty(a, b string) bool {
+	a = strings.TrimSpace(a)
+	b = strings.TrimSpace(b)
+	if a == "" || b == "" {
+		return false
+	}
+	return strings.EqualFold(a, b)
 }
 
 // PromoteDocument inserts or links an event, inserts a report, and advances the
@@ -50,7 +93,7 @@ func PromoteDocument(ctx context.Context, db *sql.DB, src StagedDocSource, doc E
 	}
 	official := tier == 1
 
-	eventID, linked, err := FindDuplicateEvent(ctx, tx, e)
+	eventID, linked, needsReview, err := FindDuplicateEvent(ctx, tx, e)
 	if err != nil {
 		return 0, false, err
 	}
@@ -66,16 +109,23 @@ func PromoteDocument(ctx context.Context, db *sql.DB, src StagedDocSource, doc E
 			return 0, false, err
 		}
 		conf := ConfidenceScore(e, official)
+		// A weak key-2 match (GO-CP-5c) is inserted as its own event, not
+		// auto-linked, but flagged for a human to resolve rather than
+		// defaulting to 'unreviewed' as if no candidate had been seen at all.
+		dedupStatus := "unreviewed"
+		if needsReview {
+			dedupStatus = "manual_review"
+		}
 		res, err := tx.ExecContext(ctx, `
 			INSERT INTO events
 				(date, date_precision, occurrence_country_id, location, latitude, longitude,
 				 aircraft_registration, aircraft_type, manufacturer, operator_name, flight_number,
 				 fatalities, injuries, event_type, investigation_status, confidence_score, dedup_status)
-			VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, 'unreviewed')`,
+			VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
 			nullStr(e.Date), e.DatePrecision, nullInt64(occCountryID), nullStr(e.Location), e.Latitude, e.Longitude,
-			nullStr(e.AircraftRegistration), nullStr(e.AircraftType), nullStr(e.Manufacturer),
+			nullStr(normalizeReg(e.AircraftRegistration)), nullStr(e.AircraftType), nullStr(e.Manufacturer),
 			nullStr(e.OperatorName), nullStr(e.FlightNumber), e.Fatalities, e.Injuries,
-			e.EventType, e.InvestigationStatus, conf)
+			e.EventType, e.InvestigationStatus, conf, dedupStatus)
 		if err != nil {
 			return 0, false, fmt.Errorf("extract: insert event: %w", err)
 		}
@@ -163,42 +213,61 @@ func resolveOccurrenceCountryID(ctx context.Context, q execQuerier, doc ExtractD
 }
 
 // FindDuplicateEvent looks for an existing event that is the same occurrence.
-// Key 1 (when the candidate has a registration): same exact date AND same
-// normalized registration. Key 2 (when registration is absent): same exact date
-// AND same operator AND same fatalities. Only exact-precision candidate dates
-// participate.
-func FindDuplicateEvent(ctx context.Context, q execQuerier, e ExtractedEvent) (int64, bool, error) {
+//
+// Key 1 (when the candidate has a real registration — placeholders like
+// "N/A"/"б/н" don't count, see isPlaceholderReg): same exact date AND same
+// normalized registration. A key-1 match is always confident enough to
+// auto-link (a registration collision on the same day is the same aircraft).
+//
+// Key 2 (when registration is absent or a placeholder): same exact date AND
+// same operator AND same fatalities. This alone is too weak to auto-link —
+// two distinct same-day accidents at the same operator with equal fatalities
+// happen (e.g. GO-CP-5c: a body-wide regional listing mixing two unrelated
+// occurrences) — so it additionally requires aircraft_type OR location to
+// corroborate. A date+operator+fatalities match WITHOUT that corroboration is
+// returned as needsReview=true instead of being auto-linked: the caller must
+// insert a new event and flag it for manual dedup review (dedup_status=
+// 'manual_review' — the schema's closest fit to "needs review"; there is no
+// separate 'needs_review' enum value) rather than silently merging two
+// possibly-distinct events, which would drop the second event's own record.
+//
+// Only exact-precision candidate dates participate.
+func FindDuplicateEvent(ctx context.Context, q execQuerier, e ExtractedEvent) (eventID int64, linked bool, needsReview bool, err error) {
 	if e.DatePrecision != "exact" || e.Date == "" {
-		return 0, false, nil
+		return 0, false, false, nil
 	}
 	reg := normalizeReg(e.AircraftRegistration)
-	if reg != "" {
+	if reg != "" && !isPlaceholderReg(reg) {
 		var id int64
 		err := q.QueryRowContext(ctx, `
 			SELECT id FROM events
 			 WHERE date = ? AND upper(trim(aircraft_registration)) = ?
 			 ORDER BY id ASC LIMIT 1`, e.Date, reg).Scan(&id)
 		if err == sql.ErrNoRows {
-			return 0, false, nil
+			return 0, false, false, nil
 		}
 		if err != nil {
-			return 0, false, fmt.Errorf("extract: dedup key1: %w", err)
+			return 0, false, false, fmt.Errorf("extract: dedup key1: %w", err)
 		}
-		return id, true, nil
+		return id, true, false, nil
 	}
 	if e.OperatorName != "" && e.Fatalities != nil {
 		var id int64
+		var dbAircraftType, dbLocation sql.NullString
 		err := q.QueryRowContext(ctx, `
-			SELECT id FROM events
+			SELECT id, aircraft_type, location FROM events
 			 WHERE date = ? AND operator_name = ? AND fatalities = ?
-			 ORDER BY id ASC LIMIT 1`, e.Date, e.OperatorName, *e.Fatalities).Scan(&id)
+			 ORDER BY id ASC LIMIT 1`, e.Date, e.OperatorName, *e.Fatalities).Scan(&id, &dbAircraftType, &dbLocation)
 		if err == sql.ErrNoRows {
-			return 0, false, nil
+			return 0, false, false, nil
 		}
 		if err != nil {
-			return 0, false, fmt.Errorf("extract: dedup key2: %w", err)
+			return 0, false, false, fmt.Errorf("extract: dedup key2: %w", err)
 		}
-		return id, true, nil
+		if matchesNonEmpty(dbAircraftType.String, e.AircraftType) || matchesNonEmpty(dbLocation.String, e.Location) {
+			return id, true, false, nil
+		}
+		return 0, false, true, nil
 	}
-	return 0, false, nil
+	return 0, false, false, nil
 }

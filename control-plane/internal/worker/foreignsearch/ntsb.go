@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 )
@@ -153,6 +154,21 @@ func parseNTSB(raw []byte) (recs []ForeignRecord, warnings int, err error) {
 	return recs, warnings, nil
 }
 
+// parseNTSBPage is parseNTSB plus the response's ResultListCount — the
+// server's count of ALL matching rows, independent of how many this one page
+// returned (GO-CP-6). ntsbClient.Search uses it to detect when a single
+// ResultSetSize=500 page was truncating a larger result set (BS was known to
+// be 413/500 already, i.e. right at the edge) and to know when to stop
+// paginating.
+func parseNTSBPage(raw []byte) (recs []ForeignRecord, warnings int, resultListCount int, err error) {
+	var resp carolResponse
+	if err := json.Unmarshal(raw, &resp); err != nil {
+		return nil, 0, 0, fmt.Errorf("foreignsearch: parseNTSBPage: unmarshal: %w", err)
+	}
+	recs, warnings, err = parseNTSB(raw)
+	return recs, warnings, resp.ResultListCount, err
+}
+
 // carolExtractFields collapses a []carolField into a string→string map using
 // the first value of each field (empty string when Values is empty).
 func carolExtractFields(fields []carolField) map[string]string {
@@ -191,31 +207,46 @@ func buildCarolTitle(f map[string]string) string {
 	return strings.Join(parts, ", ")
 }
 
+// carolPageSize is CAROL's ResultSetSize per page. carolMaxPages caps
+// pagination (GO-CP-6) — 40 pages * 500 rows = 20,000 rows is far beyond any
+// realistic single-country result set; the cap exists so a server bug
+// (e.g. never returning a short page) can't loop forever.
+const (
+	carolPageSize = 500
+	carolMaxPages = 40
+)
+
 // ntsbClient implements AuthorityClient against the live NTSB CAROL API.
 type ntsbClient struct {
 	http *http.Client
+
+	// queryEndpoint / sessionEndpoint default to carolEndpoint /
+	// carolSessionEndpoint; overridable in tests to point at an httptest server.
+	queryEndpoint   string
+	sessionEndpoint string
+
+	// pageDelay is slept between pages (not before the first) to keep request
+	// pacing polite against a public government API. Overridable (0) in tests.
+	pageDelay time.Duration
 }
 
 // NewNTSBClient returns an AuthorityClient backed by the live CAROL API.
 func NewNTSBClient(timeout time.Duration) AuthorityClient {
-	return &ntsbClient{http: &http.Client{Timeout: timeout}}
-}
-
-// Search queries the CAROL API for aviation accidents in the given country.
-// countryISO2 must be one of the keys in carolCountryNames.
-func (c *ntsbClient) Search(ctx context.Context, countryISO2 string) ([]ForeignRecord, error) {
-	body, err := c.fetch(ctx, countryISO2)
-	if err != nil {
-		return nil, err
+	return &ntsbClient{
+		http:            &http.Client{Timeout: timeout},
+		queryEndpoint:   carolEndpoint,
+		sessionEndpoint: carolSessionEndpoint,
+		pageDelay:       500 * time.Millisecond,
 	}
-	recs, _, err := parseNTSB(body)
-	return recs, err
 }
 
-// fetch builds and executes the CAROL query for the given ISO2 country code.
-// It first obtains a session ID (required by the API), then runs the query.
-// CAROL Event.Country accepts ISO2 codes directly (e.g. "BS"), not full names.
-func (c *ntsbClient) fetch(ctx context.Context, countryISO2 string) ([]byte, error) {
+// Search queries the CAROL API for aviation accidents in the given country,
+// paginating ResultSetOffset by carolPageSize until a short page is returned
+// (fewer than carolPageSize rows) or carolMaxPages is reached (GO-CP-6: BS
+// alone was already at 413/500 — one hardcoded page silently dropped any
+// country with more than 500 matching cases). countryISO2 must be one of the
+// keys in carolSupportedCountries.
+func (c *ntsbClient) Search(ctx context.Context, countryISO2 string) ([]ForeignRecord, error) {
 	iso2 := strings.ToUpper(countryISO2)
 	if _, ok := carolSupportedCountries[iso2]; !ok {
 		return nil, fmt.Errorf("foreignsearch: ntsbClient: unsupported country ISO2 %q", countryISO2)
@@ -227,6 +258,62 @@ func (c *ntsbClient) fetch(ctx context.Context, countryISO2 string) ([]byte, err
 		return nil, fmt.Errorf("foreignsearch: ntsbClient: create session: %w", err)
 	}
 
+	seen := make(map[string]bool)
+	var all []ForeignRecord
+	lastResultListCount := 0
+	pagesFetched := 0
+	for page := 0; page < carolMaxPages; page++ {
+		if page > 0 && c.pageDelay > 0 {
+			select {
+			case <-ctx.Done():
+				return nil, ctx.Err()
+			case <-time.After(c.pageDelay):
+			}
+		}
+
+		offset := page * carolPageSize
+		body, err := c.fetchPage(ctx, iso2, sessionID, offset)
+		if err != nil {
+			return nil, err
+		}
+		recs, _, resultListCount, err := parseNTSBPage(body)
+		if err != nil {
+			return nil, err
+		}
+		lastResultListCount = resultListCount
+		pagesFetched++
+
+		for _, r := range recs {
+			if seen[r.ForeignRef] {
+				continue
+			}
+			seen[r.ForeignRef] = true
+			all = append(all, r)
+		}
+
+		if len(recs) < carolPageSize {
+			break // short page: this was the last one
+		}
+	}
+
+	// A full page on the very last iteration means carolMaxPages was hit
+	// without ever seeing a short page — the result set may still be
+	// truncated. Also warn whenever the server's own count disagrees with
+	// what we collected (belt-and-braces against a dedup collapse hiding a
+	// gap). Recorded as a warning (GO-CP-6) rather than failing the job: a
+	// partial result set is still useful.
+	if lastResultListCount > len(all) {
+		fmt.Fprintf(os.Stderr, "CAROL_TRUNCATED country=%s collected=%d total=%d pages=%d\n",
+			iso2, len(all), lastResultListCount, pagesFetched)
+	}
+
+	return all, nil
+}
+
+// fetchPage builds and executes one CAROL Query/Main page request at the
+// given ResultSetOffset. CAROL Event.Country accepts ISO2 codes directly
+// (e.g. "BS"), not full names.
+func (c *ntsbClient) fetchPage(ctx context.Context, iso2 string, sessionID, offset int) ([]byte, error) {
 	payload := carolQueryPayload{
 		QueryGroups: []carolQueryGroup{
 			{
@@ -247,8 +334,8 @@ func (c *ntsbClient) fetch(ctx context.Context, countryISO2 string) ([]byte, err
 		SortColumn:       nil,
 		SortDescending:   false,
 		SessionID:        sessionID,
-		ResultSetSize:    500,
-		ResultSetOffset:  0,
+		ResultSetSize:    carolPageSize,
+		ResultSetOffset:  offset,
 	}
 
 	payloadBytes, err := json.Marshal(payload)
@@ -256,7 +343,11 @@ func (c *ntsbClient) fetch(ctx context.Context, countryISO2 string) ([]byte, err
 		return nil, fmt.Errorf("foreignsearch: ntsbClient: marshal query: %w", err)
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, carolEndpoint, bytes.NewReader(payloadBytes))
+	endpoint := c.queryEndpoint
+	if endpoint == "" {
+		endpoint = carolEndpoint
+	}
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(payloadBytes))
 	if err != nil {
 		return nil, fmt.Errorf("foreignsearch: ntsbClient: build request: %w", err)
 	}
@@ -282,7 +373,11 @@ func (c *ntsbClient) fetch(ctx context.Context, countryISO2 string) ([]byte, err
 
 // createSession obtains a CAROL session ID by POSTing to the session endpoint.
 func (c *ntsbClient) createSession(ctx context.Context) (int, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, carolSessionEndpoint, nil)
+	endpoint := c.sessionEndpoint
+	if endpoint == "" {
+		endpoint = carolSessionEndpoint
+	}
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, nil)
 	if err != nil {
 		return 0, fmt.Errorf("build request: %w", err)
 	}

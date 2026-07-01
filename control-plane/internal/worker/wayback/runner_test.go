@@ -1,8 +1,12 @@
 package wayback
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
+	"io"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -194,5 +198,75 @@ func TestProcessPendingResumesStaleRunningJob(t *testing.T) {
 	}
 	if freshStatus != "running" {
 		t.Errorf("fresh job status = %q, want running (recent started_at, must not be re-picked)", freshStatus)
+	}
+}
+
+// captureStderr redirects os.Stderr for the duration of fn and returns
+// everything written to it. Used to assert on the GO-CP-4 tripwire token.
+func captureStderr(t *testing.T, fn func()) string {
+	t.Helper()
+	r, w, err := os.Pipe()
+	if err != nil {
+		t.Fatal(err)
+	}
+	orig := os.Stderr
+	os.Stderr = w
+	defer func() { os.Stderr = orig }()
+
+	fn()
+
+	w.Close()
+	var buf bytes.Buffer
+	io.Copy(&buf, r)
+	return buf.String()
+}
+
+// TestRunJobZeroFoundEmitsSilentFailTripwire pins GO-CP-4 for the wayback
+// worker: a job that completes cleanly (target resolved, CDX fetched, parsed)
+// but finds zero snapshots must go 'partial' with a stats_json warning and
+// print the grep-able SILENT_FAIL_SUSPECT token, instead of finalizing as an
+// indistinguishable 'success'.
+func TestRunJobZeroFoundEmitsSilentFailTripwire(t *testing.T) {
+	ctx, db := waybackTestDB(t)
+	target := "example.gov"
+	cid := insertCountry(t, ctx, db, "ZZ", &target)
+	res, err := db.ExecContext(ctx, `
+		INSERT INTO sources (name, url, canonical_url, source_type, source_tier)
+		VALUES ('wb','https://wb/','https://wb/','wayback',5)`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	srcID, _ := res.LastInsertId()
+	res, err = db.ExecContext(ctx, `
+		INSERT INTO crawl_jobs (source_id, country_id, job_type, status)
+		VALUES (?,?, 'wayback_cdx', 'running')`, srcID, cid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	jid, _ := res.LastInsertId()
+
+	f := &fixtureFetcher{CDXBody: []byte("[]")}
+	out := captureStderr(t, func() {
+		if err := RunJob(ctx, db, f, t.TempDir(), Job{ID: jid, CountryID: cid, ISO2: "ZZ"}); err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	if !strings.Contains(out, "SILENT_FAIL_SUSPECT") || !strings.Contains(out, fmt.Sprintf("job=%d", jid)) || !strings.Contains(out, "found=0") {
+		t.Fatalf("expected SILENT_FAIL_SUSPECT tripwire on stderr, got: %q", out)
+	}
+
+	var status, stats string
+	db.QueryRowContext(ctx, `SELECT status, stats_json FROM crawl_jobs WHERE id=?`, jid).Scan(&status, &stats)
+	if status != "partial" {
+		t.Fatalf("status = %q, want partial", status)
+	}
+	var s struct {
+		Found   int
+		Warning string
+	}
+	json.Unmarshal([]byte(stats), &s)
+	if s.Found != 0 || s.Warning != "found_zero" {
+		t.Fatalf("stats = %+v, want Found=0 Warning=found_zero", s)
 	}
 }
