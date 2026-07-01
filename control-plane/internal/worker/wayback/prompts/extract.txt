@@ -8,6 +8,10 @@ Rules:
 - date: the occurrence date in ISO-8601 (YYYY-MM-DD) when known; YYYY-MM or YYYY
   when only partially known; empty string if unknown.
 - date_precision: "exact", "month", "year", or "unknown" to match `date`.
+- country: the ISO 3166-1 alpha-2 code (two uppercase letters, e.g. "BY", "KZ",
+  "US") of the country where the occurrence took place, based on the location
+  described in the text. Empty string if you cannot determine it confidently —
+  do not guess a neighboring or similarly-named country.
 - Use empty string for unknown text fields and null for unknown numbers.
 - fatalities and injuries are integers (counts), null if unknown.
 - event_type: one of accident, serious_incident, incident, hijacking, unknown.

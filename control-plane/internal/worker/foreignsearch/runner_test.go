@@ -55,6 +55,56 @@ func TestRunJobSuccessStages(t *testing.T) {
 	}
 }
 
+// TestRunJobBEAStagesCountryLess is the GO-CP-1 regression test: BEA's
+// notified-events listing is body-wide (not filtered per country — see
+// bea.go's Search doc comment), so RunJob must stage its records WITHOUT the
+// job's own country, unlike NTSB (which IS genuinely filtered per country via
+// the CAROL Country query param and keeps the job's country as before).
+func TestRunJobBEAStagesCountryLess(t *testing.T) {
+	ctx, db := foreignTestDB(t)
+	_, jid := insertForeignJob(t, ctx, db, "FR", "bea_foreign_search", 50, "running", 0)
+	var cid int64
+	db.QueryRowContext(ctx, `SELECT country_id FROM crawl_jobs WHERE id=?`, jid).Scan(&cid)
+	clients := Clients{BEA: &fixtureClient{Records: []ForeignRecord{
+		{ForeignRef: "bea-2026-001", Title: "Accident on 01/01/2026", OriginalURL: "https://bea.aero/1"},
+	}}}
+	if err := RunJob(ctx, db, clients, Job{ID: jid, CountryID: cid, ISO2: "FR", JobType: "bea_foreign_search"}); err != nil {
+		t.Fatal(err)
+	}
+	var countryID sql.NullInt64
+	if err := db.QueryRowContext(ctx,
+		`SELECT country_id FROM staged_foreign_documents WHERE foreign_ref='bea-2026-001'`).Scan(&countryID); err != nil {
+		t.Fatal(err)
+	}
+	if countryID.Valid {
+		t.Fatalf("country_id = %v, want NULL — BEA's listing is body-wide and must not inherit the job's country (FR)", countryID)
+	}
+}
+
+// TestRunJobNTSBStagesWithCountry pins the unchanged NTSB behavior alongside
+// the BEA fix above: NTSB genuinely queries CAROL scoped to one country, so
+// its staged records keep the job's country.
+func TestRunJobNTSBStagesWithCountry(t *testing.T) {
+	ctx, db := foreignTestDB(t)
+	_, jid := insertForeignJob(t, ctx, db, "BS", "ntsb_foreign_search", 50, "running", 0)
+	var cid int64
+	db.QueryRowContext(ctx, `SELECT country_id FROM crawl_jobs WHERE id=?`, jid).Scan(&cid)
+	clients := Clients{NTSB: &fixtureClient{Records: []ForeignRecord{
+		{ForeignRef: "CEN20LA099", Title: "A", OriginalURL: "https://ntsb/99"},
+	}}}
+	if err := RunJob(ctx, db, clients, Job{ID: jid, CountryID: cid, ISO2: "BS", JobType: "ntsb_foreign_search"}); err != nil {
+		t.Fatal(err)
+	}
+	var countryID sql.NullInt64
+	if err := db.QueryRowContext(ctx,
+		`SELECT country_id FROM staged_foreign_documents WHERE foreign_ref='CEN20LA099'`).Scan(&countryID); err != nil {
+		t.Fatal(err)
+	}
+	if !countryID.Valid || countryID.Int64 != cid {
+		t.Fatalf("country_id = %v, want %d (NTSB is genuinely per-country and must keep the job's country)", countryID, cid)
+	}
+}
+
 func TestRunJobSearchErrorFails(t *testing.T) {
 	ctx, db := foreignTestDB(t)
 	_, jid := insertForeignJob(t, ctx, db, "BS", "ntsb_foreign_search", 50, "running", 0)

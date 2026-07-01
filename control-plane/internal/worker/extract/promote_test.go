@@ -102,3 +102,121 @@ func TestPromoteDocumentLinksDuplicate(t *testing.T) {
 		t.Fatalf("want 1 report for linked event, got %d", reportCount)
 	}
 }
+
+// ─── resolveOccurrenceCountryID (GO-CP-1) ───────────────────────────────────
+//
+// These are the promote-time counterpart to the stage-time GO-CP-1 fix: a
+// body-wide staged doc (doc.CountryID==0, e.g. IAC/ECCAA/BAGAIA/BEA) must NOT
+// inherit the crawling job's country; instead the occurrence country is
+// resolved from what the LLM read in the report content, and left NULL when
+// that is empty or unmappable rather than guessed.
+
+func TestResolveOccurrenceCountryIDPrefersDocCountryOverLLM(t *testing.T) {
+	ctx := context.Background()
+	db := newExtractTestDB(t)
+	_, countryID := seedDownloadedDoc(t, db, "KE", "k1")
+
+	// doc.CountryID is set (a genuinely country-driven source) — the LLM's
+	// Country must be ignored even when it names a different, valid country.
+	doc := ExtractDoc{CountryID: countryID}
+	got, err := resolveOccurrenceCountryID(ctx, db, doc, ExtractedEvent{Country: "US"})
+	if err != nil {
+		t.Fatalf("resolveOccurrenceCountryID: %v", err)
+	}
+	if got != countryID {
+		t.Fatalf("got=%d want doc.CountryID=%d (deterministic attribution must win over LLM)", got, countryID)
+	}
+}
+
+func TestResolveOccurrenceCountryIDResolvesFromLLMWhenDocCountryless(t *testing.T) {
+	ctx := context.Background()
+	db := newExtractTestDB(t)
+	// Seed BY as a real country (distinct from any doc/job country) so the
+	// LLM-reported code can resolve to a real id.
+	res, err := db.ExecContext(ctx, `
+		INSERT INTO countries (iso2, iso3, name, region, policy_status, coverage_status, coverage_score, effort_score)
+		VALUES ('BY','BLR','Belarus','Europe','allowed','regional_raio',2,3)`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	byID, _ := res.LastInsertId()
+
+	doc := ExtractDoc{CountryID: 0} // body-wide staged doc — no country claim.
+	got, err := resolveOccurrenceCountryID(ctx, db, doc, ExtractedEvent{Country: "BY"})
+	if err != nil {
+		t.Fatalf("resolveOccurrenceCountryID: %v", err)
+	}
+	if got != byID {
+		t.Fatalf("got=%d want BY id=%d", got, byID)
+	}
+}
+
+func TestResolveOccurrenceCountryIDUnmappableLeavesNull(t *testing.T) {
+	ctx := context.Background()
+	db := newExtractTestDB(t)
+	doc := ExtractDoc{CountryID: 0}
+
+	for _, tc := range []struct {
+		name    string
+		country string
+	}{
+		{"empty", ""},
+		{"valid-shaped code not in countries table", "ZZ"},
+		{"country name instead of ISO2", "Belarus"},
+		{"three-letter code", "BLR"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := resolveOccurrenceCountryID(ctx, db, doc, ExtractedEvent{Country: tc.country})
+			if err != nil {
+				t.Fatalf("resolveOccurrenceCountryID: %v", err)
+			}
+			if got != 0 {
+				t.Fatalf("%s: got=%d want 0 (NULL) — must not guess", tc.name, got)
+			}
+		})
+	}
+}
+
+// TestPromoteDocumentCountryLessDocResolvesFromLLM drives the full
+// PromoteDocument path (not just the helper) for a body-wide-listing doc: the
+// staged row's CountryID is 0, and the new event's occurrence_country_id must
+// come from ExtractedEvent.Country.
+func TestPromoteDocumentCountryLessDocResolvesFromLLM(t *testing.T) {
+	ctx := context.Background()
+	db := newExtractTestDB(t)
+	res, err := db.ExecContext(ctx, `
+		INSERT INTO countries (iso2, iso3, name, region, policy_status, coverage_status, coverage_score, effort_score)
+		VALUES ('KZ','KAZ','Kazakhstan','Asia','allowed','regional_raio',2,3)`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	kzID, _ := res.LastInsertId()
+
+	// A country-less doc: CountryID==0 (as RegionalSource.PendingDocs now
+	// returns for a NULL-country_id staged row), crediting IAC via SourceRef.
+	doc := ExtractDoc{ID: 999, CountryID: 0, ISO2: "iac", SourceRef: "IAC"}
+	// ResolveSource needs a regional_bodies row for SourceRef="IAC".
+	if _, err := db.ExecContext(ctx, `
+		INSERT INTO regional_bodies (code, name, body_class, website_url, source_url)
+		VALUES ('IAC', 'IAC Body', 'regional_body', 'https://mak-iac.org', 'https://mak-iac.org/reports')`); err != nil {
+		t.Fatal(err)
+	}
+
+	e := NormalizeEvent(ExtractedEvent{
+		IsAviationAccident: true, Date: "2026-05-19", DatePrecision: "exact",
+		AircraftRegistration: "UP-MI872", AircraftType: "Mi-8", Country: "kz", // lower-case, model output
+		EventType: "accident", ReportType: "final", Language: "ru",
+	})
+	eventID, linked, err := PromoteDocument(ctx, db, RegionalSource{}, doc, e)
+	if err != nil {
+		t.Fatalf("PromoteDocument: %v", err)
+	}
+	if linked || eventID == 0 {
+		t.Fatalf("want new event, got id=%d linked=%v", eventID, linked)
+	}
+	var gotCountryID sql.NullInt64
+	db.QueryRowContext(ctx, `SELECT occurrence_country_id FROM events WHERE id=?`, eventID).Scan(&gotCountryID)
+	if !gotCountryID.Valid || gotCountryID.Int64 != kzID {
+		t.Fatalf("occurrence_country_id=%v want %d (KZ, resolved from LLM output on a country-less doc)", gotCountryID, kzID)
+	}
+}

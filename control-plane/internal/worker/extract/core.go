@@ -24,7 +24,14 @@ const (
 // extractOne runs one document through the state machine: ensure-downloaded, OCR
 // (when no text artifact yet), then extract+promote. Data-level failures are
 // recorded on the row (status='failed', attempt++, crawl_errors) and returned as
-// status without an error; only unexpected DB failures return an error.
+// status without an error; unexpected DB failures return an error. A THIRD case
+// (GO-CP-3): a connection-level failure reaching the OCR or LLM endpoint itself
+// (dial refused/timeout — the endpoint is down, not this document) returns an
+// *InfraAbortError instead of recording a failure — see infra.go. The document's
+// extraction_attempts is deliberately left untouched (there's nothing wrong with
+// it) and the error propagates up through ProcessExtractPending, aborting the
+// rest of the batch immediately rather than burning every remaining document's
+// attempt budget against an outage that has nothing to do with them.
 func extractOne(ctx context.Context, db *sql.DB, src StagedDocSource, ocr OCRClient, llm LLMClient, storeDir string, doc ExtractDoc) (string, error) {
 	if err := src.EnsureDownloaded(ctx, db, storeDir, &doc); err != nil {
 		return recordFailure(ctx, db, src, doc, doc.OriginalURL, errTypeTransport, err)
@@ -38,6 +45,9 @@ func extractOne(ctx context.Context, db *sql.DB, src StagedDocSource, ocr OCRCli
 		}
 		text, err := ocr.OCR(ctx, pdf)
 		if err != nil {
+			if isInfraError(err) {
+				return "", &InfraAbortError{DocID: doc.ID, Step: "ocr", Cause: err}
+			}
 			return recordFailure(ctx, db, src, doc, doc.ArchivedURL, errTypeOCR, err)
 		}
 		path, err := PersistOCRText(ctx, db, src, storeDir, doc.ISO2, doc.Digest, doc.ID, text)
@@ -54,6 +64,9 @@ func extractOne(ctx context.Context, db *sql.DB, src StagedDocSource, ocr OCRCli
 	}
 	raw, err := llm.Extract(ctx, string(text))
 	if err != nil {
+		if isInfraError(err) {
+			return "", &InfraAbortError{DocID: doc.ID, Step: "llm", Cause: err}
+		}
 		return recordFailure(ctx, db, src, doc, doc.ArchivedURL, errTypeLLM, err)
 	}
 	e := NormalizeEvent(raw)
