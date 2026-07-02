@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"os"
 )
 
 // Job identifies one wayback_cdx crawl job to run.
@@ -19,6 +20,9 @@ type jobStats struct {
 	Staged     int `json:"staged"`
 	Downloaded int `json:"downloaded"`
 	Errors     int `json:"errors"`
+	// Warning records a GO-CP-4 silent-fail-suspect note when found==0 for a
+	// completed (non-error) job. Empty in the normal case.
+	Warning string `json:"warning,omitempty"`
 }
 
 // RunJob executes one wayback_cdx job end-to-end and finalizes the crawl_job
@@ -74,7 +78,56 @@ func RunJob(ctx context.Context, db *sql.DB, f Fetcher, storeDir string, job Job
 	if warnings > 0 || dlErrors > 0 {
 		status = "partial"
 	}
+	if len(snaps) == 0 {
+		status = "partial"
+		stats.Warning = emitSilentFailTripwire(ctx, db, job.ID, target)
+	}
 	return finalize(ctx, db, job.ID, status, stats)
+}
+
+// emitSilentFailTripwire prints a grep-able SILENT_FAIL_SUSPECT token to
+// stderr for a job that completed (no transport/parse error) but found zero
+// CDX snapshots — the shape a target broken by e.g. a CDX filter/format
+// change takes, which would otherwise be indistinguishable from a genuinely
+// empty archive at status='success' (GO-CP-4). When the same country's
+// previous wayback_cdx run found > 0, the message calls out the 100%→0 drop
+// distinctly.
+func emitSilentFailTripwire(ctx context.Context, db *sql.DB, jobID int64, target string) string {
+	warning := "found_zero"
+	msg := fmt.Sprintf("SILENT_FAIL_SUSPECT body=%s job=%d found=0", target, jobID)
+	if prev, ok := previousFound(ctx, db, jobID); ok && prev > 0 {
+		warning = "found_zero_regression"
+		msg += fmt.Sprintf(" prev_found=%d regression=100pct_to_0", prev)
+	}
+	fmt.Fprintln(os.Stderr, msg)
+	return warning
+}
+
+// previousFound looks up the found count from the most recently finished
+// prior job for the SAME country and job_type as jobID (this country's
+// previous wayback_cdx run), by reading its stats_json. Returns (0, false)
+// when there is no prior finished run or its stats can't be read.
+func previousFound(ctx context.Context, db *sql.DB, jobID int64) (int, bool) {
+	var raw sql.NullString
+	err := db.QueryRowContext(ctx, `
+		SELECT prev.stats_json
+		  FROM crawl_jobs cur
+		  JOIN crawl_jobs prev
+		    ON prev.country_id = cur.country_id
+		   AND prev.job_type = cur.job_type
+		   AND prev.id != cur.id
+		   AND prev.finished_at IS NOT NULL
+		 WHERE cur.id = ?
+		 ORDER BY prev.finished_at DESC
+		 LIMIT 1`, jobID).Scan(&raw)
+	if err != nil || !raw.Valid {
+		return 0, false
+	}
+	var s jobStats
+	if json.Unmarshal([]byte(raw.String), &s) != nil {
+		return 0, false
+	}
+	return s.Found, true
 }
 
 // ProcessPending runs up to limit pending wayback_cdx jobs, highest country

@@ -2,6 +2,8 @@ package manufacturer
 
 import (
 	"context"
+	"fmt"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -85,5 +87,73 @@ func TestProbeNextIssue_NotFound(t *testing.T) {
 	}
 	if ok {
 		t.Fatal("expected ok=false for 404 response")
+	}
+}
+
+// TestDiscover_TruncatedBodyReturnsError is GO-CP-8's core regression guard:
+// the previous hand-rolled read loop treated ANY Read error (including a
+// connection dropped mid-response) the same as a clean io.EOF and silently
+// parsed whatever partial bytes it had as if it were the complete listing.
+// Here the server declares a Content-Length far larger than what it actually
+// sends, then closes the connection — Discover must surface an error instead
+// of returning success with a truncated (and thus incomplete/misleading)
+// record set.
+func TestDiscover_TruncatedBodyReturnsError(t *testing.T) {
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ln.Close()
+
+	go func() {
+		conn, acceptErr := ln.Accept()
+		if acceptErr != nil {
+			return
+		}
+		defer conn.Close()
+		buf := make([]byte, 4096)
+		_, _ = conn.Read(buf) // drain the request, best-effort
+
+		body := "<html><body>truncated listing content</body>"
+		resp := fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: %d\r\nConnection: close\r\n\r\n%s",
+			len(body)+10_000, body) // declared length is never actually sent
+		_, _ = conn.Write([]byte(resp))
+		// conn.Close() via defer happens here, well short of Content-Length.
+	}()
+
+	c := NewClient(0, "")
+	c.ListingURL = "http://" + ln.Addr().String() + "/"
+
+	if _, err := c.Discover(context.Background()); err == nil {
+		t.Fatal("expected Discover to return an error for a body truncated mid-stream " +
+			"(declared Content-Length not met before the connection closed) — " +
+			"treating this the same as a clean end-of-body silently parses a broken " +
+			"page as the complete listing (GO-CP-8)")
+	}
+}
+
+// TestDiscover_OversizedBodyReturnsError pins the GO-CP-8 size cap: a listing
+// response beyond maxListingBytes must be rejected rather than read
+// unbounded into memory.
+func TestDiscover_OversizedBodyReturnsError(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html")
+		chunk := make([]byte, 1<<20)
+		for i := range chunk {
+			chunk[i] = 'a'
+		}
+		for written := 0; written < maxListingBytes+(2<<20); written += len(chunk) {
+			if _, err := w.Write(chunk); err != nil {
+				return
+			}
+		}
+	}))
+	defer ts.Close()
+
+	c := NewClient(0, "")
+	c.ListingURL = ts.URL
+
+	if _, err := c.Discover(context.Background()); err == nil {
+		t.Fatal("expected Discover to return an error for a response exceeding maxListingBytes")
 	}
 }

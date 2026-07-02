@@ -15,6 +15,14 @@ type Fetcher interface {
 	Get(ctx context.Context, archivedURL string) ([]byte, error)
 }
 
+// maxFetchBytes caps every httpFetcher response (GO-CP-10). Consistent in
+// spirit with extract.fetchGuarded's maxReportBytes cap (64 MiB) — the CDX
+// JSON index and archived PDF bodies fetched here are the same kind of
+// untrusted-size response that package guards against; this package can't
+// import extract (extract already imports wayback), so the cap is
+// duplicated locally rather than shared.
+const maxFetchBytes = 64 << 20
+
 type httpFetcher struct {
 	client *http.Client
 }
@@ -57,9 +65,16 @@ func (h *httpFetcher) fetch(ctx context.Context, u string) ([]byte, error) {
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("wayback: fetch %s: status %d", u, resp.StatusCode)
 	}
-	body, err := io.ReadAll(resp.Body)
+	// Cap the body (GO-CP-10): read one byte beyond the limit so "exactly at
+	// the limit" and "exceeded" are distinguishable, and fail explicitly
+	// rather than silently truncating or reading an unbounded response into
+	// memory.
+	body, err := io.ReadAll(io.LimitReader(resp.Body, maxFetchBytes+1))
 	if err != nil {
 		return nil, fmt.Errorf("wayback: read %s: %w", u, err)
+	}
+	if len(body) > maxFetchBytes {
+		return nil, fmt.Errorf("wayback: fetch %s: response exceeds %d-byte limit", u, maxFetchBytes)
 	}
 	return body, nil
 }

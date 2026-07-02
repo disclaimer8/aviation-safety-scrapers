@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"os"
 )
 
 // Job identifies one archive_crawl job for a regional_raio country.
@@ -27,6 +28,11 @@ type jobStats struct {
 	Found  int `json:"found"`
 	Staged int `json:"staged"`
 	Errors int `json:"errors"`
+	// Warning records a GO-CP-4 silent-fail-suspect note when found==0 for a
+	// completed (non-error) job — a parser broken by a site redesign yields 0
+	// anchors and would otherwise finalize as an indistinguishable 'success'.
+	// Empty in the normal case.
+	Warning string `json:"warning,omitempty"`
 }
 
 // clientFor returns the client for a body code, or (nil, false) when the code is
@@ -76,11 +82,66 @@ func RunJob(ctx context.Context, db *sql.DB, c Clients, job Job) error {
 		return err
 	}
 
+	stats := jobStats{Found: len(recs), Staged: staged, Errors: warnings}
 	status := "success"
 	if warnings > 0 {
 		status = "partial"
 	}
-	return finalize(ctx, db, job.ID, status, jobStats{Found: len(recs), Staged: staged, Errors: warnings})
+	if len(recs) == 0 {
+		status = "partial"
+		stats.Warning = emitSilentFailTripwire(ctx, db, job.ID, job.BodyCode)
+	}
+	return finalize(ctx, db, job.ID, status, stats)
+}
+
+// emitSilentFailTripwire prints a grep-able SILENT_FAIL_SUSPECT token to
+// stderr for a job that completed (no transport/parse error) but found zero
+// records — the shape a parser broken by a site redesign takes, which would
+// otherwise be indistinguishable from a genuinely empty listing at
+// status='success' (GO-CP-4). When the same country's previous archive_crawl
+// run found > 0, the message calls out the 100%→0 drop distinctly since that
+// is the stronger signal of breakage vs. a body that is just quiet this run.
+// Returns the jobStats.Warning value to record alongside it.
+func emitSilentFailTripwire(ctx context.Context, db *sql.DB, jobID int64, body string) string {
+	warning := "found_zero"
+	msg := fmt.Sprintf("SILENT_FAIL_SUSPECT body=%s job=%d found=0", body, jobID)
+	if prev, ok := previousFound(ctx, db, jobID); ok && prev > 0 {
+		warning = "found_zero_regression"
+		msg += fmt.Sprintf(" prev_found=%d regression=100pct_to_0", prev)
+	}
+	fmt.Fprintln(os.Stderr, msg)
+	return warning
+}
+
+// previousFound looks up the found count from the most recently finished
+// prior job for the SAME country and job_type as jobID (i.e. this country's
+// previous archive_crawl run — every wired body is body-wide, so all
+// countries routed to the same body see identical counts run-to-run, making
+// country_id a simpler and equally valid comparison key than resolving the
+// body), by reading its stats_json. Returns (0, false) when there is no prior
+// finished run or its stats can't be read — this is a best-effort signal, not
+// a correctness dependency.
+func previousFound(ctx context.Context, db *sql.DB, jobID int64) (int, bool) {
+	var raw sql.NullString
+	err := db.QueryRowContext(ctx, `
+		SELECT prev.stats_json
+		  FROM crawl_jobs cur
+		  JOIN crawl_jobs prev
+		    ON prev.country_id = cur.country_id
+		   AND prev.job_type = cur.job_type
+		   AND prev.id != cur.id
+		   AND prev.finished_at IS NOT NULL
+		 WHERE cur.id = ?
+		 ORDER BY prev.finished_at DESC
+		 LIMIT 1`, jobID).Scan(&raw)
+	if err != nil || !raw.Valid {
+		return 0, false
+	}
+	var s jobStats
+	if json.Unmarshal([]byte(raw.String), &s) != nil {
+		return 0, false
+	}
+	return s.Found, true
 }
 
 // ProcessPending runs up to limit pending/stale archive_crawl jobs whose country
