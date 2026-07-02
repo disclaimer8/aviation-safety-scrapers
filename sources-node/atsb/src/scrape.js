@@ -29,6 +29,44 @@ const UA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ' +
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+// ── Pure decision logic (no browser / I/O — unit-testable directly) ────────
+//
+// Both guards exist because "0 rows on this page" is ambiguous: it's the
+// NORMAL signal that we've walked past the last listing page, but it's also
+// exactly what a bot-challenge/interstitial page or a parser broken by a
+// site redesign produces. Silently treating every 0-row page as "the end"
+// is how a scrape that never got past Akamai reports a clean listed=0 run.
+
+// Throws when a listing page has 0 result rows AND doesn't even look like a
+// genuine ATSB/GovCMS response — i.e. Akamai almost certainly served a
+// challenge/interstitial instead of the real listing.
+function assertNotChallengePage(rows, html, pageNum) {
+  if (rows.length === 0 && !atsbParse.looksLikeAtsbPage(html)) {
+    throw new Error(
+      `ATSB listing page ${pageNum} returned 0 rows and does not look like a ` +
+      'genuine ATSB/GovCMS page (missing Drupal generator meta / CivicTheme ' +
+      'header) — likely an Akamai challenge/interstitial page, not the real listing.'
+    );
+  }
+}
+
+// Throws when the FIRST page walked (pg === startPage) has 0 rows. The
+// archive has thousands of aviation reports, so an empty first page always
+// means the scrape failed (challenge page, or a parser selector drifting out
+// of sync with a site redesign) — never that we've reached the end of a
+// listing that starts at page 0. Independent of assertNotChallengePage: this
+// still fires even when the empty page DOES look like a genuine ATSB
+// response (e.g. the listing markup changed and parseListingPage can no
+// longer find any result anchors).
+function assertFirstPageNotEmpty(rows, pg, startPage) {
+  if (rows.length === 0 && pg === startPage) {
+    throw new Error(
+      `ATSB listing page ${pg} (the first page) returned 0 rows — treating an ` +
+      'empty first page as a scrape failure, not "past the last page".'
+    );
+  }
+}
+
 // ⚠️ headless is DISABLED by default on purpose. Akamai resets the HTTP/2
 // stream (net::ERR_HTTP2_PROTOCOL_ERROR) for headless Chromium's TLS/H2
 // fingerprint — verified across bundled chromium, `channel:'chrome'`, and
@@ -115,7 +153,11 @@ function createScraper({
   }
 
   // Navigate one aviation listing page and return the parsed rows
-  // ({ investigation_id, detail_url }). Empty array ⇒ past the last page.
+  // ({ investigation_id, detail_url }). Empty array ⇒ past the last page —
+  // UNLESS the response doesn't even look like a genuine ATSB page, in which
+  // case Akamai almost certainly served a challenge/interstitial instead of
+  // the real listing; that's a scrape failure, not "we reached the end", so
+  // it throws instead of silently returning [] (see atsbParse.looksLikeAtsbPage).
   async function listPage(pageNum) {
     const p = await ensurePage();
     await gotoWithRetry(p, listingUrlFor(pageNum));
@@ -124,7 +166,9 @@ function createScraper({
     await p.waitForSelector('a[href*="/investigations/ao-"]', { timeout: 12_000 }).catch(() => {});
     const html = await p.content();
     await sleep(perRequestDelayMs);
-    return atsbParse.parseListingPage(html);
+    const rows = atsbParse.parseListingPage(html);
+    assertNotChallengePage(rows, html, pageNum);
+    return rows;
   }
 
   // Walk listing pages from `startPage`, yielding deduped rows newest-first,
@@ -141,13 +185,25 @@ function createScraper({
         // transient nav failure — one retry, then give up this page
         await sleep(perRequestDelayMs * 2);
         try { rows = await listPage(pg); }
-        catch (e2) { if (onPage) onPage(pg, 0, e2.message); break; }
+        catch (e2) {
+          if (onPage) onPage(pg, 0, e2.message);
+          // A failure on the very first page — whether a thrown
+          // challenge-page detection or a genuine nav error — means the
+          // WHOLE run produced nothing. That must surface as a hard
+          // failure, not a silent "0 rows, must be past the end" (SILENT_FAIL
+          // guard — see cli.js).
+          if (pg === startPage) throw e2;
+          break;
+        }
       }
       const fresh = rows.filter(r => r.investigation_id && !seen.has(r.investigation_id));
       for (const r of fresh) seen.add(r.investigation_id);
       all.push(...fresh);
       if (onPage) onPage(pg, fresh.length, null);
-      if (rows.length === 0) break; // past the last page
+      if (rows.length === 0) {
+        assertFirstPageNotEmpty(rows, pg, startPage);
+        break; // past the last page
+      }
     }
     return all;
   }
@@ -171,4 +227,9 @@ function createScraper({
   return { listSlugs, listPage, fetchDetailHtml, close, _urls: { listingUrlFor, detailUrlFor } };
 }
 
-module.exports = { createScraper, listingUrlFor, detailUrlFor };
+module.exports = {
+  createScraper,
+  listingUrlFor,
+  detailUrlFor,
+  _internal: { assertNotChallengePage, assertFirstPageNotEmpty },
+};

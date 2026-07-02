@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 """Re-geocode rows whose lat/lon are NULL by looking up the location text
-in OpenFlights airports.dat (server/src/data/airports.dat).
+in OpenFlights airports.dat.
+
+Attribution: airports.dat is OpenFlights' airport database
+(https://github.com/jpatokal/openflights), compiled from OurAirports
+(https://ourairports.com/) public-domain data. It is NOT redistributed in
+this repository — this script downloads it on demand to a gitignored cache
+path (see fetch_airports() below) and re-uses the cached copy on subsequent
+runs.
 
 Why: migrate-fix-coords.py null'd 13,814 rows whose lat/lon didn't match
 their location's country (root cause: an upstream NTSB DDDMMSS decoder
@@ -24,18 +31,36 @@ airfield rows that crowd the dataset.
 Idempotent: only fills lat IS NULL rows. Never overwrites a real coord.
 """
 import csv
+import os.path
 import re
 import sqlite3
 import sys
+import urllib.request
 from collections import defaultdict
 from coord_rules import country_bbox_for, is_outside_bbox
 
+# Canonical upstream source — OpenFlights' compiled airports.dat, itself
+# sourced from OurAirports (public domain). See the module docstring.
+AIRPORTS_URL = "https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat"
+
 DB = sys.argv[1] if len(sys.argv) > 1 else "accidents.db.seed"
-# Default to a sibling airports.dat; a caller may pass an explicit path as the
-# second argument.
-import os.path
+# Default to a sibling, gitignored cache path; a caller may pass an explicit
+# path as the second argument (e.g. to reuse an already-downloaded copy).
 AIRPORTS = sys.argv[2] if len(sys.argv) > 2 else \
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "airports.dat")
+
+
+def fetch_airports(path: str, url: str = AIRPORTS_URL) -> None:
+    """Downloads airports.dat to `path` if it isn't already cached there.
+
+    The file is never committed to the repo (see .gitignore) — every
+    invocation either reuses the local cache or re-downloads it fresh from
+    the canonical OpenFlights/OurAirports source.
+    """
+    if os.path.exists(path):
+        return
+    print(f"[regeocode] {path} not found locally; downloading from {url}", file=sys.stderr)
+    urllib.request.urlretrieve(url, path)
 
 # US-state-suffix → "City, State" pattern. CAROL writes this consistently.
 STATE_RE = re.compile(
@@ -146,6 +171,7 @@ def resolve(location: str, by_city, by_country_city, iata_idx, icao_idx):
 
 
 def main() -> None:
+    fetch_airports(AIRPORTS)
     print(f"[regeocode] loading airports from {AIRPORTS}", file=sys.stderr)
     by_city, by_country_city, iata_idx, icao_idx = load_airports(AIRPORTS)
     print(

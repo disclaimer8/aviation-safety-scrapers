@@ -240,13 +240,14 @@ fingerprinting (`mak-iac.org` is Bitrix, `eccaa.org` has a brittle TLS chain,
 `bagasoo.org` exposes no public report index), which a plain HTTP client can't get
 past. Two ways to fetch them:
 
-- **`--render-endpoint <url>`** (preferred): fetch the live listing through the
-  browser-render service (headed Chromium + Cloudflare clearance) running on the
-  mini-PC. Each body fetches its own per-body URL, so `--body` is optional.
+- **`--render-endpoint <url>`** (preferred): fetch the live listing through a
+  browser-render service (headed Chromium + Cloudflare clearance) reachable at
+  a URL of your choosing. Each body fetches its own per-body URL, so `--body`
+  is optional.
 
   ```bash
-  # over an SSH local-forward to the mini-PC render service
-  ssh -fN -L 18030:127.0.0.1:8030 minipc
+  # e.g. over an SSH local-forward to wherever you run the render service
+  ssh -fN -L 18030:127.0.0.1:8030 your-render-host
   ./aviation-coverage process-regional --db coverage.db \
     --render-endpoint http://127.0.0.1:18030/render
   ```

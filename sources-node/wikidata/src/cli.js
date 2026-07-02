@@ -78,6 +78,12 @@ function rowFromRecord(rec, wikipediaText, now) {
     slug,
     event_date,
     narrative_text,
+    // Provenance flag for db.upsert(): only true when composeNarrative()
+    // actually had real Wikipedia lead text to work with (a `--enrich` run
+    // that got a hit), as opposed to the fact-sentence + boilerplate filler
+    // it falls back to otherwise. Lets a plain re-run avoid clobbering a
+    // previously enriched narrative — see db.js.
+    narrative_from_fetch: (wikipediaText || '').trim().length > 0 ? 1 : 0,
     probable_cause,
     factors_json,
     fetched_at: now,

@@ -49,6 +49,14 @@ async function runIngest({ dbPath, maxPages = Infinity, startPage = 0 }) {
       onPage: (pg, n) => console.log(`[atsb] listing page ${pg}: +${n}`),
     });
     summary.listed = rows.length;
+    if (summary.listed === 0) {
+      // Grep-able tripwire — a healthy run always lists thousands of rows;
+      // a bare "listed=0, exit 0" is exactly the silent-fail shape a
+      // challenge page or parser drift produces (see scrape.js listSlugs,
+      // which now throws instead of returning [] in that situation — this
+      // check is defense-in-depth for any path that still yields listed=0).
+      console.error('SILENT_FAIL_SUSPECT source=atsb listed=0');
+    }
 
     for (const { investigation_id, detail_url } of rows) {
       try {
@@ -82,6 +90,7 @@ async function main() {
   const startPage = opt('--start-page') ? Number(opt('--start-page')) : 0;
   const r = await runIngest({ dbPath, maxPages, startPage });
   console.log(`[atsb] listed=${r.listed} upserted=${r.upserted} narratives=${r.narrativesWritten} errors=${r.errors.length} -> ${dbPath}`);
+  if (r.listed === 0) process.exitCode = 1;
 }
 
 module.exports = { runIngest, composeNarrativeFields };
