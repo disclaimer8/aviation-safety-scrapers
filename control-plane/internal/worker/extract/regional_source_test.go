@@ -132,7 +132,16 @@ func TestRegionalPendingDocsIncludesHtmlOnlyDoc(t *testing.T) {
 	// Insert an html-only doc (report_url NULL, original_url set).
 	var srcID, jobID int64
 	db.QueryRowContext(ctx, `SELECT id FROM sources WHERE canonical_url='regional://ECCAA'`).Scan(&srcID)
-	res, _ := db.ExecContext(ctx, `INSERT INTO crawl_jobs (source_id, country_id, job_type, status) VALUES (?,?,'pdf_discovery','running')`, srcID, countryID)
+	// status='success' (not 'running'): seedRegionalDoc already left a running
+	// pdf_discovery job for this (country_id, job_type) pair, and GO-CP-9's
+	// partial unique index on crawl_jobs(country_id, job_type) WHERE status IN
+	// ('pending','running') forbids a second active one. This row only exists
+	// to satisfy the FK on staged_regional_documents.crawl_job_id — its status
+	// is irrelevant to PendingDocs, which never joins on crawl_jobs.status.
+	res, err := db.ExecContext(ctx, `INSERT INTO crawl_jobs (source_id, country_id, job_type, status) VALUES (?,?,'pdf_discovery','success')`, srcID, countryID)
+	if err != nil {
+		t.Fatal(err)
+	}
 	jobID, _ = res.LastInsertId()
 	r2, err := db.ExecContext(ctx, `
 		INSERT INTO staged_regional_documents

@@ -549,6 +549,7 @@ func TestExactRequiredIndexSet(t *testing.T) {
 		"idx_authority_field_provenance_snapshot",
 		"idx_authority_requests_authority",
 		"idx_crawl_errors_job",
+		"idx_crawl_jobs_active_claim",
 		"idx_crawl_jobs_country",
 		"idx_crawl_jobs_source",
 		"idx_crawl_jobs_status_type",
