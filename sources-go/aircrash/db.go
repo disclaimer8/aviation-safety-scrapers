@@ -102,38 +102,91 @@ func getFirstWord(s string) string {
 	return ""
 }
 
+// isJan1Placeholder reports whether a normalized YYYY-MM-DD date is a bare
+// January 1st. Several historical scrapers (and at least one now-removed
+// source) stuffed fabricated Jan-1 dates when the real date was unknown;
+// such placeholder dates must never be used as a fuzzy-match key since they
+// would collapse every same-year, same-manufacturer accident into one row.
+func isJan1Placeholder(normalizedDate string) bool {
+	return len(normalizedDate) == 10 && strings.HasSuffix(normalizedDate, "-01-01")
+}
+
 // InsertAccident inserts a new accident record into the database, with deduplication logic.
+//
+// Dedup strategy (in order):
+//  1. Exact match on source URL: source_url is the stable per-source identity
+//     for every remaining scraper (e.g. the Wikidata entity URL). source_url
+//     may already be a comma-separated list of merged URLs from prior merges,
+//     so this matches individual segments, not a raw substring.
+//  2. Secondary same-day fuzzy match: only applied when (1) finds nothing.
+//     Requires BOTH the aircraft-model first word AND the operator first word
+//     to match (previously an OR, which over-merged any two same-day
+//     accidents sharing a common first word like "Cessna" or "Air"). Never
+//     applied to bare Jan-1 placeholder dates.
 func InsertAccident(db *sql.DB, accident Accident) error {
 	accident.NormalizedDate = NormalizeDate(accident.Date)
 
-	// Simple fuzzy logic: find record on same day where model or operator shares the first word.
+	if accident.SourceURL != "" {
+		_, _, found, err := findBySourceURL(db, accident.SourceURL)
+		if err != nil {
+			return err
+		}
+		if found {
+			// Identical source record already stored (e.g. re-run of a scraper).
+			log.Printf("Ignored exact duplicate: %s", accident.SourceURL)
+			return nil
+		}
+	}
+
 	modelQuery := "%" + getFirstWord(accident.AircraftModel) + "%"
 	opQuery := "%" + getFirstWord(accident.Operator) + "%"
 
-	// Skip fuzzy match if queries are just "%" (empty string)
-	if modelQuery == "%%" && opQuery == "%%" {
-		return insertNew(db, accident)
+	// Only attempt the fuzzy match when we have both signals to require, and
+	// the date isn't a fabricated Jan-1 placeholder.
+	if modelQuery != "%%" && opQuery != "%%" && !isJan1Placeholder(accident.NormalizedDate) {
+		query := `SELECT id, source_url FROM accidents WHERE normalized_date = ? AND aircraft_model LIKE ? AND operator LIKE ? LIMIT 1`
+		row := db.QueryRow(query, accident.NormalizedDate, modelQuery, opQuery)
+
+		var existingID int
+		var existingURL string
+		err := row.Scan(&existingID, &existingURL)
+
+		if err == nil {
+			return mergeOrIgnore(db, existingID, existingURL, accident)
+		} else if err != sql.ErrNoRows {
+			return err
+		}
 	}
 
-	query := `SELECT id, source_url FROM accidents WHERE normalized_date = ? AND (aircraft_model LIKE ? OR operator LIKE ?) LIMIT 1`
-	row := db.QueryRow(query, accident.NormalizedDate, modelQuery, opQuery)
+	return insertNew(db, accident)
+}
 
-	var existingID int
-	var existingURL string
-	err := row.Scan(&existingID, &existingURL)
+// findBySourceURL looks for a row whose source_url contains accident's
+// sourceURL as an exact comma-separated segment (not a raw substring match,
+// which could false-positive when one URL is a prefix of another).
+func findBySourceURL(db *sql.DB, sourceURL string) (id int, existingURL string, found bool, err error) {
+	query := `SELECT id, source_url FROM accidents WHERE (',' || source_url || ',') LIKE ? LIMIT 1`
+	pattern := "%," + sourceURL + ",%"
+	row := db.QueryRow(query, pattern)
 
+	err = row.Scan(&id, &existingURL)
 	if err == sql.ErrNoRows {
-		// Not a duplicate
-		return insertNew(db, accident)
-	} else if err != nil {
-		return err
+		return 0, "", false, nil
 	}
+	if err != nil {
+		return 0, "", false, err
+	}
+	return id, existingURL, true, nil
+}
 
+// mergeOrIgnore appends the new source URL onto an existing matched row
+// (or logs a no-op if the URL is already present).
+func mergeOrIgnore(db *sql.DB, existingID int, existingURL string, accident Accident) error {
 	// Duplicate found! Append URL if not present.
 	if !strings.Contains(existingURL, accident.SourceURL) {
 		newURL := existingURL + "," + accident.SourceURL
 		updateSQL := `UPDATE accidents SET source_url = ? WHERE id = ?`
-		_, err = db.Exec(updateSQL, newURL, existingID)
+		_, err := db.Exec(updateSQL, newURL, existingID)
 		if err != nil {
 			return err
 		}

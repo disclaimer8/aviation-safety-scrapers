@@ -20,34 +20,137 @@ const fs   = require('node:fs');
 const os   = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
+const { pipeline } = require('node:stream/promises');
+const { Readable } = require('node:stream');
 const Database = require('better-sqlite3');
 const { buildWeatherSummary } = require('./parse');
 
 const NTSB_BASE = 'https://data.ntsb.gov/avdata';
 const FULL_DUMP = 'avall.zip';
 
-function parseCsv(text) {
-  const rows = [];
-  let row = [], cur = '', inQ = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (inQ) {
-      if (c === '"') { if (text[i + 1] === '"') { cur += '"'; i++; continue; } inQ = false; }
-      else cur += c;
-    } else if (c === '"') inQ = true;
-    else if (c === ',') { row.push(cur); cur = ''; }
-    else if (c === '\r') { /* skip */ }
-    else if (c === '\n') { row.push(cur); cur = ''; if (row.some(v => v !== '')) rows.push(row); row = []; }
-    else cur += c;
+// Incremental CSV parser: the same quoted-field state machine as the
+// original single-shot parseCsv(), but fed in chunks so a multi-hundred-MB
+// CSV (narratives.csv in particular) never has to exist as one giant JS
+// string in memory. Handles quoted fields with embedded commas/newlines,
+// doubled-quote escapes ("" inside a quoted field), and CRLF — including
+// when any of those constructs straddle a chunk boundary.
+//
+// The one construct that needs special handling across chunks is the
+// closing-vs-escaped-quote lookahead (a `"` while inside a quoted field is
+// either the start of an escaped `""` or the end of the field, decided by
+// peeking at the next character). If that lookahead character isn't
+// available yet (it's the last char of the current chunk), the decision is
+// deferred to the start of the next feed() call via `_pendingQuoteAtBoundary`.
+class CsvStreamParser {
+  constructor() {
+    this.headers = null;
+    this.rows = [];
+    this._cur = '';
+    this._row = [];
+    this._inQ = false;
+    this._pendingQuoteAtBoundary = false;
   }
-  if (cur || row.length) { row.push(cur); if (row.some(v => v !== '')) rows.push(row); }
-  if (rows.length === 0) return [];
-  const headers = rows[0].map(h => String(h).toLowerCase());
-  return rows.slice(1).map(cells => {
+
+  feed(chunk) {
+    if (!chunk) return;
+    let i = 0;
+
+    if (this._pendingQuoteAtBoundary) {
+      this._pendingQuoteAtBoundary = false;
+      if (chunk[0] === '"') {
+        // Escaped quote pair split across chunks: "" → literal ".
+        this._cur += '"';
+        i = 1;
+      } else {
+        // The deferred `"` was a closing quote; re-process chunk[0] fresh
+        // under the (now) not-in-quotes state, same as the original loop
+        // would on its next iteration.
+        this._inQ = false;
+        i = 0;
+      }
+    }
+
+    for (; i < chunk.length; i++) {
+      const c = chunk[i];
+      if (this._inQ) {
+        if (c === '"') {
+          if (i + 1 < chunk.length) {
+            if (chunk[i + 1] === '"') { this._cur += '"'; i++; continue; }
+            this._inQ = false;
+          } else {
+            this._pendingQuoteAtBoundary = true;
+            return;
+          }
+        } else {
+          this._cur += c;
+        }
+      } else if (c === '"') {
+        this._inQ = true;
+      } else if (c === ',') {
+        this._row.push(this._cur); this._cur = '';
+      } else if (c === '\r') {
+        /* skip */
+      } else if (c === '\n') {
+        this._row.push(this._cur); this._cur = '';
+        this._commitRow();
+      } else {
+        this._cur += c;
+      }
+    }
+  }
+
+  _commitRow() {
+    const row = this._row;
+    this._row = [];
+    if (!row.some(v => v !== '')) return; // skip blank rows
+    if (!this.headers) {
+      this.headers = row.map(h => String(h).toLowerCase());
+      return;
+    }
     const obj = {};
-    for (let j = 0; j < headers.length; j++) obj[headers[j]] = cells[j] ?? '';
-    return obj;
-  });
+    for (let j = 0; j < this.headers.length; j++) obj[this.headers[j]] = row[j] ?? '';
+    this.rows.push(obj);
+  }
+
+  // Flush a trailing row that wasn't newline-terminated (end of input).
+  end() {
+    if (this._pendingQuoteAtBoundary) {
+      // No more input: the original text[i+1]===undefined case treats a
+      // trailing quote-in-quotes as a closing quote.
+      this._inQ = false;
+      this._pendingQuoteAtBoundary = false;
+    }
+    if (this._cur || this._row.length) {
+      this._row.push(this._cur);
+      this._cur = '';
+      this._commitRow();
+    }
+  }
+}
+
+// Whole-string CSV parse — kept for callers/tests that already have the
+// full text in memory (and as the reference semantics CsvStreamParser must
+// match exactly). exportTables() below uses the streaming variant instead.
+function parseCsv(text) {
+  const parser = new CsvStreamParser();
+  parser.feed(text);
+  parser.end();
+  return parser.rows;
+}
+
+// Streaming file parse: reads in chunks via fs.createReadStream instead of
+// fs.readFileSync(...,'utf8'), so the raw CSV text is never held as one
+// giant string. A TextDecoder with {stream:true} absorbs any multi-byte
+// UTF-8 sequence that a chunk boundary happens to split.
+async function parseCsvFile(filePath) {
+  const parser = new CsvStreamParser();
+  const decoder = new TextDecoder('utf-8');
+  for await (const chunk of fs.createReadStream(filePath)) {
+    parser.feed(decoder.decode(chunk, { stream: true }));
+  }
+  parser.feed(decoder.decode()); // flush any pending decoder bytes
+  parser.end();
+  return parser.rows;
 }
 
 function toInt(v) { const n = parseInt(v, 10); return Number.isFinite(n) ? n : 0; }
@@ -146,7 +249,7 @@ function writeSqlite(rows, outPath) {
   db.close();
 }
 
-function exportTables(mdbPath, csvDir) {
+async function exportTables(mdbPath, csvDir) {
   const DEFS = [
     { csv: 'events',      mdb: 'events' },
     { csv: 'narratives',  mdb: 'narratives' },
@@ -157,19 +260,27 @@ function exportTables(mdbPath, csvDir) {
   for (const d of DEFS) {
     const outFile = path.join(csvDir, `${d.csv}.csv`);
     execFileSync('mdb-export', [mdbPath, d.mdb], { stdio: ['ignore', fs.openSync(outFile, 'w'), 'inherit'] });
-    tables[d.csv] = parseCsv(fs.readFileSync(outFile, 'utf8'));
+    // narratives.csv in particular can be huge; stream it instead of
+    // fs.readFileSync(...,'utf8') + parseCsv(), which held the entire raw
+    // text (plus the parsed rows) in memory at once.
+    tables[d.csv] = await parseCsvFile(outFile);
     console.log(`  ${d.csv}: ${tables[d.csv].length} rows`);
   }
   return tables;
 }
 
+// Streams the download straight to disk instead of buffering the whole
+// multi-hundred-MB avall.zip in memory via res.arrayBuffer() +
+// fs.writeFileSync(). res.body is a WHATWG ReadableStream; Readable.fromWeb
+// bridges it into a Node stream for stream/promises.pipeline.
 async function downloadDump(dest) {
   const fileId = `C:\\avdata\\${FULL_DUMP}`;
   const url = `${NTSB_BASE}/FileDirectory/DownloadFile?fileID=${encodeURIComponent(fileId)}`;
   console.log(`Downloading ${url}`);
   const res = await fetch(url);
   if (!res.ok) throw new Error(`NTSB download → HTTP ${res.status}`);
-  fs.writeFileSync(dest, Buffer.from(await res.arrayBuffer()));
+  if (!res.body) throw new Error('NTSB download → empty response body');
+  await pipeline(Readable.fromWeb(res.body), fs.createWriteStream(dest));
   const sz = fs.statSync(dest).size;
   if (sz < 1_000_000) throw new Error(`download too small (${sz}b) — likely an error page`);
   console.log(`  ${(sz / 1e6).toFixed(1)} MB`);
@@ -216,7 +327,7 @@ async function main() {
     const mdb = fs.readdirSync(tmpDir).find(f => f.toLowerCase().endsWith('.mdb'));
     if (!mdb) throw new Error('no .mdb in dump');
     console.log('Exporting tables via mdb-export…');
-    const tables = exportTables(path.join(tmpDir, mdb), tmpDir);
+    const tables = await exportTables(path.join(tmpDir, mdb), tmpDir);
     const rows = mapToAccidents(tables);
     console.log(`Mapped ${rows.length} accidents with narratives.`);
     writeSqlite(rows, outPath);
@@ -226,7 +337,7 @@ async function main() {
   }
 }
 
-module.exports = { mapToAccidents, parseCsv };
+module.exports = { mapToAccidents, parseCsv, parseCsvFile, CsvStreamParser, downloadDump, exportTables };
 
 if (require.main === module) {
   main().catch((err) => { console.error('FAILED:', err.message); process.exit(1); });

@@ -76,6 +76,43 @@ describe('parseWikidataResponse', () => {
   });
 });
 
+describe('parseWikidataResponse causeLabel (GROUP_CONCAT aggregate)', () => {
+  it('splits a GROUP_CONCAT-joined causeLabel into a deduped causes array, using the first as probable_cause', () => {
+    const out = parseWikidataResponse({
+      head: { vars: [] },
+      results: { bindings: [{
+        event:      { type: 'uri', value: 'http://www.wikidata.org/entity/Q1' },
+        causeLabel: { value: 'pilot error;;mechanical failure;;Pilot Error' },
+      }]},
+    });
+    expect(out[0].causes).toEqual(['pilot error', 'mechanical failure']);
+    expect(out[0].probable_cause).toBe('pilot error');
+  });
+
+  it('still handles a single (non-aggregated) causeLabel value the same as before', () => {
+    const out = parseWikidataResponse({
+      head: { vars: [] },
+      results: { bindings: [{
+        event:      { type: 'uri', value: 'http://www.wikidata.org/entity/Q2' },
+        causeLabel: { value: 'controlled flight into terrain' },
+      }]},
+    });
+    expect(out[0].causes).toEqual(['controlled flight into terrain']);
+    expect(out[0].probable_cause).toBe('controlled flight into terrain');
+  });
+
+  it('returns null probable_cause and empty causes array when SPARQL omits causeLabel', () => {
+    const out = parseWikidataResponse({
+      head: { vars: [] },
+      results: { bindings: [{
+        event: { type: 'uri', value: 'http://www.wikidata.org/entity/Q3' },
+      }]},
+    });
+    expect(out[0].causes).toEqual([]);
+    expect(out[0].probable_cause).toBeNull();
+  });
+});
+
 describe('parseFactors', () => {
   it('returns empty array for null/empty input', () => {
     expect(parseFactors(null)).toEqual([]);

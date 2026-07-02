@@ -33,11 +33,18 @@ function parseWikidataResponse(json) {
   for (const b of bindings) {
     const q_id = extractQId(b.event?.value);
     if (!q_id) continue;
+    // ?causeLabel is now a GROUP_CONCAT aggregate (mirrors ?factorsLabels)
+    // so multi-valued P1196 causes no longer inflate the SPARQL GROUP BY
+    // row count. Split it the same way factors are split; the first (only,
+    // in the common case) cause remains the scalar `probable_cause` used by
+    // compose.js, while `causes` exposes the full deduped list.
+    const causes = parseFactors(val(b, 'causeLabel'));
     out.push({
       q_id,
       label:           val(b, 'eventLabel'),
       narrative_text:  val(b, 'description'),
-      probable_cause:  val(b, 'causeLabel'),
+      probable_cause:  causes[0] || null,
+      causes,
       date:            val(b, 'date'),
       factors:         parseFactors(val(b, 'factorsLabels')),
     });
