@@ -24,14 +24,32 @@ const UA = 'wikidata-ingest/1.0 (+https://github.com/disclaimer8/aviation-safety
 const FETCH_DELAY_MS = 50;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-const SPARQL = `
-SELECT ?event ?eventLabel ?description ?date ?causeLabel
+// Page size mirrors the old single-shot LIMIT. Live event count (~3,273 as
+// of writing) is well under one page, but multi-valued ?causeLabel/?date
+// rows used to inflate the GROUP BY toward the cap even for a few thousand
+// distinct events — hence also aggregating causes below (mirrors factors).
+// MAX_PAGES is a sane ceiling (50k rows) so a runaway loop can't hang forever
+// if Wikidata's data model changes again.
+const PAGE_SIZE = 5000;
+const MAX_PAGES = 10;
+
+// GROUP_CONCAT both ?causeLabel and ?factorsLabels so neither multi-valued
+// property (P1196 cause, P828 factor) inflates the per-event row count in
+// the GROUP BY — a single event now always yields exactly one binding row.
+function buildSparql(offset) {
+  return `
+SELECT ?event ?eventLabel ?description ?date
+       (GROUP_CONCAT(DISTINCT ?causeLabelRaw; SEPARATOR=";;") AS ?causeLabel)
        (GROUP_CONCAT(DISTINCT ?factorLabel; SEPARATOR=";;") AS ?factorsLabels)
 WHERE {
   ?event wdt:P31/wdt:P279* wd:Q744913 .
   OPTIONAL { ?event schema:description ?description FILTER (LANG(?description) = "en") }
   OPTIONAL { ?event wdt:P585 ?date }
-  OPTIONAL { ?event wdt:P1196 ?cause }
+  OPTIONAL {
+    ?event wdt:P1196 ?cause .
+    ?cause rdfs:label ?causeLabelRaw .
+    FILTER (LANG(?causeLabelRaw) = "en")
+  }
   OPTIONAL {
     ?event wdt:P828 ?factor .
     ?factor rdfs:label ?factorLabel .
@@ -39,16 +57,49 @@ WHERE {
   }
   SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
 }
-GROUP BY ?event ?eventLabel ?description ?date ?causeLabel
-LIMIT 5000
+GROUP BY ?event ?eventLabel ?description ?date
+ORDER BY ?event
+LIMIT ${PAGE_SIZE}
+OFFSET ${offset}
 `.trim();
+}
 
-async function fetchSparql() {
-  const res = await fetch(`${SPARQL_URL}?query=${encodeURIComponent(SPARQL)}`, {
+// Backwards-compatible export: the first page of the query, as before.
+const SPARQL = buildSparql(0);
+
+async function fetchSparqlPage(offset) {
+  const res = await fetch(`${SPARQL_URL}?query=${encodeURIComponent(buildSparql(offset))}`, {
     headers: { Accept: 'application/sparql-results+json', 'User-Agent': UA },
   });
   if (!res.ok) throw new Error(`Wikidata SPARQL ${res.status}`);
   return res.json();
+}
+
+// Paginate with OFFSET until a short (< PAGE_SIZE) page comes back, i.e. we
+// found the end. A full-size final page is indistinguishable from "there's
+// more", so if we hit MAX_PAGES while still getting full pages, that's a
+// truncation: emit a loud, grep-able warning rather than silently dropping
+// the remainder (see SILENT_FAIL_SUSPECT convention used by other workers).
+async function fetchSparql() {
+  const allBindings = [];
+  let offset = 0;
+  let page = 0;
+  for (; page < MAX_PAGES; page++) {
+    const json = await fetchSparqlPage(offset);
+    const bindings = json?.results?.bindings || [];
+    allBindings.push(...bindings);
+    if (bindings.length < PAGE_SIZE) {
+      return { results: { bindings: allBindings } };
+    }
+    offset += PAGE_SIZE;
+    if (page + 1 < MAX_PAGES) await sleep(FETCH_DELAY_MS);
+  }
+  console.warn(
+    `SILENT_FAIL_SUSPECT source=wikidata truncated pages=${MAX_PAGES} ` +
+    `rows=${allBindings.length} — hit MAX_PAGES with a still-full page; ` +
+    'results are likely incomplete. Raise MAX_PAGES or investigate row inflation.'
+  );
+  return { results: { bindings: allBindings } };
 }
 
 function slugify(s) {
@@ -160,7 +211,16 @@ async function main() {
   console.log(`[wikidata] ingested=${r.ingested}/${r.total} wikipedia=${r.enriched} -> ${dbPath}`);
 }
 
-module.exports = { runIngest, rowFromRecord, fetchSparql, SPARQL };
+module.exports = {
+  runIngest,
+  rowFromRecord,
+  fetchSparql,
+  fetchSparqlPage,
+  buildSparql,
+  SPARQL,
+  PAGE_SIZE,
+  MAX_PAGES,
+};
 
 if (require.main === module) {
   main().catch((e) => { console.error(e); process.exit(1); });
