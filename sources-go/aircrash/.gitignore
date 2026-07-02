@@ -5,6 +5,10 @@ aircrash-parser
 accidents.db
 *.db-journal
 
+# Downloaded at runtime by migrate-regeocode.py — see NOTICE for attribution.
+# Not redistributed in this repository.
+airports.dat
+
 # Logs
 *.log
 

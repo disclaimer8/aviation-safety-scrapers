@@ -3,8 +3,7 @@
 A collection of **43 independent scrapers** for public-record civil aviation
 accident and incident reports, each targeting a different source — national
 **Safety Investigation Authorities** (AAIB, BEA, BFU, JTSB, …), the US **NTSB**
-bulk dump, **MAK**, **ATSB**, **Wikidata**, and the global **ASN / B3A**
-archives — across six continents.
+bulk dump, **MAK**, **ATSB**, and **Wikidata** — across six continents.
 
 Every source publishes differently: a server-rendered table here, a
 JavaScript-hydrated accordion there, a Cloudflare-gated PDF archive, an Access
@@ -23,6 +22,12 @@ discover  →  fetch  →  parse  →  build
 > User-Agent). Respect each site's `robots.txt` and terms of use, run them at a
 > low rate, and use the data for safety research and education. No harvested
 > data is included in this repository — only the code that fetches it.
+>
+> This repository intentionally **excludes** scrapers for copyrighted
+> third-party aggregator databases (e.g. commercial accident-archive sites
+> that assert copyright over their compiled record sets) — only official
+> public-record sources (national investigation authorities, government bulk
+> dumps) and CC0/open datasets (Wikidata) are covered.
 
 ## Repository layout
 
@@ -46,7 +51,7 @@ sources-node/    4 Node.js packages — NTSB, MAK, ATSB, Wikidata
     test/                          # jest unit tests with offline fixtures
     package.json
 
-sources-go/      1 Go project — ASN / B3A / Wikidata aggregator (+ REST API)
+sources-go/      1 Go project — Wikidata aggregator (+ REST API)
   aircrash/
     *.go, go.mod                   # scrapers + Gin API + SQLite
     static/                        # dashboard
@@ -152,7 +157,7 @@ Each has its own README.
 | `mak` | [`sources-node/mak`](sources-node/mak) | MAK / Interstate Aviation Committee (RU) | Node | httpx + PDF |
 | `atsb` | [`sources-node/atsb`](sources-node/atsb) | 🇦🇺 ATSB | Node | headed Playwright |
 | `wikidata` | [`sources-node/wikidata`](sources-node/wikidata) | Wikidata (SPARQL) + Wikipedia enrich | Node | SPARQL / REST |
-| `aircrash` | [`sources-go/aircrash`](sources-go/aircrash) | ASN · B3A · Wikidata aggregator + REST API | Go | headed (go-rod) / SPARQL |
+| `aircrash` | [`sources-go/aircrash`](sources-go/aircrash) | Wikidata aggregator + REST API | Go | SPARQL |
 
 ```bash
 # Node source — same four verbs, run via the package CLI
@@ -162,10 +167,9 @@ cd sources-node/ntsb && npm install && npm run selftest && npm test
 cd sources-go/aircrash && go mod tidy && go build -o aircrash-parser
 ```
 
-> **Data rights note:** the Go `aircrash` aggregator includes an Aviation Safety
-> Network (ASN) scraper. ASN asserts copyright over its database — review and
-> respect its terms before redistributing harvested ASN data. Wikidata is CC0;
-> Wikipedia text (used by `wikidata --enrich`) is CC BY-SA.
+> **Data rights note:** the Go `aircrash` aggregator only pulls from Wikidata,
+> which is CC0. Wikipedia text (used by `wikidata --enrich`) is CC BY-SA. This
+> repository does not scrape copyrighted third-party aggregator databases.
 
 ## Coverage control plane
 

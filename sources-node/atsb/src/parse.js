@@ -11,7 +11,7 @@
 // AJAX-shell + server-rendered content — parseDetail expects the rendered
 // HTML (what a headless browser returns via page.content()), NOT a bare
 // `fetch()` of the URL (Akamai resets non-browser TLS fingerprints and the
-// listing is JS-hydrated). See reference_minipc-atsb-scraper.
+// listing is JS-hydrated).
 //
 // Two extractors:
 //   parseListingPage(html)  → [{ investigation_id, detail_url, title }]
@@ -333,9 +333,34 @@ function parseListingPage(html) {
   return rows;
 }
 
+// ── Bot-challenge / interstitial detection ─────────────────────────────────
+
+// Markers emitted by Drupal/GovCMS itself in the server-rendered <head> and
+// site chrome — present on EVERY genuine ATSB response (an empty search
+// result page included) because they're part of the page template, not the
+// JS-hydrated Views results. Verified against the three detail-page fixtures
+// in test/fixtures/atsb/ (the listing page shares the same theme/layout).
+// An Akamai challenge/interstitial page is served instead of hitting Drupal
+// at all, so it carries neither marker.
+const ATSB_SHELL_MARKERS = [
+  /<meta\s+name="Generator"\s+content="Drupal[^"]*GovCMS/i,
+  /data-component-id="civictheme:header"/i,
+];
+
+// True when `html` looks like a genuine server-rendered ATSB/GovCMS page
+// (whether or not it happens to list any investigations). False means the
+// response is very likely a bot-challenge / interstitial page instead of the
+// real site — the caller should treat that as a scrape failure, not as "we
+// reached the end of the listing".
+function looksLikeAtsbPage(html) {
+  const s = html || '';
+  return ATSB_SHELL_MARKERS.some((re) => re.test(s));
+}
+
 module.exports = {
   parseDetail,
   parseListingPage,
+  looksLikeAtsbPage,
   _internal: {
     clean, normalizeDate, buildFieldMap, flatten, sectionSlice, sliceToText,
     parseFatalitiesFromInjuries, parseFatalitiesFromNarrative, extractFindings,

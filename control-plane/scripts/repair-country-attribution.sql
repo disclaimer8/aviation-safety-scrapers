@@ -12,9 +12,10 @@
 -- later re-run of the LLM-based resolution (out of scope here — would need a
 -- separate re-extraction pass) can backfill the correct country.
 --
--- Confirmed corrupted on minipc at authoring time: 21 staged_regional_documents
--- rows and 18 events, all via IAC (e.g. EW-307SL — a Belarus accident — and
--- UP-MI872 — a Kazakh Mi-8 — both recorded as RU).
+-- Confirmed corrupted on the operator's control-plane host at authoring time:
+-- 21 staged_regional_documents rows and 18 events, all via IAC (e.g.
+-- EW-307SL — a Belarus accident — and UP-MI872 — a Kazakh Mi-8 — both
+-- recorded as RU).
 --
 -- Scope: every regional body currently wired (ECCAA/BAGAIA/IAC) and the BEA
 -- authority in staged_foreign_documents are body-wide (see the doc comments in
@@ -27,8 +28,8 @@
 -- no-op. Safe to run inside a single transaction.
 --
 -- USAGE (operator-run only — NOT executed by this branch or by CI):
---   sqlite3 /var/lib/flightfinder-coverage/coverage.db < control-plane/scripts/repair-country-attribution.sql
--- (adjust the path to wherever minipc's control-plane DB lives)
+--   sqlite3 /path/to/coverage.db < control-plane/scripts/repair-country-attribution.sql
+-- (adjust the path to wherever your control-plane DB lives)
 
 BEGIN;
 

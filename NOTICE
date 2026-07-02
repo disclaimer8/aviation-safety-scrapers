@@ -8,3 +8,17 @@ published by national safety investigation authorities.
 Licensed under the Apache License, Version 2.0 (the "License"); you may not
 use these files except in compliance with the License. You may obtain a copy
 of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+This repository intentionally excludes scrapers for copyrighted third-party
+aggregator databases (e.g. commercial accident-archive sites, such as the
+Aviation Safety Network and the Bureau of Aircraft Accidents Archives, that
+assert copyright over their compiled record sets). Only official public-record
+sources (national safety investigation authorities, government bulk dumps)
+and open/CC0 datasets (Wikidata) are covered.
+
+The `sources-go/aircrash` component fetches airport reference data
+(name/city/country/coordinates) from the OpenFlights `airports.dat` dataset
+(https://github.com/jpatokal/openflights), compiled from OurAirports
+(https://ourairports.com/) public-domain data, at runtime rather than
+redistributing it in this repository. See `sources-go/aircrash/migrate-regeocode.py`
+for the fetch logic and attribution.
