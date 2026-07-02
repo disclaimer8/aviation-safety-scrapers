@@ -1,10 +1,15 @@
 package foreignsearch
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
+	"os"
+	"strings"
 	"testing"
 )
 
@@ -147,5 +152,62 @@ func TestProcessPendingResumesStaleRunning(t *testing.T) {
 	}
 	if fresh != "running" {
 		t.Errorf("fresh running job should be untouched, got %q", fresh)
+	}
+}
+
+// captureStderr redirects os.Stderr for the duration of fn and returns
+// everything written to it. Used to assert on the GO-CP-4 tripwire token.
+func captureStderr(t *testing.T, fn func()) string {
+	t.Helper()
+	r, w, err := os.Pipe()
+	if err != nil {
+		t.Fatal(err)
+	}
+	orig := os.Stderr
+	os.Stderr = w
+	defer func() { os.Stderr = orig }()
+
+	fn()
+
+	w.Close()
+	var buf bytes.Buffer
+	io.Copy(&buf, r)
+	return buf.String()
+}
+
+// TestRunJobZeroFoundEmitsSilentFailTripwire pins GO-CP-4 for the
+// foreignsearch worker: a job that completes without a client error but
+// finds zero records must go 'partial' with a stats_json warning and print
+// the grep-able SILENT_FAIL_SUSPECT token — this worker previously hardcoded
+// status='success' unconditionally.
+func TestRunJobZeroFoundEmitsSilentFailTripwire(t *testing.T) {
+	ctx, db := foreignTestDB(t)
+	_, jid := insertForeignJob(t, ctx, db, "BS", "ntsb_foreign_search", 50, "running", 0)
+	var cid int64
+	db.QueryRowContext(ctx, `SELECT country_id FROM crawl_jobs WHERE id=?`, jid).Scan(&cid)
+	clients := Clients{NTSB: &fixtureClient{Records: nil}}
+
+	out := captureStderr(t, func() {
+		if err := RunJob(ctx, db, clients, Job{ID: jid, CountryID: cid, ISO2: "BS", JobType: "ntsb_foreign_search"}); err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	if !strings.Contains(out, "SILENT_FAIL_SUSPECT") || !strings.Contains(out, fmt.Sprintf("job=%d", jid)) || !strings.Contains(out, "found=0") {
+		t.Fatalf("expected SILENT_FAIL_SUSPECT tripwire on stderr, got: %q", out)
+	}
+
+	var status, stats string
+	db.QueryRowContext(ctx, `SELECT status, stats_json FROM crawl_jobs WHERE id=?`, jid).Scan(&status, &stats)
+	if status != "partial" {
+		t.Fatalf("status = %q, want partial", status)
+	}
+	var s struct {
+		Found   int
+		Warning string
+	}
+	json.Unmarshal([]byte(stats), &s)
+	if s.Found != 0 || s.Warning != "found_zero" {
+		t.Fatalf("stats = %+v, want Found=0 Warning=found_zero", s)
 	}
 }

@@ -1,10 +1,15 @@
 package regional
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
+	"os"
+	"strings"
 	"testing"
 )
 
@@ -115,5 +120,101 @@ func TestProcessPendingOnlyRegionalRaioAndResumesStale(t *testing.T) {
 	}
 	if us != "pending" {
 		t.Errorf("non-regional (direct_public_archive) job must be untouched, got %q", us)
+	}
+}
+
+// captureStderr redirects os.Stderr for the duration of fn and returns
+// everything written to it. Used to assert on the GO-CP-4 tripwire token.
+func captureStderr(t *testing.T, fn func()) string {
+	t.Helper()
+	r, w, err := os.Pipe()
+	if err != nil {
+		t.Fatal(err)
+	}
+	orig := os.Stderr
+	os.Stderr = w
+	defer func() { os.Stderr = orig }()
+
+	fn()
+
+	w.Close()
+	var buf bytes.Buffer
+	io.Copy(&buf, r)
+	return buf.String()
+}
+
+// TestRunJobZeroFoundEmitsSilentFailTripwire pins GO-CP-4: a job that
+// completes cleanly (no client error) but finds zero records must NOT
+// silently finalize as an indistinguishable 'success' — it must go
+// 'partial', carry a stats_json warning, and print the grep-able
+// SILENT_FAIL_SUSPECT token.
+func TestRunJobZeroFoundEmitsSilentFailTripwire(t *testing.T) {
+	ctx, db := seededRegionalDB(t)
+	cid, jid := insertRegionalJob(t, ctx, db, "RU", "running", 0)
+	clients := Clients{IAC: &fixtureClient{Records: nil}}
+
+	out := captureStderr(t, func() {
+		if err := RunJob(ctx, db, clients, Job{ID: jid, CountryID: cid, ISO2: "RU", BodyCode: "IAC"}); err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	if !strings.Contains(out, "SILENT_FAIL_SUSPECT") || !strings.Contains(out, fmt.Sprintf("job=%d", jid)) || !strings.Contains(out, "found=0") {
+		t.Fatalf("expected SILENT_FAIL_SUSPECT tripwire on stderr, got: %q", out)
+	}
+
+	var status, stats string
+	db.QueryRowContext(ctx, `SELECT status, stats_json FROM crawl_jobs WHERE id=?`, jid).Scan(&status, &stats)
+	if status != "partial" {
+		t.Fatalf("status = %q, want partial", status)
+	}
+	var s struct {
+		Found   int
+		Warning string
+	}
+	json.Unmarshal([]byte(stats), &s)
+	if s.Found != 0 || s.Warning != "found_zero" {
+		t.Fatalf("stats = %+v, want Found=0 Warning=found_zero", s)
+	}
+}
+
+// TestRunJobZeroFoundRegressionNotesPriorRun pins the "bonus" comparison
+// against the previous run for the same country/job_type: when the prior run
+// found records but this one finds none, the message and warning must call
+// out the 100%→0 drop distinctly from a merely-quiet body.
+func TestRunJobZeroFoundRegressionNotesPriorRun(t *testing.T) {
+	ctx, db := seededRegionalDB(t)
+	cid, jid1 := insertRegionalJob(t, ctx, db, "RU", "running", 0)
+	clientsWithData := Clients{IAC: &fixtureClient{Records: []RegionalRecord{
+		{Ref: "2024-RA-01", Title: "A", OriginalURL: "https://mak.aero/1"},
+	}}}
+	if err := RunJob(ctx, db, clientsWithData, Job{ID: jid1, CountryID: cid, ISO2: "RU", BodyCode: "IAC"}); err != nil {
+		t.Fatal(err)
+	}
+
+	// Second job, same country, this run finds nothing.
+	res, err := db.ExecContext(ctx, `INSERT INTO crawl_jobs (source_id,country_id,job_type,status)
+		SELECT source_id, country_id, job_type, 'running' FROM crawl_jobs WHERE id=?`, jid1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	jid2, _ := res.LastInsertId()
+
+	clientsEmpty := Clients{IAC: &fixtureClient{Records: nil}}
+	out := captureStderr(t, func() {
+		if err := RunJob(ctx, db, clientsEmpty, Job{ID: jid2, CountryID: cid, ISO2: "RU", BodyCode: "IAC"}); err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	if !strings.Contains(out, "prev_found=1") || !strings.Contains(out, "regression=100pct_to_0") {
+		t.Fatalf("expected a prior-run regression note, got: %q", out)
+	}
+	var stats string
+	db.QueryRowContext(ctx, `SELECT stats_json FROM crawl_jobs WHERE id=?`, jid2).Scan(&stats)
+	var s struct{ Warning string }
+	json.Unmarshal([]byte(stats), &s)
+	if s.Warning != "found_zero_regression" {
+		t.Fatalf("Warning = %q, want found_zero_regression", s.Warning)
 	}
 }

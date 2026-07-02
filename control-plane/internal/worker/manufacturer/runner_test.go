@@ -1,8 +1,12 @@
 package manufacturer
 
 import (
+	"bytes"
 	"context"
 	"errors"
+	"io"
+	"os"
+	"strings"
 	"testing"
 )
 
@@ -140,5 +144,51 @@ func TestProcessManufacturer_ProbeNotFound(t *testing.T) {
 	}
 	if res.Errors != 0 {
 		t.Errorf("Errors = %d, want 0", res.Errors)
+	}
+}
+
+// captureStderr redirects os.Stderr for the duration of fn and returns
+// everything written to it. Used to assert on the GO-CP-4 tripwire token.
+func captureStderr(t *testing.T, fn func()) string {
+	t.Helper()
+	r, w, err := os.Pipe()
+	if err != nil {
+		t.Fatal(err)
+	}
+	orig := os.Stderr
+	os.Stderr = w
+	defer func() { os.Stderr = orig }()
+
+	fn()
+
+	w.Close()
+	var buf bytes.Buffer
+	io.Copy(&buf, r)
+	return buf.String()
+}
+
+// TestProcessManufacturer_ZeroDiscoveredEmitsSilentFailTripwire pins GO-CP-4
+// for the manufacturer worker: Discover succeeding with zero records (the
+// shape a listing-page redesign breaking the parser takes) must print the
+// grep-able SILENT_FAIL_SUSPECT token instead of silently proceeding as if
+// nothing were wrong.
+func TestProcessManufacturer_ZeroDiscoveredEmitsSilentFailTripwire(t *testing.T) {
+	ctx, db := seededManufacturerDB(t)
+	d := &fakeDiscoverer{records: nil, probeFound: false}
+
+	var res Result
+	out := captureStderr(t, func() {
+		var err error
+		res, err = ProcessManufacturer(ctx, db, d)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+	})
+
+	if !strings.Contains(out, "SILENT_FAIL_SUSPECT") || !strings.Contains(out, "found=0") {
+		t.Fatalf("expected SILENT_FAIL_SUSPECT tripwire on stderr, got: %q", out)
+	}
+	if res.Found != 0 {
+		t.Errorf("Found = %d, want 0", res.Found)
 	}
 }

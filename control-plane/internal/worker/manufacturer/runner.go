@@ -3,6 +3,8 @@ package manufacturer
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"os"
 	"strconv"
 )
 
@@ -37,6 +39,16 @@ func ProcessManufacturer(ctx context.Context, db *sql.DB, d Discoverer) (Result,
 	recs, err := d.Discover(ctx)
 	if err != nil {
 		return Result{}, err
+	}
+
+	// GO-CP-4: Discover succeeding (no error) with zero records is exactly the
+	// shape a listing-page redesign breaking the parser takes — it would
+	// otherwise be indistinguishable from a genuinely empty listing. Unlike
+	// the crawl_jobs-backed workers (regional/wayback/foreignsearch),
+	// ProcessManufacturer has no per-job DB row to flag partial/store a
+	// warning against, so this is stderr-only.
+	if len(recs) == 0 {
+		fmt.Fprintln(os.Stderr, "SILENT_FAIL_SUSPECT body=airbus/safety_first job=n/a found=0")
 	}
 
 	highest := highestNumericIssue(recs)

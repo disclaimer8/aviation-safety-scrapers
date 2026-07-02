@@ -13,6 +13,7 @@ package manufacturer
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"strings"
@@ -25,6 +26,11 @@ const (
 	// defaultProbeBaseURL is the S3 base path for numbered issue PDFs, derived
 	// from real ReportURLs in the fixture.
 	defaultProbeBaseURL = "https://mms-safetyfirst.s3.eu-west-3.amazonaws.com/pdf/safety+first/"
+
+	// maxListingBytes caps the Safety First listing page response (GO-CP-8).
+	// The real page is a few hundred KB of HTML; 16 MiB is generous headroom
+	// while still bounding a pathological/hostile response.
+	maxListingBytes = 16 << 20
 )
 
 // Client fetches and parses the Airbus Safety First magazine listing.
@@ -85,18 +91,22 @@ func (c *Client) Discover(ctx context.Context) ([]ManufacturerRecord, error) {
 		if resp.StatusCode != http.StatusOK {
 			return nil, fmt.Errorf("safetyfirst: GET %s: status %d", c.ListingURL, resp.StatusCode)
 		}
-		buf := make([]byte, 0, 1<<20)
-		tmp := make([]byte, 32*1024)
-		for {
-			n, err := resp.Body.Read(tmp)
-			if n > 0 {
-				buf = append(buf, tmp[:n]...)
-			}
-			if err != nil {
-				break
-			}
+		// GO-CP-8: the previous hand-rolled read loop broke out of the loop on
+		// ANY Read error, including a dropped connection mid-response — which
+		// is indistinguishable from a truncated page's error from a clean
+		// io.EOF and gets silently parsed as if it were the complete listing.
+		// io.ReadAll only treats io.EOF as "done"; any other error (e.g.
+		// io.ErrUnexpectedEOF from a connection closed before Content-Length
+		// bytes arrived) is returned to the caller instead of being masked as
+		// success. The LimitReader also bounds an unbounded read.
+		body, err := io.ReadAll(io.LimitReader(resp.Body, maxListingBytes+1))
+		if err != nil {
+			return nil, fmt.Errorf("safetyfirst: GET %s: read body: %w", c.ListingURL, err)
 		}
-		html = buf
+		if len(body) > maxListingBytes {
+			return nil, fmt.Errorf("safetyfirst: GET %s: response exceeds %d-byte limit", c.ListingURL, maxListingBytes)
+		}
+		html = body
 	}
 
 	return ParseSafetyFirstListing(html, c.ListingURL)
