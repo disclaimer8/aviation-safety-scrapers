@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"sync"
 	"testing"
 )
 
@@ -198,6 +199,68 @@ func TestProcessPendingResumesStaleRunningJob(t *testing.T) {
 	}
 	if freshStatus != "running" {
 		t.Errorf("fresh job status = %q, want running (recent started_at, must not be re-picked)", freshStatus)
+	}
+}
+
+// TestClaimJobIsAtomicUnderConcurrentClaims pins GO-CP-9 for the wayback
+// worker: the old claim UPDATE (`SET status='running' WHERE id=?`, no status
+// guard) let two overlapping ProcessPending invocations both flip the same
+// pending job to running and both execute it. claimJob now guards the UPDATE
+// with the same eligibility condition ProcessPending's SELECT uses, so
+// concurrent claimers race on a single atomic compare-and-set: exactly one
+// must observe RowsAffected > 0.
+func TestClaimJobIsAtomicUnderConcurrentClaims(t *testing.T) {
+	ctx, db := waybackTestDB(t)
+	target := "example.gov"
+	cid := insertCountry(t, ctx, db, "ZZ", &target)
+	res, err := db.ExecContext(ctx, `
+		INSERT INTO sources (name, url, canonical_url, source_type, source_tier)
+		VALUES ('wb','https://wb/','https://wb/','wayback',5)`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	srcID, _ := res.LastInsertId()
+	res, err = db.ExecContext(ctx, `
+		INSERT INTO crawl_jobs (source_id, country_id, job_type, status)
+		VALUES (?,?, 'wayback_cdx', 'pending')`, srcID, cid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	jobID, _ := res.LastInsertId()
+
+	const attempts = 8
+	results := make([]bool, attempts)
+	var wg sync.WaitGroup
+	for i := 0; i < attempts; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			claimed, err := claimJob(ctx, db, jobID)
+			if err != nil {
+				t.Errorf("claimJob attempt %d: %v", i, err)
+				return
+			}
+			results[i] = claimed
+		}(i)
+	}
+	wg.Wait()
+
+	won := 0
+	for _, r := range results {
+		if r {
+			won++
+		}
+	}
+	if won != 1 {
+		t.Fatalf("claimJob won by %d concurrent callers, want exactly 1 (results=%v)", won, results)
+	}
+
+	var status string
+	if err := db.QueryRowContext(ctx, `SELECT status FROM crawl_jobs WHERE id=?`, jobID).Scan(&status); err != nil {
+		t.Fatal(err)
+	}
+	if status != "running" {
+		t.Fatalf("job status = %q, want running", status)
 	}
 }
 

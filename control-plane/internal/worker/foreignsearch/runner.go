@@ -165,9 +165,14 @@ func ProcessPending(ctx context.Context, db *sql.DB, c Clients, limit int) (int,
 
 	processed := 0
 	for _, j := range jobs {
-		if _, err := db.ExecContext(ctx,
-			`UPDATE crawl_jobs SET status='running', started_at=CAST(unixepoch('subsec')*1000 AS INTEGER) WHERE id=?`, j.ID); err != nil {
+		claimed, err := claimJob(ctx, db, j.ID)
+		if err != nil {
 			return processed, fmt.Errorf("foreignsearch: mark running %d: %w", j.ID, err)
+		}
+		if !claimed {
+			// GO-CP-9: lost the race — another ProcessPending invocation already
+			// claimed this job between the SELECT above and this UPDATE. Skip it.
+			continue
 		}
 		if err := RunJob(ctx, db, c, j); err != nil {
 			return processed, err
@@ -175,6 +180,34 @@ func ProcessPending(ctx context.Context, db *sql.DB, c Clients, limit int) (int,
 		processed++
 	}
 	return processed, nil
+}
+
+// claimJob atomically transitions job id from claimable (pending, or running
+// with a stale started_at — the same two states ProcessPending's SELECT
+// treats as eligible) to running. It mirrors that SELECT's WHERE clause in the
+// UPDATE itself so the claim is a single atomic compare-and-set: RowsAffected
+// tells the caller whether THIS call won the claim, not whether the row was
+// merely eligible when read (GO-CP-9 — the prior code claimed unconditionally
+// with `WHERE id=?`, letting two overlapping ProcessPending runs both flip the
+// same job to running and both execute it).
+func claimJob(ctx context.Context, db *sql.DB, jobID int64) (bool, error) {
+	res, err := db.ExecContext(ctx, `
+		UPDATE crawl_jobs
+		   SET status = 'running', started_at = CAST(unixepoch('subsec') * 1000 AS INTEGER)
+		 WHERE id = ?
+		   AND (
+		         status = 'pending'
+		      OR (status = 'running' AND started_at IS NOT NULL
+		          AND started_at < (CAST(unixepoch('subsec') * 1000 AS INTEGER) - 3600000))
+		       )`, jobID)
+	if err != nil {
+		return false, err
+	}
+	n, err := res.RowsAffected()
+	if err != nil {
+		return false, err
+	}
+	return n > 0, nil
 }
 
 func finalize(ctx context.Context, db *sql.DB, jobID int64, status string, stats jobStats) error {

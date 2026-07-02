@@ -250,6 +250,16 @@ func BuildPlan(ctx context.Context, db *sql.DB, nowMs int64, limit int) (Plan, e
 
 // Enqueue inserts a pending crawl_jobs row for every would_enqueue decision in
 // the plan, inside one transaction. Returns the number of rows inserted.
+//
+// GO-CP-9: BuildPlan's HasActive check and this insert run in separate,
+// non-serialized steps, so two concurrent planner runs can both decide
+// would_enqueue for the same (country_id, job_type) before either has
+// inserted. Migration 012 adds a partial unique index on
+// crawl_jobs(country_id, job_type) WHERE status IN ('pending','running') to
+// make that pair authoritative at the DB level; the INSERT here targets that
+// index with ON CONFLICT ... DO NOTHING so a race loser is silently treated
+// as "already planned" (0 rows affected, not an error) rather than aborting
+// the whole plan on a constraint-violation error.
 func Enqueue(ctx context.Context, db *sql.DB, plan Plan) (int, error) {
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
@@ -260,6 +270,8 @@ func Enqueue(ctx context.Context, db *sql.DB, plan Plan) (int, error) {
 	stmt, err := tx.PrepareContext(ctx, `
 		INSERT INTO crawl_jobs (source_id, country_id, job_type, status)
 		VALUES (?, ?, ?, 'pending')
+		ON CONFLICT(country_id, job_type) WHERE status IN ('pending','running')
+		DO NOTHING
 	`)
 	if err != nil {
 		return 0, fmt.Errorf("planner: prepare insert: %w", err)
@@ -271,8 +283,19 @@ func Enqueue(ctx context.Context, db *sql.DB, plan Plan) (int, error) {
 		if j.Decision != DecisionWouldEnqueue {
 			continue
 		}
-		if _, err := stmt.ExecContext(ctx, j.SourceID, j.CountryID, string(j.JobType)); err != nil {
+		res, err := stmt.ExecContext(ctx, j.SourceID, j.CountryID, string(j.JobType))
+		if err != nil {
 			return 0, fmt.Errorf("planner: insert %s/%s: %w", j.ISO2, j.JobType, err)
+		}
+		n, err := res.RowsAffected()
+		if err != nil {
+			return 0, fmt.Errorf("planner: rows affected %s/%s: %w", j.ISO2, j.JobType, err)
+		}
+		if n == 0 {
+			// Lost a race to a concurrent planner run (or a stale plan re-applied):
+			// the (country_id, job_type) pair is already pending/running. Already
+			// planned, not a failure — skip and keep going.
+			continue
 		}
 		inserted++
 	}
