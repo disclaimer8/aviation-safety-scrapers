@@ -25,7 +25,8 @@ CREATE TABLE IF NOT EXISTS bea_reports (
     source_tier        TEXT,
     status             TEXT NOT NULL DEFAULT 'new',
     discovered_at      INTEGER,
-    updated_at         INTEGER
+    updated_at         INTEGER,
+    last_refetch_at    INTEGER
 );
 CREATE TABLE IF NOT EXISTS bea_accidents (
     case_id        TEXT PRIMARY KEY,
@@ -55,6 +56,12 @@ def connect(path):
 
 def init_schema(conn):
     conn.executescript(SCHEMA)
+    # Migration for DBs created before the stub-refetch stage (2026-07):
+    # CREATE TABLE IF NOT EXISTS leaves an existing table untouched, so the
+    # column must be added explicitly. PRAGMA-guarded to stay idempotent.
+    cols = {r[1] for r in conn.execute("PRAGMA table_info(bea_reports)")}
+    if "last_refetch_at" not in cols:
+        conn.execute("ALTER TABLE bea_reports ADD COLUMN last_refetch_at INTEGER")
     conn.commit()
 
 

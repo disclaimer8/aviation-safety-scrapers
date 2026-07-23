@@ -43,7 +43,15 @@ def discover(conn, client, full=False):
 
     EN-preference: pdf_url = pdf_url_en or pdf_url_es; lang = 'en'/'es'/None.
 
-    Returns: number of rows inserted.
+    KNOWN rows are not simply skipped: CIAIAC lists an event as a PDF-less
+    provisional declaration first and adds the report PDF to the SAME listing
+    row later.  A known PDF-less stub ('new' or terminal 'skipped') whose
+    listing row now carries a PDF gets its pdf fields updated and is re-queued
+    to 'new' so this cycle's fetch() downloads it.  Costs nothing extra — the
+    year pages are already fetched every walk.  (Found 2026-07-23: stubs froze
+    at 'skipped' forever, losing every report published after first sight.)
+
+    Returns: number of rows inserted (re-queued stubs are logged, not counted).
     """
     index_resp = client.get(ciaiac.INDEX_URL)
     index_resp.raise_for_status()
@@ -65,9 +73,33 @@ def discover(conn, client, full=False):
         rows = ciaiac.parse_listing(year_html, year_url)
         for row in rows:
             case_id = row["case_id"]
-            if conn.execute(
-                "SELECT 1 FROM ciaiac_reports WHERE case_id=?", (case_id,)
-            ).fetchone():
+            existing = conn.execute(
+                "SELECT status, pdf_url FROM ciaiac_reports WHERE case_id=?", (case_id,)
+            ).fetchone()
+            if existing:
+                # Known PDF-less stub whose listing row has since gained a PDF:
+                # store the links and put it back through fetch→parse→build.
+                gained_en = row.get("pdf_url_en")
+                gained_es = row.get("pdf_url_es")
+                if (
+                    existing["pdf_url"] is None
+                    and (gained_en or gained_es)
+                    and existing["status"] in (db.STATUS_NEW, db.STATUS_SKIPPED)
+                ):
+                    conn.execute(
+                        "UPDATE ciaiac_reports SET pdf_url=?, pdf_url_en=?, pdf_url_es=?, "
+                        "lang=?, status=?, updated_at=? WHERE case_id=?",
+                        (
+                            gained_en or gained_es,
+                            gained_en,
+                            gained_es,
+                            "en" if gained_en else "es",
+                            db.STATUS_NEW,
+                            db.now_ms(),
+                            case_id,
+                        ),
+                    )
+                    print(f"[ciaiac discover] {case_id}: stub gained PDF, re-queued", file=sys.stderr)
                 continue  # already known
 
             # EN-preference: prefer the EN PDF when available
