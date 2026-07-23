@@ -4,7 +4,7 @@ import argparse
 import httpx
 
 from . import db
-from .pipeline import discover, fetch, parse, build
+from .pipeline import discover, refetch, fetch, parse, build
 
 
 def _make_client():
@@ -17,7 +17,7 @@ def _make_client():
 
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="bea-ingest")
-    ap.add_argument("mode", choices=["discover", "fetch", "parse", "build", "all"])
+    ap.add_argument("mode", choices=["discover", "refetch", "fetch", "parse", "build", "all"])
     ap.add_argument("--db", default="bea.db")
     ap.add_argument("--pdf-dir", default="pdfs")
     ap.add_argument("--full", action="store_true")
@@ -29,6 +29,10 @@ def main(argv=None):
     try:
         if args.mode in ("discover", "all"):
             print("discovered:", discover(conn, client, full=args.full))
+        if args.mode in ("refetch", "all"):
+            # Before fetch on purpose: re-queued stubs are re-resolved by the
+            # same cycle's fetch pass.
+            print("refetched:", refetch(conn))
         if args.mode in ("fetch", "all"):
             print("fetched:", fetch(conn, client, args.pdf_dir))
         if args.mode in ("parse", "all"):

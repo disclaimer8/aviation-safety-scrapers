@@ -529,3 +529,92 @@ def test_build_null_metadata_full_narrative_is_built():
     assert acc["narrative_text"] == long_narr
     assert acc["aircraft"] is None
     assert acc["registration"] is None
+
+
+# ── discover: stub gains PDF (late-published report) ─────────────────────────
+
+def _discover_env(monkeypatch, rows):
+    monkeypatch.setattr(ciaiac, "iter_year_urls", lambda html: [_YEAR_URL])
+    monkeypatch.setattr(ciaiac, "parse_listing", lambda html, year_url="": rows)
+    monkeypatch.setattr(ciaiac, "DELAY", 0)
+    return _FakeClient()
+
+
+def test_discover_requeues_skipped_stub_that_gained_pdf(monkeypatch):
+    """A terminal 'skipped' stub whose listing row now has a PDF is re-queued."""
+    conn = _conn()
+    ts = db.now_ms()
+    conn.execute(
+        "INSERT INTO ciaiac_reports (case_id, pdf_url, status, discovered_at, updated_at) "
+        "VALUES (?,?,?,?,?)",
+        ("A-099/2024", None, db.STATUS_SKIPPED, ts, ts),
+    )
+    conn.commit()
+    gained = dict(_FAKE_ROWS[2], pdf_url_es="https://www.transportes.gob.es/pdfs/a-099-2024_es.pdf")
+    client = _discover_env(monkeypatch, [gained])
+
+    assert pipeline.discover(conn, client) == 0  # nothing NEW inserted
+    row = conn.execute(
+        "SELECT status, pdf_url, pdf_url_es, lang FROM ciaiac_reports WHERE case_id='A-099/2024'"
+    ).fetchone()
+    assert row["status"] == db.STATUS_NEW
+    assert row["pdf_url"] == gained["pdf_url_es"]
+    assert row["pdf_url_es"] == gained["pdf_url_es"]
+    assert row["lang"] == "es"
+
+
+def test_discover_requeue_prefers_en_pdf(monkeypatch):
+    conn = _conn()
+    ts = db.now_ms()
+    conn.execute(
+        "INSERT INTO ciaiac_reports (case_id, pdf_url, status, discovered_at, updated_at) "
+        "VALUES (?,?,?,?,?)",
+        ("A-099/2024", None, db.STATUS_SKIPPED, ts, ts),
+    )
+    conn.commit()
+    gained = dict(
+        _FAKE_ROWS[2],
+        pdf_url_es="https://www.transportes.gob.es/pdfs/a-099-2024_es.pdf",
+        pdf_url_en="https://www.transportes.gob.es/pdfs/a-099-2024_en.pdf",
+    )
+    client = _discover_env(monkeypatch, [gained])
+    pipeline.discover(conn, client)
+    row = conn.execute(
+        "SELECT pdf_url, lang FROM ciaiac_reports WHERE case_id='A-099/2024'"
+    ).fetchone()
+    assert row["pdf_url"] == gained["pdf_url_en"]
+    assert row["lang"] == "en"
+
+
+def test_discover_leaves_built_rows_alone(monkeypatch):
+    """A built row must never be re-queued even if the listing changes."""
+    conn = _conn()
+    ts = db.now_ms()
+    conn.execute(
+        "INSERT INTO ciaiac_reports (case_id, pdf_url, status, discovered_at, updated_at) "
+        "VALUES (?,?,?,?,?)",
+        ("A-099/2024", None, db.STATUS_BUILT, ts, ts),
+    )
+    conn.commit()
+    gained = dict(_FAKE_ROWS[2], pdf_url_es="https://x.example/late.pdf")
+    client = _discover_env(monkeypatch, [gained])
+    assert pipeline.discover(conn, client) == 0
+    assert conn.execute(
+        "SELECT status FROM ciaiac_reports WHERE case_id='A-099/2024'"
+    ).fetchone()["status"] == db.STATUS_BUILT
+
+
+def test_discover_still_pdfless_stub_stays_skipped(monkeypatch):
+    conn = _conn()
+    ts = db.now_ms()
+    conn.execute(
+        "INSERT INTO ciaiac_reports (case_id, pdf_url, status, discovered_at, updated_at) "
+        "VALUES (?,?,?,?,?)",
+        ("A-099/2024", None, db.STATUS_SKIPPED, ts, ts),
+    )
+    conn.commit()
+    client = _discover_env(monkeypatch, [_FAKE_ROWS[2]])  # still no PDF
+    assert pipeline.discover(conn, client) == 0
+    assert conn.execute(
+        "SELECT status FROM ciaiac_reports WHERE case_id='A-099/2024'"
+    ).fetchone()["status"] == db.STATUS_SKIPPED

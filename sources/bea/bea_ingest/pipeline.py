@@ -68,6 +68,51 @@ def discover(conn, client, full=False):
     return inserted
 
 
+REFETCH_BATCH = 250
+REFETCH_COOLDOWN_MS = 30 * 86_400_000  # re-check a given stub at most monthly
+REFETCH_MAX_AGE = "-3 years"           # older delegated events rarely gain a BEA PDF
+
+
+def refetch(conn, limit=REFETCH_BATCH):
+    """
+    Re-queue 'skipped' stub rows (empty narrative — the detail page had no PDF
+    when last checked) back to status='new' so this cycle's fetch() re-resolves
+    their detail page.
+
+    Why: BEA lists a notified event immediately as a PDF-less stub and attaches
+    the report PDF to the SAME page months later.  discover() skips known slugs
+    and nothing else ever revisits a terminal 'skipped' row, so every report
+    published after its stub was first seen was silently lost — found
+    2026-07-23 after 7 straight weekly cycles of "built: 0" while discover/
+    parse kept succeeding (3 239 frozen stubs vs 2 938 built).
+
+    Cohort control keeps the weekly crawl polite: only stubs with a recent (or
+    unknown) occurrence date, not re-checked within the cooldown, oldest-checked
+    first.  Stubs that still have no PDF flow back to 'skipped' through the
+    normal fetch→parse→build chain, with last_refetch_at holding them out of
+    rotation for the next month.
+
+    Returns: number of rows re-queued.
+    """
+    now = db.now_ms()
+    rows = conn.execute(
+        "SELECT slug FROM bea_reports "
+        "WHERE status=? AND (narrative_text IS NULL OR narrative_text='') "
+        "AND (date_of_occurrence IS NULL OR date_of_occurrence >= date('now', ?)) "
+        "AND COALESCE(last_refetch_at, 0) <= ? "
+        "ORDER BY COALESCE(last_refetch_at, 0), date_of_occurrence DESC "
+        "LIMIT ?",
+        (db.STATUS_SKIPPED, REFETCH_MAX_AGE, now - REFETCH_COOLDOWN_MS, limit),
+    ).fetchall()
+    for row in rows:
+        conn.execute(
+            "UPDATE bea_reports SET status=?, last_refetch_at=?, updated_at=? WHERE slug=?",
+            (db.STATUS_NEW, now, now, row["slug"]),
+        )
+    conn.commit()
+    return len(rows)
+
+
 def fetch(conn, client, pdf_dir):
     """
     For each status='new' row: resolve the detail-page PDF URL, download it,
@@ -93,6 +138,18 @@ def fetch(conn, client, pdf_dir):
         try:
             pdf_url = bea.get_detail_pdf_url(client, detail_url)
         except Exception as e:
+            # A 404 detail page is gone for good (BEA occasionally renames a
+            # slug — e.g. fixing a typo — and the event re-enters via discover
+            # under the new slug).  Park it back at 'skipped' so it rotates on
+            # the monthly refetch cooldown instead of retrying every cycle
+            # forever at 'new'.
+            status_code = getattr(getattr(e, "response", None), "status_code", None)
+            if status_code == 404:
+                conn.execute(
+                    "UPDATE bea_reports SET status=?, last_refetch_at=?, updated_at=? WHERE slug=?",
+                    (db.STATUS_SKIPPED, db.now_ms(), db.now_ms(), slug),
+                )
+                conn.commit()
             print(f"[bea fetch] {slug}: detail {e}", file=sys.stderr)
             continue
 

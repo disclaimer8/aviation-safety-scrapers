@@ -600,3 +600,138 @@ def test_reparse_rebuild_on_tiny_db():
     b_acc = conn.execute("SELECT * FROM bea_accidents WHERE case_id='slug-b'").fetchone()
     assert b_acc is not None
     assert b_acc["event_date"] == "2024-03-15"  # 15/03/24 → 2024-03-15
+
+
+# ── refetch ───────────────────────────────────────────────────────────────────
+
+def _seed_stub(conn, slug, *, date="2026-06-01", narrative="", status=db.STATUS_SKIPPED,
+               last_refetch_at=None):
+    """A 'skipped' stub: event known, detail page had no PDF at last check."""
+    ts = db.now_ms()
+    conn.execute(
+        "INSERT INTO bea_reports (slug, detail_url, date_of_occurrence, narrative_text, "
+        "status, discovered_at, updated_at, last_refetch_at) VALUES (?,?,?,?,?,?,?,?)",
+        (slug, f"https://bea.aero/detail/{slug}/", date, narrative, status, ts, ts,
+         last_refetch_at),
+    )
+    conn.commit()
+
+
+def test_refetch_requeues_recent_empty_stub():
+    conn = _conn()
+    _seed_stub(conn, "stub-recent")
+    assert pipeline.refetch(conn) == 1
+    row = conn.execute("SELECT status, last_refetch_at FROM bea_reports WHERE slug='stub-recent'").fetchone()
+    assert row["status"] == db.STATUS_NEW
+    assert row["last_refetch_at"] is not None
+
+
+def test_refetch_skips_old_delegated_events():
+    conn = _conn()
+    _seed_stub(conn, "stub-ancient", date="2019-01-01")
+    assert pipeline.refetch(conn) == 0
+    assert conn.execute("SELECT status FROM bea_reports WHERE slug='stub-ancient'").fetchone()["status"] == db.STATUS_SKIPPED
+
+
+def test_refetch_includes_null_date_stubs():
+    conn = _conn()
+    _seed_stub(conn, "stub-nodate", date=None)
+    assert pipeline.refetch(conn) == 1
+
+
+def test_refetch_respects_cooldown():
+    conn = _conn()
+    _seed_stub(conn, "stub-cooling", last_refetch_at=db.now_ms() - 86_400_000)  # checked yesterday
+    assert pipeline.refetch(conn) == 0
+    # ...but a stub past the cooldown re-enters the rotation
+    _seed_stub(conn, "stub-due", last_refetch_at=db.now_ms() - pipeline.REFETCH_COOLDOWN_MS - 1)
+    assert pipeline.refetch(conn) == 1
+
+
+def test_refetch_leaves_non_empty_skipped_alone():
+    """Short-but-real narratives were parsed from an actual PDF — not stubs."""
+    conn = _conn()
+    _seed_stub(conn, "short-narr", narrative="Brief note.")
+    assert pipeline.refetch(conn) == 0
+
+
+def test_refetch_respects_limit_oldest_checked_first():
+    conn = _conn()
+    _seed_stub(conn, "stub-never")                                    # never checked → first
+    _seed_stub(conn, "stub-old", last_refetch_at=db.now_ms() - 2 * pipeline.REFETCH_COOLDOWN_MS)
+    assert pipeline.refetch(conn, limit=1) == 1
+    assert conn.execute("SELECT status FROM bea_reports WHERE slug='stub-never'").fetchone()["status"] == db.STATUS_NEW
+    assert conn.execute("SELECT status FROM bea_reports WHERE slug='stub-old'").fetchone()["status"] == db.STATUS_SKIPPED
+
+
+def test_refetch_then_fetch_builds_late_published_report(monkeypatch, tmp_path):
+    """End-to-end: a stub whose page has since gained a PDF becomes a built row."""
+    conn = _conn()
+    _seed_stub(conn, "late-report")
+    long_narr = "x" * (MIN_NARRATIVE + 10)
+
+    monkeypatch.setattr(bea, "get_detail_pdf_url", lambda client, url: "https://bea.aero/f.pdf")
+    monkeypatch.setattr(bea, "download", lambda client, url, path: open(path, "w").write("pdf"))
+    monkeypatch.setattr(pipeline, "extract_text", lambda path: long_narr)
+
+    assert pipeline.refetch(conn) == 1
+    pipeline.fetch(conn, None, str(tmp_path))
+    pipeline.parse(conn)
+    assert pipeline.build(conn) == 1
+    assert conn.execute("SELECT status FROM bea_reports WHERE slug='late-report'").fetchone()["status"] == db.STATUS_BUILT
+    assert conn.execute("SELECT COUNT(*) FROM bea_accidents").fetchone()[0] == 1
+
+
+def test_refetch_migration_adds_column_to_legacy_db():
+    """init_schema must add last_refetch_at to DBs created before the stage."""
+    conn = db.connect(":memory:")
+    conn.execute(
+        "CREATE TABLE bea_reports (slug TEXT PRIMARY KEY, detail_url TEXT, title TEXT, "
+        "event_class TEXT, aircraft_type TEXT, registration TEXT, date_of_occurrence TEXT, "
+        "location TEXT, operator TEXT, pdf_url TEXT, pdf_path TEXT, narrative_text TEXT, "
+        "source_tier TEXT, status TEXT NOT NULL DEFAULT 'new', discovered_at INTEGER, "
+        "updated_at INTEGER)"
+    )
+    conn.commit()
+    db.init_schema(conn)  # must not raise; must add the column
+    cols = {r[1] for r in conn.execute("PRAGMA table_info(bea_reports)")}
+    assert "last_refetch_at" in cols
+    db.init_schema(conn)  # idempotent second run
+
+
+def test_fetch_404_detail_parks_row_back_to_skipped(monkeypatch, tmp_path):
+    """Dead detail pages (renamed slugs) must not retry at 'new' every cycle."""
+    conn = _conn()
+    _seed_stub(conn, "dead-slug")
+    assert pipeline.refetch(conn) == 1
+
+    class _Resp:
+        status_code = 404
+
+    def _raise_404(client, url):
+        err = Exception("404 Not Found")
+        err.response = _Resp()
+        raise err
+
+    monkeypatch.setattr(bea, "get_detail_pdf_url", _raise_404)
+    pipeline.fetch(conn, None, str(tmp_path))
+    row = conn.execute(
+        "SELECT status, last_refetch_at FROM bea_reports WHERE slug='dead-slug'"
+    ).fetchone()
+    assert row["status"] == db.STATUS_SKIPPED
+    assert row["last_refetch_at"] is not None
+
+
+def test_fetch_transient_error_keeps_row_new(monkeypatch, tmp_path):
+    """Non-404 failures (timeouts, 5xx) still retry at 'new' next cycle."""
+    conn = _conn()
+    _seed_new(conn, "flaky-slug", "https://bea.aero/detail/flaky-slug/")
+
+    def _raise_timeout(client, url):
+        raise Exception("timeout")
+
+    monkeypatch.setattr(bea, "get_detail_pdf_url", _raise_timeout)
+    pipeline.fetch(conn, None, str(tmp_path))
+    assert conn.execute(
+        "SELECT status FROM bea_reports WHERE slug='flaky-slug'"
+    ).fetchone()["status"] == db.STATUS_NEW
