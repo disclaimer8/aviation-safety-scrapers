@@ -19,6 +19,16 @@ _NARRATIVE_FLOOR = 80  # chars; rows below this are treated as non-report events
 def discover(conn, browser, full=False, max_pages=None):
     """Walk the CENIPA listing and INSERT new case_ids into cenipa_reports.
 
+    KNOWN rows are not simply skipped: CENIPA lists an occurrence without a
+    report PDF first and attaches the PDF to the SAME listing row later — and
+    occasionally renames an existing PDF (the old URL then 404s forever). A
+    known 'new'/'skipped' row whose listing PDF choice differs from the stored
+    pdf_url (NULL→gained, or renamed) gets its pdf fields updated and re-queues
+    to 'new' so this cycle's fetch() downloads it. Costs nothing extra — the
+    listing pages are already walked. (Same stub-freeze class as BEA/CIAIAC,
+    found 2026-07-23; CENIPA variant found 2026-07-26: 16 frozen PDF-less
+    stubs + 44 rows retrying a 404 URL every cycle.)
+
     Args:
         conn:       sqlite3 connection (row_factory=sqlite3.Row)
         browser:    CenipaBrowser instance (already started / used as ctx-mgr)
@@ -26,7 +36,7 @@ def discover(conn, browser, full=False, max_pages=None):
         max_pages:  override the last_page() value (useful for smoke runs)
 
     Returns:
-        Number of newly inserted rows.
+        Number of newly inserted rows (re-queued rows are logged, not counted).
     """
     # Page 1: fetch HTML + determine last page
     html = browser.get_listing_html(1)
@@ -51,11 +61,40 @@ def discover(conn, browser, full=False, max_pages=None):
             for row in rows:
                 try:
                     case_id = row["case_id"]
-                    # Skip if already known
-                    exists = conn.execute(
-                        "SELECT 1 FROM cenipa_reports WHERE case_id=?", (case_id,)
+                    existing = conn.execute(
+                        "SELECT status, pdf_url FROM cenipa_reports WHERE case_id=?",
+                        (case_id,),
                     ).fetchone()
-                    if exists:
+                    if existing:
+                        # Known stub whose listing PDF choice changed (gained a
+                        # PDF, or the file was renamed after the old URL 404ed):
+                        # store the new links and put it back through
+                        # fetch→parse→build. Built/parsed rows are never touched.
+                        pdf_url, lang = cenipa.make_pdf_choice(row)
+                        if (
+                            pdf_url
+                            and pdf_url != existing["pdf_url"]
+                            and existing["status"] in (db.STATUS_NEW, db.STATUS_SKIPPED)
+                        ):
+                            conn.execute(
+                                "UPDATE cenipa_reports "
+                                "SET pdf_url=?, pdf_url_pt=?, pdf_url_en=?, lang=?, "
+                                "    status=?, updated_at=? WHERE case_id=?",
+                                (
+                                    pdf_url,
+                                    row.get("pdf_url_pt"),
+                                    row.get("pdf_url_en"),
+                                    lang,
+                                    db.STATUS_NEW,
+                                    db.now_ms(),
+                                    case_id,
+                                ),
+                            )
+                            conn.commit()
+                            print(
+                                f"[cenipa discover] re-queued {case_id}: listing pdf now {pdf_url}",
+                                file=sys.stderr,
+                            )
                         continue
 
                     pdf_url, lang = cenipa.make_pdf_choice(row)
@@ -140,6 +179,7 @@ def fetch(conn, browser, pdf_dir):
             safe_case_id = case_id.replace("/", "_").replace(" ", "_")
             dest = os.path.join(pdf_dir, safe_case_id + ".pdf")
             last_exc = None
+            all_404 = True
             for u in candidates:
                 try:
                     time.sleep(cenipa.DELAY)
@@ -148,9 +188,28 @@ def fetch(conn, browser, pdf_dir):
                     break
                 except Exception as exc:  # noqa: BLE001
                     last_exc = exc
+                    if "HTTP 404" not in str(exc):
+                        all_404 = False
             if pdf_path is None:
-                print(f"[cenipa fetch] {case_id}: download {last_exc}", file=sys.stderr)
-                continue  # leave status='new' so next run retries
+                if all_404:
+                    # Every language variant is gone — the bureau removed or
+                    # renamed the file. Retrying next cycle can't help; park the
+                    # row. discover() re-queues it if the listing's PDF URL ever
+                    # changes. (Pre-fix: 44 rows retried the same 404 URLs every
+                    # weekly cycle since 2026-06-03.)
+                    conn.execute(
+                        "UPDATE cenipa_reports SET status=?, updated_at=? WHERE case_id=?",
+                        (db.STATUS_SKIPPED, db.now_ms(), case_id),
+                    )
+                    conn.commit()
+                    print(
+                        f"[cenipa fetch] {case_id}: all pdf variants 404 — parked to skipped",
+                        file=sys.stderr,
+                    )
+                else:
+                    # Transient (403/5xx/timeout): stay 'new' so next run retries.
+                    print(f"[cenipa fetch] {case_id}: download {last_exc}", file=sys.stderr)
+                continue
 
         try:
             conn.execute(

@@ -487,3 +487,182 @@ def test_build_mixed_rows():
     ).fetchone()
     assert pdf_rep["status"] == db.STATUS_BUILT
     assert scan_rep["status"] == db.STATUS_SKIPPED
+
+
+# ── discover: stub revival (late-published / renamed PDFs, 2026-07-26) ────────
+
+def _listing_row(case_id, *, pdf_url_pt=None, pdf_url_en=None):
+    return {
+        "case_id": case_id,
+        "pdf_url_pt": pdf_url_pt,
+        "pdf_url_en": pdf_url_en,
+        "classificacao": "ACIDENTE",
+        "occurrence_type": "[LOC-G]",
+        "aircraft": "AB-115",
+        "registration": "PT-XYZ",
+        "date_of_occurrence": "2024-05-01",
+        "location": "GOIÂNIA",
+    }
+
+
+def _discover_rows(monkeypatch, rows):
+    """Bypass HTML parsing: discover sees exactly `rows` on page 1."""
+    monkeypatch.setattr(cenipa, "DELAY", 0)
+    monkeypatch.setattr(cenipa, "parse_listing", lambda html: rows)
+    return FakeBrowser()
+
+
+def _insert_status(conn, case_id, status, *, pdf_url=None, pdf_url_pt=None, pdf_url_en=None):
+    conn.execute(
+        "INSERT INTO cenipa_reports "
+        "(case_id, pdf_url, pdf_url_pt, pdf_url_en, status, discovered_at, updated_at) "
+        "VALUES (?,?,?,?,?,?,?)",
+        (case_id, pdf_url, pdf_url_pt, pdf_url_en, status, db.now_ms(), db.now_ms()),
+    )
+    conn.commit()
+
+
+def test_discover_requeues_skipped_stub_that_gained_pdf(monkeypatch):
+    """A terminal 'skipped' PDF-less stub revives when the listing gains a PDF."""
+    conn = _conn()
+    _insert_status(conn, "A-001/CENIPA/2024", db.STATUS_SKIPPED)
+    gained = _listing_row(
+        "A-001/CENIPA/2024",
+        pdf_url_pt="https://sistema.cenipa.fab.mil.br/pdf/a-001_pt.pdf",
+    )
+    browser = _discover_rows(monkeypatch, [gained])
+
+    assert discover(conn, browser, max_pages=1) == 0  # nothing NEW inserted
+    row = conn.execute(
+        "SELECT status, pdf_url, pdf_url_pt, lang FROM cenipa_reports "
+        "WHERE case_id='A-001/CENIPA/2024'"
+    ).fetchone()
+    assert row["status"] == db.STATUS_NEW
+    assert row["pdf_url"] == gained["pdf_url_pt"]
+    assert row["pdf_url_pt"] == gained["pdf_url_pt"]
+    assert row["lang"] == "pt"
+
+
+def test_discover_requeues_renamed_pdf(monkeypatch):
+    """A 404-parked row revives when the listing's PDF URL changes."""
+    conn = _conn()
+    old = "https://sistema.cenipa.fab.mil.br/pdf/RF_OLD.pdf"
+    new = "https://sistema.cenipa.fab.mil.br/pdf/RF_RENAMED.pdf"
+    _insert_status(conn, "A-002/CENIPA/2020", db.STATUS_SKIPPED, pdf_url=old, pdf_url_pt=old)
+    browser = _discover_rows(
+        monkeypatch, [_listing_row("A-002/CENIPA/2020", pdf_url_pt=new)]
+    )
+
+    discover(conn, browser, max_pages=1)
+    row = conn.execute(
+        "SELECT status, pdf_url FROM cenipa_reports WHERE case_id='A-002/CENIPA/2020'"
+    ).fetchone()
+    assert row["status"] == db.STATUS_NEW
+    assert row["pdf_url"] == new
+
+
+def test_discover_same_url_does_not_ping_pong(monkeypatch):
+    """A parked row whose listing URL is unchanged stays parked."""
+    conn = _conn()
+    url = "https://sistema.cenipa.fab.mil.br/pdf/RF_GONE.pdf"
+    _insert_status(conn, "A-003/CENIPA/2019", db.STATUS_SKIPPED, pdf_url=url, pdf_url_pt=url)
+    browser = _discover_rows(
+        monkeypatch, [_listing_row("A-003/CENIPA/2019", pdf_url_pt=url)]
+    )
+
+    discover(conn, browser, max_pages=1)
+    row = conn.execute(
+        "SELECT status FROM cenipa_reports WHERE case_id='A-003/CENIPA/2019'"
+    ).fetchone()
+    assert row["status"] == db.STATUS_SKIPPED
+
+
+def test_discover_leaves_built_rows_alone(monkeypatch):
+    """A built row must never be re-queued even if the listing changes."""
+    conn = _conn()
+    _insert_status(conn, "A-004/CENIPA/2023", db.STATUS_BUILT)
+    browser = _discover_rows(
+        monkeypatch,
+        [_listing_row(
+            "A-004/CENIPA/2023",
+            pdf_url_en="https://sistema.cenipa.fab.mil.br/pdf/a-004_en.pdf",
+        )],
+    )
+
+    discover(conn, browser, max_pages=1)
+    row = conn.execute(
+        "SELECT status, pdf_url FROM cenipa_reports WHERE case_id='A-004/CENIPA/2023'"
+    ).fetchone()
+    assert row["status"] == db.STATUS_BUILT
+    assert row["pdf_url"] is None
+
+
+# ── fetch: permanent-404 parking (2026-07-26) ─────────────────────────────────
+
+def _http404(url):
+    return RuntimeError(f"[cenipa download] HTTP 404 for {url}")
+
+
+def test_fetch_parks_row_when_every_variant_404s(monkeypatch, tmp_path):
+    """44 rows retried the same 404 URLs every weekly cycle — now they park."""
+    monkeypatch.setattr(cenipa, "DELAY", 0)
+
+    class Gone(FakeBrowser):
+        def download_pdf(self, url, dest):
+            raise _http404(url)
+
+    conn = _conn()
+    _insert_status(conn, "A-006/CENIPA/1991", db.STATUS_NEW,
+                   pdf_url="http://x/pt.pdf", pdf_url_pt="http://x/pt.pdf",
+                   pdf_url_en="http://x/en.pdf")
+
+    fetch(conn, Gone(), str(tmp_path))
+    row = conn.execute(
+        "SELECT status FROM cenipa_reports WHERE case_id='A-006/CENIPA/1991'"
+    ).fetchone()
+    assert row["status"] == db.STATUS_SKIPPED
+
+
+def test_fetch_mixed_404_and_transient_stays_new(monkeypatch, tmp_path):
+    """One variant 404s, the other 503s — not proven gone, keep retrying."""
+    monkeypatch.setattr(cenipa, "DELAY", 0)
+
+    class Mixed(FakeBrowser):
+        def download_pdf(self, url, dest):
+            if url.endswith("en.pdf"):
+                raise _http404(url)
+            raise RuntimeError(f"[cenipa download] HTTP 503 for {url}")
+
+    conn = _conn()
+    _insert_status(conn, "A-008/CENIPA/2025", db.STATUS_NEW,
+                   pdf_url="http://x/en.pdf", pdf_url_pt="http://x/pt.pdf",
+                   pdf_url_en="http://x/en.pdf")
+
+    fetch(conn, Mixed(), str(tmp_path))
+    row = conn.execute(
+        "SELECT status FROM cenipa_reports WHERE case_id='A-008/CENIPA/2025'"
+    ).fetchone()
+    assert row["status"] == db.STATUS_NEW
+
+
+def test_fetch_second_variant_succeeds_after_404(monkeypatch, tmp_path):
+    monkeypatch.setattr(cenipa, "DELAY", 0)
+
+    class EnGone(FakeBrowser):
+        def download_pdf(self, url, dest):
+            if url.endswith("en.pdf"):
+                raise _http404(url)
+            with open(dest, "wb") as fh:
+                fh.write(_PDF_BYTES)
+
+    conn = _conn()
+    _insert_status(conn, "A-009/CENIPA/2025", db.STATUS_NEW,
+                   pdf_url="http://x/en.pdf", pdf_url_pt="http://x/pt.pdf",
+                   pdf_url_en="http://x/en.pdf")
+
+    fetch(conn, EnGone(), str(tmp_path))
+    row = conn.execute(
+        "SELECT status, pdf_path FROM cenipa_reports WHERE case_id='A-009/CENIPA/2025'"
+    ).fetchone()
+    assert row["status"] == db.STATUS_FETCHED
+    assert row["pdf_path"]
