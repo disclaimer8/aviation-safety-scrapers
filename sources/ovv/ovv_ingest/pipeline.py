@@ -24,6 +24,9 @@ from .text import make_site_slug
 _NARRATIVE_FLOOR = 300
 _PDF_TEXT_FLOOR = 2000  # below this a doc is a scan/letter → try next doc
 _MAX_DOC_TRIES = 3
+# A section is short; a report is not. Two real OVV reports carry a section
+# word in the filename and run past 230,000 characters.
+_SECTION_MAX = 20000
 OCR_LANG = "nld+eng"  # OVV reports are Dutch, many also English; tesseract langs
 
 
@@ -117,51 +120,48 @@ def fetch(conn, client, pdf_dir="pdfs", enable_ocr=True):
             conn.commit()
             continue
 
-        # Only documents that are reports are candidates. Sections
-        # (recommendations, summaries, letters, responses) are never stored as
-        # the narrative — not even when they are the only thing linked, which
-        # is common because OVV publishes recommendations months ahead of the
-        # report. 14 of the 386 built rows held a section rather than a report
-        # before this, including several whose Dutch names were already ranked
-        # last: ordering cannot help when there is nothing better to order.
-        # Not downloading them at all is also one fewer request per case.
-        candidates = [u for u in d["doc_urls"] if not ovv.is_noise_doc(u)]
-        if not candidates:
-            print(f"[ovv fetch] {case_id}: only sections published so far "
-                  f"({len(d['doc_urls'])} document(s)) — staying 'new'",
-                  file=sys.stderr)
-            conn.execute(
-                "UPDATE ovv_reports SET title=?, summary=?, registration=?, "
-                "date_of_occurrence=?, updated_at=? WHERE case_id=?",
-                (*base_meta, db.now_ms(), case_id),
-            )
-            conn.commit()
-            continue
+        # Reports are tried before sections, and a section is only considered
+        # when no report could be read at all. Ranking alone was not enough:
+        # when the report is a scan with no text layer, a recommendations
+        # chapter or an appendix would out-score it on length and become the
+        # narrative — which is how sections got into 26 of the 386 built rows.
+        # A scanned report belongs in OCR, not replaced by its appendix.
+        ranked = d["doc_urls"][:_MAX_DOC_TRIES]
+        reports = [u for u in ranked if not ovv.is_noise_doc(u)]
+        sections = [u for u in ranked if ovv.is_noise_doc(u)]
 
-        text, used_url, lang = "", None, None
-        got_a_document = False
-        best_path = None
         pdf_path = os.path.join(pdf_dir, f"{case_id[:60]}.pdf")
-        for n, doc_url in enumerate(candidates[:_MAX_DOC_TRIES]):
-            time.sleep(ovv.DELAY)
-            # One file per candidate. A single shared path meant the OCR
-            # fallback below could run against whichever document happened to
-            # be downloaded last rather than the one whose text we kept.
-            try_path = pdf_path if n == 0 else f"{pdf_path[:-4]}-{n}.pdf"
-            try:
-                ovv.download_pdf(client, doc_url, try_path)
-                t = pdf.extract_text(try_path)
-            except Exception as e:
-                print(f"[ovv fetch] {case_id}: doc failed: {e}", file=sys.stderr)
-                continue
-            got_a_document = True
-            if len(t) >= _PDF_TEXT_FLOOR:
-                text, used_url, lang = t, doc_url, ovv.doc_lang(doc_url)
-                best_path = try_path
-                break
-            if len(t) > len(text) or best_path is None:
-                text, used_url, lang = t, doc_url, ovv.doc_lang(doc_url)
-                best_path = try_path
+        text, used_url, lang, best_path = "", None, None, None
+        got_a_document = False
+
+        def _try(doc_urls, offset):
+            """Download each in turn; keep the longest text. Returns state."""
+            nonlocal text, used_url, lang, best_path, got_a_document
+            for n, doc_url in enumerate(doc_urls):
+                time.sleep(ovv.DELAY)
+                # One file per candidate. A single shared path meant the OCR
+                # fallback below could run against whichever document happened
+                # to be written last rather than the one whose text we kept.
+                idx = offset + n
+                try_path = pdf_path if idx == 0 else f"{pdf_path[:-4]}-{idx}.pdf"
+                try:
+                    ovv.download_pdf(client, doc_url, try_path)
+                    t = pdf.extract_text(try_path)
+                except Exception as e:
+                    print(f"[ovv fetch] {case_id}: doc failed: {e}", file=sys.stderr)
+                    continue
+                got_a_document = True
+                if len(t) > len(text) or best_path is None:
+                    text, used_url, lang = t, doc_url, ovv.doc_lang(doc_url)
+                    best_path = try_path
+                if len(t) >= _PDF_TEXT_FLOOR:
+                    return True
+            return False
+
+        if not _try(reports, 0) and not got_a_document:
+            # No report was readable — a section may still be a real report
+            # with a misleading filename, so it is worth looking at.
+            _try(sections, len(reports))
 
         if not got_a_document:
             # Every candidate download failed. This row has documents — we
@@ -177,6 +177,32 @@ def fetch(conn, client, pdf_dir="pdfs", enable_ocr=True):
             print(f"[ovv fetch] {case_id}: all {len(d['doc_urls'][:_MAX_DOC_TRIES])} "
                   f"document(s) failed — staying 'new' for the next cycle",
                   file=sys.stderr)
+            conn.execute(
+                "UPDATE ovv_reports SET title=?, summary=?, registration=?, "
+                "date_of_occurrence=?, updated_at=? WHERE case_id=?",
+                (*base_meta, db.now_ms(), case_id),
+            )
+            conn.commit()
+            continue
+
+        if used_url and ovv.is_noise_doc(used_url) and len(text) < _SECTION_MAX:
+            # What we ended up with is a section of the investigation — a
+            # recommendations chapter, a summary, a letter — rather than the
+            # report of it. Ranking already pushes those last, but that cannot
+            # help when a section is the only thing linked, which is common:
+            # OVV publishes recommendations months before the report. 26 of the
+            # 386 built rows held one, several of them Dutch names that were
+            # already ranked last.
+            #
+            # The length test is what keeps this honest. Two of those 26 are
+            # genuine 230,000-character OVV reports that merely have a section
+            # word in the filename, and dropping them would be a worse error
+            # than the one being fixed. A section is short; a report is not.
+            #
+            # Staying 'new' means a later cycle can still take the report.
+            print(f"[ovv fetch] {case_id}: best document is a {len(text)}-char "
+                  f"section ({used_url.rstrip('/').rsplit('/', 1)[-1][:50]}) "
+                  f"— staying 'new'", file=sys.stderr)
             conn.execute(
                 "UPDATE ovv_reports SET title=?, summary=?, registration=?, "
                 "date_of_occurrence=?, updated_at=? WHERE case_id=?",

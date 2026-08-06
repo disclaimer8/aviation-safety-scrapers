@@ -227,6 +227,20 @@ class TestASectionIsNotAReport:
         )
         assert _status(conn, "crash-ph-abc-somewhere") == db.STATUS_PARSED
 
+    def test_a_long_document_with_a_section_word_in_its_name_is_kept(self, tmp_path, monkeypatch):
+        # Found by checking the fix against the live database before applying
+        # it: two of the 26 flagged rows are genuine OVV reports of ~240,000
+        # characters whose filenames merely contain a section word
+        # ("safe_flight_routes_responses_to_escalating_conflicts_2021_report",
+        # and the MH17 recommendations follow-up). Dropping those would have
+        # been a worse error than the one being fixed.
+        conn = self._fetch_with(
+            tmp_path, monkeypatch,
+            "https://onderzoeksraad.nl/2019_interactieve_rapportage_aanbevelingen_mh17-pdf/",
+            "DUTCH SAFETY BOARD " + "x" * 240000,
+        )
+        assert _status(conn, "crash-ph-abc-somewhere") == db.STATUS_PARSED
+
     def test_a_section_alongside_a_report_is_simply_outranked(self, tmp_path, monkeypatch):
         # When both exist the ranking already picks the report, and the row
         # must build normally — the guard must not fire here.
