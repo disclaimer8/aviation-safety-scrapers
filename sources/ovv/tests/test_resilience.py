@@ -152,6 +152,57 @@ class TestDiscoverMustNotMistakeFailureForTheEnd:
         assert pipeline.discover(conn, FakeClient()) == 2
 
 
+class TestTheDateComesOffThePageWhenTheTitleHasNone:
+    """OVV titles are descriptive, so 205 of 386 rows reached the corpus
+    dateless and the loader drops dateless rows."""
+
+    _META = ("<p>Investigation start date 22 December 2003 "
+             "Publish date report 1 January 2005 Status Closed</p>")
+
+    def _detail(self, extra=""):
+        return (f'<h1>Loss of steering on a slippery taxiway, Boeing 737-700</h1>'
+                f'<p>{"S" * 200}</p>{extra}'
+                f'<a href="https://onderzoeksraad.nl/ab12report_x_en-pdf/">doc</a>')
+
+    def _run(self, tmp_path, monkeypatch, detail_html, narrative):
+        monkeypatch.setattr(ovv, "DELAY", 0)
+        monkeypatch.setattr(pipeline.pdf, "extract_text", lambda p: narrative)
+        conn = _conn()
+        _seed_new(conn, "loss-of-steering", _D1)
+        client = FakeClient(urls={
+            _D1: detail_html,
+            "https://onderzoeksraad.nl/ab12report_x_en-pdf/": b"%PDF",
+        })
+        pipeline.fetch(conn, client, str(tmp_path))
+        return conn.execute(
+            "SELECT date_of_occurrence FROM ovv_reports WHERE case_id='loss-of-steering'"
+        ).fetchone()["date_of_occurrence"]
+
+    def test_the_start_date_is_used_when_the_report_confirms_it(self, tmp_path, monkeypatch):
+        narrative = ("Loss of steering of the Easyjet Boeing B737-700 at "
+                     "Amsterdam Airport Schiphol on 22 December 2003. " + "x" * 3000)
+        assert self._run(tmp_path, monkeypatch, self._detail(self._META), narrative) == "2003-12-22"
+
+    def test_an_unconfirmed_start_date_is_not_written(self, tmp_path, monkeypatch):
+        # Measured: the field is the day the investigation opened, not the
+        # occurrence, in about one row in seven — by as much as 73 days.
+        narrative = "The occurrence took place on 9 November 2013. " + "x" * 3000
+        assert self._run(tmp_path, monkeypatch, self._detail(self._META), narrative) is None
+
+    def test_a_date_already_in_the_title_still_wins(self, tmp_path, monkeypatch):
+        # The title date is the occurrence by construction; the page field is
+        # only the fallback.
+        titled = ('<h1>Crash PH-ABC at Somewhere on 6 June 2021</h1>'
+                  f'<p>{"S" * 200}</p>{self._META}'
+                  '<a href="https://onderzoeksraad.nl/ab12report_x_en-pdf/">doc</a>')
+        narrative = "on 22 December 2003 and also 6 June 2021. " + "x" * 3000
+        assert self._run(tmp_path, monkeypatch, titled, narrative) == "2021-06-06"
+
+    def test_a_page_without_the_field_leaves_the_row_dateless(self, tmp_path, monkeypatch):
+        narrative = "on 22 December 2003 at Schiphol. " + "x" * 3000
+        assert self._run(tmp_path, monkeypatch, self._detail(), narrative) is None
+
+
 class TestSectionalDocumentsMustNotOutrankTheReport:
     @pytest.mark.parametrize("name", [
         "ab12cd34ef56recommendations_report_en-pdf",

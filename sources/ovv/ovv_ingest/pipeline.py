@@ -18,7 +18,7 @@ import os
 import sys
 import time
 
-from . import db, ovv, pdf
+from . import dates, db, ovv, pdf
 from .text import make_site_slug
 
 _NARRATIVE_FLOOR = 300
@@ -229,6 +229,20 @@ def fetch(conn, client, pdf_dir="pdfs", enable_ocr=True):
                 text, tier, lang = summary, "html", "en"
             else:
                 tier = "scanned"
+
+        # OVV titles are descriptive, so parse_detail finds a date only when one
+        # was written into the headline — 205 of 386 rows reached the corpus
+        # dateless, and the loader drops those. The page's "Investigation start
+        # date" field fills the gap, but only when the report text states the
+        # same date: on its own that field is the day the investigation opened
+        # for about one row in seven, by as much as 73 days. See dates.py.
+        event_date = d["event_date"]
+        if not event_date:
+            event_date = dates.corroborated_date(dates.parse_start_date(html), text)
+            if event_date:
+                print(f"[ovv fetch] {case_id}: date {event_date} "
+                      f"(page field, confirmed by the report)")
+        base_meta = (d["title"], d["summary"], d["registration"], event_date)
 
         try:
             conn.execute(
