@@ -1,0 +1,14 @@
+# /etc/systemd/system/ahac-cycle.timer
+#
+# AHAC publishes a few dozen PDFs in total and adds them rarely, so a monthly
+# walk is ample — a weekly one would re-request the same static listing for no
+# benefit and against the "slow and polite" rule in the repository README.
+[Unit]
+Description=Monthly AHAC (Honduras) ingest cycle
+
+[Timer]
+OnCalendar=*-*-07 04:40 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

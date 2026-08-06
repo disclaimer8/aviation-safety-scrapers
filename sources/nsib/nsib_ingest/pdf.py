@@ -1,9 +1,11 @@
-# aaibmy_ingest/pdf.py
+# nsib_ingest/pdf.py
 import os
 import shlex
 import subprocess
 import tempfile
 import uuid
+
+MIN_NARRATIVE = 600
 
 
 def _ocr_remote(pdf_path, lang, host):
@@ -60,12 +62,17 @@ def ocr_extract(pdf_path, lang="eng"):
     OCR a scanned (image-only) PDF and return the recognised text.
 
     Reusable OCR fallback for image-only reports whose text layer is empty or
-    degenerate. When OCR_REMOTE is set the heavy ocrmypdf runs on that host;
-    otherwise it runs locally. --force-ocr re-OCRs even a degenerate text layer;
-    --output-type none skips rewriting the PDF; --sidecar captures the text.
+    degenerate.  Runs ocrmypdf with --force-ocr (re-OCR even over an existing
+    degenerate text layer), --output-type none (skip writing a rewritten PDF —
+    we only want the text), and --sidecar <tmp.txt> (emit OCR text to a file we
+    then read back).  Output PDF target is '-' (stdout, discarded with
+    --output-type none).
 
-    lang passes straight to tesseract via --language, so multi-language strings
-    like "deu+fra+ita" work. Any failure/timeout/missing binary returns "".
+    lang is passed straight to tesseract via ocrmypdf --language, so callers can
+    use multi-language strings, e.g. "ukr+rus" (Ukraine) or "eng" (Kenya/Nigeria).
+
+    Graceful: any ocrmypdf failure, timeout, or missing binary returns "".
+    Generous 600s per-PDF timeout (large multi-page scans are slow).
     """
     if not pdf_path:
         return ""
@@ -100,3 +107,25 @@ def ocr_extract(pdf_path, lang="eng"):
             os.unlink(sidecar)
         except OSError:
             pass
+
+
+def ocr_image(image_path, lang="eng"):
+    """
+    OCR a standalone image (JPG/PNG) report scan and return recognised text.
+
+    NSIB historically published some final reports as scanned JPGs (not PDFs).
+    For an image input we run tesseract directly to stdout.  Graceful: missing
+    binary, timeout, or non-zero exit returns "".
+    """
+    if not image_path:
+        return ""
+    try:
+        out = subprocess.run(
+            ["tesseract", str(image_path), "stdout", "-l", lang],
+            capture_output=True, timeout=600,
+        )
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return ""
+    if out.returncode != 0:
+        return ""
+    return out.stdout.decode("utf-8", "replace").strip()

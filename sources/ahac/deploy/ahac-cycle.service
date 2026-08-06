@@ -1,0 +1,14 @@
+# /etc/systemd/system/ahac-cycle.service
+[Unit]
+Description=AHAC (Honduras) ingest cycle (monthly; discover->fetch->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/ahac
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/ahac/ahac-cycle.log
+StandardError=append:/opt/ahac/ahac-cycle.log
+TimeoutStartSec=7200

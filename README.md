@@ -1,6 +1,6 @@
 # aviation-safety-scrapers
 
-A collection of **43 independent scrapers** for public-record civil aviation
+A collection of **45 independent scrapers** for public-record civil aviation
 accident and incident reports, each targeting a different source — national
 **Safety Investigation Authorities** (AAIB, BEA, BFU, JTSB, …), the US **NTSB**
 bulk dump, **MAK**, **ATSB**, and **Wikidata** — across six continents.
@@ -37,7 +37,7 @@ runtime library, so one can be copied, run, or rewritten without touching the
 others.
 
 ```
-sources/         38 Python packages — national Safety Investigation Authorities
+sources/         40 Python packages — national Safety Investigation Authorities
   <code>/
     <code>_ingest/        # Python package (discover/fetch/parse/build + CLI)
     tests/                # pytest unit tests with offline fixtures

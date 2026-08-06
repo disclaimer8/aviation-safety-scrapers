@@ -13,7 +13,7 @@ def _make_client(proxy=None, **_kw):
         timeout=120,
         follow_redirects=True,
         headers=ovv.HEADERS,
-        proxy=proxy or None,
+        transport=httpx.HTTPTransport(proxy=proxy or None, retries=3),
     )
 
 

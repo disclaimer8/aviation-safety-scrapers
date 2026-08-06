@@ -24,6 +24,7 @@ from .text import make_site_slug
 _NARRATIVE_FLOOR = 300
 _PDF_TEXT_FLOOR = 2000  # below this a doc is a scan/letter → try next doc
 _MAX_DOC_TRIES = 3
+OCR_LANG = "nld+eng"  # OVV reports are Dutch, many also English; tesseract langs
 
 
 def discover(conn, client, full=False, max_pages=None):
@@ -59,10 +60,18 @@ def discover(conn, client, full=False, max_pages=None):
     return inserted
 
 
-def fetch(conn, client, pdf_dir="pdfs"):
+def fetch(conn, client, pdf_dir="pdfs", enable_ocr=True):
     """
     For each status='new' row: detail page → ranked docs → first with a
     real text layer wins; summary fallback; doc-less rows stay 'new'.
+
+    When the best doc's text layer stays below _NARRATIVE_FLOOR the PDF is
+    likely a scan/image-only report; if a PDF was downloaded we OCR it (on
+    OCR_REMOTE when set) and keep the OCR text when it recovers more —
+    tier='ocr'. OCR that stays thin falls through to the summary ('html') or
+    'scanned' tier and is dropped by build() (quality self-filter).
+
+    enable_ocr: when False (CI / no OCR host), the OCR fallback is skipped.
     """
     rows = conn.execute(
         "SELECT case_id, detail_url FROM ovv_reports WHERE status=?",
@@ -109,6 +118,15 @@ def fetch(conn, client, pdf_dir="pdfs"):
                 text, used_url, lang = t, doc_url, ovv.doc_lang(doc_url)
 
         tier = "pdf"
+        if (len(text) < _NARRATIVE_FLOOR and enable_ocr
+                and os.path.exists(pdf_path)):
+            ocr_text = pdf.ocr_extract(pdf_path, lang=OCR_LANG)
+            if len(ocr_text) > len(text):
+                text, tier = ocr_text, "ocr"
+                if not used_url and d["doc_urls"]:
+                    used_url = d["doc_urls"][0]
+                    lang = ovv.doc_lang(used_url)
+
         if len(text) < _NARRATIVE_FLOOR:
             summary = d["summary"] or ""
             if len(summary) > len(text):

@@ -22,6 +22,8 @@ from . import aaibmy, db, pdf
 from .text import make_site_slug
 
 _NARRATIVE_FLOOR = 300
+OCR_LANG = "eng"  # AAIB Malaysia reports are native English (Malay copies are
+# dropped upstream); tesseract language for scanned/image-only PDFs.
 
 
 def discover(conn, client, full=False):
@@ -86,8 +88,15 @@ def discover(conn, client, full=False):
     return inserted
 
 
-def fetch(conn, client, pdf_dir="pdfs"):
-    """For each status='new' row: download the PDF + pdftotext."""
+def fetch(conn, client, pdf_dir="pdfs", enable_ocr=True):
+    """For each status='new' row: download the PDF + pdftotext.
+
+    Image-only (scanned) PDFs have an empty/degenerate text layer; when
+    pdftotext yields less than _NARRATIVE_FLOOR we OCR the PDF (on OCR_REMOTE)
+    and keep the OCR text if it recovered more — tier='ocr'. OCR that stays
+    thin falls through to 'scanned' and is dropped by build() (quality
+    self-filter). enable_ocr=False (CI / no OCR host) skips the fallback.
+    """
     rows = conn.execute(
         "SELECT pdf_url, case_id FROM aaibmy_reports WHERE status=?",
         (db.STATUS_NEW,),
@@ -107,8 +116,15 @@ def fetch(conn, client, pdf_dir="pdfs"):
             print(f"[aaibmy fetch] {case_id}: pdf failed: {e}",
                   file=sys.stderr)
             continue  # stays 'new'
+
+        if len(text) < _NARRATIVE_FLOOR and pdf_path and enable_ocr:
+            ocr_text = pdf.ocr_extract(pdf_path, lang=OCR_LANG)
+            if len(ocr_text) > len(text):
+                text = ocr_text
+                tier = "ocr"
+
         if len(text) < _NARRATIVE_FLOOR:
-            tier = "scanned"  # no usable text layer
+            tier = "scanned"  # no usable text layer (OCR did not recover it)
 
         try:
             conn.execute(

@@ -1,8 +1,8 @@
-# ciaiauy_ingest/cli.py
+# ahac_ingest/cli.py
 import argparse
 import os
 
-from . import ciaiauy, db
+from . import ahac, db
 from .pipeline import discover, fetch, parse, build
 
 
@@ -15,8 +15,8 @@ def _make_client(proxy=None):
     transport = httpx.HTTPTransport(proxy=proxy or None, retries=3)
     return httpx.Client(
         headers={
-            "User-Agent": ciaiauy.UA,
-            "Referer": ciaiauy.REFERER,
+            "User-Agent": ahac.UA,
+            "Referer": ahac.REFERER,
         },
         follow_redirects=True,
         timeout=60.0,
@@ -25,15 +25,15 @@ def _make_client(proxy=None):
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(prog="ciaiauy-ingest")
+    ap = argparse.ArgumentParser(prog="ahac-ingest")
     ap.add_argument("mode", choices=["discover", "fetch", "parse", "build", "all"])
-    ap.add_argument("--db", default="ciaiauy.db")
+    ap.add_argument("--db", default="ahac.db")
     ap.add_argument("--pdf-dir", default="pdfs")
     ap.add_argument("--full", action="store_true")
     ap.add_argument(
         "--proxy",
-        default=os.environ.get("CIAIAUY_PROXY"),
-        help="HTTP/SOCKS proxy URL (or set CIAIAUY_PROXY env var)",
+        default=os.environ.get("AHAC_PROXY"),
+        help="HTTP/SOCKS proxy URL (or set AHAC_PROXY env var)",
     )
     args = ap.parse_args(argv)
 

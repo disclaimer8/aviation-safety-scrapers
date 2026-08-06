@@ -121,23 +121,51 @@ def test_normalize_case_id_collapses_space_around_separators():
 # ──────────────────────────────────────────────
 
 def test_make_case_id_prefers_caso():
-    assert ciaiauy.make_case_id("611", "CX-OTA-R") == "caso-611"
+    # A real Caso number wins regardless of registration/url/date.
+    assert ciaiauy.make_case_id("611", "CX-OTA-R", pdf_url="https://x/611.pdf") == "caso-611"
 
 
-def test_make_case_id_falls_back_to_registration():
-    assert ciaiauy.make_case_id(None, "CX-MGP") == "cx-mgp"
+def test_make_case_id_reg_plus_date_when_no_caso():
+    # No caso but a filename event date -> {reg}-{YYYY-MM-DD}, intrinsic.
+    cid = ciaiauy.make_case_id(None, "ZP-BJV", pdf_url="https://x/a.pdf",
+                               date_iso="2015-08-14")
+    assert cid == "zp-bjv-2015-08-14"
 
 
-def test_make_case_id_unknown_fallback():
-    assert ciaiauy.make_case_id(None, None) == "ciaiauy-unknown"
+def test_make_case_id_reg_plus_urlhash_when_no_date():
+    # No caso and no date -> {reg}-{sha1(pdf_url)[:6]}, intrinsic to the report.
+    url = "https://www.gub.uy/x/informe-incidente-cx-byk-r.pdf"
+    cid = ciaiauy.make_case_id(None, "CX-BYK-R", pdf_url=url)
+    assert cid.startswith("cx-byk-r-")
+    assert re.fullmatch(r"cx-byk-r-[0-9a-f]{6}", cid), cid
+    # deterministic — same url always yields the same id
+    assert ciaiauy.make_case_id(None, "CX-BYK-R", pdf_url=url) == cid
 
 
-def test_make_case_id_collision_suffix():
-    taken = {"caso-611"}
-    cid = ciaiauy.make_case_id("611", None, taken=taken)
-    assert cid == "caso-611-2"
-    taken.add(cid)
-    assert ciaiauy.make_case_id("611", None, taken=taken) == "caso-611-3"
+def test_make_case_id_unknown_uses_urlhash():
+    cid = ciaiauy.make_case_id(None, None, pdf_url="https://x/mystery.pdf")
+    assert re.fullmatch(r"ciaiauy-[0-9a-f]{6}", cid), cid
+
+
+def test_make_case_id_is_order_independent_for_same_registration():
+    # C1/C2 regression: two DISTINCT accidents of the SAME registration must get
+    # STABLE distinct ids that do NOT depend on which anchor is seen first.
+    # Feed the same two reports in BOTH orders; each pdf_url must map to the same
+    # id both times (so a prod sync never re-attaches articles to the wrong PDF).
+    a = {"caso": None, "reg": "CX-BYK-R",
+         "url": "https://x/informe-incidente-cx-byk-r.pdf", "date": None}
+    b = {"caso": None, "reg": "CX-BYK-R",
+         "url": "https://x/informe-incidente-cx-byk-r-2014-05-01.pdf",
+         "date": "2014-05-01"}
+
+    def idof(r):
+        return ciaiauy.make_case_id(r["caso"], r["reg"],
+                                    pdf_url=r["url"], date_iso=r["date"])
+
+    fwd = {r["url"]: idof(r) for r in (a, b)}
+    rev = {r["url"]: idof(r) for r in (b, a)}
+    assert fwd == rev                       # order-independent mapping
+    assert fwd[a["url"]] != fwd[b["url"]]   # the two accidents stay distinct
 
 
 # ──────────────────────────────────────────────
@@ -210,3 +238,65 @@ def test_db_table_names_are_ciaiauy_exact(tmp_path):
     # No CIAIAC (Spain) table must exist in a UY database.
     assert "ciaiac_reports" not in names
     assert "ciaiac_accidents" not in names
+
+# ──────────────────────────────────────────────
+# I3 — filename date extraction (YYYYMMDD + trailing DD-MM-YY[YY] pivot)
+# ──────────────────────────────────────────────
+
+def test_date_from_filename_yyyymmdd():
+    assert ciaiauy._date_from_filename("informefinal-20120228-538iberiaec-gpb.pdf") == "2012-02-28"
+    assert ciaiauy._date_from_filename("iinformepreliminar-20150814-zp-bjv_0.pdf") == "2015-08-14"
+
+
+def test_date_from_filename_trailing_dd_mm_yy_pivot():
+    # DD-MM-YY -> 20YY via the year pivot (yy<=current-2000)
+    assert ciaiauy._date_from_filename("informe-final-cx-agg-29-04-14.pdf") == "2014-04-29"
+    assert ciaiauy._date_from_filename("air-france-af393-f-gspa-24-03-16.pdf") == "2016-03-24"
+    assert ciaiauy._date_from_filename("informe-incidente-cx-blw-10-12-14.pdf") == "2014-12-10"
+
+
+def test_date_from_filename_trailing_dd_mm_yyyy():
+    assert ciaiauy._date_from_filename(
+        "informe-final-cx-bgy-18-10-2014_compressed_compressed.pdf") == "2014-10-18"
+
+
+def test_date_from_filename_ignores_model_and_reg_digits():
+    # No date present -> None; model/registration digits must NOT become a date.
+    assert ciaiauy._date_from_filename("informe-final-piper-pa34-200t-cx-jls.pdf") is None
+    assert ciaiauy._date_from_filename("informe-final-no.-582-n3024n.pdf") is None
+    assert ciaiauy._date_from_filename("informe-final-cx-mgp_0.pdf") is None
+
+
+def test_date_from_filename_picks_trailing_date_over_leading_model():
+    # pa32rt-300t (model) precedes the real trailing 01-11-15 date.
+    assert ciaiauy._date_from_filename(
+        "informe-final-piper-pa32rt-300t-01-11-15.pdf") == "2015-11-01"
+
+
+def test_norm_year_pivot():
+    import datetime
+    cur = datetime.date.today().year
+    assert ciaiauy._norm_year("14") == 2014
+    assert ciaiauy._norm_year("2014") == 2014
+    # a 2-digit year that would land in the future maps to 19xx
+    future_yy = f"{(cur - 2000 + 5) % 100:02d}"
+    assert ciaiauy._norm_year(future_yy) >= 1900
+
+
+# ──────────────────────────────────────────────
+# M1 — event_class: plain Incidente -> Incident (not Serious)
+# ──────────────────────────────────────────────
+
+def test_event_class_grave_is_serious():
+    assert ciaiauy._event_class_from_text("Informe Incidente Grave LV-BZP") == "Serious incident"
+    assert ciaiauy._event_class_from_text("655 - CX-CBJ - SINCID - informe final") == "Serious incident"
+
+
+def test_event_class_plain_incidente_is_incident():
+    assert ciaiauy._event_class_from_text("informe-incidente-cx-blw-10-12-14") == "Incident"
+    assert ciaiauy._event_class_from_text("incidente-20140914-informe-496ta") == "Incident"
+
+
+def test_event_class_default_accident():
+    assert ciaiauy._event_class_from_text("Informe Final CX-MGP ACCID") == "Accident"
+

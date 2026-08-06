@@ -18,9 +18,11 @@ import sys
 import time
 
 from . import db, pdf, sacaa
+from .pdf import ocr_extract
 from .text import make_site_slug
 
 _NARRATIVE_FLOOR = 300
+OCR_LANG = "eng"  # SACAA reports are English; tesseract language for scanned PDFs
 
 
 def discover(conn, client, full=False):
@@ -75,10 +77,18 @@ def discover(conn, client, full=False):
     return inserted
 
 
-def fetch(conn, client, pdf_dir="pdfs"):
+def fetch(conn, client, pdf_dir="pdfs", enable_ocr=True):
     """
     For each status='new' row: download the PDF, pdftotext, advance to
     'parsed'.  Per-row try/except — a failing row stays 'new'.
+
+    Image-only (scanned) PDFs have an empty/degenerate text layer; when
+    pdftotext yields less than _NARRATIVE_FLOOR we OCR the PDF (on OCR_REMOTE)
+    and keep the OCR text if it recovered more — tier='ocr'. OCR that stays
+    thin falls through to 'scanned' and is dropped by build() (quality
+    self-filter).
+
+    enable_ocr: when False (CI / no OCR host), the OCR fallback is skipped.
     Returns: number of rows iterated.
     """
     rows = conn.execute(
@@ -97,7 +107,17 @@ def fetch(conn, client, pdf_dir="pdfs"):
             print(f"[sacaa fetch] {case_id}: failed: {e}", file=sys.stderr)
             continue
 
-        tier = "pdf" if len(text) >= _NARRATIVE_FLOOR else "scanned"
+        tier = "pdf"
+        if len(text) < _NARRATIVE_FLOOR and enable_ocr:
+            ocr_text = ocr_extract(pdf_path, lang=OCR_LANG)
+            if len(ocr_text) > len(text):
+                text = ocr_text
+                tier = "ocr"
+        if len(text) >= _NARRATIVE_FLOOR:
+            if tier != "ocr":
+                tier = "pdf"
+        else:
+            tier = "scanned"
         try:
             conn.execute(
                 "UPDATE sacaa_reports SET narrative_text=?, source_tier=?, "

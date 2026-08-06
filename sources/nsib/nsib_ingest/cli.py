@@ -1,8 +1,8 @@
-# ciaiauy_ingest/cli.py
+# nsib_ingest/cli.py
 import argparse
 import os
 
-from . import ciaiauy, db
+from . import nsib, db
 from .pipeline import discover, fetch, parse, build
 
 
@@ -14,10 +14,7 @@ def _make_client(proxy=None):
     # (retries=0). HTTPTransport accepts proxy=None, so one line covers both.
     transport = httpx.HTTPTransport(proxy=proxy or None, retries=3)
     return httpx.Client(
-        headers={
-            "User-Agent": ciaiauy.UA,
-            "Referer": ciaiauy.REFERER,
-        },
+        headers={"User-Agent": nsib.UA, "Referer": nsib.REFERER},
         follow_redirects=True,
         timeout=60.0,
         transport=transport,
@@ -25,16 +22,17 @@ def _make_client(proxy=None):
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(prog="ciaiauy-ingest")
+    ap = argparse.ArgumentParser(prog="nsib-ingest")
     ap.add_argument("mode", choices=["discover", "fetch", "parse", "build", "all"])
-    ap.add_argument("--db", default="ciaiauy.db")
+    ap.add_argument("--db", default="nsib.db")
     ap.add_argument("--pdf-dir", default="pdfs")
     ap.add_argument("--full", action="store_true")
-    ap.add_argument(
-        "--proxy",
-        default=os.environ.get("CIAIAUY_PROXY"),
-        help="HTTP/SOCKS proxy URL (or set CIAIAUY_PROXY env var)",
-    )
+    ap.add_argument("--wp-rest", action="store_true",
+                    help="also enumerate WP REST API for final-report posts (HTML narratives)")
+    ap.add_argument("--no-ocr", action="store_true",
+                    help="skip the OCR fallback in parse (CI / non-mini-PC)")
+    ap.add_argument("--proxy", default=os.environ.get("NSIB_PROXY"),
+                    help="HTTP/SOCKS proxy URL (or set NSIB_PROXY env var)")
     args = ap.parse_args(argv)
 
     conn = db.connect(args.db)
@@ -42,11 +40,11 @@ def main(argv=None):
     client = _make_client(proxy=args.proxy)
     try:
         if args.mode in ("discover", "all"):
-            print("discovered:", discover(conn, client, full=args.full))
+            print("discovered:", discover(conn, client, full=args.full, wp_rest=args.wp_rest))
         if args.mode in ("fetch", "all"):
             print("fetched:", fetch(conn, client, args.pdf_dir))
         if args.mode in ("parse", "all"):
-            print("parsed:", parse(conn))
+            print("parsed:", parse(conn, enable_ocr=not args.no_ocr))
         if args.mode in ("build", "all"):
             print("built:", build(conn))
     finally:

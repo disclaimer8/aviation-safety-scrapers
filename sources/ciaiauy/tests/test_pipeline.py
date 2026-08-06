@@ -65,9 +65,11 @@ def test_discover_inserts_new_rows(monkeypatch):
     assert "caso-611" in by_cid
     assert by_cid["caso-611"]["event_class"] == "Serious incident"
     assert by_cid["caso-611"]["registration"] == "CX-OTA-R"
-    assert "cx-mgp" in by_cid
-    assert "lv-wiz" in by_cid
-    assert by_cid["lv-wiz"]["date_of_occurrence"] == "2015-11-01"
+    # no caso, no date -> {reg}-{urlhash}
+    assert any(c.startswith("cx-mgp-") for c in by_cid), by_cid.keys()
+    # no caso but a date -> {reg}-{date}
+    assert "lv-wiz-2015-11-01" in by_cid
+    assert by_cid["lv-wiz-2015-11-01"]["date_of_occurrence"] == "2015-11-01"
 
 
 def test_discover_idempotent(monkeypatch):
@@ -92,22 +94,41 @@ def test_discover_dedups_same_pdf_across_pages(monkeypatch):
     assert pipeline.discover(conn, _FakeClient()) == 1
 
 
-def test_discover_case_id_collision_suffix(monkeypatch):
-    """Two reports that normalise to the same base case_id get a -2 suffix."""
+def test_discover_same_reg_stable_ids_order_independent(monkeypatch):
+    """C1/C2: two DISTINCT no-caso accidents of the SAME registration get stable
+    distinct ids that map the same pdf_url -> same id regardless of anchor order.
+    """
+    a = {"pdf_url": "https://www.gub.uy/x/informe-incidente-cx-byk-r.pdf",
+         "title": "CX-BYK-R", "registration": "CX-BYK-R",
+         "event_class": "Incident", "caso": None, "date_of_occurrence": None}
+    b = {"pdf_url": "https://www.gub.uy/x/informe-incidente-cx-byk-r-2014-05-01.pdf",
+         "title": "CX-BYK-R", "registration": "CX-BYK-R",
+         "event_class": "Incident", "caso": None, "date_of_occurrence": "2014-05-01"}
+
+    def _run(order):
+        conn = _conn()
+        monkeypatch.setattr(ciaiauy, "parse_listing", lambda html: list(order))
+        monkeypatch.setattr(ciaiauy, "DELAY", 0)
+        assert pipeline.discover(conn, _FakeClient()) == 2
+        return {r["pdf_url"]: r["case_id"] for r in
+                conn.execute("SELECT pdf_url, case_id FROM ciaiauy_reports")}
+
+    fwd = _run([a, b])
+    rev = _run([b, a])
+    assert fwd == rev                              # same url -> same id either order
+    assert len(set(fwd.values())) == 2            # the two accidents stay distinct
+    assert fwd[b["pdf_url"]] == "cx-byk-r-2014-05-01"
+    assert fwd[a["pdf_url"]].startswith("cx-byk-r-")
+
+
+def test_discover_warns_on_zero_anchors(monkeypatch, capsys):
+    """I1 tripwire: a seed yielding 0 PDF anchors emits a grep-able WARN."""
     conn = _conn()
-    rows = [
-        {"pdf_url": "https://www.gub.uy/x/a-611.pdf", "title": "611 A",
-         "registration": "CX-AAA", "event_class": "Accident", "caso": "611",
-         "date_of_occurrence": None},
-        {"pdf_url": "https://www.gub.uy/x/b-611.pdf", "title": "611 B",
-         "registration": "CX-BBB", "event_class": "Accident", "caso": "611",
-         "date_of_occurrence": None},
-    ]
-    monkeypatch.setattr(ciaiauy, "parse_listing", lambda html: list(rows))
+    monkeypatch.setattr(ciaiauy, "parse_listing", lambda html: [])
     monkeypatch.setattr(ciaiauy, "DELAY", 0)
-    assert pipeline.discover(conn, _FakeClient()) == 2
-    cids = {r["case_id"] for r in conn.execute("SELECT case_id FROM ciaiauy_reports")}
-    assert cids == {"caso-611", "caso-611-2"}
+    pipeline.discover(conn, _FakeClient())
+    err = capsys.readouterr().err
+    assert "[ciaiauy WARN] seed yielded 0 anchors" in err
 
 
 # ── fetch ─────────────────────────────────────────────────────────────────────
