@@ -7,7 +7,9 @@ discover(): GET the static archive page, parse all DOCUMENTO/ PDF links,
 fetch(): for each status='new' row, download the PDF (with Referer), advance
   to 'fetched'. Per-row try/except: a download failure keeps row at 'new'.
 
-parse(): extract text via pdftotext.
+parse(): extract text via pdftotext, and recover the occurrence date from it
+  (see dates.py) — the listing carries filenames only, so the report text is
+  the only place a date exists.
   'pdf'     -- text >= MIN_NARRATIVE (600 chars)
   'short'   -- text between SCANNED_MAX and MIN_NARRATIVE
   'scanned' -- text below SCANNED_MAX (image-only / scanned)
@@ -21,6 +23,7 @@ import sys
 import time
 
 from . import ahac, db, text
+from .dates import recover_event_date
 from .pdf import extract_text, MIN_NARRATIVE, SCANNED_MAX
 
 _NARRATIVE_FLOOR = 80  # chars; rows with less text are non-usable
@@ -41,6 +44,19 @@ def discover(conn, client, full=False):
     )
 
     rows = ahac.parse_listing(html_content)
+    if not rows:
+        # The href pattern is pinned to a literal percent-encoded directory
+        # (Documentos/ACCIDENTES%20E%20INCIDENTES/DOCUMENTO/). A re-encoding or
+        # a moved directory makes it match nothing, and discover would then
+        # insert zero rows and report success — the source goes quiet and the
+        # weekly timer keeps reporting green. AHAC always publishes a listing,
+        # so zero links means the page changed, not that the archive emptied.
+        raise RuntimeError(
+            f"[ahac discover] {ahac.INDEX_URL} served "
+            f"{len(html_content)} bytes but yielded 0 document links — "
+            "listing markup or the DOCUMENTO path has changed"
+        )
+
     inserted = 0
 
     for row in rows:
@@ -121,7 +137,7 @@ def parse(conn):
     Returns: number of rows processed.
     """
     rows = conn.execute(
-        "SELECT case_id, pdf_path FROM ahac_reports WHERE status=?",
+        "SELECT case_id, pdf_path, date_of_occurrence FROM ahac_reports WHERE status=?",
         (db.STATUS_FETCHED,),
     ).fetchall()
 
@@ -138,11 +154,23 @@ def parse(conn):
         else:
             narrative, tier = "", "none"
 
+        # The listing is filenames only, so this is the sole place an
+        # occurrence date can come from. Without it every AHAC row reaches the
+        # corpus dateless and the occurrences loader drops it — the bureau was
+        # invisible for that reason alone. Anything already known wins: the
+        # text is the fallback, not the authority.
+        event_date = row["date_of_occurrence"]
+        if not event_date and narrative:
+            event_date, basis = recover_event_date(narrative)
+            if event_date:
+                print(f"[ahac parse] {row['case_id']}: date {event_date} ({basis})")
+
         conn.execute(
             "UPDATE ahac_reports "
-            "SET narrative_text=?, source_tier=?, status=?, updated_at=? "
-            "WHERE case_id=?",
-            (narrative, tier, db.STATUS_PARSED, db.now_ms(), row["case_id"]),
+            "SET narrative_text=?, source_tier=?, date_of_occurrence=?, "
+            "status=?, updated_at=? WHERE case_id=?",
+            (narrative, tier, event_date, db.STATUS_PARSED, db.now_ms(),
+             row["case_id"]),
         )
         conn.commit()
 
