@@ -1,30 +1,11 @@
-# nsib_ingest/text.py
-import html
+# nsib_ingest/text.py — Nigerian text helpers.
+#
+# The three shared helpers (strip_html, slugify, make_site_slug) live in
+# _textbase.py, which is vendored from _common/text.py. They are re-exported
+# here so every caller keeps importing them from .text as before.
 import re
 
-_TAG = re.compile(r"<[^>]+>")
-_WS = re.compile(r"\s+")
-_NONSLUG = re.compile(r"[^a-z0-9]+")
-
-
-def strip_html(s):
-    if not s:
-        return ""
-    s = _TAG.sub(" ", s)
-    s = html.unescape(s)
-    return _WS.sub(" ", s).strip()
-
-
-def slugify(s):
-    if not s:
-        return ""
-    return _NONSLUG.sub("-", s.lower()).strip("-")
-
-
-def make_site_slug(aircraft, registration, location):
-    parts = [p for p in (aircraft, registration, location) if p]
-    base = slugify(" ".join(parts))
-    return f"crash-{base}" if base else "crash-nsib"
+from ._textbase import make_site_slug, slugify, strip_html  # noqa: F401
 
 
 # Nigerian civil marks are exactly 5N- + 3 letters.  Filenames sometimes

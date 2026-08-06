@@ -9,8 +9,8 @@ fetch(): for each status='new' row, download the PDF (with Referer), advance
 
 parse(): extract text via pdftotext.
   'pdf'     -- text >= MIN_NARRATIVE (600 chars)
-  'short'   -- text between SCANNED_FLOOR and MIN_NARRATIVE
-  'scanned' -- text below SCANNED_FLOOR (image-only / scanned)
+  'short'   -- text between SCANNED_MAX and MIN_NARRATIVE
+  'scanned' -- text below SCANNED_MAX (image-only / scanned)
   'none'    -- no PDF / empty extraction
 
 build(): emit ahac_accidents rows. Rows with narrative_text < _NARRATIVE_FLOOR
@@ -21,7 +21,7 @@ import sys
 import time
 
 from . import ahac, db, text
-from .pdf import extract_text, MIN_NARRATIVE, SCANNED_FLOOR
+from .pdf import extract_text, MIN_NARRATIVE, SCANNED_MAX
 
 _NARRATIVE_FLOOR = 80  # chars; rows with less text are non-usable
 
@@ -131,7 +131,7 @@ def parse(conn):
 
         if len(full_text) >= MIN_NARRATIVE:
             narrative, tier = full_text, "pdf"
-        elif len(full_text) >= SCANNED_FLOOR:
+        elif len(full_text) >= SCANNED_MAX:
             narrative, tier = full_text, "short"
         elif full_text:
             narrative, tier = full_text, "scanned"

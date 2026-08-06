@@ -36,7 +36,19 @@ self-contained — its own package/module, own deps, own tests — with no share
 runtime library, so one can be copied, run, or rewritten without touching the
 others.
 
+A handful of modules (PDF text extraction, HTML/slug helpers, the HTTP retry
+policy) are genuinely the same everywhere, and keeping 40 hand-maintained
+copies of them meant they drifted apart. They now have one canonical copy in
+[`_common/`](_common/) that is **vendored** into each package: the package
+still contains a real, editable file and can still be copied away and run on
+its own — it is simply generated, and a test fails if it stops matching. See
+[`_common/README.md`](_common/README.md).
+
 ```
+_common/         canonical modules, vendored into the packages below
+  pdf.py  text.py  http.py
+  sync.py         # python -m _common.sync [--check]
+
 sources/         40 Python packages — national Safety Investigation Authorities
   <code>/
     <code>_ingest/        # Python package (discover/fetch/parse/build + CLI)

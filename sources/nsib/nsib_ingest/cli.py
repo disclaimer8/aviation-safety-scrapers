@@ -2,22 +2,18 @@
 import argparse
 import os
 
-from . import nsib, db
+from . import nsib, db, httpc
 from .pipeline import discover, fetch, parse, build
 
 
 def _make_client(proxy=None):
-    import httpx
-    # Build the transport unconditionally: it used to exist only when a
-    # proxy was passed, so retries= rode along only on proxied runs and
-    # every ordinary run silently fell back to httpx's default transport
-    # (retries=0). HTTPTransport accepts proxy=None, so one line covers both.
-    transport = httpx.HTTPTransport(proxy=proxy or None, retries=3)
-    return httpx.Client(
+    # The retry policy lives in httpc (vendored from _common/http.py):
+    # httpx's own retries= covers connect errors only, so a 502 or a read
+    # timeout used to raise on the first attempt and truncate a run.
+    return httpc.make_client(
         headers={"User-Agent": nsib.UA, "Referer": nsib.REFERER},
-        follow_redirects=True,
-        timeout=60.0,
-        transport=transport,
+        proxy=proxy,
+        timeout=60,
     )
 
 

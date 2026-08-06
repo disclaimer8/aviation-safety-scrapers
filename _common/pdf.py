@@ -1,4 +1,4 @@
-# nsib_ingest/pdf.py
+# {{SOURCE}}_ingest/{{MODULE}}.py
 #
 # VENDORED from _common/pdf.py — do not edit here.
 # Edit the canonical file and run `python -m _common.sync`; a test fails if a

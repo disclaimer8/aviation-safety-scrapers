@@ -1,4 +1,4 @@
-# ovv_ingest/text.py
+# {{SOURCE}}_ingest/{{MODULE}}.py
 #
 # VENDORED from _common/text.py — do not edit here.
 # Edit the canonical file and run `python -m _common.sync`; a test fails if a
@@ -31,4 +31,4 @@ def slugify(s):
 def make_site_slug(aircraft, registration, location):
     parts = [p for p in (aircraft, registration, location) if p]
     base = slugify(" ".join(parts))
-    return f"crash-{base}" if base else "crash-ovv"
+    return f"crash-{base}" if base else "crash-{{SOURCE}}"

@@ -1,0 +1,62 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  common:
+    # The canon, the vendoring gate, and the proof that each opted-in package
+    # actually imports the shared policy. This job is the reason a fix to a
+    # shared module cannot quietly apply to one package and not the rest.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install "httpx[socks]>=0.27" certifi "pytest>=8"
+      - name: vendored copies match the canon
+        run: python -m _common.sync --check
+      - name: _common tests
+        run: python -m pytest _common/tests -q
+
+  sources:
+    # Every Python source package, each with its own tests and offline
+    # fixtures. Tests must not touch the network (see CONTRIBUTING.md), so a
+    # per-package timeout turns an accidental live call into a red build
+    # rather than a job that hangs until the runner gives up.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install "httpx[socks]>=0.27" certifi "pytest>=8"
+      - name: run each package's tests
+        run: |
+          set -uo pipefail
+          failed=""
+          for dir in sources/*/; do
+            code=$(basename "$dir")
+            if ! compgen -G "$dir/tests/test_*.py" > /dev/null; then
+              echo "::warning title=No tests::$code has no tests"
+              continue
+            fi
+            echo "::group::$code"
+            if ( cd "$dir" && PYTHONPATH=. timeout 120 python -m pytest -q ); then
+              echo "::endgroup::"
+            else
+              echo "::endgroup::"
+              echo "::error title=Tests failed::$code"
+              failed="$failed $code"
+            fi
+          done
+          if [ -n "$failed" ]; then
+            echo "failing packages:$failed"
+            exit 1
+          fi
