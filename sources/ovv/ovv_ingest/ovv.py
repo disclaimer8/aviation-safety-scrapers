@@ -61,8 +61,17 @@ _MONTHS = {
     )
 }
 
+# Documents that are a PART of an investigation rather than the report of it.
+#
+# This list used to be Dutch-only while rank_docs scored English highest, so an
+# English sectional PDF — "recommendations_report_en", "summary_report_en" —
+# outranked the full Dutch report and became the stored narrative. That is
+# where narratives beginning mid-section ("5 RECOMMENDATIONS …") came from:
+# the section is easily longer than the 2000-char floor, so it won and the
+# walk stopped.
 _NOISE_DOC_RE = re.compile(
-    r"aanbeveling|appendix|bijlage|brochure|reactie|samenvatting|infographic",
+    r"aanbeveling|appendix|bijlage|brochure|reactie|samenvatting|infographic"
+    r"|recommendation|conclusion|summary|annex|letter|response|factsheet",
     re.IGNORECASE,
 )
 

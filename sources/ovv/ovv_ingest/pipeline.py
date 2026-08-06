@@ -38,10 +38,26 @@ def discover(conn, client, full=False, max_pages=None):
         try:
             html = ovv.fetch_listing_page(client, page)
         except Exception as e:
-            print(f"[ovv discover] page {page}: failed: {e}", file=sys.stderr)
-            break
+            # Do NOT treat this as the end of the listing. Stopping quietly
+            # here turns one 502 on page 30 into a truncated crawl reported as
+            # a successful one. Rows already inserted are committed, so the
+            # next run resumes rather than starting over.
+            conn.commit()
+            raise RuntimeError(
+                f"[ovv discover] page {page} failed after retries: {e} — "
+                f"walk truncated at {inserted} new rows"
+            ) from e
         rows = ovv.parse_listing(html)
         if not rows:
+            if page == 1:
+                # OVV publishes thousands of investigations, so zero anchors on
+                # the first page never means "no reports". It means the markup
+                # changed — which stop-on-empty would otherwise read as an
+                # empty source and report as a clean run.
+                raise RuntimeError(
+                    "[ovv discover] page 1 yielded 0 investigation links — "
+                    "listing markup has changed (_DETAIL_RE no longer matches)"
+                )
             break
         for r in rows:
             if conn.execute(
@@ -102,6 +118,7 @@ def fetch(conn, client, pdf_dir="pdfs", enable_ocr=True):
             continue
 
         text, used_url, lang = "", None, None
+        got_a_document = False
         pdf_path = os.path.join(pdf_dir, f"{case_id[:60]}.pdf")
         for doc_url in d["doc_urls"][:_MAX_DOC_TRIES]:
             time.sleep(ovv.DELAY)
@@ -111,11 +128,34 @@ def fetch(conn, client, pdf_dir="pdfs", enable_ocr=True):
             except Exception as e:
                 print(f"[ovv fetch] {case_id}: doc failed: {e}", file=sys.stderr)
                 continue
+            got_a_document = True
             if len(t) >= _PDF_TEXT_FLOOR:
                 text, used_url, lang = t, doc_url, ovv.doc_lang(doc_url)
                 break
             if len(t) > len(text):
                 text, used_url, lang = t, doc_url, ovv.doc_lang(doc_url)
+
+        if not got_a_document:
+            # Every candidate download failed. This row has documents — we
+            # simply could not reach them this time, so it is a transient
+            # fault, not a report without a narrative. Keep the metadata and
+            # stay 'new' so the next cycle retries it.
+            #
+            # The old code fell through and stamped 'parsed' with empty text;
+            # build() then moved it to 'skipped', and fetch() only ever reads
+            # 'new' — so a single timeout retired a report permanently and
+            # without an error. Distinguishing "could not fetch" from "fetched
+            # and unusable" is the whole fix.
+            print(f"[ovv fetch] {case_id}: all {len(d['doc_urls'][:_MAX_DOC_TRIES])} "
+                  f"document(s) failed — staying 'new' for the next cycle",
+                  file=sys.stderr)
+            conn.execute(
+                "UPDATE ovv_reports SET title=?, summary=?, registration=?, "
+                "date_of_occurrence=?, updated_at=? WHERE case_id=?",
+                (*base_meta, db.now_ms(), case_id),
+            )
+            conn.commit()
+            continue
 
         tier = "pdf"
         if (len(text) < _NARRATIVE_FLOOR and enable_ocr
