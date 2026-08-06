@@ -95,6 +95,12 @@ def parse_listing(html):
     return out
 
 
+def is_noise_doc(href):
+    """True when this document is a part of an investigation, not its report."""
+    name = (href or "").rstrip("/").rsplit("/", 1)[-1].lower()
+    return bool(_NOISE_DOC_RE.search(name))
+
+
 def rank_docs(hrefs):
     """
     Order candidate doc URLs best-first:

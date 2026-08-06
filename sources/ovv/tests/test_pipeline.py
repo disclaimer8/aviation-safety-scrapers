@@ -82,7 +82,15 @@ def test_fetch_picks_main_doc(conn, tmp_path, monkeypatch):
     assert ongoing["title"] == "Ongoing"
 
 
-def test_fetch_scan_falls_through_to_next_doc(conn, tmp_path, monkeypatch):
+def test_fetch_scan_does_not_fall_through_to_an_appendix(conn, tmp_path, monkeypatch):
+    """A scanned report is OCR'd; the appendix never becomes the narrative.
+
+    This test used to assert the opposite — "main was a scan → appendix won" —
+    and that intent is what put sections into the corpus: 14 of 386 built rows
+    held a recommendations chapter, a summary or a letter instead of a report.
+    An appendix is not a substitute for the report it is attached to, so the
+    scanned main document is kept and handed to OCR instead.
+    """
     pipeline.discover(conn, FakeClient())
     texts = {_DOC_MAIN: "", _DOC_APP: "A" * 9000}
     current = {}
@@ -95,12 +103,31 @@ def test_fetch_scan_falls_through_to_next_doc(conn, tmp_path, monkeypatch):
     monkeypatch.setattr(pipeline.ovv, "download_pdf", fake_dl)
     monkeypatch.setattr(pipeline.pdf, "extract_text",
                         lambda p: texts[current["url"]])
+    monkeypatch.setattr(pipeline.pdf, "ocr_extract",
+                        lambda p, lang=None: "O" * 9000)
     pipeline.fetch(conn, FakeClient(), pdf_dir=str(tmp_path))
     row = conn.execute(
-        "SELECT pdf_url, lang FROM ovv_reports WHERE case_id='crash-ph-abc-somewhere'"
+        "SELECT pdf_url, lang, source_tier FROM ovv_reports "
+        "WHERE case_id='crash-ph-abc-somewhere'"
     ).fetchone()
-    assert row["pdf_url"] == _DOC_APP  # main was a scan → appendix won
-    assert row["lang"] == "nl"
+    assert row["pdf_url"] == _DOC_MAIN
+    assert row["source_tier"] == "ocr"
+
+
+def test_fetch_never_downloads_a_section(conn, tmp_path, monkeypatch):
+    """Sections are excluded before the request, not after — one fewer GET."""
+    pipeline.discover(conn, FakeClient())
+    asked = []
+
+    def fake_dl(client, url, dest):
+        asked.append(url)
+        open(dest, "wb").write(b"x")
+        return dest
+
+    monkeypatch.setattr(pipeline.ovv, "download_pdf", fake_dl)
+    monkeypatch.setattr(pipeline.pdf, "extract_text", lambda p: "A" * 9000)
+    pipeline.fetch(conn, FakeClient(), pdf_dir=str(tmp_path))
+    assert _DOC_APP not in asked
 
 
 def test_fetch_summary_fallback(conn, tmp_path, monkeypatch):

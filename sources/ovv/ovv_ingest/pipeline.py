@@ -117,23 +117,51 @@ def fetch(conn, client, pdf_dir="pdfs", enable_ocr=True):
             conn.commit()
             continue
 
+        # Only documents that are reports are candidates. Sections
+        # (recommendations, summaries, letters, responses) are never stored as
+        # the narrative — not even when they are the only thing linked, which
+        # is common because OVV publishes recommendations months ahead of the
+        # report. 14 of the 386 built rows held a section rather than a report
+        # before this, including several whose Dutch names were already ranked
+        # last: ordering cannot help when there is nothing better to order.
+        # Not downloading them at all is also one fewer request per case.
+        candidates = [u for u in d["doc_urls"] if not ovv.is_noise_doc(u)]
+        if not candidates:
+            print(f"[ovv fetch] {case_id}: only sections published so far "
+                  f"({len(d['doc_urls'])} document(s)) — staying 'new'",
+                  file=sys.stderr)
+            conn.execute(
+                "UPDATE ovv_reports SET title=?, summary=?, registration=?, "
+                "date_of_occurrence=?, updated_at=? WHERE case_id=?",
+                (*base_meta, db.now_ms(), case_id),
+            )
+            conn.commit()
+            continue
+
         text, used_url, lang = "", None, None
         got_a_document = False
+        best_path = None
         pdf_path = os.path.join(pdf_dir, f"{case_id[:60]}.pdf")
-        for doc_url in d["doc_urls"][:_MAX_DOC_TRIES]:
+        for n, doc_url in enumerate(candidates[:_MAX_DOC_TRIES]):
             time.sleep(ovv.DELAY)
+            # One file per candidate. A single shared path meant the OCR
+            # fallback below could run against whichever document happened to
+            # be downloaded last rather than the one whose text we kept.
+            try_path = pdf_path if n == 0 else f"{pdf_path[:-4]}-{n}.pdf"
             try:
-                ovv.download_pdf(client, doc_url, pdf_path)
-                t = pdf.extract_text(pdf_path)
+                ovv.download_pdf(client, doc_url, try_path)
+                t = pdf.extract_text(try_path)
             except Exception as e:
                 print(f"[ovv fetch] {case_id}: doc failed: {e}", file=sys.stderr)
                 continue
             got_a_document = True
             if len(t) >= _PDF_TEXT_FLOOR:
                 text, used_url, lang = t, doc_url, ovv.doc_lang(doc_url)
+                best_path = try_path
                 break
-            if len(t) > len(text):
+            if len(t) > len(text) or best_path is None:
                 text, used_url, lang = t, doc_url, ovv.doc_lang(doc_url)
+                best_path = try_path
 
         if not got_a_document:
             # Every candidate download failed. This row has documents — we
@@ -159,12 +187,14 @@ def fetch(conn, client, pdf_dir="pdfs", enable_ocr=True):
 
         tier = "pdf"
         if (len(text) < _NARRATIVE_FLOOR and enable_ocr
-                and os.path.exists(pdf_path)):
-            ocr_text = pdf.ocr_extract(pdf_path, lang=OCR_LANG)
+                and best_path and os.path.exists(best_path)):
+            # OCR the document whose text we actually kept, not whichever file
+            # was written last.
+            ocr_text = pdf.ocr_extract(best_path, lang=OCR_LANG)
             if len(ocr_text) > len(text):
                 text, tier = ocr_text, "ocr"
-                if not used_url and d["doc_urls"]:
-                    used_url = d["doc_urls"][0]
+                if not used_url:
+                    used_url = candidates[0]
                     lang = ovv.doc_lang(used_url)
 
         if len(text) < _NARRATIVE_FLOOR:
@@ -181,7 +211,7 @@ def fetch(conn, client, pdf_dir="pdfs", enable_ocr=True):
                 "source_tier=?, pdf_url=?, pdf_path=?, status=?, updated_at=? "
                 "WHERE case_id=?",
                 (*base_meta, lang, text, tier, used_url,
-                 pdf_path if used_url else None,
+                 best_path if used_url else None,
                  db.STATUS_PARSED, db.now_ms(), case_id),
             )
             conn.commit()

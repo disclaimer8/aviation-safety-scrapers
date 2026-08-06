@@ -178,3 +178,61 @@ class TestSectionalDocumentsMustNotOutrankTheReport:
         app = "https://onderzoeksraad.nl/ab12cd34ef56bijlage_en-pdf/"
         full = "https://onderzoeksraad.nl/ab12cd34ef99rapport-pdf/"
         assert ovv.rank_docs([app, full])[0] == full
+
+
+class TestASectionIsNotAReport:
+    """Ranking is not enough when the section is the ONLY document.
+
+    Measured on the live database: of 386 built rows, 14 hold a section
+    rather than a report — narratives beginning "5 RECOMMENDATIONS", "Summary
+    Uncontrolled landing in strong winds", "Date 11 December 2018 … To Board".
+    Several of those are Dutch words that were already in the noise list
+    (aanbevelingen, reactie) and still won, because nothing better was linked.
+    Ordering cannot fix that; refusing to store it can.
+    """
+
+    def _detail_with_only(self, doc_url):
+        return (f'<h1>Crash PH-ABC at Somewhere on 6 June 2021</h1>'
+                f'<p>{"S" * 200}</p><a href="{doc_url}">only doc</a>')
+
+    def _fetch_with(self, tmp_path, monkeypatch, doc_url, text):
+        monkeypatch.setattr(ovv, "DELAY", 0)
+        monkeypatch.setattr(pipeline.pdf, "extract_text", lambda p: text)
+        conn = _conn()
+        _seed_new(conn, "crash-ph-abc-somewhere", _D1)
+        client = FakeClient(urls={_D1: self._detail_with_only(doc_url),
+                                  doc_url: b"%PDF"})
+        pipeline.fetch(conn, client, str(tmp_path))
+        return conn
+
+    def test_a_recommendations_only_investigation_stays_new(self, tmp_path, monkeypatch):
+        conn = self._fetch_with(
+            tmp_path, monkeypatch,
+            "https://onderzoeksraad.nl/ab12aanbevelingen_boeing_767_schiphol-pdf/",
+            "5  RECOMMENDATIONS  5.1 Technical facilities with regard to " + "x" * 3000,
+        )
+        # Not 'parsed': storing a recommendations chapter as the accident
+        # narrative is a wrong answer, and 'new' means a later cycle can still
+        # pick up the full report when OVV publishes it.
+        assert _status(conn, "crash-ph-abc-somewhere") == db.STATUS_NEW
+
+    def test_a_real_report_of_the_same_length_is_still_stored(self, tmp_path, monkeypatch):
+        # The guard keys on the document, not on the text being short — two of
+        # the 14 lookalikes are genuine short finals ("FINAL REPORT 96-12/A-5")
+        # and must survive.
+        conn = self._fetch_with(
+            tmp_path, monkeypatch,
+            "https://onderzoeksraad.nl/011e_lv_1996_12_a_5_g_jtca_piper_pa23_de_kooij-pdf/",
+            "FINAL REPORT 96-12/A-5 G-JTCA, Piper PA23 Aztec " + "x" * 3000,
+        )
+        assert _status(conn, "crash-ph-abc-somewhere") == db.STATUS_PARSED
+
+    def test_a_section_alongside_a_report_is_simply_outranked(self, tmp_path, monkeypatch):
+        # When both exist the ranking already picks the report, and the row
+        # must build normally — the guard must not fire here.
+        monkeypatch.setattr(ovv, "DELAY", 0)
+        monkeypatch.setattr(pipeline.pdf, "extract_text", lambda p: "R" * 5000)
+        conn = _conn()
+        _seed_new(conn, "crash-ph-abc-somewhere", _D1)
+        pipeline.fetch(conn, FakeClient(), str(tmp_path))
+        assert _status(conn, "crash-ph-abc-somewhere") == db.STATUS_PARSED
