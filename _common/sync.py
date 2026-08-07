@@ -31,6 +31,7 @@ VENDORED = {
     "ahac": {"pdf": "pdf", "http": "httpc", "text": "text"},
     "ciaiauy": {"pdf": "pdf", "http": "httpc", "text": "text"},
     "nsib": {"pdf": "pdf", "http": "httpc", "text": "_textbase"},
+    "ntsbaar": {"pdf": "pdf", "http": "httpc", "text": "text"},
     "ovv": {"pdf": "pdf", "http": "httpc", "text": "text"},
     # rosap talks to the site through a browser, not httpx, so it takes
     # pdf (for OCR) and text but has no use for the http client.

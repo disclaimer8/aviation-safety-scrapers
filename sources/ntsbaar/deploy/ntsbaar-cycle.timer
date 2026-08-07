@@ -1,0 +1,15 @@
+# /etc/systemd/system/ntsbaar-cycle.timer
+#
+# The Board adopts a handful of these a year, so monthly is generous. The
+# first run is the expensive one: ~1.1 GB of PDFs and OCR for the two thirds
+# that are scans.
+[Unit]
+Description=Monthly NTSB Aircraft Accident Reports ingest
+
+[Timer]
+OnCalendar=*-*-17 02:40 UTC
+Persistent=true
+RandomizedDelaySec=1800
+
+[Install]
+WantedBy=timers.target
