@@ -25,7 +25,10 @@ def _import(source, module):
         sys.path.remove(str(pkg_root))
 
 
-ADOPTERS = sorted(sync.VENDORED)
+# Only the packages that vendor the http module. rosap is deliberately not
+# among them: Akamai refuses every non-browser client on that host, so it
+# drives Chrome and has no httpx client for a retry policy to apply to.
+ADOPTERS = sorted(s for s, mods in sync.VENDORED.items() if "http" in mods)
 
 
 @pytest.mark.parametrize("source", ADOPTERS)

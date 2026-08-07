@@ -69,16 +69,20 @@ def main(argv=None):
         print("\ndry run — pass --apply to write")
         return 0
 
-    update = conn.execute
     written = 0
     for iso, case_id in found:
-        written += update(
-            "UPDATE ovv_reports SET date_of_occurrence=?, updated_at=? "
+        # Send the row back to 'parsed' as well. build() only reads 'parsed',
+        # so a date written onto an already-'built' row would sit in
+        # ovv_reports and never reach ovv_accidents — the table that gets
+        # synced. build() upserts, so re-projecting an existing row is safe.
+        written += conn.execute(
+            "UPDATE ovv_reports SET date_of_occurrence=?, status=?, updated_at=? "
             "WHERE case_id=? AND (date_of_occurrence IS NULL OR date_of_occurrence='')",
-            (iso, db.now_ms(), case_id),
+            (iso, db.STATUS_PARSED, db.now_ms(), case_id),
         ).rowcount
     conn.commit()
-    print(f"\nwrote {written} dates — run `build` to project them")
+    print(f"\nwrote {written} dates and returned those rows to 'parsed' — "
+          f"run `build` to project them")
     return 0
 
 

@@ -1,6 +1,6 @@
 # aviation-safety-scrapers
 
-A collection of **45 independent scrapers** for public-record civil aviation
+A collection of **46 independent scrapers** for public-record civil aviation
 accident and incident reports, each targeting a different source — national
 **Safety Investigation Authorities** (AAIB, BEA, BFU, JTSB, …), the US **NTSB**
 bulk dump, **MAK**, **ATSB**, and **Wikidata** — across six continents.
@@ -49,7 +49,7 @@ _common/         canonical modules, vendored into the packages below
   pdf.py  text.py  http.py
   sync.py         # python -m _common.sync [--check]
 
-sources/         40 Python packages — national Safety Investigation Authorities
+sources/         41 Python packages — national Safety Investigation Authorities
   <code>/
     <code>_ingest/        # Python package (discover/fetch/parse/build + CLI)
     tests/                # pytest unit tests with offline fixtures
@@ -102,8 +102,9 @@ driven under a virtual display (`xvfb-run`) instead:
 
 | Method | Sources |
 |--------|---------|
-| `httpx` (static HTML / direct PDF) | 35 sources |
+| `httpx` (static HTML / direct PDF) | 37 sources |
 | Headed Chromium via **patchright** (Cloudflare Turnstile) | `cenipa` |
+| Headed Chromium via **patchright** (Akamai; PDFs via the download path) | `rosap` |
 | Headed Chromium via **Playwright** under Xvfb | `gpiaaf`, `otkes` |
 
 Several `httpx` sources also accept an optional `--proxy` (SOCKS5, e.g. a
@@ -146,6 +147,7 @@ a pure-Python fallback, declared per-package in `pyproject.toml`.
 | `ovv` | Onderzoeksraad voor Veiligheid (Dutch Safety Board) | 🇳🇱 Netherlands | Dutch / English | httpx |
 | `pkbwl` | Państwowa Komisja Badania Wypadków Lotniczych | 🇵🇱 Poland | Polish | httpx |
 | `rnsa` | Rannsóknarnefnd samgönguslysa | 🇮🇸 Iceland | Icelandic / English | httpx |
+| `rosap` | National Transportation Library — Civil Aeronautics Board reports 1934-1965 | 🇺🇸 United States | English | patchright/Xvfb |
 | `sacaa` | South African Civil Aviation Authority (AIID) | 🇿🇦 South Africa | English | httpx |
 | `shk` | Statens haverikommission | 🇸🇪 Sweden | Swedish / English | httpx |
 | `sub` | Sicherheitsuntersuchungsstelle des Bundes | 🇦🇹 Austria | German | httpx |
