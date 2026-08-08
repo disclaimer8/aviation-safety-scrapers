@@ -1,0 +1,16 @@
+[project]
+name = "rosap-ingest"
+version = "0.1.0"
+requires-python = ">=3.11"
+# patchright, not httpx: Akamai fronts rosap.ntl.bts.gov and refuses anything
+# that is not a real browser — see rosap.py.
+dependencies = ["patchright>=1.40"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+include = ["rosap_ingest*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,14 @@
+[project]
+name = "mexico-ingest"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = ["patchright>=1.40"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools]
+py-modules = ["mexico_scraper"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

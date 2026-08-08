@@ -1,0 +1,14 @@
+# /etc/systemd/system/ntsbaar-cycle.service
+[Unit]
+Description=NTSB Aircraft Accident Reports ingest cycle (monthly)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/ntsbaar
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/ntsbaar/ntsbaar-cycle.log
+StandardError=append:/opt/ntsbaar/ntsbaar-cycle.log
+TimeoutStartSec=43200

@@ -1,0 +1,16 @@
+# /etc/systemd/system/rosap-cycle.service
+[Unit]
+Description=ROSA P CAB collection ingest cycle (quarterly; discover->fetch->parse->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/rosap
+# Chrome under Xvfb: Akamai refuses every non-browser client, so there is no
+# headless-http path for this source.
+ExecStart=/bin/bash -lc "xvfb-run -a deploy/run-cycle.sh"
+StandardOutput=append:/opt/rosap/rosap-cycle.log
+StandardError=append:/opt/rosap/rosap-cycle.log
+TimeoutStartSec=21600

@@ -1,0 +1,14 @@
+[project]
+name = "aias-ingest"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = ["patchright>=1.40"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools]
+py-modules = ["aias_scraper", "aias_test3", "pdf", "text"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

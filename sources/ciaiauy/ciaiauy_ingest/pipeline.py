@@ -3,11 +3,13 @@
 discover -> fetch -> parse -> build pipeline for CIAIA (Uruguay).
 
 discover(): crawls the fixed SEED_PATHS listing pages, unions every distinct PDF
-  anchor, and INSERTs new rows into ciaiauy_reports.  case_id is built from the
-  Caso number (caso-NNN) when present, else the registration slug, with a
-  collision suffix to guarantee uniqueness across the whole source.  The same
+  anchor, and INSERTs new rows into ciaiauy_reports.  case_id is INTRINSIC and
+  order-independent (see ciaiauy.make_case_id): caso-NNN, else {reg}-{date} or
+  {reg}-{urlhash}, never an encounter-order suffix — so identical inputs always
+  reproduce identical ids even on a fresh re-seed into an empty DB.  The same
   pdf_url discovered twice (it appears on more than one listing page) is inserted
-  only once.  Idempotent — already-known pdf_urls are skipped.
+  only once.  Idempotent — already-known pdf_urls are skipped.  A seed page that
+  returns non-200 or yields zero PDF anchors emits a grep-able WARN tripwire.
 
 fetch(): for each status='new' row downloads the PDF and advances to 'fetched'.
   Per-row try/except: a download failure keeps the row at 'new' for retry.
@@ -42,9 +44,9 @@ def discover(conn, client, full=False):
 
     Returns: number of rows inserted.
     """
-    # Build the set of already-assigned case_ids and known pdf_urls so we can
-    # both skip duplicates and avoid case_id collisions across pages/runs.
-    taken = {r["case_id"] for r in conn.execute("SELECT case_id FROM ciaiauy_reports")}
+    # Known pdf_urls let us skip duplicates idempotently.  case_id is derived
+    # deterministically from the report itself, so no cross-run "taken" set is
+    # needed (no encounter-order collision suffix).
     known_pdfs = {
         r["pdf_url"]
         for r in conn.execute("SELECT pdf_url FROM ciaiauy_reports WHERE pdf_url IS NOT NULL")
@@ -63,19 +65,30 @@ def discover(conn, client, full=False):
                 else resp.content
             )
         except Exception as exc:
-            print(f"[ciaiauy discover] {url}: {exc}", file=sys.stderr)
+            print(
+                f"[ciaiauy WARN] seed yielded 0 anchors (fetch failed): {url}: {exc}",
+                file=sys.stderr,
+            )
             continue
 
-        for row in ciaiauy.parse_listing(page_html):
+        page_rows = ciaiauy.parse_listing(page_html)
+        if not page_rows:
+            print(
+                f"[ciaiauy WARN] seed yielded 0 anchors: {url}",
+                file=sys.stderr,
+            )
+        for row in page_rows:
             pdf_url = row["pdf_url"]
             if pdf_url in known_pdfs:
                 continue  # already discovered (possibly on another page)
             known_pdfs.add(pdf_url)
 
             case_id = ciaiauy.make_case_id(
-                row.get("caso"), row.get("registration"), taken=taken
+                row.get("caso"),
+                row.get("registration"),
+                pdf_url=pdf_url,
+                date_iso=row.get("date_of_occurrence"),
             )
-            taken.add(case_id)
 
             ts = db.now_ms()
             conn.execute(

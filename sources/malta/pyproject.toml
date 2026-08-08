@@ -1,0 +1,14 @@
+[project]
+name = "malta-ingest"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = ["patchright>=1.40"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools]
+py-modules = ["malta_scraper"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

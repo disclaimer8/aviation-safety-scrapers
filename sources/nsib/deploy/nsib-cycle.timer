@@ -1,0 +1,10 @@
+# /etc/systemd/system/nsib-cycle.timer
+[Unit]
+Description=Weekly NSIB (Nigeria) ingest cycle
+
+[Timer]
+OnCalendar=Sun 19:15 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

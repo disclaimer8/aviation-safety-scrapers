@@ -1,0 +1,13 @@
+[project]
+name = "dgcalb-ingest"
+version = "0.1.0"
+requires-python = ">=3.11"
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools]
+py-modules = ["dgcalb_scraper"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

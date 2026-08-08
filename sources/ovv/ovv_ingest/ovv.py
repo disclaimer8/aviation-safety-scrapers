@@ -61,8 +61,21 @@ _MONTHS = {
     )
 }
 
+# Documents that are a PART of an investigation rather than the report of it.
+#
+# This list used to be Dutch-only while rank_docs scored English highest, so an
+# English sectional PDF — "recommendations_report_en", "summary_report_en" —
+# outranked the full Dutch report and became the stored narrative. That is
+# where narratives beginning mid-section ("5 RECOMMENDATIONS …") came from:
+# the section is easily longer than the 2000-char floor, so it won and the
+# walk stopped.
+# "response" is deliberately absent even though response letters exist: OVV's
+# "safe_flight_routes_responses_to_escalating_conflicts_2021_report" is a real
+# 242,000-character report, and the word costs more than it earns. "reactie",
+# the Dutch equivalent, is precise enough to keep.
 _NOISE_DOC_RE = re.compile(
-    r"aanbeveling|appendix|bijlage|brochure|reactie|samenvatting|infographic",
+    r"aanbeveling|appendix|bijlage|brochure|reactie|samenvatting|infographic"
+    r"|recommendation|conclusion|summary|annex|letter|factsheet",
     re.IGNORECASE,
 )
 
@@ -84,6 +97,12 @@ def parse_listing(html):
         seen.add(slug)
         out.append({"url": url, "slug": slug})
     return out
+
+
+def is_noise_doc(href):
+    """True when this document is a part of an investigation, not its report."""
+    name = (href or "").rstrip("/").rsplit("/", 1)[-1].lower()
+    return bool(_NOISE_DOC_RE.search(name))
 
 
 def rank_docs(hrefs):
