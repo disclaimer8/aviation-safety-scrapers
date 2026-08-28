@@ -60,3 +60,54 @@ jobs:
             echo "failing packages:$failed"
             exit 1
           fi
+
+  sources-node:
+    # The four Node scrapers. They were outside CI until now, which is also
+    # where every open Dependabot alert had accumulated — a dependency bump
+    # with nothing to verify it is a bump nobody can review. `npm ci` installs
+    # from the committed lockfile, so a lockfile that drifts from package.json
+    # fails here rather than at build time on the mini-PC.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: run each package's tests
+        run: |
+          set -uo pipefail
+          failed=""
+          for dir in sources-node/*/; do
+            code=$(basename "$dir")
+            echo "::group::$code"
+            if ( cd "$dir" && npm ci --no-audit --no-fund && timeout 300 npm test ); then
+              echo "::endgroup::"
+            else
+              echo "::endgroup::"
+              echo "::error title=Tests failed::$code"
+              failed="$failed $code"
+            fi
+          done
+          if [ -n "$failed" ]; then
+            echo "failing packages:$failed"
+            exit 1
+          fi
+
+  sources-go:
+    # The Go module per directory that has a go.mod: the aircrash scraper and
+    # the control plane. go-version-file keeps each module on the toolchain it
+    # declares instead of a version pinned here that silently drifts.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module: [sources-go/aircrash, control-plane]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: ${{ matrix.module }}/go.mod
+          cache-dependency-path: ${{ matrix.module }}/go.sum
+      - name: go test
+        working-directory: ${{ matrix.module }}
+        run: go test ./...

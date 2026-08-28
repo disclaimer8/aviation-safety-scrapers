@@ -22,3 +22,47 @@ updates:
       python-dependencies:
         patterns:
           - "*"
+
+  # Node packages — one package.json per source under sources-node/<code>/.
+  # Without this block only Dependabot's *security* updates reached these four
+  # lockfiles, so advisories with no security PR (js-yaml, brace-expansion)
+  # simply accumulated as open alerts with nothing proposing a fix.
+  - package-ecosystem: "npm"
+    directories:
+      - "/sources-node/*"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "npm"
+    labels:
+      - "dependencies"
+      - "javascript"
+    groups:
+      node-dependencies:
+        patterns:
+          - "*"
+
+  # Go modules — the aircrash scraper and the control plane each have a go.mod.
+  - package-ecosystem: "gomod"
+    directories:
+      - "/sources-go/*"
+      - "/control-plane"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "gomod"
+    labels:
+      - "dependencies"
+      - "go"
+    groups:
+      go-dependencies:
+        patterns:
+          - "*"
