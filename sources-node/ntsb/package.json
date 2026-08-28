@@ -13,10 +13,10 @@
     "test": "jest"
   },
   "dependencies": {
-    "better-sqlite3": "^12.10.0"
+    "better-sqlite3": "^13.0.3"
   },
   "devDependencies": {
-    "jest": "^29.7.0"
+    "jest": "^30.4.2"
   },
   "overrides": {
     "js-yaml": "^4.2.0"
