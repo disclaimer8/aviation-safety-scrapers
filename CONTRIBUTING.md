@@ -68,7 +68,12 @@ Sources that are HTML-only (no PDFs) may fold `parse` into `build`; that's fine
 
 - **Be polite.** Single-threaded, paced requests, an identifiable User-Agent.
   These are public safety archives run on modest budgets — don't degrade them.
-- **Honour `robots.txt`** and each authority's terms of use.
+- **Honour `robots.txt`** and each authority's terms of use. This is enforced,
+  not aspirational: `_common/robots.py` is vendored beside `httpc` and
+  `make_client` refuses a Disallowed URL by default. A site's `Crawl-delay` is
+  reported but NOT auto-applied — BFU asks for 30s against a 3s pace, which
+  would take a cycle past its unit's `TimeoutStartSec`; that is a scheduling
+  decision per source.
 - **Never commit harvested data** — `*.db`, `pdfs/`, and logs are gitignored.
 - **Tests stay offline.** Commit fixtures, not network calls.
 - Keep each source self-contained; resist factoring shared code across sources

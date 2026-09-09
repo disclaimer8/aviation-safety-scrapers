@@ -25,9 +25,12 @@
 # the repository README.
 import ipaddress
 import socket
+import sys
 import time
 
 import httpx
+
+from . import robots
 
 # 429 is included deliberately: it is the one 4xx that means "later", not "no".
 RETRY_STATUS = frozenset({429, 500, 502, 503, 504})
@@ -156,9 +159,58 @@ def _resolve_all(host):
     return out
 
 
+class RobotsGuardTransport(httpx.BaseTransport):
+    """Refuse a request that the site's robots.txt disallows.
+
+    README and CONTRIBUTING both promise these scrapers honour robots.txt.
+    Until this transport existed that was documentation only: nothing ever
+    asked a site what it allowed.
+
+    Scope, deliberately: this enforces Disallow. It does NOT silently adopt a
+    site's Crawl-delay — it logs when the site asks for more than the source's
+    own DELAY and leaves the decision to the operator. BFU is why: it asks for
+    Crawl-delay 30 while bfu_ingest paces at 3.0, and adopting that would make
+    a cycle ten times longer than its unit's TimeoutStartSec allows. That is a
+    scheduling decision, not something a library should make on its own.
+
+    Measured on 2026-09-09 across bea, aaib, bfu, tsb, ghana, ovv, sacaa, atsb
+    and mak: every one allows the paths these scrapers walk, so turning this on
+    blocks nothing that works today.
+    """
+
+    def __init__(self, inner, user_agent, delay=0.0):
+        self._inner = inner
+        self._user_agent = user_agent
+        self._delay = delay
+        self._warned = set()
+
+    def handle_request(self, request):
+        url = str(request.url)
+        if request.url.path != "/robots.txt":
+            # A bare client, so fetching robots.txt cannot recurse through
+            # this transport.
+            with httpx.Client(timeout=30, follow_redirects=True) as probe:
+                robots.check(probe, url, self._user_agent)
+                host = request.url.host
+                if host not in self._warned:
+                    self._warned.add(host)
+                    asked = robots.crawl_delay(probe, url, self._user_agent,
+                                               default=self._delay)
+                    if asked > self._delay:
+                        print(f"[robots] {host} asks for Crawl-delay {asked}s; "
+                              f"this source paces at {self._delay}s — not applied "
+                              f"automatically, see _common/robots.py",
+                              file=sys.stderr)
+        return self._inner.handle_request(request)
+
+    def close(self):
+        self._inner.close()
+
+
 def make_client(headers=None, proxy=None, timeout=DEFAULT_TIMEOUT,
                 attempts=DEFAULT_ATTEMPTS, backoff=DEFAULT_BACKOFF,
-                verify=True, allow_private=False, **kwargs):
+                verify=True, allow_private=False, obey_robots=True, delay=0.0,
+                **kwargs):
     """Build the httpx.Client a source package should use.
 
     Keeps httpx's own connect-level retries (they are free and cover a
@@ -173,12 +225,14 @@ def make_client(headers=None, proxy=None, timeout=DEFAULT_TIMEOUT,
     """
     inner = httpx.HTTPTransport(proxy=proxy or None, retries=attempts,
                                 verify=verify)
-    if allow_private:
-        # Only for a source that genuinely talks to something on the LAN.
-        transport = RetryTransport(inner, attempts=attempts, backoff=backoff)
-    else:
-        transport = RetryTransport(SSRFGuardTransport(inner),
-                                   attempts=attempts, backoff=backoff)
+    guarded = inner
+    if not allow_private:
+        # Only a source that genuinely talks to something on the LAN opts out.
+        guarded = SSRFGuardTransport(guarded)
+    if obey_robots:
+        ua = (headers or {}).get("User-Agent", "")
+        guarded = RobotsGuardTransport(guarded, ua, delay=delay)
+    transport = RetryTransport(guarded, attempts=attempts, backoff=backoff)
     return httpx.Client(
         timeout=timeout,
         follow_redirects=True,

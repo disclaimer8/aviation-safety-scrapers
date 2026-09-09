@@ -24,6 +24,10 @@ jobs:
         run: python -m _common.sync --check
       - name: _common tests
         run: python -m pytest _common/tests -q
+      - name: registry.yaml matches what is on disk
+        # The catalogue used to be hand-typed and drifted: 47 scrapers claimed,
+        # 90 directories present. Generated numbers cannot drift silently.
+        run: python scripts/build_registry.py --check
 
   sources:
     # Every Python source package, each with its own tests and offline

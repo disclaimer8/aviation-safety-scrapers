@@ -2,7 +2,7 @@ version: 2
 
 updates:
   # Python packages — one pyproject.toml per source under sources/<code>/.
-  # The /sources/* glob covers all 38 scraper packages with a single block;
+  # The /sources/* glob covers every Python source with a single block;
   # updates are grouped per-directory into one PR and capped to keep noise low.
   - package-ecosystem: "pip"
     directories:
