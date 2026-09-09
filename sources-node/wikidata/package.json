@@ -16,7 +16,7 @@
     "better-sqlite3": "^13.0.3"
   },
   "devDependencies": {
-    "jest": "^30.4.2"
+    "jest": "^30.5.1"
   },
   "overrides": {
     "js-yaml": "^4.2.0"
