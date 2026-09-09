@@ -73,17 +73,28 @@ def check(client, url, user_agent):
 
 
 def crawl_delay(client, url, user_agent, default=0.0):
-    """The site's Crawl-delay for this agent, or `default` when it asks for less."""
+    """The site's Crawl-delay for this agent, or `default` when it asks for less.
+
+    Both the named group and "*" are consulted, and the larger wins. That is
+    deliberate on two counts. It is the more polite reading — a site that sets
+    a global Crawl-delay meant it for us too. And it does not depend on the
+    interpreter: urllib.robotparser.crawl_delay() falls back to the "*" group
+    on Python 3.11 and does not on 3.14, so leaving the choice to the stdlib
+    would have made this scraper's pacing differ by Python version. Caught by
+    the CI version matrix on its first run.
+    """
     parser = _parser_for(client, url, user_agent)
     if parser is None:
         return default
-    try:
-        declared = parser.crawl_delay(user_agent)
-    except Exception:
-        return default
-    if declared is None:
-        return default
-    return max(float(declared), float(default))
+    best = float(default)
+    for agent in (user_agent, "*"):
+        try:
+            declared = parser.crawl_delay(agent)
+        except Exception:
+            continue
+        if declared is not None:
+            best = max(best, float(declared))
+    return best
 
 
 def reset_cache():

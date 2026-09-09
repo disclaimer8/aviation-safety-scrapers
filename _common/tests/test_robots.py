@@ -95,12 +95,15 @@ class TestCrawlDelay:
             assert robots.crawl_delay(c, "https://example.test/x", self.OTHER,
                                       default=9.0) == 9.0
 
-    def test_a_group_naming_our_agent_replaces_the_star_group(self):
-        # bea-ingest/1.0 has its own group with no Crawl-delay, so the "*"
-        # group's Crawl-delay does NOT apply to it.
+    def test_a_global_crawl_delay_applies_to_a_named_agent_too(self):
+        # bea-ingest/1.0 has its own group with no Crawl-delay. We consult "*"
+        # as well and take the larger value: it is the more polite reading, and
+        # it is stable across interpreters — urllib.robotparser falls back to
+        # "*" on Python 3.11 and does not on 3.14, so relying on the stdlib
+        # would make pacing depend on the Python version.
         with _client() as c:
             assert robots.crawl_delay(c, "https://example.test/x", UA,
-                                      default=1.5) == 1.5
+                                      default=1.5) == 5.0
 
     def test_no_robots_leaves_our_delay_alone(self):
         with _client(status=404) as c:

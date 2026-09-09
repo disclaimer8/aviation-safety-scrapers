@@ -11,9 +11,9 @@ import (
 )
 
 const (
-	beaBase           = "https://www.bea.aero"
-	beaListingURL     = "https://www.bea.aero/en/investigation-reports/notified-events/?tx_news_pi1%5Baction%5D=searchResult&tx_news_pi1%5Bcontroller%5D=News&tx_news_pi1%5BfacetAction%5D=removeAll&cHash=2f2908414ec2726192a2da91db42f658"
-	beaDetailPathPfx  = "/en/investigation-reports/notified-events/detail/"
+	beaBase          = "https://www.bea.aero"
+	beaListingURL    = "https://www.bea.aero/en/investigation-reports/notified-events/?tx_news_pi1%5Baction%5D=searchResult&tx_news_pi1%5Bcontroller%5D=News&tx_news_pi1%5BfacetAction%5D=removeAll&cHash=2f2908414ec2726192a2da91db42f658"
+	beaDetailPathPfx = "/en/investigation-reports/notified-events/detail/"
 )
 
 // reDateInTitle matches the date embedded in BEA event titles, e.g. "on 14/06/2026 at".

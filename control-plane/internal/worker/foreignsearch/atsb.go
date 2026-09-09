@@ -13,11 +13,11 @@ import (
 // Field names match the schema used in testdata/atsb_export.json (schema-representative
 // of the XHR response from atsb.gov.au investigations search; see task-6-report.md).
 type atsbInvestigation struct {
-	InvestigationNumber string `json:"InvestigationNumber"`
-	Title               string `json:"Title"`
-	OccurrenceDate      string `json:"OccurrenceDate"`
+	InvestigationNumber  string `json:"InvestigationNumber"`
+	Title                string `json:"Title"`
+	OccurrenceDate       string `json:"OccurrenceDate"`
 	InvestigationPageURL string `json:"InvestigationPageURL"`
-	ReportPDFURL        string `json:"ReportPDFURL"`
+	ReportPDFURL         string `json:"ReportPDFURL"`
 }
 
 // atsbExport is the top-level JSON structure: either a bare array or

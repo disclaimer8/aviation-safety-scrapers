@@ -44,12 +44,12 @@ func TestExtractDateValidatesCalendar(t *testing.T) {
 
 func TestRefFromURLDistinguishesQueryAndExtension(t *testing.T) {
 	cases := map[string]string{
-		"https://x.org/reports/2024-ra-01":      "2024-ra-01",
-		"https://x.org/report.pdf":              "report",            // known ext stripped
-		"https://x.org/v1.2-final":              "v1.2-final",        // non-ext dot kept
-		"https://x.org/index.php?p=123":         "index?p=123",       // query folded in
-		"https://x.org/index.php?p=456":         "index?p=456",       // distinct from p=123
-		"https://x.org/?report=789":             "report=789",        // query-only path
+		"https://x.org/reports/2024-ra-01": "2024-ra-01",
+		"https://x.org/report.pdf":         "report",      // known ext stripped
+		"https://x.org/v1.2-final":         "v1.2-final",  // non-ext dot kept
+		"https://x.org/index.php?p=123":    "index?p=123", // query folded in
+		"https://x.org/index.php?p=456":    "index?p=456", // distinct from p=123
+		"https://x.org/?report=789":        "report=789",  // query-only path
 	}
 	for in, want := range cases {
 		if got := refFromURL(in); got != want {
