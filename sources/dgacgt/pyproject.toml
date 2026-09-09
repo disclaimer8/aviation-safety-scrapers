@@ -2,10 +2,10 @@
 name = "dgacgt-ingest"
 version = "0.1.0"
 requires-python = ">=3.11"
-dependencies = ["httpx>=0.27"]
+dependencies = ["httpx>=0.28.1"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8"]
+dev = ["pytest>=9.1.1"]
 
 [tool.setuptools.packages.find]
 include = ["dgacgt_ingest*"]
