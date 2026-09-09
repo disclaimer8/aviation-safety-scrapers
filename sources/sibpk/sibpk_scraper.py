@@ -53,7 +53,7 @@ CDX_API   = "https://web.archive.org/cdx/search/cdx"
 LISTING_URL = LIVE_BASE + "/Detail/NTc2ZDUxZDMtNjY1NC00YTM3LTgzNTYtNzA4ZGFiMjBiZmNl"
 DELAY     = 2.0   # seconds between Wayback requests
 
-UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36  (+https://github.com/disclaimer8/aviation-safety-scrapers; sibpk-scraper/1.0)"
       "(KHTML, like Gecko) Chrome/120 Safari/537.36")
 
 # ---------------------------------------------------------------------------

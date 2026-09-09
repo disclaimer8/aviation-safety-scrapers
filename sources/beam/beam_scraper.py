@@ -51,7 +51,7 @@ FLOOR = 80           # minimum chars to consider text usable (after Arabic strip
 HOME = os.path.expanduser("~/beam-ingest")
 DB = os.path.join(HOME, "beam.db")
 PDFDIR = os.path.join(HOME, "pdfs")
-UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36 (+https://github.com/disclaimer8/aviation-safety-scrapers; beam-scraper/1.0)"
 
 # Non-accident PDFs to skip in assets/doc/
 _NOT_REPORT = [

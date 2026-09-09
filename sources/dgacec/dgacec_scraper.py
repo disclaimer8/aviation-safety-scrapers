@@ -52,7 +52,7 @@ FLOOR = 80        # minimum chars to consider text usable
 HOME = os.path.expanduser("~/dgacec-ingest")
 DB = os.path.join(HOME, "dgacec.db")
 PDFDIR = os.path.join(HOME, "pdfs")
-UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36 (+https://github.com/disclaimer8/aviation-safety-scrapers; dgacec-scraper/1.0)"
 
 # CDX years to enumerate (upload years for accident reports)
 CDX_YEARS = list(range(2013, 2020))

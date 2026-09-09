@@ -22,6 +22,12 @@ REGISTRY = ROOT / "registry.yaml"
 
 _UA_RE = re.compile(r'User-Agent["\']?\s*[:=]\s*["\']([^"\']+)["\']')
 _DELAY_RE = re.compile(r"^DELAY\s*=\s*([0-9.]+)", re.M)
+# Surfaced because it silently disagrees across the tree: the same corpus is
+# admitted at 80 characters by bea/aaib/bfu/tsb/cenipa/nsib/cins/ahac/ansv, at
+# 200 by ntsbcarol, and at 300 by ovv/india/aaibmy/sacaa/rosap and others.
+# Which is right is a data decision, not a refactor — but it should at least
+# be visible in one place rather than buried in fourteen files.
+_FLOOR_RE = re.compile(r"^_?(?:NARRATIVE_FLOOR|MIN_NARRATIVE)\s*=\s*(\d+)", re.M)
 
 
 def _docstring(path):
@@ -82,6 +88,7 @@ def describe(pkg_dir):
         "verbs": verbs,
         "user_agent": _first(_UA_RE, texts),
         "delay_seconds": _first(_DELAY_RE, texts),
+        "narrative_floor": _first(_FLOOR_RE, texts),
         "tests": "behaviour" if has_real_tests else ("ast-only" if tests_dir.is_dir() else "none"),
         "summary": summary,
     }
@@ -106,6 +113,8 @@ def render():
         out.append(f"    tests: {r['tests']}")
         if r["delay_seconds"]:
             out.append(f"    delay_seconds: {r['delay_seconds']}")
+        if r["narrative_floor"]:
+            out.append(f"    narrative_floor: {r['narrative_floor']}")
         if r["user_agent"]:
             out.append(f"    user_agent: {r['user_agent']!r}")
         if r["summary"]:

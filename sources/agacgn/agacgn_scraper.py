@@ -42,7 +42,7 @@ FLOOR = 300
 HOME = os.path.expanduser("~/agacgn-ingest")
 DB = os.path.join(HOME, "agacgn.db")
 PDFDIR = os.path.join(HOME, "pdfs")
-UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36 (+https://github.com/disclaimer8/aviation-safety-scrapers; agacgn-scraper/1.0)"
 OCR_LANG = "fra+eng"
 
 # Known BAG AIA records WITH fetchable PDFs (from AGAC storage links)

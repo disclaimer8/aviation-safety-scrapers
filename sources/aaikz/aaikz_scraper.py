@@ -34,7 +34,7 @@ HOME = os.path.expanduser(f"~/aaikz-ingest")
 DB   = os.path.join(HOME, "aaikz.db")
 PDFDIR = os.path.join(HOME, "pdfs")
 
-UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36 (+https://github.com/disclaimer8/aviation-safety-scrapers; aaikz-scraper/1.0)"
 
 # ---- MANIFEST ---------------------------------------------------------------
 # Each entry: (case_id, event_date, flight_number, aircraft, registration,

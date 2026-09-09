@@ -40,7 +40,7 @@ ARTICLE_URL = BASE + "/dcadca/index.php?option=com_content&view=article&id=41"
 WAYBACK_BASE = "https://web.archive.org/web"
 CDX_BASE     = "https://web.archive.org/cdx/search/cdx"
 
-UA = "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0"
+UA = "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0 (+https://github.com/disclaimer8/aviation-safety-scrapers; aaibmm-scraper/1.0)"
 
 # ── KNOWN REPORTS ──────────────────────────────────────────────────────────────
 # Hardcoded list (stable, small set). case_id = aaibmm-<YYYYMMDD>-<reg-slug>.

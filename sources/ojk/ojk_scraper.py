@@ -40,7 +40,7 @@ FLOOR = 80            # build floor
 HOME = os.path.expanduser("~/ojk-ingest")
 DB = os.path.join(HOME, "ojk.db")
 PDFDIR = os.path.join(HOME, "pdfs")
-UA = "Mozilla/5.0 (compatible; FlightFinderBot/1.0; +https://flightfinder)"
+UA = "Mozilla/5.0 (compatible; FlightFinderBot/1.0; +https://flightfinder) (+https://github.com/disclaimer8/aviation-safety-scrapers; ojk-scraper/1.0)"
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS ojk_reports (

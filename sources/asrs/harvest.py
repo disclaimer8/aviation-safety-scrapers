@@ -156,7 +156,7 @@ from datetime import datetime
 import requests
 
 BASE_URL = "https://akama.arc.nasa.gov/ASRSDBOnline"
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 (+https://github.com/disclaimer8/aviation-safety-scrapers; asrs-scraper/1.0)"
 SLEEP_BETWEEN_REQUESTS = 2.0
 MAX_RETRY_5XX = 3
 BACKOFF_BASE = 30  # seconds

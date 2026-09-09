@@ -46,7 +46,7 @@ FLOOR = 300      # minimum chars for usable narrative
 HOME = os.path.expanduser("~/otsb-ingest")
 DB = os.path.join(HOME, "otsb.db")
 PDFDIR = os.path.join(HOME, "pdfs")
-UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36 (+https://github.com/disclaimer8/aviation-safety-scrapers; otsb-scraper/1.0)"
 OCR_LANG = "eng"
 
 # SLA/navigation link to skip (content ID always present as non-report)
