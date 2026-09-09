@@ -39,14 +39,30 @@ def discover(conn, client, full=False, max_pages=_MAX_PAGES):
         try:
             status, listing_html = pkbwl.fetch_listing(client, page)
         except Exception as e:
-            print(f"[pkbwl discover] page {page}: failed: {e}", file=sys.stderr)
-            break
+            # A transport error is NOT the end of the listing. Stopping here
+            # turned one 502 on page 30 into a truncated crawl reported as a
+            # successful one. Rows already inserted are committed, so the next
+            # run resumes rather than starting over.
+            conn.commit()
+            raise RuntimeError(
+                f"[pkbwl discover] page {page} failed after retries: {e} — "
+                f"walk truncated at {inserted} new rows"
+            ) from e
         if status == 404:
             break  # walked past the last page → clean stop
 
         slugs = pkbwl.extract_slugs(listing_html)
         if not slugs:
-            break  # defensive: an empty page also ends the walk
+            if page == 1:
+                # PKBWL publishes ~2,300 reports, so zero slugs on page 1 never
+                # means "no reports". It means the listing markup changed —
+                # which stop-on-empty would report as a clean, empty run.
+                conn.commit()
+                raise RuntimeError(
+                    "[pkbwl discover] page 1 yielded 0 report slugs — "
+                    "listing markup has changed (extract_slugs no longer matches)"
+                )
+            break  # a later empty page ends the walk
 
         for slug in slugs:
             if conn.execute(

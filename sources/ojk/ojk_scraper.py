@@ -12,12 +12,15 @@ is the keyword facet:
 page has a final/preliminary PDF under /sites/default/files/documents/YYYY-MM/.
 
 Plain httpx GET works (ojk.ee returns 200, no bot block). The vportal search
-host ships an incomplete TLS chain, so that one host uses verify=False.
+host once shipped an incomplete TLS chain and was fetched with verify=False;
+re-checked 2026-09-09, it now validates against the certifi bundle, so both
+clients verify.
 
 Stages: discover (search API -> ojk_reports) | fetch (detail page -> PDF) |
 parse (pdftotext) | build (ojk_accidents). Resumable via status column.
 """
 import sys, os, re, time, sqlite3, subprocess, warnings
+import certifi
 import httpx
 
 warnings.filterwarnings("ignore")
@@ -73,7 +76,7 @@ def site_client():
 def api_client():
     global _api
     if _api is None:
-        _api = httpx.Client(timeout=60, follow_redirects=True, verify=False,
+        _api = httpx.Client(timeout=60, follow_redirects=True, verify=certifi.where(),
             headers={"User-Agent": UA, "Origin": BASE, "Referer": BASE + "/"})
     return _api
 

@@ -35,21 +35,37 @@ def discover(conn, client, full=False):
         )
     }
     inserted = 0
+    failures = []
     time.sleep(aaibmy.DELAY)
     try:
         hub_html = aaibmy.fetch_hub(client)
     except Exception as e:
-        print(f"[aaibmy discover] hub failed: {e}", file=sys.stderr)
-        return 0
+        # Returning 0 here made a dead hub indistinguishable from "no new
+        # reports": the weekly timer logged a clean discover of nothing.
+        raise RuntimeError(
+            f"[aaibmy discover] hub failed after retries: {e} — "
+            "no year pages were walked"
+        ) from e
 
-    for year_url in aaibmy.year_links(hub_html):
+    year_urls = aaibmy.year_links(hub_html)
+    if not year_urls:
+        raise RuntimeError(
+            "[aaibmy discover] hub yielded 0 year links — hub markup has "
+            "changed (year_links no longer matches)"
+        )
+
+    for year_url in year_urls:
         year = year_url.rsplit("/", 1)[-1]
         time.sleep(aaibmy.DELAY)
         try:
             year_html = aaibmy.fetch_page(client, year_url)
         except Exception as e:
+            # Keep walking the other years so one bad year does not cost the
+            # whole run, but remember it: the walk is incomplete and discover
+            # must not return as if it were not.
             print(f"[aaibmy discover] year {year}: failed: {e}",
                   file=sys.stderr)
+            failures.append(f"{year}: {e}")
             continue
         for pdf_url, filename in aaibmy.pdf_links(year_html):
             if conn.execute(
@@ -85,6 +101,12 @@ def discover(conn, client, full=False):
             )
             inserted += 1
         conn.commit()
+    if failures:
+        raise RuntimeError(
+            f"[aaibmy discover] {len(failures)} year page(s) failed after "
+            f"retries ({'; '.join(failures)}) — walk incomplete at "
+            f"{inserted} new rows"
+        )
     return inserted
 
 

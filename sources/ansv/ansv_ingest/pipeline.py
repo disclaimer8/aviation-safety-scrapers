@@ -45,9 +45,14 @@ def discover(conn, client, full=False):
     Returns: number of new rows inserted.
     """
     inserted = 0
+    failures = []
 
     # --- page 1: also determines pagination depth ---
-    p1_html = client.get(ansv.LISTING_URL, headers={"User-Agent": ansv.UA}).text
+    # raise_for_status matters here: without it a 502 error body parses as a
+    # one-page listing, so the walk quietly covers 1 page instead of N.
+    p1_resp = client.get(ansv.LISTING_URL, headers={"User-Agent": ansv.UA})
+    p1_resp.raise_for_status()
+    p1_html = p1_resp.text
     total_pages = ansv.last_page(p1_html)
     pages_html = {1: p1_html}
 
@@ -56,25 +61,52 @@ def discover(conn, client, full=False):
         time.sleep(ansv.DELAY)
         resp = client.get(ansv.page_url(n), headers={"User-Agent": ansv.UA})
         if resp.status_code != 200:
+            # Not the end of the listing — record it so the run ends loudly
+            # instead of reporting a truncated walk as a clean one.
             print(f"[ansv discover] page {n}: HTTP {resp.status_code}", file=sys.stderr)
+            failures.append(f"page {n}: HTTP {resp.status_code}")
             continue
         pages_html[n] = resp.text
 
     # --- process entries ---
     for n, html in pages_html.items():
         entries = ansv.parse_listing(html)
+        if n == 1 and not entries:
+            # ANSV keeps hundreds of investigations; zero entries on page 1
+            # means the listing markup changed, not that the source emptied.
+            raise RuntimeError(
+                "[ansv discover] page 1 yielded 0 entries — listing markup "
+                "has changed (parse_listing no longer matches)"
+            )
         for entry in entries:
             report_url = entry["report_url"]
 
             # fetch report page for PDF URL
             time.sleep(ansv.DELAY)
+            rresp = None  # must not carry the previous row's response into the
+                          # except branch when client.get() itself raises
             try:
                 rresp = client.get(report_url, headers={"User-Agent": ansv.UA})
                 rresp.raise_for_status()
                 report_info = ansv.parse_report(rresp.text)
             except Exception as exc:
-                print(f"[ansv discover] {report_url}: {exc}", file=sys.stderr)
-                report_info = {"pdf_url": None, "title": entry.get("title")}
+                # A 404 is an answer: the report page is gone, and the listing
+                # metadata is still worth keeping with pdf_url=None. Anything
+                # else is a transport fault, and writing pdf_url=None for it
+                # would record a transient failure as the permanent fact "this
+                # report has no PDF" — the row would never be retried. Skip it
+                # instead, so the next cycle re-discovers it.
+                status_code = getattr(getattr(exc, "response", None), "status_code", None)
+                if status_code is None:
+                    status_code = getattr(rresp, "status_code", None)
+                if status_code == 404:
+                    print(f"[ansv discover] {report_url}: 404 — keeping listing row",
+                          file=sys.stderr)
+                    report_info = {"pdf_url": None, "title": entry.get("title")}
+                else:
+                    print(f"[ansv discover] {report_url}: {exc}", file=sys.stderr)
+                    failures.append(f"{report_url}: {exc}")
+                    continue
 
             pdf_url = report_info.get("pdf_url")
             title = report_info.get("title") or entry.get("title")
@@ -113,6 +145,11 @@ def discover(conn, client, full=False):
                 print(f"[ansv discover] {case_id}: db {exc}", file=sys.stderr)
 
     conn.commit()
+    if failures:
+        raise RuntimeError(
+            f"[ansv discover] {len(failures)} page/report fetch(es) failed "
+            f"({'; '.join(failures)}) — walk incomplete at {inserted} new rows"
+        )
     return inserted
 
 
