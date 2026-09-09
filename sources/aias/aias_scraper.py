@@ -18,6 +18,11 @@ HOME = os.path.expanduser("~/aias-ingest")
 DB = os.path.join(HOME, "aias.db")
 PDFDIR = os.path.join(HOME, "pdfs")
 PROFILE = os.path.join(HOME, ".cf-profile")
+# A persistent Chromium profile holds live Cloudflare clearance cookies.
+# That is a credential: anything on the box that could read it could
+# replay this scraper's session. Lock the directory to the owner.
+os.makedirs(PROFILE, mode=0o700, exist_ok=True)
+os.chmod(PROFILE, 0o700)
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS aias_reports (

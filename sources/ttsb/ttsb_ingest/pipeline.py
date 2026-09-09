@@ -22,11 +22,26 @@ build() promotes 'parsed' rows with narrative >= _NARRATIVE_FLOOR into
 ttsb_accidents (country TW, lang per the chosen narrative).
 """
 import os
+import re
 import sys
 import time
 
 from . import ttsb, db, pdf
 from .text import make_site_slug
+
+# Every value below is derived from the source's own HTML/JSON, so it must not
+# be trusted as a path component: os.path.join with a value containing "/" or
+# ".." writes outside pdf_dir. BFU already carried this guard; most packages
+# did not.
+_UNSAFE_FILENAME_RE = re.compile(r"[^A-Za-z0-9._-]")
+
+
+def _safe_filename(name: str) -> str:
+    """Reduce an untrusted identifier to a single, safe path component."""
+    cleaned = _UNSAFE_FILENAME_RE.sub("_", str(name or ""))
+    cleaned = cleaned.lstrip(".") or "unnamed"
+    return cleaned[:120]
+
 
 _NARRATIVE_FLOOR = 300
 
@@ -200,7 +215,7 @@ def fetch(conn, client, pdf_dir="pdfs"):
         en_path = zh_path = None
         try:
             if en_url:
-                en_path = os.path.join(pdf_dir, f"{case_id}.en.pdf")
+                en_path = os.path.join(pdf_dir, _safe_filename(case_id) + ".en.pdf")
                 time.sleep(ttsb.DELAY)
                 ttsb.download_pdf(client, en_url, en_path)
                 en_text = pdf.extract_text(en_path)
@@ -213,7 +228,7 @@ def fetch(conn, client, pdf_dir="pdfs"):
         need_zh = zh_url and len(en_text) < ttsb.ZH_FULL_THRESHOLD
         if need_zh:
             try:
-                zh_path = os.path.join(pdf_dir, f"{case_id}.zh.pdf")
+                zh_path = os.path.join(pdf_dir, _safe_filename(case_id) + ".zh.pdf")
                 time.sleep(ttsb.DELAY)
                 ttsb.download_pdf(client, zh_url, zh_path)
                 zh_text = pdf.extract_text(zh_path)

@@ -17,12 +17,27 @@ build(): emit rosap_accidents for reports only. Supplements ([Amendment],
   separate accidents.
 """
 import os
+import re
 import sys
 import time
 
 from . import db, rosap
 from .pdf import ocr_extract
 from .text import make_site_slug
+
+# Every value below is derived from the source's own HTML/JSON, so it must not
+# be trusted as a path component: os.path.join with a value containing "/" or
+# ".." writes outside pdf_dir. BFU already carried this guard; most packages
+# did not.
+_UNSAFE_FILENAME_RE = re.compile(r"[^A-Za-z0-9._-]")
+
+
+def _safe_filename(name: str) -> str:
+    """Reduce an untrusted identifier to a single, safe path component."""
+    cleaned = _UNSAFE_FILENAME_RE.sub("_", str(name or ""))
+    cleaned = cleaned.lstrip(".") or "unnamed"
+    return cleaned[:120]
+
 
 _NARRATIVE_FLOOR = 300  # OCR that recovers less than this is not a narrative
 
@@ -93,7 +108,7 @@ def fetch(conn, page, pdf_dir="pdfs"):
 
     for row in rows:
         pid = row["pid"]
-        dest = os.path.join(pdf_dir, f"rosap-{pid}.pdf")
+        dest = os.path.join(pdf_dir, "rosap-" + _safe_filename(pid) + ".pdf")
         try:
             with page.expect_download(timeout=120000) as dl:
                 try:

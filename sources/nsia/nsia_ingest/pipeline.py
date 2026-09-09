@@ -13,11 +13,26 @@ build() promotes 'parsed' rows with narrative >= _NARRATIVE_FLOOR into
 nsia_accidents (country NO).
 """
 import os
+import re
 import sys
 import time
 
 from . import db, nsia, pdf
 from .text import make_site_slug
+
+# Every value below is derived from the source's own HTML/JSON, so it must not
+# be trusted as a path component: os.path.join with a value containing "/" or
+# ".." writes outside pdf_dir. BFU already carried this guard; most packages
+# did not.
+_UNSAFE_FILENAME_RE = re.compile(r"[^A-Za-z0-9._-]")
+
+
+def _safe_filename(name: str) -> str:
+    """Reduce an untrusted identifier to a single, safe path component."""
+    cleaned = _UNSAFE_FILENAME_RE.sub("_", str(name or ""))
+    cleaned = cleaned.lstrip(".") or "unnamed"
+    return cleaned[:120]
+
 
 _NARRATIVE_FLOOR = 300
 _MAX_EMPTY_PAGES = 1
@@ -96,7 +111,7 @@ def fetch(conn, client, pdf_dir="pdfs"):
             print(f"[nsia fetch] {case_id}: detail failed: {e}", file=sys.stderr)
             continue
 
-        pdf_path = os.path.join(pdf_dir, f"{case_id}.pdf")
+        pdf_path = os.path.join(pdf_dir, _safe_filename(case_id) + ".pdf")
         url = nsia.pdf_url(row["detail_url"])
         try:
             time.sleep(nsia.DELAY)

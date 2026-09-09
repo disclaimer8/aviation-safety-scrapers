@@ -2,10 +2,21 @@
 """Patchright helper: render mintrans.uz listing page and print HTML to stdout.
 Run as: xvfb-run -a <cenipa-venv-python> aaiuz_patchright_helper.py <url>
 """
-import sys, time, re
+import os, sys, time, re
 
 url = sys.argv[1] if len(sys.argv) > 1 else "https://www.mintrans.uz/ru/aviatsiyahodisalari"
-PROFILE = "~/israel-ingest/.cf-profile"
+
+# Its OWN profile, and an expanded path.
+#
+# This pointed at "~/israel-ingest/.cf-profile" — literally, unexpanded, so
+# Chromium created a directory named "~" under whatever the CWD happened to
+# be; and if anyone did expand it, Uzbekistan's scraper would be driving
+# Israel's Cloudflare session. A profile directory holds live clearance
+# cookies: it is a credential, and it belongs to one source.
+PROFILE = os.path.expanduser(
+    os.environ.get("AAIUZ_PROFILE", "~/aaiuz-ingest/.cf-profile"))
+os.makedirs(PROFILE, mode=0o700, exist_ok=True)
+os.chmod(PROFILE, 0o700)  # cookies in here are a credential
 
 from patchright.sync_api import sync_playwright
 

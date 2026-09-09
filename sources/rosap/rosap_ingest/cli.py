@@ -1,5 +1,6 @@
 # rosap_ingest/cli.py
 import argparse
+import os
 import sys
 
 from . import db, rosap
@@ -43,8 +44,25 @@ def main(argv=None):
         if needs_browser:
             from patchright.sync_api import sync_playwright
             playwright = sync_playwright().start()
+            # The renderer sandbox stays ON. This drove a HEADED Chromium at a
+            # live site with --no-sandbox, as a service user with a writable
+            # home: one renderer bug on a hostile page is host compromise, and
+            # the only thing standing between the two was the flag that was
+            # switched off.
+            #
+            # --no-sandbox is usually reached for because unprivileged user
+            # namespaces are restricted (Ubuntu 24.04+ does this via AppArmor).
+            # The fix there is to allow them for this binary, not to drop the
+            # sandbox. ROSAP_NO_SANDBOX=1 exists as a deliberate, visible
+            # escape hatch — it should not be set on the ingest host.
+            launch_args = []
+            if os.environ.get("ROSAP_NO_SANDBOX") == "1":
+                print("[rosap] WARNING: renderer sandbox disabled via "
+                      "ROSAP_NO_SANDBOX=1 — a hostile page can reach the host",
+                      file=sys.stderr)
+                launch_args.append("--no-sandbox")
             browser = playwright.chromium.launch(headless=False,
-                                                 args=["--no-sandbox"])
+                                                 args=launch_args)
             ctx = browser.new_context(user_agent=rosap.UA, locale="en-US",
                                       accept_downloads=True)
             page = ctx.new_page()

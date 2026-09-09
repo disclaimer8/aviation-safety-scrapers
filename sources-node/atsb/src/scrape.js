@@ -74,6 +74,7 @@ function assertFirstPageNotEmpty(rows, pg, startPage) {
 // cleanly. On a display-less server run the whole process under Xvfb:
 // `xvfb-run -a node src/cli.js build`. Override with ATSB_HEADLESS=1 only if a
 // future egress (real display / stealth) is proven.
+const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
@@ -127,6 +128,11 @@ function createScraper({
       args: ['--disable-blink-features=AutomationControlled'],
     };
     if (proxy) launchOpts.proxy = { server: proxy };
+    // The profile holds live Akamai clearance cookies — a credential. Lock it
+    // to the owner before Chromium populates it; under os.tmpdir() it would
+    // otherwise be world-readable on a shared box.
+    fs.mkdirSync(userDataDir, { recursive: true, mode: 0o700 });
+    try { fs.chmodSync(userDataDir, 0o700); } catch { /* best effort */ }
     context = await chromium.launchPersistentContext(userDataDir, launchOpts);
     // Tear the headed Chromium down even on signal kill (systemd stop, reboot,
     // sibling OOM) — without this the browser orphans under Xvfb and piles up

@@ -1,9 +1,24 @@
 # aaib_ingest/pipeline.py
 import os
+import re
 import sys
 
 from . import db, govuk, text
 from .pdf import extract_text, MIN_NARRATIVE
+
+# Every value below is derived from the source's own HTML/JSON, so it must not
+# be trusted as a path component: os.path.join with a value containing "/" or
+# ".." writes outside pdf_dir. BFU already carried this guard; most packages
+# did not.
+_UNSAFE_FILENAME_RE = re.compile(r"[^A-Za-z0-9._-]")
+
+
+def _safe_filename(name: str) -> str:
+    """Reduce an untrusted identifier to a single, safe path component."""
+    cleaned = _UNSAFE_FILENAME_RE.sub("_", str(name or ""))
+    cleaned = cleaned.lstrip(".") or "unnamed"
+    return cleaned[:120]
+
 
 _KNOWN_TOLERANCE = 5  # delta: stop after this many consecutive already-seen slugs
 
@@ -56,7 +71,7 @@ def fetch(conn, client, pdf_dir):
         pdf_path = None
         if pdf_url:
             try:
-                candidate = os.path.join(pdf_dir, slug + ".pdf")
+                candidate = os.path.join(pdf_dir, _safe_filename(slug) + ".pdf")
                 govuk.download(client, pdf_url, candidate)
                 pdf_path = candidate
             except Exception as e:

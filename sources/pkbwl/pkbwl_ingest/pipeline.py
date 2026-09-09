@@ -20,11 +20,26 @@ build() promotes 'parsed' rows with narrative >= _NARRATIVE_FLOOR into
 pkbwl_accidents (country PL; lang = the variant actually kept).
 """
 import os
+import re
 import sys
 import time
 
 from . import pkbwl, db, pdf
 from .text import make_site_slug
+
+# Every value below is derived from the source's own HTML/JSON, so it must not
+# be trusted as a path component: os.path.join with a value containing "/" or
+# ".." writes outside pdf_dir. BFU already carried this guard; most packages
+# did not.
+_UNSAFE_FILENAME_RE = re.compile(r"[^A-Za-z0-9._-]")
+
+
+def _safe_filename(name: str) -> str:
+    """Reduce an untrusted identifier to a single, safe path component."""
+    cleaned = _UNSAFE_FILENAME_RE.sub("_", str(name or ""))
+    cleaned = cleaned.lstrip(".") or "unnamed"
+    return cleaned[:120]
+
 
 _NARRATIVE_FLOOR = 300
 _MAX_PAGES = 400  # safety cap; real last page ~236, 404 stops earlier
@@ -138,7 +153,7 @@ def fetch(conn, client, pdf_dir="pdfs"):
         case_id = row["case_id"]
         pdf_url = row["pdf_url"]
         lang = row["lang"]
-        pdf_path = os.path.join(pdf_dir, f"{case_id}.pdf")
+        pdf_path = os.path.join(pdf_dir, _safe_filename(case_id) + ".pdf")
         time.sleep(pkbwl.DELAY)
         try:
             pkbwl.download_pdf(client, pdf_url, pdf_path)

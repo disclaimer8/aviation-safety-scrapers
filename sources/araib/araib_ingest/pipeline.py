@@ -26,11 +26,26 @@ build() promotes 'parsed' rows with narrative >= _NARRATIVE_FLOOR into
 araib_accidents (country KR, lang en).
 """
 import os
+import re
 import sys
 import time
 
 from . import araib, db, pdf
 from .text import make_site_slug
+
+# Every value below is derived from the source's own HTML/JSON, so it must not
+# be trusted as a path component: os.path.join with a value containing "/" or
+# ".." writes outside pdf_dir. BFU already carried this guard; most packages
+# did not.
+_UNSAFE_FILENAME_RE = re.compile(r"[^A-Za-z0-9._-]")
+
+
+def _safe_filename(name: str) -> str:
+    """Reduce an untrusted identifier to a single, safe path component."""
+    cleaned = _UNSAFE_FILENAME_RE.sub("_", str(name or ""))
+    cleaned = cleaned.lstrip(".") or "unnamed"
+    return cleaned[:120]
+
 
 _NARRATIVE_FLOOR = 300
 _MAX_PAGES = 50  # hard safety stop for the page walk (55 reports = ~6 pages)
@@ -141,7 +156,7 @@ def fetch(conn, client, pdf_dir="pdfs"):
             continue  # stays 'new'; retried next cycle
 
         # ── stage 2: download PDF + text ──
-        pdf_path = os.path.join(pdf_dir, f"{idx}.pdf")
+        pdf_path = os.path.join(pdf_dir, _safe_filename(idx) + ".pdf")
         text = ""
         tier = "pdf"
         time.sleep(araib.DELAY)
