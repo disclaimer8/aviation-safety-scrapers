@@ -2,20 +2,17 @@
 import argparse
 import os
 
-import httpx
 
-from . import db, otkes
+from . import db, httpc, otkes
 from .otkes import OtkesBrowser
 from .pipeline import discover, fetch, build
 
 
-def _make_client():
-    return httpx.Client(
-        timeout=180,
-        follow_redirects=True,
-        headers=otkes.HEADERS,
-        verify=True,
-    )
+def _make_client(proxy=None, **_kw):
+    # The retry policy lives in httpc (vendored from _common/http.py):
+    # httpx's own retries= covers connect errors only, so a 502 or a read
+    # timeout used to raise on the first attempt and truncate a run.
+    return httpc.make_client(headers=otkes.HEADERS, proxy=proxy, timeout=180)
 
 
 def _build_argparser():

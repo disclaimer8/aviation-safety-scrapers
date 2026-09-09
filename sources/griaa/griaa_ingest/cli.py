@@ -2,23 +2,18 @@
 import argparse
 import os
 
-from . import griaa, db
+from . import griaa, db, httpc
 from .pipeline import discover, fetch, parse, build
 
 
 def _make_client(proxy=None):
-    import httpx
-    transport = None
-    if proxy:
-        transport = httpx.HTTPTransport(proxy=proxy)
-    return httpx.Client(
-        headers={
-            "User-Agent": griaa.UA,
-            "Referer": griaa.REFERER,
-        },
-        follow_redirects=True,
+    # The retry policy lives in httpc (vendored from _common/http.py):
+    # httpx's own retries= covers connect errors only, so a 502 or a read
+    # timeout used to raise on the first attempt and truncate a run.
+    return httpc.make_client(
+        headers={"User-Agent": griaa.UA, "Referer": griaa.REFERER},
+        proxy=proxy,
         timeout=60.0,
-        transport=transport,
     )
 
 

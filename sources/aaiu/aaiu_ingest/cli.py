@@ -6,9 +6,8 @@ import ssl
 import tempfile
 
 import certifi
-import httpx
 
-from . import db, aaiu
+from . import db, httpc, aaiu
 from .pipeline import discover, fetch, build
 
 # ⚠️ aaiu.ie serves its leaf cert WITHOUT the Sectigo DV R36 intermediate
@@ -31,11 +30,13 @@ def _ca_bundle():
 
 
 def _make_client(proxy=None, **_kw):
-    return httpx.Client(
-        timeout=120,
-        follow_redirects=True,
+    # The retry policy lives in httpc (vendored from _common/http.py):
+    # httpx's own retries= covers connect errors only, so a 502 or a read
+    # timeout used to raise on the first attempt and truncate a run.
+    return httpc.make_client(
         headers=aaiu.HEADERS,
-        proxy=proxy or None,
+        proxy=proxy,
+        timeout=120,
         verify=ssl.create_default_context(cafile=_ca_bundle()),
     )
 

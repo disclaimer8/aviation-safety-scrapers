@@ -37,6 +37,43 @@ VENDORED = {
     # pdf (for OCR) and text but has no use for the http client.
     "rosap": {"pdf": "pdf", "text": "text"},
     "sacaa": {"pdf": "pdf", "http": "httpc", "text": "text"},
+    # The rest of the HTTP packages take the retry policy only. pdf/text are
+    # deliberately NOT vendored into them: their variants have not been read
+    # and confirmed canonical, and syncing over one would delete real
+    # per-source logic (the reason this list is explicit in the first place).
+    "aaib": {"http": "httpc"},
+    "aaiu": {"http": "httpc"},
+    "aaiube": {"http": "httpc"},
+    "aibdk": {"http": "httpc"},
+    "ansv": {"http": "httpc"},
+    "araib": {"http": "httpc"},
+    "bea": {"http": "httpc"},
+    "bfu": {"http": "httpc"},
+    "ciaado": {"http": "httpc"},
+    "ciaape": {"http": "httpc"},
+    "ciaiac": {"http": "httpc"},
+    "cins": {"http": "httpc"},
+    "dgaccl": {"http": "httpc"},
+    "dgacgt": {"http": "httpc"},
+    "gcaa": {"http": "httpc"},
+    "griaa": {"http": "httpc"},
+    "india": {"http": "httpc"},
+    "jst": {"http": "httpc"},
+    "jtsb": {"http": "httpc"},
+    "knkt": {"http": "httpc"},
+    "nsia": {"http": "httpc"},
+    "otkes": {"http": "httpc"},
+    "pkbwl": {"http": "httpc"},
+    "rnsa": {"http": "httpc"},
+    "shk": {"http": "httpc"},
+    "sub": {"http": "httpc"},
+    "sust": {"http": "httpc"},
+    "taic": {"http": "httpc"},
+    "tsb": {"http": "httpc"},
+    "tsib": {"http": "httpc"},
+    "ttsb": {"http": "httpc"},
+    "ueim": {"http": "httpc"},
+    "uzpln": {"http": "httpc"},
 }
 
 _TOKEN = re.compile(r"\{\{([A-Z_]+)\}\}")

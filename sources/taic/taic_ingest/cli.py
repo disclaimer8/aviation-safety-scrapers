@@ -2,19 +2,20 @@
 import argparse
 import os
 
-import httpx
 
-from . import db, taic
+from . import db, httpc, taic
 from .pipeline import discover, fetch, build
 
 
 def _make_client(proxy=None, **_kw):
-    return httpx.Client(
-        timeout=60,
-        follow_redirects=True,
+    # The retry policy lives in httpc (vendored from _common/http.py):
+    # httpx's own retries= covers connect errors only, so a 502 or a read
+    # timeout used to raise on the first attempt and truncate a run.
+    return httpc.make_client(
         headers=taic.HEADERS,
+        proxy=proxy,
+        timeout=60,
         cookies=taic.COOKIES,  # big_pipe_nojs — see taic.py
-        proxy=proxy or None,
     )
 
 

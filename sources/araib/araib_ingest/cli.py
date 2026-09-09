@@ -1,11 +1,11 @@
 # araib_ingest/cli.py
 import argparse
 import os
+import ssl
 
 import certifi
-import httpx
 
-from . import araib, db
+from . import araib, db, httpc
 from .pipeline import discover, fetch, build
 
 
@@ -14,12 +14,16 @@ def _make_client(proxy=None, **_kw):
     # gets a WebtoB 307 → same URL with Set-Cookie TMOSHCooKie; follow_redirects
     # + the jar replay the handshake transparently. HTTPS only; verify via
     # certifi (the cert chain validates cleanly there).
-    return httpx.Client(
-        timeout=120,
-        follow_redirects=True,
+    #
+    # The retry policy lives in httpc (vendored from _common/http.py):
+    # httpx's own retries= covers connect errors only, so a 502 or a read
+    # timeout used to raise on the first attempt and truncate a run.
+    return httpc.make_client(
         headers=araib.HEADERS,
-        verify=certifi.where(),
-        proxy=proxy or None,
+        proxy=proxy,
+        timeout=120,
+        # httpx deprecated verify=<str>; the context form is the same bundle.
+        verify=ssl.create_default_context(cafile=certifi.where()),
     )
 
 

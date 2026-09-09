@@ -120,3 +120,24 @@ class TestMakeClient:
             assert isinstance(client._transport, chttp.RetryTransport)
         finally:
             client.close()
+
+    def test_a_pinned_ca_bundle_reaches_the_transport(self):
+        # httpx.Client ignores verify= when a transport is supplied, so a
+        # source that pins a bundle and also gets the retry policy would
+        # silently fall back to the default one. Several sources pin one.
+        import ssl
+
+        ctx = ssl.create_default_context()
+        client = chttp.make_client(verify=ctx)
+        try:
+            inner = client._transport._inner
+            assert inner._pool._ssl_context is ctx
+        finally:
+            client.close()
+
+    def test_verification_stays_on_when_nothing_is_pinned(self):
+        client = chttp.make_client()
+        try:
+            assert client._transport._inner._pool._ssl_context.verify_mode != 0
+        finally:
+            client.close()

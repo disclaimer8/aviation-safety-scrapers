@@ -2,19 +2,17 @@
 import argparse
 import os
 
-import httpx
 
-from . import db, aibdk
+from . import db, httpc, aibdk
 from .pipeline import discover, fetch, build
 
 
 def _make_client(proxy=None, **_kw):
-    return httpx.Client(
-        timeout=300,  # DK PDFs up to 34MB
-        follow_redirects=True,
-        headers=aibdk.HEADERS,
-        proxy=proxy or None,
-    )
+    # The retry policy lives in httpc (vendored from _common/http.py):
+    # httpx's own retries= covers connect errors only, so a 502 or a read
+    # timeout used to raise on the first attempt and truncate a run.
+    return httpc.make_client(headers=aibdk.HEADERS, proxy=proxy,
+                             timeout=300)  # DK PDFs up to 34MB
 
 
 def _build_argparser():

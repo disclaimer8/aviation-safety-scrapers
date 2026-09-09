@@ -89,13 +89,22 @@ class RetryTransport(httpx.BaseTransport):
 
 
 def make_client(headers=None, proxy=None, timeout=DEFAULT_TIMEOUT,
-                attempts=DEFAULT_ATTEMPTS, backoff=DEFAULT_BACKOFF, **kwargs):
+                attempts=DEFAULT_ATTEMPTS, backoff=DEFAULT_BACKOFF,
+                verify=True, **kwargs):
     """Build the httpx.Client a source package should use.
 
     Keeps httpx's own connect-level retries (they are free and cover a
     different failure) and layers the response-level policy on top.
+
+    verify is a parameter here rather than passed through **kwargs on purpose:
+    httpx.Client builds a transport from `verify` only when `transport=` is
+    absent, so a source that pinned a CA bundle and also got a RetryTransport
+    would silently fall back to the default bundle. Several sources pin one
+    (araib's chain, ttsb's SSL context, aaiu's bundle), and losing that
+    quietly is exactly the class of failure this module exists to stop.
     """
-    inner = httpx.HTTPTransport(proxy=proxy or None, retries=attempts)
+    inner = httpx.HTTPTransport(proxy=proxy or None, retries=attempts,
+                                verify=verify)
     return httpx.Client(
         timeout=timeout,
         follow_redirects=True,
