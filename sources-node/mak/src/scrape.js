@@ -1,5 +1,8 @@
 'use strict';
 
+const dns = require('node:dns').promises;
+const net = require('node:net');
+
 const makParse = require('./parse');
 
 const BASE = 'https://mak-iac.org';
@@ -14,6 +17,57 @@ const RETRY_MAX = 3;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// report_pdf_final and friends are absolute URLs resolved from hrefs on MAK's
+// own pages, so this fetcher follows a target the site chooses. On the ingest
+// box that reaches the LAN and the cloud metadata endpoint. The control
+// plane's Go path has blocked this since GO-CP-8; here nothing did.
+function isPrivateAddress(ip) {
+  if (net.isIPv4(ip)) {
+    const [a, b] = ip.split('.').map(Number);
+    return a === 0 || a === 10 || a === 127
+      || (a === 169 && b === 254)            // link-local / cloud metadata
+      || (a === 172 && b >= 16 && b <= 31)
+      || (a === 192 && b === 168)
+      || (a === 100 && b >= 64 && b <= 127)  // CGNAT
+      || a >= 224;                           // multicast / reserved
+  }
+  const s = ip.toLowerCase().replace(/^\[|\]$/g, '');
+  return s === '::' || s === '::1'
+    || s.startsWith('fe80:') || s.startsWith('fc') || s.startsWith('fd')
+    || s.startsWith('::ffff:127.') || s.startsWith('::ffff:10.')
+    || s.startsWith('::ffff:169.254.') || s.startsWith('::ffff:192.168.');
+}
+
+async function assertPublicTarget(rawUrl) {
+  let u;
+  try {
+    u = new URL(rawUrl);
+  } catch {
+    throw new Error(`refusing to fetch an unparseable URL: ${rawUrl}`);
+  }
+  if (u.protocol !== 'http:' && u.protocol !== 'https:') {
+    throw new Error(`refusing to fetch ${u.protocol} URL: ${rawUrl}`);
+  }
+  const host = u.hostname.replace(/^\[|\]$/g, '');
+  let addresses;
+  if (net.isIP(host)) {
+    addresses = [{ address: host }];
+  } else {
+    try {
+      addresses = await dns.lookup(host, { all: true });
+    } catch {
+      return; // let fetch report the DNS failure in its own words
+    }
+  }
+  for (const { address } of addresses) {
+    if (isPrivateAddress(address)) {
+      throw new Error(
+        `refusing to fetch ${rawUrl}: ${host} resolves to the private/internal ` +
+        `address ${address}`);
+    }
+  }
+}
+
 /**
  * Resilient fetch tuned for MAK's flaky Bitrix CDN:
  *   - AbortController timeout so a hung socket on a multi-MB PDF retries
@@ -25,6 +79,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
  *     hot-linked file downloads without a matching Referer.
  */
 async function fetchWithRetry(url, { binary = false, referer = null } = {}) {
+  await assertPublicTarget(url);   // before any attempt, and before any retry
   let lastErr;
   for (let attempt = 0; attempt < RETRY_MAX; attempt++) {
     const ctrl = new AbortController();
@@ -63,4 +118,7 @@ async function listYear(year) {
   return makParse.parseYearListing(html);
 }
 
-module.exports = { BASE, PER_REQUEST_DELAY_MS, fetchWithRetry, listYear, sleep };
+module.exports = {
+  BASE, PER_REQUEST_DELAY_MS, fetchWithRetry, listYear, sleep,
+  assertPublicTarget, isPrivateAddress,
+};

@@ -121,6 +121,15 @@ class TestMakeClient:
         finally:
             client.close()
 
+    @staticmethod
+    def _real_transport(client):
+        """Walk to the httpx.HTTPTransport at the bottom of the wrapper chain
+        (RetryTransport -> SSRFGuardTransport -> HTTPTransport)."""
+        t = client._transport
+        while hasattr(t, "_inner"):
+            t = t._inner
+        return t
+
     def test_a_pinned_ca_bundle_reaches_the_transport(self):
         # httpx.Client ignores verify= when a transport is supplied, so a
         # source that pins a bundle and also gets the retry policy would
@@ -130,14 +139,13 @@ class TestMakeClient:
         ctx = ssl.create_default_context()
         client = chttp.make_client(verify=ctx)
         try:
-            inner = client._transport._inner
-            assert inner._pool._ssl_context is ctx
+            assert self._real_transport(client)._pool._ssl_context is ctx
         finally:
             client.close()
 
     def test_verification_stays_on_when_nothing_is_pinned(self):
         client = chttp.make_client()
         try:
-            assert client._transport._inner._pool._ssl_context.verify_mode != 0
+            assert self._real_transport(client)._pool._ssl_context.verify_mode != 0
         finally:
             client.close()

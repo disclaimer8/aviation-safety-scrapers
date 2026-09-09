@@ -23,6 +23,8 @@
 # backoff, and never retries a 4xx other than 429. A missing report is an
 # answer; hammering a source for it would break the "slow and polite" rule in
 # the repository README.
+import ipaddress
+import socket
 import time
 
 import httpx
@@ -88,9 +90,75 @@ class RetryTransport(httpx.BaseTransport):
         self._inner.close()
 
 
+class SSRFBlocked(Exception):
+    """A request targeted a private/internal address."""
+
+
+def _is_private_ip(ip):
+    return (ip.is_private or ip.is_loopback or ip.is_link_local
+            or ip.is_multicast or ip.is_reserved or ip.is_unspecified)
+
+
+class SSRFGuardTransport(httpx.BaseTransport):
+    """Refuse any request whose host resolves into a private/internal range.
+
+    These clients run with follow_redirects=True on a mini-PC that also hosts
+    the databases and, on some boxes, a cloud metadata endpoint. A PDF href or
+    a 302 taken from a scraped listing pointing at http://169.254.169.254/ or
+    http://127.0.0.1:8080/ was fetched without question — the control plane's
+    Go extract path has blocked exactly this since GO-CP-8, and the Python and
+    Node fetchers never did.
+
+    Every redirect hop comes back through here, so a chain that ends on a
+    private address is refused at that hop rather than at the first one.
+
+    This resolves the name and then lets httpx connect by name, so a DNS
+    answer that changes between the two is not covered. Blocking the common
+    case is still worth having; the Go guard dials the address it checked.
+    """
+
+    def __init__(self, inner):
+        self._inner = inner
+
+    def handle_request(self, request):
+        host = request.url.host
+        if host:
+            for addr in _resolve_all(host):
+                if _is_private_ip(addr):
+                    raise SSRFBlocked(
+                        f"refusing to fetch {request.url}: {host} resolves to "
+                        f"the private/internal address {addr}"
+                    )
+        return self._inner.handle_request(request)
+
+    def close(self):
+        self._inner.close()
+
+
+def _resolve_all(host):
+    """Yield every ipaddress this host resolves to. A literal IP resolves to
+    itself; a name that will not resolve yields nothing and is left to the
+    transport to fail on normally."""
+    try:
+        return [ipaddress.ip_address(host)]
+    except ValueError:
+        pass
+    try:
+        infos = socket.getaddrinfo(host, None)
+    except socket.gaierror:
+        return []
+    out = []
+    for info in infos:
+        try:
+            out.append(ipaddress.ip_address(info[4][0]))
+        except ValueError:
+            continue
+    return out
+
+
 def make_client(headers=None, proxy=None, timeout=DEFAULT_TIMEOUT,
                 attempts=DEFAULT_ATTEMPTS, backoff=DEFAULT_BACKOFF,
-                verify=True, **kwargs):
+                verify=True, allow_private=False, **kwargs):
     """Build the httpx.Client a source package should use.
 
     Keeps httpx's own connect-level retries (they are free and cover a
@@ -105,10 +173,16 @@ def make_client(headers=None, proxy=None, timeout=DEFAULT_TIMEOUT,
     """
     inner = httpx.HTTPTransport(proxy=proxy or None, retries=attempts,
                                 verify=verify)
+    if allow_private:
+        # Only for a source that genuinely talks to something on the LAN.
+        transport = RetryTransport(inner, attempts=attempts, backoff=backoff)
+    else:
+        transport = RetryTransport(SSRFGuardTransport(inner),
+                                   attempts=attempts, backoff=backoff)
     return httpx.Client(
         timeout=timeout,
         follow_redirects=True,
         headers=headers or {},
-        transport=RetryTransport(inner, attempts=attempts, backoff=backoff),
+        transport=transport,
         **kwargs,
     )
