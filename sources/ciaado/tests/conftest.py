@@ -39,3 +39,14 @@ class FakeClient:
 @pytest.fixture
 def make_client():
     return lambda routes: FakeClient(routes)
+
+from ciaado_ingest import ciaado
+
+# ── test speed ───────────────────────────────────────────────────────────────
+# The politeness DELAY is a production setting; leaving it live in the tests
+# bought nothing but sleep. Measured before this fixture: 71s of a
+# 71s run was time.sleep(). CI runs every package under a 300s timeout,
+# so this was also creeping towards a flaky one.
+@pytest.fixture(autouse=True)
+def _no_politeness_delay_in_tests(monkeypatch):
+    monkeypatch.setattr(ciaado, "DELAY", 0)

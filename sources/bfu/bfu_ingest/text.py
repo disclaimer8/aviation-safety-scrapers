@@ -1,4 +1,4 @@
-# aaib_ingest/text.py
+# bfu_ingest/text.py
 import html
 import re
 
