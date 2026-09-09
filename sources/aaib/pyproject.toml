@@ -7,5 +7,12 @@ dependencies = ["httpx>=0.27"]
 [project.optional-dependencies]
 dev = ["pytest>=8"]
 
+# Without this, setuptools' flat-layout discovery finds both aaib_ingest and
+# deploy/ and refuses to build: "Multiple top-level packages discovered".
+# Every sibling package declares it; aaib was the one that did not, and
+# nothing noticed because CI never installed the package.
+[tool.setuptools.packages.find]
+include = ["aaib_ingest*"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
