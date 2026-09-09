@@ -4,12 +4,13 @@
 # four_verb_packages: 44
 # single_file_scripts: 46
 # with_behaviour_tests: 45
-# ast_only_tests: 45
+# import_smoke_only: 45
+# no_tests: 0
 sources:
   - code: aacm
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 3.0
     summary: 'aacm — Civil Aviation Authority of Macao SAR aviation accident/incident ingest.'
   - code: aaib
@@ -22,12 +23,12 @@ sources:
   - code: aaibly
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     summary: 'aaibly — Libya Air Accidents Investigation Bureau (5A/Libya)'
   - code: aaibmm
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     summary: 'aaibmm — Myanmar Aircraft Accident Investigation Bureau (AAIB / DCA Myanmar) ingest.'
   - code: aaibmy
@@ -40,20 +41,20 @@ sources:
   - code: aaig
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     summary: 'AAIG (Bangladesh — Aircraft Accident Investigation Group, under CAAB) ingest.'
   - code: aaiibcy
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 1.5
     narrative_floor: 300
     summary: 'aaiibcy — Cyprus AAIIB (Aircraft Accident and Incident Investigation Board)'
   - code: aaikz
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     summary: "aaikz (Kazakhstan – Министерство транспорта РК / ДРПИТ, country KZ, lang 'ru')"
   - code: aaiu
     shape: package
@@ -72,7 +73,7 @@ sources:
   - code: aaiuz
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     narrative_floor: 300
     user_agent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36'
@@ -80,7 +81,7 @@ sources:
   - code: agacgn
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     summary: "agacgn — AGAC Guinea (Autorité Guinéenne de l'Aviation Civile, GN)"
   - code: ahac
@@ -93,7 +94,7 @@ sources:
   - code: aias
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     narrative_floor: 600
     summary: 'AIAS (Romania) accident/incident report ingest — patchright CF transport.'
@@ -107,20 +108,20 @@ sources:
   - code: aibsa
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     summary: 'aibsa — Saudi Arabia Aviation Investigation Bureau (AIB) ingest.'
   - code: akisa
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     narrative_floor: 600
     summary: 'AKISA (Albania — Autoriteti Kombëtar i Investigimit për Sigurinë e Operimit'
   - code: anacdz
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     summary: "anacdz — ANAC Algeria (Agence Nationale de l'Aviation Civile, DZ)"
   - code: ansv
@@ -140,7 +141,7 @@ sources:
   - code: asrs
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     summary: 'ASRS NASA Voluntary Incident Reports Harvester'
   - code: bea
     shape: package
@@ -153,25 +154,25 @@ sources:
   - code: beabj
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     summary: 'beabj — Bureau Enquêtes-Accidents du Bénin (BEA-Bénin)'
   - code: beaci
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     summary: "beaci — Bureau d'Enquêtes Accidents d'Aviation de Côte d'Ivoire (BEA-CI)"
   - code: beam
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     summary: "beam (Morocco BEAM — Bureau d'Enquêtes et d'Analyses, country MA, lang 'fr')"
   - code: beasn
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     summary: 'beasn — Senegal BEA aviation-accident ingest.'
   - code: bfu
@@ -185,24 +186,24 @@ sources:
   - code: bhdca
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     summary: 'bhdca — Bosnia and Herzegovina Directorate of Civil Aviation'
   - code: bpea
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 3.0
     summary: 'bpea — Democratic Republic of Congo BPEA aviation-accident ingest.'
   - code: caavvu
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     summary: 'caavvu — Civil Aviation Authority of Vanuatu (CAAV) accident investigation ingest.'
   - code: caoiran
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 3.0
     narrative_floor: 300
     summary: 'caoiri — Iran CAO Aircraft Accident Investigation Board (AAIB)'
@@ -251,24 +252,24 @@ sources:
   - code: cipaa
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     summary: 'cipaa (Paraguay – Centro de Investigación y Prevención de Accidentes Aeronáuticos,'
   - code: daaina
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.5
     summary: 'daaina (Namibia DAAI — Directorate of Aircraft Accident Investigations, country NA)'
   - code: daibw
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     summary: 'daibw — Botswana Directorate of Accident Investigation (DAI) ingest.'
   - code: dgacbo
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 1.5
     summary: 'DGACBO (Bolivia — Dirección General de Aeronáutica Civil, AIG) aviation-accident ingest.'
   - code: dgaccl
@@ -281,13 +282,13 @@ sources:
   - code: dgaccr
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     summary: "dgaccr (Costa Rica DGAC, country CR, lang 'es') aviation-accident ingest."
   - code: dgacec
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     summary: 'DGACEC (Ecuador — Dirección General de Aviación Civil) aviation-accident ingest.'
   - code: dgacgt
@@ -300,12 +301,12 @@ sources:
   - code: dgcalb
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     summary: "dgcalb (Lebanon DGCA — Directorate General of Civil Aviation, country LB, lang 'en')"
   - code: eaibet
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     summary: 'eaibet — Ethiopian Aircraft Accident Investigation Bureau (ET/Ethiopia)'
   - code: gcaa
     shape: package
@@ -338,7 +339,7 @@ sources:
   - code: iacm
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     narrative_floor: 600
     summary: 'IACM (Mozambique civil aviation authority) accident/incident report ingest.'
@@ -352,7 +353,7 @@ sources:
   - code: israel
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.5
     narrative_floor: 600
   - code: jst
@@ -372,13 +373,13 @@ sources:
   - code: kbsz
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     summary: 'Batch download remaining HU PDFs: generate curl script on hetzner, rsync back.'
   - code: kinsiv
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 3.0
     narrative_floor: 300
     summary: 'kinsiv (North Macedonia КИНСИВ — Комитет за истрага на воздухопловни несреќи и сериозни инциденти)'
@@ -392,13 +393,13 @@ sources:
   - code: malta
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.5
     summary: 'Malta BAAI (Bureau of Air Accident Investigation) ingest — patchright CF.'
   - code: mexico
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.5
     narrative_floor: 600
     summary: "Mexico AFAC (Agencia Federal de Aviacion Civil) 'Informes Finales' ingest --"
@@ -433,7 +434,7 @@ sources:
   - code: ojk
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 1.5
     narrative_floor: 600
     summary: 'OJK / ESIB (Estonia) aviation accident-report ingest — plain httpx.'
@@ -447,7 +448,7 @@ sources:
   - code: otsb
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     summary: 'otsb (Oman — Oman Transport Safety Bureau, MTCIT) aviation-accident ingest.'
   - code: ovv
@@ -460,7 +461,7 @@ sources:
   - code: panama
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 1.5
     narrative_floor: 600
     summary: 'Panama AAC / UPIA accident-report ingest — plain httpx (no browser).'
@@ -495,7 +496,7 @@ sources:
   - code: scaa
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 1.5
     narrative_floor: 600
     user_agent: 'curl/7.88.1'
@@ -510,7 +511,7 @@ sources:
   - code: sibpk
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     summary: 'sibpk — Pakistan SIB/BASI/AAIB aviation-accident ingest.'
   - code: sub
@@ -530,14 +531,14 @@ sources:
   - code: svk
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 1.5
     narrative_floor: 600
     summary: 'SVK (Slovakia) accident/incident final-report ingest — plain httpx, no browser.'
   - code: taibtz
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     summary: 'taibtz — Tanzania Aircraft Accident Investigation Bureau (AAIB Tanzania / TAIB) ingest.'
   - code: taic
@@ -550,7 +551,7 @@ sources:
   - code: taits
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     narrative_floor: 80
     summary: 'Salvage builder: populate taits_accidents from detail-page summary_text.'
   - code: tsb
@@ -584,14 +585,14 @@ sources:
   - code: ukmaa
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 1.5
     narrative_floor: 300
     summary: 'OCR recovery script for ukmaa stubs (narrative < 300 chars).'
   - code: usafaib
     shape: script
     verbs: [argv]
-    tests: ast-only
+    tests: smoke
     delay_seconds: 2.0
     narrative_floor: 600
     summary: 'USAF Accident Investigation Board (AIB) reports ingest — httpx, no browser needed.'

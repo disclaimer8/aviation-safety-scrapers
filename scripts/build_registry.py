@@ -69,13 +69,29 @@ def describe(pkg_dir):
         verbs = ["argv"]
         doc_src = py_files[0] if py_files else None
 
+    # "behaviour" means a test that imports the source and asserts something
+    # about what it does. Keying on the absence of ast.parse was wrong once the
+    # smoke tests started using ast to check the __main__ guard: what separates
+    # a real test from a parse is whether it loads the module at all.
     tests_dir = pkg_dir / "tests"
-    has_real_tests = False
+    module_names = {f"{code}_ingest", f"{code}_scraper", code}
+    tier = "none"
     if tests_dir.is_dir():
-        for t in tests_dir.glob("test_*.py"):
-            if "ast.parse" not in t.read_text(encoding="utf-8", errors="replace"):
-                has_real_tests = True
-                break
+        tier = "smoke"
+        for t in sorted(tests_dir.glob("test_*.py")):
+            body = t.read_text(encoding="utf-8", errors="replace")
+            imports_source = any(
+                re.search(rf"^\s*(?:from\s+{re.escape(m)}\b|import\s+{re.escape(m)}\b)",
+                          body, re.M)
+                for m in module_names
+            )
+            if not imports_source:
+                continue
+            if t.name == "test_smoke.py":
+                continue          # imports it, but only asserts it loads
+            tier = "behaviour"
+            break
+    has_real_tests = tier == "behaviour"
 
     summary = ""
     if doc_src is not None and doc_src.is_file():
@@ -89,7 +105,7 @@ def describe(pkg_dir):
         "user_agent": _first(_UA_RE, texts),
         "delay_seconds": _first(_DELAY_RE, texts),
         "narrative_floor": _first(_FLOOR_RE, texts),
-        "tests": "behaviour" if has_real_tests else ("ast-only" if tests_dir.is_dir() else "none"),
+        "tests": tier,
         "summary": summary,
     }
 
@@ -103,7 +119,8 @@ def render():
         f"# four_verb_packages: {sum(1 for r in rows if r['shape'] == 'package')}",
         f"# single_file_scripts: {sum(1 for r in rows if r['shape'] == 'script')}",
         f"# with_behaviour_tests: {sum(1 for r in rows if r['tests'] == 'behaviour')}",
-        f"# ast_only_tests: {sum(1 for r in rows if r['tests'] == 'ast-only')}",
+        f"# import_smoke_only: {sum(1 for r in rows if r['tests'] == 'smoke')}",
+        f"# no_tests: {sum(1 for r in rows if r['tests'] == 'none')}",
         "sources:",
     ]
     for r in rows:

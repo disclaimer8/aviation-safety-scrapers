@@ -15,11 +15,19 @@ HOME=os.path.expanduser("~/mexico-ingest")
 DB=os.path.join(HOME,"mexico.db")
 PDFDIR=os.path.join(HOME,"pdfs")
 PROFILE=os.path.join(HOME,".cf-profile")
-# A persistent Chromium profile holds live Cloudflare clearance cookies.
-# That is a credential: anything on the box that could read it could
-# replay this scraper's session. Lock the directory to the owner.
-os.makedirs(PROFILE, mode=0o700, exist_ok=True)
-os.chmod(PROFILE, 0o700)
+def _lock_profile_dir():
+    """Create the Chromium profile directory owner-only, at launch time.
+
+    A persistent profile holds live Cloudflare clearance cookies — a
+    credential. Called from the browser launch rather than at module scope:
+    importing a module must not create directories in someone's home.
+    """
+    os.makedirs(PROFILE, mode=0o700, exist_ok=True)
+    try:
+        os.chmod(PROFILE, 0o700)
+    except OSError:
+        pass
+
 
 SCHEMA="""
 CREATE TABLE IF NOT EXISTS mexico_reports (
@@ -428,6 +436,7 @@ class Browser:
     def __init__(self):
         from patchright.sync_api import sync_playwright
         self._pw=sync_playwright().__enter__()
+        _lock_profile_dir()
         self.ctx=self._pw.chromium.launch_persistent_context(PROFILE,headless=False,args=["--disable-dev-shm-usage"])
         self.page=self.ctx.pages[0] if self.ctx.pages else self.ctx.new_page()
     def close(self):

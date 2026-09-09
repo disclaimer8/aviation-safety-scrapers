@@ -19,7 +19,7 @@ generation:
 | — single-file scripts | 46 | prototypes driven by `sys.argv[1]`; **not** scheduled |
 | Node packages | 4 | NTSB, MAK, ATSB, Wikidata |
 | Go projects | 1 | `aircrash` — Wikidata aggregator + dashboard |
-| with behaviour tests | 45 | the rest parse the file with `ast` and assert nothing about behaviour |
+| with behaviour tests | 45 | the rest have an import smoke: the module loads, its constants evaluate, its entry point exists and is still guarded |
 
 Every source publishes differently: a server-rendered table here, a
 JavaScript-hydrated accordion there, a Cloudflare-gated PDF archive, an Access
