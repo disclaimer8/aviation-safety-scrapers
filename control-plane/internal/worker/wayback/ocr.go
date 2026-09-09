@@ -40,9 +40,14 @@ func (h *httpOCRClient) OCR(ctx context.Context, pdf []byte) (string, error) {
 	if resp.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("wayback: ocr status %d", resp.StatusCode)
 	}
-	body, err := io.ReadAll(resp.Body)
+	// Capped like every other response here (GO-CP-10): the PDF download has
+	// a 64 MiB limit and the OCR text of that PDF had none at all.
+	body, err := io.ReadAll(io.LimitReader(resp.Body, maxFetchBytes+1))
 	if err != nil {
 		return "", fmt.Errorf("wayback: read ocr body: %w", err)
+	}
+	if len(body) > maxFetchBytes {
+		return "", fmt.Errorf("wayback: ocr response exceeds %d-byte limit", maxFetchBytes)
 	}
 	return string(body), nil
 }

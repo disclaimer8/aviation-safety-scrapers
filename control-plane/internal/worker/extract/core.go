@@ -3,9 +3,11 @@ package extract
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 )
 
 // Error-type classifications recorded on crawl_errors for a failed extraction.
@@ -19,6 +21,11 @@ const (
 	errTypeOCR       = "unknown"     // OCR step failures
 	errTypeLLM       = "unknown"     // LLM extraction failures
 	errTypeParse     = "parse_error" // promotion / persistence failures
+	// An accident whose critical fields came back empty. Kept distinct in the
+	// error text (the column's CHECK constraint allows only the enum values,
+	// so the type stays "unknown") so reset-failed --error-like can target
+	// exactly this class.
+	errTypeIncomplete = "unknown"
 )
 
 // extractOne runs one document through the state machine: ensure-downloaded, OCR
@@ -70,16 +77,44 @@ func extractOne(ctx context.Context, db *sql.DB, src StagedDocSource, ocr OCRCli
 		return recordFailure(ctx, db, src, doc, doc.ArchivedURL, errTypeLLM, err)
 	}
 	e := NormalizeEvent(raw)
-	if !raw.IsAviationAccident || !HasCriticalFields(e) {
+	if !raw.IsAviationAccident {
+		// Not an accident report at all — a form, a newsletter, a procurement
+		// notice. CDX gives us "every PDF under this domain", so this is the
+		// common case and 'skipped' is the right, terminal answer.
 		if err := src.MarkSkipped(ctx, db, doc.ID); err != nil {
 			return "", err
 		}
 		return "skipped", nil
 	}
+	if !HasCriticalFields(e) {
+		// An accident the model could not pin down is NOT the same answer.
+		// 'skipped' is terminal — PendingDocs excludes it and reset-failed
+		// only resets 'failed' — so a real accident whose date or aircraft
+		// came back empty was retired for ever after a single pass. The JSON
+		// schema requires the keys but allows "", which is exactly how Ollama
+		// has already dropped a registration in production (see llm.go).
+		// Recording it as a failure gives it the same 3-attempt budget as any
+		// other failure and leaves reset-failed able to bring it back.
+		return recordFailure(ctx, db, src, doc, doc.ArchivedURL, errTypeIncomplete,
+			fmt.Errorf("accident reported but %s", missingCriticalFields(e)))
+	}
 	if _, _, err := PromoteDocument(ctx, db, src, doc, e); err != nil {
 		return recordFailure(ctx, db, src, doc, doc.ArchivedURL, errTypeParse, err)
 	}
 	return "extracted", nil
+}
+
+// missingCriticalFields names what HasCriticalFields rejected, so the row's
+// extraction_error says which half was missing rather than just "incomplete".
+func missingCriticalFields(e ExtractedEvent) string {
+	var missing []string
+	if e.Date == "" || (e.DatePrecision != "exact" && e.DatePrecision != "month") {
+		missing = append(missing, "no usable date")
+	}
+	if e.AircraftRegistration == "" && e.AircraftType == "" {
+		missing = append(missing, "no aircraft registration or type")
+	}
+	return strings.Join(missing, " and ")
 }
 
 // recordFailure delegates the failure write to the source (which marks the row
@@ -142,9 +177,25 @@ func ProcessExtractPending(ctx context.Context, db *sql.DB, ocr OCRClient, llm L
 
 	var stats ExtractStats
 	for _, p := range all {
-		status, err := extractOne(ctx, db, p.src, ocr, llm, storeDir, p.doc)
+		// Claim before doing any work: another pass may have taken this
+		// document between our SELECT and now.
+		claimed, err := p.src.ClaimDoc(ctx, db, p.doc.ID)
 		if err != nil {
 			return stats, err
+		}
+		if !claimed {
+			stats.Contended++
+			continue
+		}
+		status, err := extractOne(ctx, db, p.src, ocr, llm, storeDir, p.doc)
+		if err != nil {
+			// An infra abort leaves the document untouched by design, so the
+			// claim must go too or it sits out the staleness window.
+			p.src.ReleaseDoc(ctx, db, p.doc.ID)
+			return stats, err
+		}
+		if status == "failed" {
+			p.src.ReleaseDoc(ctx, db, p.doc.ID)
 		}
 		switch status {
 		case "extracted":

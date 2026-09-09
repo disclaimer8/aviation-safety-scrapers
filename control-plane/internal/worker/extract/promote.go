@@ -254,9 +254,14 @@ func FindDuplicateEvent(ctx context.Context, q execQuerier, e ExtractedEvent) (e
 	if e.OperatorName != "" && e.Fatalities != nil {
 		var id int64
 		var dbAircraftType, dbLocation sql.NullString
+		// operator_name is compared case- and whitespace-insensitively, like
+		// the aircraft type and location below. It used to be an exact match,
+		// so "Aeroflot" and "AEROFLOT" — the same operator, spelled as two
+		// different reports happened to print it — created two events.
 		err := q.QueryRowContext(ctx, `
 			SELECT id, aircraft_type, location FROM events
-			 WHERE date = ? AND operator_name = ? AND fatalities = ?
+			 WHERE date = ? AND upper(trim(operator_name)) = upper(trim(?))
+			   AND fatalities = ?
 			 ORDER BY id ASC LIMIT 1`, e.Date, e.OperatorName, *e.Fatalities).Scan(&id, &dbAircraftType, &dbLocation)
 		if err == sql.ErrNoRows {
 			return 0, false, false, nil

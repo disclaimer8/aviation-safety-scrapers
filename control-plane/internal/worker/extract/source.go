@@ -59,6 +59,10 @@ type ExtractStats struct {
 	Extracted int
 	Skipped   int
 	Failed    int
+	// Contended counts documents another pass already held. A non-zero value
+	// is normal when runs overlap; a large one means the timer interval is
+	// shorter than a pass.
+	Contended int
 }
 
 // ExtractDoc is a staged document ready for the extract step. It is
@@ -112,4 +116,13 @@ type StagedDocSource interface {
 	RecordFailure(ctx context.Context, db *sql.DB, doc ExtractDoc, url, errType string, cause error) error
 	// PersistOCRPath records the OCR text path and advances the row to 'ocr_done'.
 	PersistOCRPath(ctx context.Context, db *sql.DB, id int64, path string) error
+	// ClaimDoc takes exclusive ownership of a document for this pass. It
+	// returns false when another pass already holds it. Crawl jobs have had
+	// this since 012_atomic_claim; extract selected pending rows and processed
+	// them with no guard, so two overlapping runs could both FindDuplicateEvent
+	// on an empty snapshot and both insert.
+	ClaimDoc(ctx context.Context, db *sql.DB, id int64) (bool, error)
+	// ReleaseDoc clears a claim so a non-terminal document is retryable at once
+	// instead of waiting out the staleness window.
+	ReleaseDoc(ctx context.Context, db *sql.DB, id int64)
 }

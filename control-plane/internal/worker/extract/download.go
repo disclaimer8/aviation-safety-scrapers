@@ -6,79 +6,32 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
-	"net"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
 
 	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/atomicfile"
+	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/nethard"
 )
 
 // maxReportBytes is the maximum allowed response body size (64 MiB).
 // Responses larger than this are rejected to prevent disk/RAM exhaustion.
-const maxReportBytes = 64 << 20 // 64 MiB
+const maxReportBytes = nethard.MaxBodyBytes
 
-// isPrivateIP returns true if ip is loopback, private (RFC1918), link-local
-// (169.254/fe80), unique-local (fc00::/7), multicast, or unspecified.
-// These are all targets that must never be reached from scraped URLs (SSRF).
-func isPrivateIP(ip net.IP) bool {
-	if ip.IsLoopback() || ip.IsPrivate() || ip.IsLinkLocalUnicast() ||
-		ip.IsLinkLocalMulticast() || ip.IsMulticast() || ip.IsUnspecified() {
-		return true
-	}
-	// fc00::/7 — unique-local IPv6. ip.IsPrivate() covers RFC1918 but in older
-	// Go versions may not cover ULA; belt-and-suspenders explicit mask check.
-	if ip4 := ip.To4(); ip4 == nil && len(ip) == 16 {
-		if ip[0]&0xfe == 0xfc {
-			return true
-		}
-	}
-	return false
-}
+// The SSRF guard, the size cap and the scheme check now live in
+// internal/nethard so the wayback fetcher — which cannot import this package —
+// gets exactly the same policy instead of its own (absent) one.
+var (
+	isPrivateIP         = nethard.IsPrivateIP
+	ssrfSafeDialContext = nethard.SSRFSafeDialContext
+	// dialContextOverride stays a package-level var: download_test.go swaps it
+	// for a plain dialer so the tests can reach an httptest server on loopback.
+	dialContextOverride nethard.DialFunc = nethard.SSRFSafeDialContext
+)
 
-// ssrfSafeDialContext is a DialContext that resolves the hostname and rejects
-// any address whose IP falls in a private/internal range before dialing.
-// Because every HTTP hop (including redirects) goes through DialContext, this
-// guard covers redirect chains automatically.
-func ssrfSafeDialContext(ctx context.Context, network, addr string) (net.Conn, error) {
-	host, port, err := net.SplitHostPort(addr)
-	if err != nil {
-		return nil, fmt.Errorf("extract: ssrf-guard: split host/port %q: %w", addr, err)
-	}
-
-	ips, err := net.DefaultResolver.LookupIPAddr(ctx, host)
-	if err != nil {
-		return nil, fmt.Errorf("extract: ssrf-guard: resolve %q: %w", host, err)
-	}
-
-	for _, ipAddr := range ips {
-		if isPrivateIP(ipAddr.IP) {
-			return nil, fmt.Errorf("extract: ssrf-guard: host %q resolves to private/internal IP %s — blocked", host, ipAddr.IP)
-		}
-	}
-
-	// All IPs passed; dial with the default dialer.
-	var d net.Dialer
-	return d.DialContext(ctx, network, net.JoinHostPort(host, port))
-}
-
-// dialContextOverride is the DialContext used by hardenedTransport. It is set
-// to ssrfSafeDialContext by default and may only be overridden in tests
-// (via download_test.go) to allow loopback connections to httptest servers.
-var dialContextOverride = ssrfSafeDialContext
-
-// hardenedTransport wraps an existing http.RoundTripper (or clones
-// http.DefaultTransport) and overrides DialContext with the SSRF guard.
 func hardenedTransport(base http.RoundTripper) http.RoundTripper {
-	var t *http.Transport
-	if bt, ok := base.(*http.Transport); ok && bt != nil {
-		t = bt.Clone()
-	} else {
-		t = http.DefaultTransport.(*http.Transport).Clone()
-	}
-	t.DialContext = dialContextOverride
-	return t
+	return nethard.HardenedTransportWith(base, dialContextOverride)
 }
 
 // fetchGuarded performs a scheme-checked, SSRF-guarded, size-capped HTTP GET

@@ -264,3 +264,13 @@ func (RegionalSource) PersistOCRPath(ctx context.Context, db *sql.DB, id int64, 
 	}
 	return nil
 }
+
+// ClaimDoc takes exclusive ownership of a document for this pass.
+func (RegionalSource) ClaimDoc(ctx context.Context, db *sql.DB, id int64) (bool, error) {
+	return claimStagedDoc(ctx, db, "staged_regional_documents", id)
+}
+
+// ReleaseDoc clears the claim so a failed document is retryable at once.
+func (RegionalSource) ReleaseDoc(ctx context.Context, db *sql.DB, id int64) {
+	releaseStagedDoc(ctx, db, "staged_regional_documents", id)
+}
