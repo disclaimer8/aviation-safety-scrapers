@@ -39,3 +39,12 @@ class FakeClient:
 @pytest.fixture
 def make_client():
     return lambda routes: FakeClient(routes)
+
+from bea_ingest import bea
+
+# ── test speed ───────────────────────────────────────────────────────────────
+# The politeness DELAY is a production setting. Left live here it buys nothing
+# but wall clock, and CI runs every package under a 300s timeout.
+@pytest.fixture(autouse=True)
+def _no_politeness_delay_in_tests(monkeypatch):
+    monkeypatch.setattr(bea, "DELAY", 0)

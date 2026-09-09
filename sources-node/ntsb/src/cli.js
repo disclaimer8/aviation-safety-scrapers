@@ -153,7 +153,15 @@ async function parseCsvFile(filePath) {
   return parser.rows;
 }
 
-function toInt(v) { const n = parseInt(v, 10); return Number.isFinite(n) ? n : 0; }
+// null, not 0. An NTSB event whose injury count is blank has an UNKNOWN count,
+// and mapping that to 0 asserts nobody was hurt — the same class of bug as the
+// Go Wikidata scraper's fatalities="0". The column stays INTEGER and takes
+// NULL, which every consumer can tell apart from a real zero.
+function toInt(v) {
+  if (v === null || v === undefined || String(v).trim() === '') return null;
+  const n = parseInt(v, 10);
+  return Number.isFinite(n) ? n : null;
+}
 
 // NTSB ev_date arrives as "MM/DD/YY HH:MM:SS" (2-digit year) or "MM/DD/YYYY".
 // Normalize to ISO "YYYY-MM-DD" so the prompt reads cleanly and the worker's
@@ -323,6 +331,7 @@ async function main() {
   try {
     const zip = path.join(tmpDir, FULL_DUMP);
     await downloadDump(zip);
+    assertNoZipSlip(zip);
     execFileSync('unzip', ['-o', '-q', zip, '-d', tmpDir], { stdio: 'inherit' });
     const mdb = fs.readdirSync(tmpDir).find(f => f.toLowerCase().endsWith('.mdb'));
     if (!mdb) throw new Error('no .mdb in dump');
@@ -337,7 +346,28 @@ async function main() {
   }
 }
 
-module.exports = { mapToAccidents, parseCsv, parseCsvFile, CsvStreamParser, downloadDump, exportTables };
+// The dump is an official NTSB file fetched over HTTPS, so this is defence in
+// depth rather than a live threat — but `unzip -o` writes wherever the archive
+// says, and nothing checked. One absolute or ../ member would land outside the
+// temp directory, as root on the ingest box if the timer ran as root.
+function assertNoZipSlip(zipPath) {
+  const listing = execFileSync('unzip', ['-Z', '-1', zipPath], { encoding: 'utf8' });
+  for (const raw of listing.split('\n')) {
+    const name = raw.trim();
+    if (!name) continue;
+    if (path.isAbsolute(name) || name.startsWith('/') || /^[A-Za-z]:/.test(name)) {
+      throw new Error(`refusing to extract: absolute path in archive: ${name}`);
+    }
+    if (name.split(/[/\\]/).includes('..')) {
+      throw new Error(`refusing to extract: parent-directory traversal in archive: ${name}`);
+    }
+  }
+}
+
+module.exports = {
+  mapToAccidents, parseCsv, parseCsvFile, CsvStreamParser, downloadDump,
+  exportTables, assertNoZipSlip, toInt, normalizeDate,
+};
 
 if (require.main === module) {
   main().catch((err) => { console.error('FAILED:', err.message); process.exit(1); });

@@ -2,6 +2,12 @@
 """TYPO3 HTML scraper for bea.aero notified-events listing."""
 import html as _html
 import re
+import time
+
+# Politeness pacing between listing pages. The walk covers several hundred
+# pages of bea.aero's global list; unpaced, that is a burst against a small
+# authority's TYPO3 site.
+DELAY = 1.5
 
 BASE = "https://bea.aero"
 LANDING = BASE + "/en/investigation-reports/notified-events/"
@@ -158,6 +164,11 @@ def iter_events(client, _max: int = None, _max_pages: int = None):
         if next_url is None:
             break  # reached the last page
 
+        # BEA was the only flagship with no pacing at all: it walked several
+        # hundred pages of the global TYPO3 list as fast as the socket allowed.
+        # The README promises "slow and polite", and BFU already carries
+        # DELAY = 3.0 for exactly this reason (captchas).
+        time.sleep(DELAY)
         resp = client.get(next_url)
         resp.raise_for_status()
         current_html = resp.text

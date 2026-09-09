@@ -109,6 +109,22 @@ async function main() {
   const to = opt('--to') ? Number(opt('--to')) : null;
   const r = await runIngest({ dbPath, year, from, to });
   console.log(`[mak] years=${r.yearsScanned} slugs=${r.slugsSeen} narratives=${r.narrativesWritten} errors=${r.errors.length} -> ${dbPath}`);
+
+  // A year listing that failed was logged and skipped, and the process still
+  // exited 0 — even when EVERY year failed and the run listed nothing at all.
+  // That is indistinguishable in a timer's log from "MAK published nothing".
+  if (r.yearsScanned === 0) {
+    console.error(`SILENT_FAIL_SUSPECT source=mak years_scanned=0 errors=${r.errors.length}`);
+    throw new Error(
+      `[mak] no year listing could be read (${r.errors.length} failure(s)) — ` +
+      'the run produced nothing.'
+    );
+  }
+  if (r.errors.length > 0) {
+    console.error(`[mak] ${r.errors.length} failure(s): ` +
+      r.errors.map(e => JSON.stringify(e)).join('; '));
+    throw new Error(`[mak] run incomplete: ${r.errors.length} failure(s)`);
+  }
 }
 
 module.exports = { runIngest, processSlug, yearList };

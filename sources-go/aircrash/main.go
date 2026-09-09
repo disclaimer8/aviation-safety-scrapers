@@ -11,7 +11,11 @@ func main() {
 	dbPath := flag.String("db", "accidents.db", "Path to the SQLite database")
 	serve := flag.Bool("serve", false, "Start the web server instead of scraping")
 	wikidata := flag.Bool("wikidata", false, "Scrape global data from Wikidata")
-	port := flag.String("port", ":8080", "Port for the web server")
+	// Loopback by default. The dashboard and its API have no authentication,
+	// and docker-compose used to publish them on host port 80. Pass an
+	// explicit address (e.g. -addr 0.0.0.0:8080) to expose it deliberately,
+	// behind something that does authenticate.
+	port := flag.String("addr", "127.0.0.1:8080", "Listen address for the web server")
 	flag.Parse()
 
 	db, err := InitDB(*dbPath)
@@ -36,7 +40,12 @@ func main() {
 
 	if *wikidata {
 		fmt.Printf("-> Scraping Global Data from Wikidata\n")
-		ScrapeWikidata(db)
+		if err := ScrapeWikidata(db); err != nil {
+			// A failed scrape used to be logged and then followed by
+			// "Scraping finished." and exit 0, so a timer saw a clean run.
+			fmt.Fprintf(os.Stderr, "Wikidata scrape failed: %v\n", err)
+			os.Exit(1)
+		}
 	}
 
 	fmt.Println("-------------------------------")

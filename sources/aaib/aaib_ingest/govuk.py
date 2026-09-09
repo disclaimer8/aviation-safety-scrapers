@@ -1,6 +1,12 @@
 # aaib_ingest/govuk.py
+import time
+
 SEARCH_URL = "https://www.gov.uk/api/search.json"
 CONTENT_URL = "https://www.gov.uk/api/content"
+
+# Politeness pacing between search pages. GOV.UK's search API was walked in
+# back-to-back count=100 bursts with no delay at all.
+DELAY = 1.0
 
 
 def slug_from_link(link):
@@ -27,6 +33,7 @@ def iter_search(client, *, page_size=100):
         start += page_size
         if start >= data.get("total", 0):
             break
+        time.sleep(DELAY)
 
 
 def get_content(client, slug):

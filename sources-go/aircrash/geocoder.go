@@ -15,37 +15,69 @@ type NominatimResponse struct {
 	Lon string `json:"lon"`
 }
 
-// StartGeocoder runs a background routine to find coordinates for textual locations
-// using the OpenStreetMap Nominatim API.
+// geocodeOne performs a single Nominatim lookup. It is a function so the
+// response body is closed when IT returns — the previous code had
+// `defer resp.Body.Close()` inside an endless for loop in a goroutine that
+// never returns, so every response leaked a file descriptor until the process
+// died.
+func geocodeOne(client *http.Client, location string) (lat, lon string, err error) {
+	geocodeURL := fmt.Sprintf(
+		"https://nominatim.openstreetmap.org/search?q=%s&format=json&limit=1",
+		url.QueryEscape(location))
+	req, err := http.NewRequest("GET", geocodeURL, nil)
+	if err != nil {
+		return "", "", err
+	}
+	// Nominatim requires a user-agent to comply with their usage policy
+	req.Header.Set("User-Agent", "AviationSafetyExplorer/1.0 (+https://github.com/denyskolomiiets/aviation-safety-scrapers)")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", "", err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return "", "", fmt.Errorf("nominatim status %d", resp.StatusCode)
+	}
+	var results []NominatimResponse
+	if err := json.NewDecoder(resp.Body).Decode(&results); err != nil {
+		return "", "", err
+	}
+	if len(results) == 0 {
+		return "", "", nil // no match — not an error
+	}
+	return results[0].Lat, results[0].Lon, nil
+}
+
+// StartGeocoder runs a background routine to find coordinates for textual
+// locations using the OpenStreetMap Nominatim API.
+//
+// A location that cannot be geocoded leaves lat/lon NULL and bumps
+// geocode_attempts. It used to be written as lat=lon=0.000001 — a real point
+// in the Gulf of Guinea — purely to keep the "WHERE lat IS NULL" query from
+// returning it again. Every consumer then had to know to filter that sentinel
+// out, and one that did not would plot accidents off the coast of Africa.
 func StartGeocoder(db *sql.DB) {
 	go func() {
 		log.Println("Starting Background Geocoder...")
-		
-		// Create a custom HTTP client with timeout
+
 		client := &http.Client{Timeout: 10 * time.Second}
 
 		for {
-			// Find one record that hasn't been geocoded yet
-			// We check for lat IS NULL and we don't bother if location is empty or generic 'Unknown'
 			var id int
 			var location string
-			
-			// Note: We use lat = 0 as a flag that it's un-geocoded, or we can use NULL. 
-			// Because SQLite REAL columns can be NULL, we check for that or 0.
-			// Let's also exclude locations that failed before by setting them to a tiny specific value like 0.0001,
-			// or we just rely on lat IS NULL. Since we altered table, default is NULL.
 			err := db.QueryRow(`
-				SELECT id, location 
-				FROM accidents 
-				WHERE lat IS NULL 
-				  AND location != '' 
-				  AND location != 'Unknown' 
+				SELECT id, location
+				FROM accidents
+				WHERE lat IS NULL
+				  AND geocode_attempts < 3
+				  AND location != ''
+				  AND location != 'Unknown'
 				  AND location != '-'
 				LIMIT 1
 			`).Scan(&id, &location)
 
 			if err == sql.ErrNoRows {
-				// No more rows to geocode, sleep and check later
 				time.Sleep(30 * time.Second)
 				continue
 			} else if err != nil {
@@ -54,28 +86,29 @@ func StartGeocoder(db *sql.DB) {
 				continue
 			}
 
-			// Call Nominatim API
-			geocodeURL := fmt.Sprintf("https://nominatim.openstreetmap.org/search?q=%s&format=json&limit=1", url.QueryEscape(location))
-			
-			req, err := http.NewRequest("GET", geocodeURL, nil)
-			if err == nil {
-				// Nominatim requires a user-agent to comply with their usage policy
-				req.Header.Set("User-Agent", "AviationSafetyExplorer/1.0")
-				
-				resp, err := client.Do(req)
-				if err == nil {
-					defer resp.Body.Close()
-					var results []NominatimResponse
-					if err := json.NewDecoder(resp.Body).Decode(&results); err == nil && len(results) > 0 {
-						// Success
-						db.Exec(`UPDATE accidents SET lat = ?, lon = ? WHERE id = ?`, results[0].Lat, results[0].Lon, id)
-						log.Printf("Geocoded [ID %d]: %s -> %s, %s", id, location, results[0].Lat, results[0].Lon)
-					} else {
-						// Not found or error parsing. Set lat/lon to 0.000001 to prevent infinite retries
-						db.Exec(`UPDATE accidents SET lat = 0.000001, lon = 0.000001 WHERE id = ?`, id)
-					}
+			lat, lon, err := geocodeOne(client, location)
+			switch {
+			case err != nil:
+				log.Printf("Nominatim request error [ID %d]: %v", id, err)
+				if _, e := db.Exec(
+					`UPDATE accidents SET geocode_attempts = geocode_attempts + 1 WHERE id = ?`,
+					id); e != nil {
+					log.Printf("Geocoder DB error: %v", e)
+				}
+			case lat == "":
+				// Not found. Count the attempt so the row retires from the
+				// queue, but leave lat/lon NULL: "we do not know" is the truth.
+				if _, e := db.Exec(
+					`UPDATE accidents SET geocode_attempts = geocode_attempts + 1 WHERE id = ?`,
+					id); e != nil {
+					log.Printf("Geocoder DB error: %v", e)
+				}
+			default:
+				if _, e := db.Exec(
+					`UPDATE accidents SET lat = ?, lon = ? WHERE id = ?`, lat, lon, id); e != nil {
+					log.Printf("Geocoder DB error: %v", e)
 				} else {
-					log.Printf("Nominatim request error: %v", err)
+					log.Printf("Geocoded [ID %d]: %s -> %s, %s", id, location, lat, lon)
 				}
 			}
 

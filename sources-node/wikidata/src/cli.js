@@ -21,7 +21,14 @@ const { openDb, upsert } = require('./db');
 
 const SPARQL_URL = 'https://query.wikidata.org/sparql';
 const UA = 'wikidata-ingest/1.0 (+https://github.com/disclaimer8/aviation-safety-scrapers)';
-const FETCH_DELAY_MS = 50;
+// 1100ms, not the 50ms this used to be. WMF's user-agent policy asks clients
+// to stay at roughly one request per second against query.wikidata.org; 50ms
+// is ~20 rps, the kind of rate that gets a UA blocked rather than throttled.
+// The full run is a handful of pages, so the wall-clock cost is seconds.
+//
+// Overridable so the tests do not spend the politeness delay sleeping: a
+// production value left live in a test suite buys nothing but wall clock.
+const FETCH_DELAY_MS = Number(process.env.WIKIDATA_FETCH_DELAY_MS ?? 1100);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // Page size mirrors the old single-shot LIMIT. Live event count (~3,273 as
