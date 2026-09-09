@@ -1,17 +1,20 @@
 # aaib_ingest/cli.py
 import argparse
 
-import httpx
 
-from . import db
+from . import db, httpc
 from .pipeline import discover, fetch, parse, build
 
 
-def _make_client():
+def _make_client(proxy=None, **_kw):
     # follow_redirects: legacy AAIB PDFs live on assets.digital.cabinet-office.gov.uk
     # which 301-redirects to assets.publishing.service.gov.uk.
-    return httpx.Client(timeout=60, follow_redirects=True,
-                        headers={"User-Agent": "aaib-ingest/1.0"})
+    #
+    # The retry policy lives in httpc (vendored from _common/http.py):
+    # httpx's own retries= covers connect errors only, so a 502 or a read
+    # timeout used to raise on the first attempt and truncate a run.
+    return httpc.make_client(headers={"User-Agent": "aaib-ingest/1.0"},
+                             proxy=proxy, timeout=60)
 
 
 def main(argv=None):

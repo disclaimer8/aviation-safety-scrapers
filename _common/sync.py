@@ -27,16 +27,53 @@ SOURCES_DIR = ROOT / "sources"
 
 # source -> {canonical module: module name to write inside the package}
 VENDORED = {
-    "aaibmy": {"pdf": "pdf", "http": "httpc", "text": "text"},
-    "ahac": {"pdf": "pdf", "http": "httpc", "text": "text"},
-    "ciaiauy": {"pdf": "pdf", "http": "httpc", "text": "text"},
-    "nsib": {"pdf": "pdf", "http": "httpc", "text": "_textbase"},
-    "ntsbaar": {"pdf": "pdf", "http": "httpc", "text": "text"},
-    "ovv": {"pdf": "pdf", "http": "httpc", "text": "text"},
+    "aaibmy": {"pdf": "pdf", "http": "httpc", "robots": "robots", "text": "text"},
+    "ahac": {"pdf": "pdf", "http": "httpc", "robots": "robots", "text": "text"},
+    "ciaiauy": {"pdf": "pdf", "http": "httpc", "robots": "robots", "text": "text"},
+    "nsib": {"pdf": "pdf", "http": "httpc", "robots": "robots", "text": "_textbase"},
+    "ntsbaar": {"pdf": "pdf", "http": "httpc", "robots": "robots", "text": "text"},
+    "ovv": {"pdf": "pdf", "http": "httpc", "robots": "robots", "text": "text"},
     # rosap talks to the site through a browser, not httpx, so it takes
     # pdf (for OCR) and text but has no use for the http client.
     "rosap": {"pdf": "pdf", "text": "text"},
-    "sacaa": {"pdf": "pdf", "http": "httpc", "text": "text"},
+    "sacaa": {"pdf": "pdf", "http": "httpc", "robots": "robots", "text": "text"},
+    # The rest of the HTTP packages take the retry policy only. pdf/text are
+    # deliberately NOT vendored into them: their variants have not been read
+    # and confirmed canonical, and syncing over one would delete real
+    # per-source logic (the reason this list is explicit in the first place).
+    "aaib": {"http": "httpc", "robots": "robots"},
+    "aaiu": {"http": "httpc", "robots": "robots"},
+    "aaiube": {"http": "httpc", "robots": "robots"},
+    "aibdk": {"http": "httpc", "robots": "robots"},
+    "ansv": {"http": "httpc", "robots": "robots"},
+    "araib": {"http": "httpc", "robots": "robots"},
+    "bea": {"http": "httpc", "robots": "robots"},
+    "bfu": {"http": "httpc", "robots": "robots"},
+    "ciaado": {"http": "httpc", "robots": "robots"},
+    "ciaape": {"http": "httpc", "robots": "robots"},
+    "ciaiac": {"http": "httpc", "robots": "robots"},
+    "cins": {"http": "httpc", "robots": "robots"},
+    "dgaccl": {"http": "httpc", "robots": "robots"},
+    "dgacgt": {"http": "httpc", "robots": "robots"},
+    "gcaa": {"http": "httpc", "robots": "robots"},
+    "griaa": {"http": "httpc", "robots": "robots"},
+    "india": {"http": "httpc", "robots": "robots"},
+    "jst": {"http": "httpc", "robots": "robots"},
+    "jtsb": {"http": "httpc", "robots": "robots"},
+    "knkt": {"http": "httpc", "robots": "robots"},
+    "nsia": {"http": "httpc", "robots": "robots"},
+    "otkes": {"http": "httpc", "robots": "robots"},
+    "pkbwl": {"http": "httpc", "robots": "robots"},
+    "rnsa": {"http": "httpc", "robots": "robots"},
+    "shk": {"http": "httpc", "robots": "robots"},
+    "sub": {"http": "httpc", "robots": "robots"},
+    "sust": {"http": "httpc", "robots": "robots"},
+    "taic": {"http": "httpc", "robots": "robots"},
+    "tsb": {"http": "httpc", "robots": "robots"},
+    "tsib": {"http": "httpc", "robots": "robots"},
+    "ttsb": {"http": "httpc", "robots": "robots"},
+    "ueim": {"http": "httpc", "robots": "robots"},
+    "uzpln": {"http": "httpc", "robots": "robots"},
 }
 
 _TOKEN = re.compile(r"\{\{([A-Z_]+)\}\}")

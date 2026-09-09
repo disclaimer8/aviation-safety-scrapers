@@ -2,23 +2,20 @@
 import argparse
 import os
 
-from . import dgacgt, db
+import httpx  # for httpx.Timeout below
+
+from . import dgacgt, db, httpc
 from .pipeline import discover, fetch, parse, build
 
 
 def _make_client(proxy=None):
-    import httpx
-    transport = None
-    if proxy:
-        transport = httpx.HTTPTransport(proxy=proxy)
-    return httpx.Client(
-        headers={
-            "User-Agent": dgacgt.UA,
-            "Referer": dgacgt.REFERER,
-        },
-        follow_redirects=True,
+    # The retry policy lives in httpc (vendored from _common/http.py):
+    # httpx's own retries= covers connect errors only, so a 502 or a read
+    # timeout used to raise on the first attempt and truncate a run.
+    return httpc.make_client(
+        headers={"User-Agent": dgacgt.UA, "Referer": dgacgt.REFERER},
+        proxy=proxy,
         timeout=httpx.Timeout(90.0, connect=30.0),
-        transport=transport,
     )
 
 

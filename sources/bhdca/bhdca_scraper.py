@@ -31,7 +31,7 @@ PDFDIR = os.path.join(HOME, "pdfs")
 FLOOR  = 300
 OCR_LANG = "eng"
 
-UA = "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0"
+UA = "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0 (+https://github.com/disclaimer8/aviation-safety-scrapers; bhdca-scraper/1.0)"
 
 WAYBACK_BASE = "https://web.archive.org/web"
 

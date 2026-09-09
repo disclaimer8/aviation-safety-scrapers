@@ -54,6 +54,11 @@ describe('buildSparql', () => {
 });
 
 describe('fetchSparql pagination', () => {
+  // The politeness delay is a production setting; leaving it live here made
+  // this suite sleep 1.1s per simulated page.
+  beforeAll(() => { process.env.WIKIDATA_FETCH_DELAY_MS = '0'; });
+  afterAll(() => { delete process.env.WIKIDATA_FETCH_DELAY_MS; });
+
   afterEach(() => {
     delete global.fetch;
   });

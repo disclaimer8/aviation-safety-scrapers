@@ -67,6 +67,48 @@ func TestFindDuplicateEventKey2Corroborated(t *testing.T) {
 
 // TestFindDuplicateEventKey2CorroboratedByLocation is the same as above but
 // corroborating via location instead of aircraft_type.
+// Key-2 matched operator_name with SQL "=", while the corroboration fields
+// beside it used EqualFold. Two reports printing the same operator with
+// different casing therefore created two events for one accident.
+func TestFindDuplicateEventKey2IgnoresOperatorCaseAndSpacing(t *testing.T) {
+	for _, spelling := range []string{"AEROFLOT", "aeroflot", "  Aeroflot "} {
+		t.Run(spelling, func(t *testing.T) {
+			ctx := context.Background()
+			db := newExtractTestDB(t)
+			want := insertEventFull(t, db, "2019-03-10", "", "Aeroflot", intp(2), "SU95", "Moscow")
+
+			cand := ExtractedEvent{Date: "2019-03-10", DatePrecision: "exact",
+				OperatorName: spelling, Fatalities: intp(2), AircraftType: "SU95"}
+			id, linked, needsReview, err := FindDuplicateEvent(ctx, db, cand)
+			if err != nil {
+				t.Fatalf("FindDuplicateEvent: %v", err)
+			}
+			if !linked || needsReview || id != want {
+				t.Fatalf("id=%d linked=%v needsReview=%v — %q must match %q",
+					id, linked, needsReview, spelling, "Aeroflot")
+			}
+		})
+	}
+}
+
+// The guard must not overreach: a genuinely different operator on the same
+// date with the same fatality count is still a different event.
+func TestFindDuplicateEventKey2StillSeparatesDifferentOperators(t *testing.T) {
+	ctx := context.Background()
+	db := newExtractTestDB(t)
+	insertEventFull(t, db, "2019-03-10", "", "Aeroflot", intp(2), "SU95", "Moscow")
+
+	cand := ExtractedEvent{Date: "2019-03-10", DatePrecision: "exact",
+		OperatorName: "Rossiya", Fatalities: intp(2), AircraftType: "SU95"}
+	_, linked, _, err := FindDuplicateEvent(ctx, db, cand)
+	if err != nil {
+		t.Fatalf("FindDuplicateEvent: %v", err)
+	}
+	if linked {
+		t.Fatal("a different operator must not link to the Aeroflot event")
+	}
+}
+
 func TestFindDuplicateEventKey2CorroboratedByLocation(t *testing.T) {
 	ctx := context.Background()
 	db := newExtractTestDB(t)

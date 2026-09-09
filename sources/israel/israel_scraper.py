@@ -17,6 +17,20 @@ DB = os.path.join(HOME, "israel.db")
 PDFDIR = os.path.join(HOME, "pdfs")
 PROFILE = os.path.join(HOME, ".cf-profile")
 
+def _lock_profile_dir():
+    """Create the Chromium profile directory owner-only, at launch time.
+
+    A persistent profile holds live Cloudflare clearance cookies — a
+    credential. This is called from the browser launch rather than at module
+    scope: importing a module must not create directories in someone's home.
+    """
+    os.makedirs(PROFILE, mode=0o700, exist_ok=True)
+    try:
+        os.chmod(PROFILE, 0o700)
+    except OSError:
+        pass
+
+
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS israel_reports (
   case_id TEXT PRIMARY KEY, pdf_url TEXT, pdf_path TEXT, title TEXT,
@@ -73,6 +87,7 @@ class Browser:
     def __init__(self):
         from patchright.sync_api import sync_playwright
         self._pw=sync_playwright().__enter__()
+        _lock_profile_dir()
         self.ctx=self._pw.chromium.launch_persistent_context(PROFILE,headless=False,args=["--disable-dev-shm-usage"])
         self.page=self.ctx.pages[0] if self.ctx.pages else self.ctx.new_page()
     def close(self):

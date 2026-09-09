@@ -136,8 +136,8 @@ func TestInsertAccident_FuzzyMergesWhenBothMatch(t *testing.T) {
 	}
 	a2 := Accident{
 		Date:          "15 Mar 1990",
-		AircraftModel: "Cessna 172N", // shares first word "Cessna"
-		Operator:      "Acme Airlines",  // shares first word "Acme"
+		AircraftModel: "Cessna 172N",   // shares first word "Cessna"
+		Operator:      "Acme Airlines", // shares first word "Acme"
 		SourceURL:     "http://www.wikidata.org/entity/Q301",
 	}
 
@@ -172,7 +172,7 @@ func TestInsertAccident_Jan1PlaceholderNeverFuzzyMatches(t *testing.T) {
 	}
 	a2 := Accident{
 		Date:          "1 Jan 1962",
-		AircraftModel: "Piper Comanche", // shares first word "Piper"
+		AircraftModel: "Piper Comanche",    // shares first word "Piper"
 		Operator:      "Piper Flying Club", // shares first word "Piper"
 		SourceURL:     "http://www.wikidata.org/entity/Q401",
 	}

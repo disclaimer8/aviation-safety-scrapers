@@ -2,21 +2,15 @@
 import argparse
 import os
 
-from . import ciaado, db
+from . import ciaado, db, httpc
 from .pipeline import discover, fetch, parse, build
 
 
 def _make_client(proxy=None):
-    import httpx
-    transport = None
-    if proxy:
-        transport = httpx.HTTPTransport(proxy=proxy)
-    return httpx.Client(
-        headers=ciaado.HEADERS,
-        follow_redirects=True,
-        timeout=60.0,
-        transport=transport,
-    )
+    # The retry policy lives in httpc (vendored from _common/http.py):
+    # httpx's own retries= covers connect errors only, so a 502 or a read
+    # timeout used to raise on the first attempt and truncate a run.
+    return httpc.make_client(headers=ciaado.HEADERS, proxy=proxy, timeout=60.0)
 
 
 def main(argv=None):

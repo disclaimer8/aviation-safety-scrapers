@@ -41,7 +41,7 @@ HOME     = os.path.expanduser(f"~/beaci-ingest")
 DB       = os.path.join(HOME, "beaci.db")
 PDFDIR   = os.path.join(HOME, "pdfs")
 FLOOR    = 300   # narrative floor
-UA       = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+UA       = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36 (+https://github.com/disclaimer8/aviation-safety-scrapers; beaci-scraper/1.0)"
 DELAY    = 2.0
 
 LISTING_URL = "https://bea.ci/140-2/"

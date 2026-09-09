@@ -17,6 +17,10 @@ import (
 //go:embed prompts/extract.txt
 var extractPromptTemplate string
 
+// reportFenceEnd closes the fence the prompt template opens. The report text
+// sits between the two markers so a document cannot be read as instructions.
+const reportFenceEnd = "\n<<<END REPORT>>>\n"
+
 type httpLLMClient struct {
 	endpoint string
 	model    string
@@ -81,11 +85,23 @@ func (h *httpLLMClient) Extract(ctx context.Context, text string) (extract.Extra
 		text = string([]rune(text)[:h.maxChars])
 	}
 	reqBody := map[string]any{
-		"model":  h.model,
-		"prompt": extractPromptTemplate + text,
+		"model": h.model,
+		// The document is fenced. Without the closing marker a PDF could end
+		// with text that reads as further instructions, and key-1 dedup links
+		// globally on (date, registration) — so a document that talks a model
+		// into emitting a famous registration and date merges itself into a
+		// real accident.
+		"prompt": extractPromptTemplate + text + reportFenceEnd,
 		"stream": false,
 		"think":  false,
 		"format": extractSchema,
+		// Extraction is a fact-copying task: the same document must give the
+		// same answer on a re-run, and on the run after a --reset-failed.
+		"options": map[string]any{
+			"temperature": 0,
+			"top_p":       1,
+			"seed":        1,
+		},
 	}
 	b, err := json.Marshal(reqBody)
 	if err != nil {

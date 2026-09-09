@@ -46,7 +46,7 @@ HOME    = os.path.expanduser(f"~/beabj-ingest")
 DB      = os.path.join(HOME, "beabj.db")
 PDFDIR  = os.path.join(HOME, "pdfs")
 FLOOR   = 300   # narrative floor
-UA      = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+UA      = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36 (+https://github.com/disclaimer8/aviation-safety-scrapers; beabj-scraper/1.0)"
 DELAY   = 2.0
 
 # All known PDFs.  Each tuple: (url, case_id_suffix, registration_hint, report_type)

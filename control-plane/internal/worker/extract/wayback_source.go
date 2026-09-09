@@ -4,12 +4,15 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"net/url"
+	"strings"
 )
 
 // WaybackSource is the StagedDocSource adapter for staged_wayback_documents.
 // Documents are pre-downloaded by the wayback download stage, so EnsureDownloaded
 // is a no-op. It credits the country's national_aai/caa authority as a tier-1
-// official source, falling back to a per-country tier-2 wayback source.
+// official source only when the document came from that authority's own host,
+// falling back to a per-country tier-5 wayback source.
 type WaybackSource struct{}
 
 var _ StagedDocSource = WaybackSource{}
@@ -60,12 +63,21 @@ func (WaybackSource) EnsureDownloaded(ctx context.Context, db *sql.DB, storeDir 
 	return nil
 }
 
-// ResolveSource prefers the country's national_aai authority (else caa) as an
-// official_aai tier-1 source; failing that it falls back to a per-country wayback
-// tier-5 source built from the country's wayback_target. Tier 5 is the only tier
-// model.SourceTierAllowsType permits for source_type='wayback', so the fallback
-// row passes the Invariant-9 validator. Lookup-or-create keys on
+// ResolveSource credits a document to the country's national_aai authority
+// (else caa) as an official_aai tier-1 source ONLY when the document actually
+// came from that authority's own host; otherwise it falls back to a per-country
+// wayback tier-5 source built from the country's wayback_target. Tier 5 is the
+// only tier model.SourceTierAllowsType permits for source_type='wayback', so
+// the fallback row passes the Invariant-9 validator. Lookup-or-create keys on
 // UNIQUE(canonical_url, source_type).
+//
+// The host check is the whole point. This used to credit EVERY extracted
+// wayback PDF as official_aai/tier 1/official_public whenever the country
+// merely had an authority row, and ConfidenceScore then added its +20 official
+// bonus — so four presence-only fields scored 100. What CDX actually returns
+// is "every PDF ever archived under this domain": forms, newsletters,
+// procurement notices, third-party documents captured on a sub-host.
+// Downstream reads tier 1 as "primary official report".
 func (WaybackSource) ResolveSource(ctx context.Context, q execQuerier, doc ExtractDoc) (int64, int, string, error) {
 	var name, website, archive sql.NullString
 	err := q.QueryRowContext(ctx, `
@@ -82,7 +94,7 @@ func (WaybackSource) ResolveSource(ctx context.Context, q execQuerier, doc Extra
 		if canonical == "" {
 			canonical = website.String
 		}
-		if canonical != "" {
+		if canonical != "" && documentIsFromAuthorityHost(doc, website.String, archive.String) {
 			id, e := upsertSource(ctx, q, name.String, website.String, canonical, "official_aai", 1)
 			if e != nil {
 				return 0, 0, "", e
@@ -98,6 +110,47 @@ func (WaybackSource) ResolveSource(ctx context.Context, q execQuerier, doc Extra
 		return 0, 0, "", e
 	}
 	return id, 5, "unknown", nil
+}
+
+// documentIsFromAuthorityHost reports whether the document's own URL sits on a
+// host belonging to the authority — its website, its archive, or the country's
+// wayback target. Matching is on the registrable-looking host suffix so
+// reports.aaib.gov.uk counts for aaib.gov.uk, while aaib.gov.uk.evil.test does
+// not.
+func documentIsFromAuthorityHost(doc ExtractDoc, websiteURL, archiveURL string) bool {
+	docHost := hostOf(doc.OriginalURL)
+	if docHost == "" {
+		// No original_url to judge by. Refusing the tier-1 credit is the safe
+		// direction: an unattributable capture is not a primary official report.
+		return false
+	}
+	for _, candidate := range []string{websiteURL, archiveURL, doc.WaybackTarget} {
+		authHost := hostOf(candidate)
+		if authHost == "" {
+			continue
+		}
+		if docHost == authHost || strings.HasSuffix(docHost, "."+authHost) {
+			return true
+		}
+	}
+	return false
+}
+
+// hostOf extracts a lowercase hostname from either a full URL or a bare host
+// (wayback_target and archive_url are stored in both shapes).
+func hostOf(s string) string {
+	s = strings.TrimSpace(s)
+	if s == "" {
+		return ""
+	}
+	if !strings.Contains(s, "://") {
+		s = "https://" + s
+	}
+	u, err := url.Parse(s)
+	if err != nil {
+		return ""
+	}
+	return strings.ToLower(strings.TrimPrefix(u.Hostname(), "www."))
 }
 
 // MarkSkipped advances the document to extraction_status='skipped'.
@@ -145,4 +198,14 @@ func (WaybackSource) PersistOCRPath(ctx context.Context, db *sql.DB, id int64, p
 		return fmt.Errorf("wayback: mark ocr_done %d: %w", id, err)
 	}
 	return nil
+}
+
+// ClaimDoc takes exclusive ownership of a document for this pass.
+func (WaybackSource) ClaimDoc(ctx context.Context, db *sql.DB, id int64) (bool, error) {
+	return claimStagedDoc(ctx, db, "staged_wayback_documents", id)
+}
+
+// ReleaseDoc clears the claim so a failed document is retryable at once.
+func (WaybackSource) ReleaseDoc(ctx context.Context, db *sql.DB, id int64) {
+	releaseStagedDoc(ctx, db, "staged_wayback_documents", id)
 }

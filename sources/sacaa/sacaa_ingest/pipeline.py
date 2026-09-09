@@ -14,12 +14,27 @@ build() promotes 'parsed' rows with narrative >= _NARRATIVE_FLOOR into
 sacaa_accidents (country ZA).
 """
 import os
+import re
 import sys
 import time
 
 from . import db, pdf, sacaa
 from .pdf import ocr_extract
 from .text import make_site_slug
+
+# Every value below is derived from the source's own HTML/JSON, so it must not
+# be trusted as a path component: os.path.join with a value containing "/" or
+# ".." writes outside pdf_dir. BFU already carried this guard; most packages
+# did not.
+_UNSAFE_FILENAME_RE = re.compile(r"[^A-Za-z0-9._-]")
+
+
+def _safe_filename(name: str) -> str:
+    """Reduce an untrusted identifier to a single, safe path component."""
+    cleaned = _UNSAFE_FILENAME_RE.sub("_", str(name or ""))
+    cleaned = cleaned.lstrip(".") or "unnamed"
+    return cleaned[:120]
+
 
 _NARRATIVE_FLOOR = 300
 OCR_LANG = "eng"  # SACAA reports are English; tesseract language for scanned PDFs
@@ -37,14 +52,29 @@ def discover(conn, client, full=False):
         )
     }
     inserted = 0
+    failures = []
     for url in (sacaa.MAIN_URL, sacaa.ARCHIVE_URL):
         time.sleep(sacaa.DELAY)
         try:
             html = sacaa.fetch_page(client, url)
         except Exception as e:
+            # There are only two listings here, so swallowing one loses half
+            # the source and still reports a clean run. Keep going for the
+            # other, then fail the process at the end.
             print(f"[sacaa discover] {url}: failed: {e}", file=sys.stderr)
+            failures.append(f"{url}: {e}")
             continue
-        for r in sacaa.parse_listing(html):
+        rows = sacaa.parse_listing(html)
+        if not rows and url == sacaa.MAIN_URL:
+            # The main listing always carries the recent reports, so zero rows
+            # there means the markup changed rather than that SACAA published
+            # nothing. The archive listing is not guarded: it legitimately
+            # renders empty when the archive page is rebuilt.
+            raise RuntimeError(
+                f"[sacaa discover] {url} yielded 0 rows — listing markup has "
+                "changed (parse_listing no longer matches)"
+            )
+        for r in rows:
             if conn.execute(
                 "SELECT 1 FROM sacaa_reports WHERE pdf_url=?", (r["pdf_url"],)
             ).fetchone():
@@ -74,6 +104,11 @@ def discover(conn, client, full=False):
             )
             inserted += 1
         conn.commit()
+    if failures:
+        raise RuntimeError(
+            f"[sacaa discover] {len(failures)} listing(s) failed after retries "
+            f"({'; '.join(failures)}) — walk incomplete at {inserted} new rows"
+        )
     return inserted
 
 
@@ -99,7 +134,7 @@ def fetch(conn, client, pdf_dir="pdfs", enable_ocr=True):
     for row in rows:
         case_id = row["case_id"]
         time.sleep(sacaa.DELAY)
-        pdf_path = os.path.join(pdf_dir, f"{case_id}.pdf")
+        pdf_path = os.path.join(pdf_dir, _safe_filename(case_id) + ".pdf")
         try:
             sacaa.download_pdf(client, row["pdf_url"], pdf_path)
             text = pdf.extract_text(pdf_path)

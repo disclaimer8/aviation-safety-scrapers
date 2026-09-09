@@ -1,4 +1,4 @@
-# aaib_ingest/pdf.py
+# bfu_ingest/pdf.py
 import subprocess
 
 MIN_NARRATIVE = 600

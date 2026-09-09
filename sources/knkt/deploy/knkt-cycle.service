@@ -8,7 +8,29 @@ Wants=network-online.target
 Type=oneshot
 User=scraper
 WorkingDirectory=/opt/knkt
-ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+ExecStart=/bin/bash -c "deploy/run-cycle.sh"
 StandardOutput=append:/opt/knkt/knkt-cycle.log
 StandardError=append:/opt/knkt/knkt-cycle.log
 TimeoutStartSec=7200
+
+# ── sandboxing ───────────────────────────────────────────────────────────────
+# This unit used to be `/bin/bash -lc`. A LOGIN shell sources ~/.profile and
+# friends, so anything that could write the scraper user's home got code
+# execution on the next timer tick — and this box stores scraped data under
+# that same home. `-c` reads no profile.
+#
+# ProtectSystem=full (not strict) is deliberate: strict makes the whole
+# filesystem read-only and would need an explicit ReadWritePaths for both
+# WorkingDirectory and the per-source ~/<code>-ingest data directory. That
+# pair has not been verified on the live host, and getting it wrong fails
+# every timer. `full` covers /usr, /boot and /etc while leaving the data
+# paths writable.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+LockPersonality=true

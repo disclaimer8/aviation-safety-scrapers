@@ -55,6 +55,7 @@ def discover(conn, client, full=False, wp_rest=False):
 
     inserted = 0
     seen_ids = set()
+    failures = []
     for i, page_url in enumerate(page_urls):
         if i == 0:
             page_html = index_html
@@ -65,7 +66,11 @@ def discover(conn, client, full=False, wp_rest=False):
                 r.raise_for_status()
                 page_html = r.text
             except Exception as exc:
+                # Skipping the page is right — the other pages still hold
+                # reports — but the run must not end as if the walk were
+                # complete: a 502 here used to look like "nothing new".
                 print(f"[nsib discover] {page_url}: {exc}", file=sys.stderr)
+                failures.append(f"{page_url}: {exc}")
                 continue
 
         page_rows = nsib.parse_listing(page_html)
@@ -144,6 +149,12 @@ def discover(conn, client, full=False, wp_rest=False):
         )
         inserted += wp_stats["inserted_with_pdf"] + wp_stats["inserted_html_only"]
 
+    if failures:
+        raise RuntimeError(
+            f"[nsib discover] {len(failures)} listing page(s) failed after "
+            f"retries ({'; '.join(failures)}) — walk incomplete at "
+            f"{inserted} new rows"
+        )
     return inserted
 
 

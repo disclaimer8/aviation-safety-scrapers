@@ -68,7 +68,7 @@ OCR_FLOOR = 200      # chars below which we attempt OCR
 HOME = os.path.expanduser("~/daaina-ingest")
 DB = os.path.join(HOME, "daaina.db")
 PDFDIR = os.path.join(HOME, "pdfs")
-UA = "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0"
+UA = "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0 (+https://github.com/disclaimer8/aviation-safety-scrapers; daaina-scraper/1.0)"
 WAYBACK_TRUNCATION = 1_048_576  # Wayback truncates at exactly 1MB
 
 # Fetch PDFs via hetzner SSH to avoid minipc->archive.org Connection refused

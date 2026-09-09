@@ -15,11 +15,26 @@ build() promotes 'parsed' rows with narrative >= _NARRATIVE_FLOOR into
 ovv_accidents (country NL).
 """
 import os
+import re
 import sys
 import time
 
 from . import dates, db, ovv, pdf
 from .text import make_site_slug
+
+# Every value below is derived from the source's own HTML/JSON, so it must not
+# be trusted as a path component: os.path.join with a value containing "/" or
+# ".." writes outside pdf_dir. BFU already carried this guard; most packages
+# did not.
+_UNSAFE_FILENAME_RE = re.compile(r"[^A-Za-z0-9._-]")
+
+
+def _safe_filename(name: str) -> str:
+    """Reduce an untrusted identifier to a single, safe path component."""
+    cleaned = _UNSAFE_FILENAME_RE.sub("_", str(name or ""))
+    cleaned = cleaned.lstrip(".") or "unnamed"
+    return cleaned[:120]
+
 
 _NARRATIVE_FLOOR = 300
 _PDF_TEXT_FLOOR = 2000  # below this a doc is a scan/letter → try next doc
@@ -130,7 +145,7 @@ def fetch(conn, client, pdf_dir="pdfs", enable_ocr=True):
         reports = [u for u in ranked if not ovv.is_noise_doc(u)]
         sections = [u for u in ranked if ovv.is_noise_doc(u)]
 
-        pdf_path = os.path.join(pdf_dir, f"{case_id[:60]}.pdf")
+        pdf_path = os.path.join(pdf_dir, _safe_filename(case_id)[:60] + ".pdf")
         text, used_url, lang, best_path = "", None, None, None
         got_a_document = False
 

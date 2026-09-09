@@ -2,9 +2,8 @@
 import argparse
 import os
 
-import httpx
 
-from . import db
+from . import db, httpc
 from .pipeline import discover, fetch, build
 
 _BROWSER_UA = (
@@ -15,14 +14,16 @@ _BROWSER_UA = (
 
 
 def _make_client(proxy=None, **_kw):
-    return httpx.Client(
-        timeout=60,
-        follow_redirects=True,
+    # The retry policy lives in httpc (vendored from _common/http.py):
+    # httpx's own retries= covers connect errors only, so a 502 or a read
+    # timeout used to raise on the first attempt and truncate a run.
+    return httpc.make_client(
         headers={
             "User-Agent": _BROWSER_UA,
             "Accept-Language": "en-CA,en;q=0.9",
         },
-        proxy=proxy or None,
+        proxy=proxy,
+        timeout=60,
     )
 
 

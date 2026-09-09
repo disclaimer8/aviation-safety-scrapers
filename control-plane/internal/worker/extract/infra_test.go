@@ -48,6 +48,49 @@ func TestIsInfraErrorRejectsNil(t *testing.T) {
 	}
 }
 
+// timeoutErr is what http.Client returns when its own Timeout fires: a
+// *url.Error whose Timeout() is true. This is the shape that used to be
+// classified infra, which inverted GO-CP-3 — one slow PDF aborted the pass
+// without burning its own attempt, so it led the queue again on the next run
+// and every document behind it starved.
+type stubTimeout struct{}
+
+func (stubTimeout) Error() string   { return "context deadline exceeded (Client.Timeout exceeded)" }
+func (stubTimeout) Timeout() bool   { return true }
+func (stubTimeout) Temporary() bool { return true }
+
+func TestIsInfraErrorRejectsAClientTimeout(t *testing.T) {
+	err := fmt.Errorf("wayback: llm post: %w",
+		&url.Error{Op: "Post", URL: "http://127.0.0.1:11434/api/generate", Err: stubTimeout{}})
+	if isInfraError(err) {
+		t.Fatal("a request timeout is this document being slow, not the endpoint being down")
+	}
+}
+
+func TestIsInfraErrorRejectsAContextDeadline(t *testing.T) {
+	if isInfraError(fmt.Errorf("wayback: ocr: %w", context.DeadlineExceeded)) {
+		t.Fatal("a context deadline must not abort the whole pass")
+	}
+}
+
+func TestIsInfraErrorStillDetectsADialTimeout(t *testing.T) {
+	// A dial that timed out is still "cannot reach the endpoint", and must
+	// stay infra even though it is also a timeout.
+	err := fmt.Errorf("wayback: llm post: %w",
+		&url.Error{Op: "Post", URL: "http://10.0.0.1:11434/api/generate",
+			Err: &net.OpError{Op: "dial", Net: "tcp", Err: stubTimeout{}}})
+	if !isInfraError(err) {
+		t.Fatal("a dial timeout means no connection could be opened at all")
+	}
+}
+
+func TestIsInfraErrorDetectsDNSFailure(t *testing.T) {
+	err := fmt.Errorf("wayback: llm post: %w", &net.DNSError{Err: "no such host", IsNotFound: true})
+	if !isInfraError(err) {
+		t.Fatal("a DNS not-found means the endpoint cannot be reached")
+	}
+}
+
 // ─── extractOne / ProcessExtractPending abort behavior ──────────────────────
 
 // TestExtractOneAbortsOnOCRInfraErrorWithoutIncrementingAttempts is the core

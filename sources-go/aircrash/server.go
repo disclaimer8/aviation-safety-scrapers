@@ -9,6 +9,29 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const (
+	// maxPageSize bounds /api/accidents?limit=. A negative or absent LIMIT is
+	// "no limit" in SQLite, which made the whole table one request away.
+	maxPageSize = 500
+	maxOffset   = 1 << 20
+)
+
+// clampInt parses s and forces the result into [min,max], falling back to def
+// when it does not parse.
+func clampInt(s string, def, min, max int) int {
+	n, err := strconv.Atoi(s)
+	if err != nil {
+		return def
+	}
+	if n < min {
+		return min
+	}
+	if n > max {
+		return max
+	}
+	return n
+}
+
 // StartServer initializes the Gin router and starts listening for HTTP requests.
 func StartServer(db *sql.DB, port string) {
 	// Start background geocoder
@@ -30,15 +53,11 @@ func StartServer(db *sql.DB, port string) {
 		limitStr := c.DefaultQuery("limit", "100")
 		offsetStr := c.DefaultQuery("offset", "0")
 
-		limit, err := strconv.Atoi(limitStr)
-		if err != nil {
-			limit = 100
-		}
-
-		offset, err := strconv.Atoi(offsetStr)
-		if err != nil {
-			offset = 0
-		}
+		// Clamped, not just parsed. Both values went straight into SQLite,
+		// where a negative LIMIT means unlimited: ?limit=-1 dumped the entire
+		// table in one unauthenticated request.
+		limit := clampInt(limitStr, 100, 1, maxPageSize)
+		offset := clampInt(offsetStr, 0, 0, maxOffset)
 
 		accidents, err := GetAccidents(db, limit, offset)
 		if err != nil {
@@ -79,7 +98,7 @@ func StartServer(db *sql.DB, port string) {
 		query := `
 			SELECT id, aircraft_model, fatalities, lat, lon 
 			FROM accidents 
-			WHERE lat IS NOT NULL AND lat != 0.000001 AND lat != 0
+			WHERE lat IS NOT NULL AND lat != 0
 		`
 		rows, err := db.Query(query)
 		if err != nil {

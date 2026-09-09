@@ -255,21 +255,45 @@
 
                 data.forEach((item, index) => {
                     const tr = document.createElement('tr');
-                    
+
                     // Add slight stagger to animation
                     tr.style.animation = `fadeIn 0.5s ease ${index * 0.05}s both`;
-                    
+
                     // Clean up fatalities string if it contains extra spaces
                     const fat = item.fatalities ? item.fatalities.replace(/\s+/g, ' ') : '0';
 
-                    tr.innerHTML = `
-                        <td>${item.date || 'Unknown'}</td>
-                        <td><strong>${item.aircraft_model || 'Unknown'}</strong></td>
-                        <td>${item.operator || '-'}</td>
-                        <td>${item.location || '-'}</td>
-                        <td class="${fat !== '0' && fat !== '' ? 'fatalities' : ''}">${fat || '0'}</td>
-                        <td><a href="${item.source_url}" class="source-link" target="_blank">View Details</a></td>
-                    `;
+                    // Built with textContent, not an innerHTML template. Every
+                    // value here comes from Wikidata, which anyone can edit —
+                    // interpolating it as markup made a vandalised label into
+                    // stored XSS on this page.
+                    tr.appendChild(cell(item.date || 'Unknown'));
+
+                    const model = document.createElement('td');
+                    const strong = document.createElement('strong');
+                    strong.textContent = item.aircraft_model || 'Unknown';
+                    model.appendChild(strong);
+                    tr.appendChild(model);
+
+                    tr.appendChild(cell(item.operator || '-'));
+                    tr.appendChild(cell(item.location || '-'));
+                    tr.appendChild(cell(fat || '0',
+                        fat !== '0' && fat !== '' ? 'fatalities' : ''));
+
+                    const linkCell = document.createElement('td');
+                    const href = safeHttpUrl(item.source_url);
+                    if (href) {
+                        const a = document.createElement('a');
+                        a.href = href;                 // http(s) only — a
+                        a.className = 'source-link';   // javascript: URL from a
+                        a.target = '_blank';           // vandalised record would
+                        a.rel = 'noopener noreferrer'; // otherwise run on click
+                        a.textContent = 'View Details';
+                        linkCell.appendChild(a);
+                    } else {
+                        linkCell.textContent = '-';
+                    }
+                    tr.appendChild(linkCell);
+
                     tbody.appendChild(tr);
                 });
             } catch (error) {
@@ -281,6 +305,25 @@
                         </td>
                     </tr>
                 `;
+            }
+        }
+
+        // Helpers used by renderTable: everything rendered from a record goes
+        // through textContent, and every URL through an http(s) check.
+        function cell(text, className) {
+            const td = document.createElement('td');
+            td.textContent = text;
+            if (className) td.className = className;
+            return td;
+        }
+
+        function safeHttpUrl(raw) {
+            if (!raw) return null;
+            try {
+                const u = new URL(raw, window.location.origin);
+                return (u.protocol === 'http:' || u.protocol === 'https:') ? u.href : null;
+            } catch (e) {
+                return null;
             }
         }
 

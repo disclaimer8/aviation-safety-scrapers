@@ -37,7 +37,7 @@ OCR_LANG = "eng"
 BASE     = "https://caav.vu"
 INDEX_URL = BASE + "/investigation/"
 
-UA = "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0"
+UA = "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0 (+https://github.com/disclaimer8/aviation-safety-scrapers; caavvu-scraper/1.0)"
 
 # ── KNOWN REPORTS ──────────────────────────────────────────────────────────────
 # Prelim superseded by Final. Both are fetched; only Final goes to accidents.

@@ -1,14 +1,33 @@
 # aviation-safety-scrapers
 
-A collection of **47 independent scrapers** for public-record civil aviation
+A collection of **95 independent scrapers** for public-record civil aviation
 accident and incident reports, each targeting a different source — national
 **Safety Investigation Authorities** (AAIB, BEA, BFU, JTSB, …), the US **NTSB**
 bulk dump, **MAK**, **ATSB**, and **Wikidata** — across six continents.
 
+**They are not all at the same maturity, and this README used to imply they
+were.** The authoritative catalogue is [`registry.yaml`](registry.yaml), which
+is generated from disk by `scripts/build_registry.py` and checked in CI, so it
+cannot drift the way the hand-typed counts here did (they said 47 scrapers and
+42 Python packages while `sources/` held 90 directories). As of the last
+generation:
+
+| | count | what it means |
+|---|---|---|
+| Python sources | 90 | one directory each under `sources/` |
+| — four-verb packages | 44 | `<code>_ingest/` with a CLI and behaviour tests |
+| — single-file scripts | 46 | prototypes driven by `sys.argv[1]`; **not** scheduled |
+| Node packages | 4 | NTSB, MAK, ATSB, Wikidata |
+| Go projects | 1 | `aircrash` — Wikidata aggregator + dashboard |
+| with behaviour tests | 45 | the rest have an import smoke: the module loads, its constants evaluate, its entry point exists and is still guarded |
+
 Every source publishes differently: a server-rendered table here, a
 JavaScript-hydrated accordion there, a Cloudflare-gated PDF archive, an Access
-database dump somewhere else. Each scraper encapsulates the quirks of one source
-behind the **same four-verb pipeline** so they all feel identical to operate.
+database dump somewhere else. The **44 mature Python packages** encapsulate the
+quirks of one source behind the **same four-verb pipeline** so they all feel
+identical to operate. The 46 single-file scripts are prototypes that share the
+shape but not the contract, and the Node and Go packages expose a single
+`build` verb rather than four — see "What the CLIs actually expose" below.
 
 ```
 discover  →  fetch  →  parse  →  build
@@ -49,7 +68,9 @@ _common/         canonical modules, vendored into the packages below
   pdf.py  text.py  http.py
   sync.py         # python -m _common.sync [--check]
 
-sources/         42 Python packages — national Safety Investigation Authorities
+sources/         90 Python sources — national Safety Investigation Authorities
+                 (44 four-verb packages + 46 single-file prototype scripts;
+                  see registry.yaml for the per-source breakdown)
   <code>/
     <code>_ingest/        # Python package (discover/fetch/parse/build + CLI)
     tests/                # pytest unit tests with offline fixtures
@@ -174,8 +195,21 @@ Each has its own README.
 | `wikidata` | [`sources-node/wikidata`](sources-node/wikidata) | Wikidata (SPARQL) + Wikipedia enrich | Node | SPARQL / REST |
 | `aircrash` | [`sources-go/aircrash`](sources-go/aircrash) | Wikidata aggregator + REST API | Go | SPARQL |
 
+### What the CLIs actually expose
+
+The four-verb contract holds for the 44 Python `*_ingest` packages (26 of them
+fold `parse` into `fetch`, which CONTRIBUTING allows). It does **not** hold
+elsewhere, and this section used to claim otherwise:
+
+| layer | verbs actually exposed |
+|---|---|
+| `sources/<code>/<code>_ingest` (44) | `discover` `fetch` `parse` `build` `all` |
+| `sources/<code>/<code>_scraper.py` (46) | one positional mode via `sys.argv[1]` |
+| `sources-node/*` | a single `build` (the stages exist internally) |
+| `sources-go/aircrash` | `-wikidata` / `-serve` |
+
 ```bash
-# Node source — same four verbs, run via the package CLI
+# Node source — one `build` verb, not four
 cd sources-node/ntsb && npm install && npm run selftest && npm test
 
 # Go source
@@ -192,9 +226,13 @@ cd sources-go/aircrash && go mod tidy && go build -o aircrash-parser
 manages **coverage metadata** — which countries exist, which national
 authorities investigate accidents there, how sources are routed, and which
 countries are policy-excluded from direct acquisition.  It is a coordination and
-policy layer, **not a scraper**: it tracks and exports the metadata that tells
-the scrapers what to do, but does not replace the independent source packages in
-`sources/`, `sources-node/`, or `sources-go/`.
+policy layer **and an acquisition + extract worker**. It began as metadata
+only — this section used to say "not a scraper" — but `process-wayback`,
+`process-regional`, `process-foreign-search`, `process-manufacturer` and
+`process-extract` fetch documents, OCR them and run an LLM extraction into
+`events`/`reports`. It does not replace the independent source packages in
+`sources/`, `sources-node/`, or `sources-go/`; it covers the countries those
+do not.
 
 ```bash
 cd control-plane

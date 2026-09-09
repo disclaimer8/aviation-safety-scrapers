@@ -199,3 +199,13 @@ func (ForeignSource) PersistOCRPath(ctx context.Context, db *sql.DB, id int64, p
 	}
 	return nil
 }
+
+// ClaimDoc takes exclusive ownership of a document for this pass.
+func (ForeignSource) ClaimDoc(ctx context.Context, db *sql.DB, id int64) (bool, error) {
+	return claimStagedDoc(ctx, db, "staged_foreign_documents", id)
+}
+
+// ReleaseDoc clears the claim so a failed document is retryable at once.
+func (ForeignSource) ReleaseDoc(ctx context.Context, db *sql.DB, id int64) {
+	releaseStagedDoc(ctx, db, "staged_foreign_documents", id)
+}

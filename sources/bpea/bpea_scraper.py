@@ -38,7 +38,7 @@ WAYBACK   = "https://web.archive.org/web"
 OCR_LANG  = "fra"
 DELAY     = 3.0  # seconds between Wayback fetches
 
-UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36  (+https://github.com/disclaimer8/aviation-safety-scrapers; bpea-scraper/1.0)"
       "(KHTML, like Gecko) Chrome/120 Safari/537.36")
 
 # ---------------------------------------------------------------------------

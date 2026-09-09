@@ -24,19 +24,43 @@ jobs:
         run: python -m _common.sync --check
       - name: _common tests
         run: python -m pytest _common/tests -q
+      - name: registry.yaml matches what is on disk
+        # The catalogue used to be hand-typed and drifted: 47 scrapers claimed,
+        # 90 directories present. Generated numbers cannot drift silently.
+        run: python scripts/build_registry.py --check
 
   sources:
     # Every Python source package, each with its own tests and offline
-    # fixtures. Tests must not touch the network (see CONTRIBUTING.md), so a
-    # per-package timeout turns an accidental live call into a red build
-    # rather than a job that hangs until the runner gives up.
+    # fixtures.
+    #
+    # Two things this job used to get wrong, both of which made it green for
+    # the wrong reason:
+    #
+    #  1. It installed one fixed dependency set globally instead of each
+    #     package's own extras. Patchright, Playwright and requests were never
+    #     installed, so a package that needs them "passed" by never importing
+    #     them — and cins and ntsbcarol worked only because the job injected
+    #     httpx that their pyproject did not declare. `pip install -e` per
+    #     package makes an undeclared dependency a red build.
+    #  2. Nothing stopped a test reaching the network. CONTRIBUTING says tests
+    #     must not, and none currently do (verified), but nothing enforced it,
+    #     so the first one to try would have passed here and failed on a
+    #     runner without egress. pytest-socket makes that a failure.
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # requires-python is >=3.11 across the tree; test the ends of the
+        # range rather than a single version that hides a syntax or stdlib
+        # difference.
+        python-version: ['3.11', '3.13']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-      - run: pip install "httpx[socks]>=0.27" certifi "pytest>=8"
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - run: pip install "pytest>=8" pytest-socket
       - name: run each package's tests
         run: |
           set -uo pipefail
@@ -48,7 +72,17 @@ jobs:
               continue
             fi
             echo "::group::$code"
-            if ( cd "$dir" && PYTHONPATH=. timeout 300 python -m pytest -q ); then
+            # Install the package's own declared dependencies. A package that
+            # forgets to declare one now fails here instead of riding on a
+            # globally injected httpx.
+            if ! pip install -q -e "$dir"; then
+              echo "::endgroup::"
+              echo "::error title=Install failed::$code"
+              failed="$failed $code(install)"
+              continue
+            fi
+            if ( cd "$dir" && PYTHONPATH=. timeout 300 python -m pytest -q \
+                   --disable-socket --allow-unix-socket ); then
               echo "::endgroup::"
             else
               echo "::endgroup::"
@@ -62,11 +96,13 @@ jobs:
           fi
 
   sources-node:
-    # The four Node scrapers. They were outside CI until now, which is also
-    # where every open Dependabot alert had accumulated — a dependency bump
-    # with nothing to verify it is a bump nobody can review. `npm ci` installs
-    # from the committed lockfile, so a lockfile that drifts from package.json
-    # fails here rather than at build time on the mini-PC.
+    # The four Node scrapers. `npm ci` installs from the committed lockfile, so
+    # a lockfile that drifts from package.json fails here rather than at build
+    # time on the mini-PC.
+    #
+    # --no-audit is gone: this job exists because every open Dependabot alert
+    # had accumulated in these packages, and silencing the audit in the one
+    # place that runs them defeats the point.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -80,7 +116,7 @@ jobs:
           for dir in sources-node/*/; do
             code=$(basename "$dir")
             echo "::group::$code"
-            if ( cd "$dir" && npm ci --no-audit --no-fund && timeout 300 npm test ); then
+            if ( cd "$dir" && npm ci --no-fund && timeout 300 npm test ); then
               echo "::endgroup::"
             else
               echo "::endgroup::"
@@ -92,6 +128,24 @@ jobs:
             echo "failing packages:$failed"
             exit 1
           fi
+
+  sources-node-audit:
+    # Reported separately so a known-vulnerable transitive dependency is
+    # visible without blocking every unrelated PR on it.
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: npm audit
+        run: |
+          for dir in sources-node/*/; do
+            echo "::group::$(basename "$dir")"
+            ( cd "$dir" && npm ci --no-audit --no-fund >/dev/null && npm audit --audit-level=high ) || true
+            echo "::endgroup::"
+          done
 
   sources-go:
     # The Go module per directory that has a go.mod: the aircrash scraper and
@@ -108,6 +162,17 @@ jobs:
         with:
           go-version-file: ${{ matrix.module }}/go.mod
           cache-dependency-path: ${{ matrix.module }}/go.sum
+      - name: gofmt
+        working-directory: ${{ matrix.module }}
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "::error title=gofmt::$unformatted"
+            exit 1
+          fi
+      - name: go vet
+        working-directory: ${{ matrix.module }}
+        run: go vet ./...
       - name: go test
         working-directory: ${{ matrix.module }}
         run: go test ./...

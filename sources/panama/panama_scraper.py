@@ -27,7 +27,7 @@ import urllib.parse
 
 BASE = "https://www.aeronautica.gob.pa"
 UPIA = BASE + "/index.php/seguridad-aerea/upia"
-UA = "Mozilla/5.0 (compatible; FlightFinderBot/1.0; +https://flightfinder)"
+UA = "Mozilla/5.0 (compatible; FlightFinderBot/1.0; +https://flightfinder) (+https://github.com/disclaimer8/aviation-safety-scrapers; panama-scraper/1.0)"
 DELAY = 1.5
 MIN_NARRATIVE = 600   # preferred tier 'pdf' length
 FLOOR = 80            # absolute minimum narrative_text length to build a row

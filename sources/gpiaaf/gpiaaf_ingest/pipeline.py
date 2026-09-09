@@ -16,11 +16,26 @@ Rows whose only Documento is a quarterly bulletin are kept as metadata with
 status ``no_report`` and never fetched.
 """
 import os
+import re
 import sys
 import time
 
 from . import gpiaaf, db, pdf
 from .text import make_site_slug
+
+# Every value below is derived from the source's own HTML/JSON, so it must not
+# be trusted as a path component: os.path.join with a value containing "/" or
+# ".." writes outside pdf_dir. BFU already carried this guard; most packages
+# did not.
+_UNSAFE_FILENAME_RE = re.compile(r"[^A-Za-z0-9._-]")
+
+
+def _safe_filename(name: str) -> str:
+    """Reduce an untrusted identifier to a single, safe path component."""
+    cleaned = _UNSAFE_FILENAME_RE.sub("_", str(name or ""))
+    cleaned = cleaned.lstrip(".") or "unnamed"
+    return cleaned[:120]
+
 
 # build() floor: a row needs narrative >= this to become an accident.
 _NARRATIVE_FLOOR = 300
@@ -191,7 +206,7 @@ def fetch(conn, browser, pdf_dir="pdfs", max_pdfs=None):
             pdf_id = pdf_id or captured_id
             # prefer the stable d-number as the on-disk filename once known
             if pdf_id and pdf_id != safe:
-                stable_path = os.path.join(pdf_dir, f"{pdf_id}.pdf")
+                stable_path = os.path.join(pdf_dir, _safe_filename(pdf_id) + ".pdf")
                 try:
                     os.replace(pdf_path, stable_path)
                     pdf_path = stable_path

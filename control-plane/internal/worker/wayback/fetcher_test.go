@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"testing"
 	"time"
@@ -32,17 +33,50 @@ func (f *fixtureFetcher) Get(ctx context.Context, archivedURL string) ([]byte, e
 	return []byte("default-pdf-bytes"), nil
 }
 
+// The query is now percent-encoded, so the parameters are checked after
+// decoding rather than as literal substrings. Both forms were confirmed to
+// return identical results from the live CDX API on 2026-09-09.
 func TestCDXURLConstruction(t *testing.T) {
 	got := cdxURL("caa.example.gov")
-	for _, want := range []string{
-		"https://web.archive.org/cdx/search/cdx?",
-		"url=caa.example.gov/*",
-		"output=json",
-		"filter=mimetype:application/pdf",
-		"collapse=digest",
+	if !strings.HasPrefix(got, "https://web.archive.org/cdx/search/cdx?") {
+		t.Fatalf("cdxURL lost its endpoint: %q", got)
+	}
+	u, err := url.Parse(got)
+	if err != nil {
+		t.Fatalf("cdxURL produced an unparseable URL %q: %v", got, err)
+	}
+	for k, want := range map[string]string{
+		"url":      "caa.example.gov/*",
+		"output":   "json",
+		"filter":   "mimetype:application/pdf",
+		"collapse": "digest",
 	} {
-		if !strings.Contains(got, want) {
-			t.Errorf("cdxURL missing %q in %q", want, got)
+		if got := u.Query().Get(k); got != want {
+			t.Errorf("cdxURL %s = %q, want %q (from %q)", k, got, want, u)
+		}
+	}
+}
+
+// ResolveTarget falls back to authorities.archive_url when a country has no
+// wayback_target overlay, and that column holds a URL, not a bare host. A "?"
+// or "&" in it used to truncate the CDX query silently: the request still
+// returned 200, with zero rows, which reads as "this authority has no PDFs".
+func TestCDXURLDoesNotLetATargetTruncateTheQuery(t *testing.T) {
+	for _, target := range []string{
+		"caa.example.gov/reports?year=2020",
+		"caa.example.gov/a&b",
+		"caa.example.gov/docs#section",
+	} {
+		u, err := url.Parse(cdxURL(target))
+		if err != nil {
+			t.Fatalf("cdxURL(%q) unparseable: %v", target, err)
+		}
+		q := u.Query()
+		if q.Get("collapse") != "digest" {
+			t.Errorf("cdxURL(%q) lost the trailing parameters: %q", target, u)
+		}
+		if want := target + "/*"; q.Get("url") != want {
+			t.Errorf("cdxURL(%q) url = %q, want %q", target, q.Get("url"), want)
 		}
 	}
 }

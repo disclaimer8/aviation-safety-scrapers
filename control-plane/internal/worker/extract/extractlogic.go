@@ -3,6 +3,7 @@ package extract
 import (
 	"math"
 	"strings"
+	"time"
 )
 
 // HasCriticalFields is the accident-promotion gate: a usable date (exact or
@@ -60,8 +61,45 @@ func NormalizeEvent(e ExtractedEvent) ExtractedEvent {
 		[]string{"final", "preliminary", "interim", "factual"}, "final")
 	e.DatePrecision = normalizeEnum(e.DatePrecision,
 		[]string{"exact", "month", "year", "unknown"}, "unknown")
+	e.Date, e.DatePrecision = normalizeDate(e.Date, e.DatePrecision)
 	e.Country = normalizeISO2(e.Country)
 	return e
+}
+
+// normalizeDate rejects anything that is not an ISO-8601 date at the precision
+// the model claimed, and checks the calendar.
+//
+// Nothing validated this before: "yesterday", "circa 1998" or "2019-13-45" all
+// satisfied HasCriticalFields, promoted into events.date, and then keyed
+// dedup — which links globally on (date, registration). A date the model
+// invented is worse than no date, so an unparseable one is cleared and the
+// precision drops to "unknown", which HasCriticalFields already rejects.
+func normalizeDate(date, precision string) (string, string) {
+	date = strings.TrimSpace(date)
+	if date == "" {
+		return "", precision
+	}
+	layouts := map[string]string{"exact": "2006-01-02", "month": "2006-01", "year": "2006"}
+	layout, ok := layouts[precision]
+	if !ok {
+		// precision "unknown" — accept the value only if it is a well-formed
+		// date at some precision, so nothing else downstream sees free text.
+		for _, l := range []string{"2006-01-02", "2006-01", "2006"} {
+			if _, err := time.Parse(l, date); err == nil {
+				return date, precision
+			}
+		}
+		return "", "unknown"
+	}
+	t, err := time.Parse(layout, date)
+	if err != nil {
+		return "", "unknown"
+	}
+	// time.Parse accepts a year far outside anything aviation could mean.
+	if y := t.Year(); y < 1900 || y > time.Now().UTC().Year()+1 {
+		return "", "unknown"
+	}
+	return date, precision
 }
 
 // normalizeISO2 upper-cases and trims a country code, returning "" for

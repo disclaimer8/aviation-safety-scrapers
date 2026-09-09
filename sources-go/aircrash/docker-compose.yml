@@ -1,11 +1,15 @@
-version: '3.8'
-
 services:
   app:
     build: .
     container_name: aircrash_parser
     ports:
-      - "80:8080" # Map host port 80 to container port 8080
+      # Published on loopback only: the dashboard and /api have no auth. This
+      # used to be "80:8080", which put an unauthenticated full-table dump on
+      # the host's port 80.
+      - "127.0.0.1:8080:8080"
+    # The process binds loopback by default; inside the container it has to
+    # listen on all interfaces for the published port to reach it.
+    command: ["-serve", "-addr", "0.0.0.0:8080"]
     volumes:
       # Persist the SQLite database on the host machine
       - ./accidents.db:/app/accidents.db

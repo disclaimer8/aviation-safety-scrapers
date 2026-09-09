@@ -2,10 +2,12 @@
 """Ghana AIB (Aircraft Accident & Incident Investigation & Prevention Bureau)
 httpx scraper. Source: aibghana.gov.gh/accident-reports/ (WP, PDFs in
 /wp-content/uploads/). Small bureau. EN, 9G- regs. Stages discover|fetch|parse|build."""
-import sys, os, re, time, sqlite3, subprocess, httpx
+import sys, os, re, time, sqlite3, subprocess, httpx, certifi
 BASE="https://aibghana.gov.gh"
 LISTS=[BASE+"/accident-reports/", BASE+"/safety-report/", BASE+"/"]
-H={"User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124.0 Safari/537.36"}
+# Identifiable UA with a contact URL, per the README politeness rule. The site
+# serves plain httpx with no bot block, so there is nothing to disguise.
+H={"User-Agent":"ghana-scraper/1.0 (+https://github.com/denyskolomiiets/aviation-safety-scrapers)"}
 DELAY=1.5; MIN_NARRATIVE=600; FLOOR=80
 HOME=os.path.expanduser("~/ghana-ingest"); DB=os.path.join(HOME,"ghana.db"); PDFDIR=os.path.join(HOME,"pdfs")
 SCHEMA="""
@@ -34,12 +36,20 @@ def is_report(name):
     return ("report" in n or "complete" in n) and "guide" not in n and "form" not in n and "terminolog" not in n
 def main():
     mode=sys.argv[1] if len(sys.argv)>1 else "all"; os.makedirs(PDFDIR,exist_ok=True); c=conn()
-    cl=httpx.Client(headers=H,timeout=25,follow_redirects=True,verify=False)
+    # verify: aibghana.gov.gh presents a complete chain against the certifi
+    # bundle (checked 2026-09-09). It used to be fetched with verify=False,
+    # which disabled TLS checking for every request this scraper makes.
+    cl=httpx.Client(headers=H,timeout=25,follow_redirects=True,verify=certifi.where())
     if mode in ("discover","all"):
-        ins=0; seen=set()
+        ins=0; seen=set(); failures=[]
         for u in LISTS:
-            try: r=cl.get(u)
-            except Exception: continue
+            try:
+                r=cl.get(u); r.raise_for_status()
+            except Exception as e:
+                # A transport error is not "this listing has no reports".
+                # Keep going for the other listings, then exit non-zero so the
+                # timer does not log a truncated crawl as a clean one.
+                print("[ghana discover]",u,e,file=sys.stderr); failures.append(f"{u}: {e}"); continue
             for pu in dict.fromkeys(re.findall(r'href="([^"]+\.pdf[^"]*)"', r.text, re.I)):
                 name=pu.split("/")[-1]
                 if not is_report(name): continue
@@ -52,6 +62,9 @@ def main():
                           (cid,(pu if pu.startswith("http") else BASE+pu),name,rt,reg_from(name),'new',now(),now())); c.commit(); ins+=1
             time.sleep(DELAY)
         print("discovered:",ins)
+        if failures:
+            print("[ghana discover] %d listing(s) failed: %s" % (len(failures),"; ".join(failures)),file=sys.stderr)
+            sys.exit(1)
     if mode in ("fetch","all"):
         for row in c.execute("SELECT case_id,pdf_url FROM ghana_reports WHERE status='new'").fetchall():
             try:

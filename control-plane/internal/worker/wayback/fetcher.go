@@ -3,9 +3,12 @@ package wayback
 import (
 	"context"
 	"fmt"
-	"io"
 	"net/http"
+	"net/url"
+	"strings"
 	"time"
+
+	"github.com/denyskolomiiets/aviation-safety-scrapers/control-plane/internal/nethard"
 )
 
 // Fetcher is the only network seam in the wayback worker. Production uses
@@ -15,33 +18,43 @@ type Fetcher interface {
 	Get(ctx context.Context, archivedURL string) ([]byte, error)
 }
 
-// maxFetchBytes caps every httpFetcher response (GO-CP-10). Consistent in
-// spirit with extract.fetchGuarded's maxReportBytes cap (64 MiB) — the CDX
-// JSON index and archived PDF bodies fetched here are the same kind of
-// untrusted-size response that package guards against; this package can't
-// import extract (extract already imports wayback), so the cap is
-// duplicated locally rather than shared.
-const maxFetchBytes = 64 << 20
+// maxFetchBytes caps every httpFetcher response (GO-CP-10). It used to be
+// hand-duplicated from extract because this package cannot import extract
+// (extract already imports wayback); both now take it — and the SSRF guard
+// and scheme check that were NOT duplicated — from internal/nethard.
+const maxFetchBytes = nethard.MaxBodyBytes
 
 type httpFetcher struct {
 	client *http.Client
 }
 
 // NewHTTPFetcher returns a Fetcher backed by net/http against web.archive.org.
+//
+// The transport carries the SSRF guard. This client follows redirects, and a
+// redirect off archive.org used to be dialled with no private-IP check at all
+// — the one fetcher in the control plane without one.
 func NewHTTPFetcher(timeout time.Duration) Fetcher {
-	return &httpFetcher{client: &http.Client{Timeout: timeout}}
+	return &httpFetcher{client: &http.Client{
+		Timeout:   timeout,
+		Transport: nethard.HardenedTransport(nil),
+	}}
 }
 
-// cdxURL builds the CDX API request URL for a domain. Domains are trusted
-// seed/authority values, not user input, so the query string is hand-built to
-// keep literal substrings (url=<domain>/*, filter=mimetype:application/pdf)
-// readable and testable without URL-encoding.
+// cdxURL builds the CDX API request URL for a domain.
+//
+// The domain is escaped rather than concatenated. It was called "a trusted
+// seed value", but ResolveTarget falls back to authorities.archive_url when a
+// country has no wayback_target overlay, and that column holds a URL, not a
+// host: a "?" or "&" in it silently truncated the CDX query, which surfaces
+// as found=0 / SILENT_FAIL_SUSPECT rather than as an error.
 func cdxURL(domain string) string {
-	return "https://web.archive.org/cdx/search/cdx?" +
-		"url=" + domain + "/*" +
-		"&output=json" +
-		"&filter=mimetype:application/pdf" +
-		"&collapse=digest"
+	q := url.Values{
+		"url":      {strings.TrimSuffix(domain, "/") + "/*"},
+		"output":   {"json"},
+		"filter":   {"mimetype:application/pdf"},
+		"collapse": {"digest"},
+	}
+	return "https://web.archive.org/cdx/search/cdx?" + q.Encode()
 }
 
 func (h *httpFetcher) CDX(ctx context.Context, domain string) ([]byte, error) {
@@ -53,6 +66,9 @@ func (h *httpFetcher) Get(ctx context.Context, archivedURL string) ([]byte, erro
 }
 
 func (h *httpFetcher) fetch(ctx context.Context, u string) ([]byte, error) {
+	if err := nethard.CheckScheme(u); err != nil {
+		return nil, fmt.Errorf("wayback: fetch: %w", err)
+	}
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return nil, fmt.Errorf("wayback: build request %s: %w", u, err)
@@ -65,16 +81,11 @@ func (h *httpFetcher) fetch(ctx context.Context, u string) ([]byte, error) {
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("wayback: fetch %s: status %d", u, resp.StatusCode)
 	}
-	// Cap the body (GO-CP-10): read one byte beyond the limit so "exactly at
-	// the limit" and "exceeded" are distinguishable, and fail explicitly
-	// rather than silently truncating or reading an unbounded response into
-	// memory.
-	body, err := io.ReadAll(io.LimitReader(resp.Body, maxFetchBytes+1))
+	// Cap the body (GO-CP-10): fail explicitly rather than silently truncating
+	// or reading an unbounded response into memory.
+	body, err := nethard.ReadCapped(resp.Body, "response from "+u)
 	if err != nil {
-		return nil, fmt.Errorf("wayback: read %s: %w", u, err)
-	}
-	if len(body) > maxFetchBytes {
-		return nil, fmt.Errorf("wayback: fetch %s: response exceeds %d-byte limit", u, maxFetchBytes)
+		return nil, fmt.Errorf("wayback: %w", err)
 	}
 	return body, nil
 }

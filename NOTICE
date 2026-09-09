@@ -16,6 +16,20 @@ assert copyright over their compiled record sets). Only official public-record
 sources (national safety investigation authorities, government bulk dumps)
 and open/CC0 datasets (Wikidata) are covered.
 
+The code in this repository is Apache-2.0. THE DOCUMENTS IT FETCHES ARE NOT.
+
+Every PDF, HTML page and dataset row these scrapers download remains the work
+of the authority that published it, under that authority's own terms. Nothing
+here grants a licence to redistribute a harvested report, and no harvested
+data is committed to this repository — the `.gitignore` keeps the databases
+and `pdfs/` directories out. Anyone republishing what these tools collect must
+check the terms of the source that published it.
+
+Specifically noted because it is easy to miss: Airbus permits reproduction of
+"Safety First" articles with attribution, and the control plane's manufacturer
+worker relies on that permission. The terms are recorded in
+`control-plane/README.md`.
+
 The `sources-go/aircrash` component fetches airport reference data
 (name/city/country/coordinates) from the OpenFlights `airports.dat` dataset
 (https://github.com/jpatokal/openflights), compiled from OurAirports

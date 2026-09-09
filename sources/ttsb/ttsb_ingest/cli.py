@@ -4,9 +4,8 @@ import os
 import ssl
 
 import certifi
-import httpx
 
-from . import db, ttsb
+from . import db, httpc, ttsb
 from .pipeline import discover, fetch, build
 
 
@@ -27,11 +26,13 @@ def _ssl_context():
 
 
 def _make_client(proxy=None, **_kw):
-    return httpx.Client(
-        timeout=180,
-        follow_redirects=True,
+    # The retry policy lives in httpc (vendored from _common/http.py):
+    # httpx's own retries= covers connect errors only, so a 502 or a read
+    # timeout used to raise on the first attempt and truncate a run.
+    return httpc.make_client(
         headers=ttsb.HEADERS,
-        proxy=proxy or None,
+        proxy=proxy,
+        timeout=180,
         verify=_ssl_context(),
     )
 

@@ -47,7 +47,7 @@ WAYBACK_BASE = "https://web.archive.org/web"
 CDX_BASE     = "https://web.archive.org/cdx/search/cdx"
 SOURCE_URL   = "https://www.aib.gov.sa/en-us/Pages/FinalReports.aspx"
 
-UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36 (+https://github.com/disclaimer8/aviation-safety-scrapers; aibsa-scraper/1.0)"
 
 # ---- KNOWN REPORTS (hardcoded — only 2 final reports in Wayback as of 2026-06-10) --------
 

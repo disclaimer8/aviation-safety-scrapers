@@ -36,7 +36,7 @@ LIVE_BASE = "https://bea.sn"
 OCR_LANG  = "fra"
 DELAY     = 2.0
 
-UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36  (+https://github.com/disclaimer8/aviation-safety-scrapers; beasn-scraper/1.0)"
       "(KHTML, like Gecko) Chrome/120 Safari/537.36")
 
 # ---------------------------------------------------------------------------

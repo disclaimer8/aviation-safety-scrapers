@@ -35,7 +35,7 @@ FLOOR = 80         # minimum chars to consider text usable
 HOME = os.path.expanduser("~/dgaccr-ingest")
 DB = os.path.join(HOME, "dgaccr.db")
 PDFDIR = os.path.join(HOME, "pdfs")
-UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36 (+https://github.com/disclaimer8/aviation-safety-scrapers; dgaccr-scraper/1.0)"
 
 # Keywords in filenames that identify investigation reports (case-insensitive)
 _ACCIDENT_KEYWORDS = [

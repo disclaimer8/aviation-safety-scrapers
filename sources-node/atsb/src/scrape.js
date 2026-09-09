@@ -74,6 +74,7 @@ function assertFirstPageNotEmpty(rows, pg, startPage) {
 // cleanly. On a display-less server run the whole process under Xvfb:
 // `xvfb-run -a node src/cli.js build`. Override with ATSB_HEADLESS=1 only if a
 // future egress (real display / stealth) is proven.
+const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
@@ -127,6 +128,11 @@ function createScraper({
       args: ['--disable-blink-features=AutomationControlled'],
     };
     if (proxy) launchOpts.proxy = { server: proxy };
+    // The profile holds live Akamai clearance cookies — a credential. Lock it
+    // to the owner before Chromium populates it; under os.tmpdir() it would
+    // otherwise be world-readable on a shared box.
+    fs.mkdirSync(userDataDir, { recursive: true, mode: 0o700 });
+    try { fs.chmodSync(userDataDir, 0o700); } catch { /* best effort */ }
     context = await chromium.launchPersistentContext(userDataDir, launchOpts);
     // Tear the headed Chromium down even on signal kill (systemd stop, reboot,
     // sibling OOM) — without this the browser orphans under Xvfb and piles up
@@ -202,6 +208,38 @@ function createScraper({
       if (onPage) onPage(pg, fresh.length, null);
       if (rows.length === 0) {
         assertFirstPageNotEmpty(rows, pg, startPage);
+        // An empty LATER page ended the walk unconditionally. assertNotChallengePage
+        // only fires when the response does not look like ATSB at all, so an
+        // Akamai interstitial that still carries the GovCMS shell passed as
+        // "past the last page" and silently truncated the back-catalogue.
+        //
+        // The end of a real listing is stable; a challenge is usually not. Ask
+        // once more, after a longer pause, before believing it — and if it is
+        // still empty, say so loudly enough to grep for.
+        await sleep(perRequestDelayMs * 4);
+        let confirm = [];
+        try {
+          confirm = await listPage(pg);
+        } catch (e) {
+          // A throw on the re-read means the page is not a genuine listing at
+          // all. That is a scrape failure, not the end of the data.
+          throw new Error(
+            `ATSB listing page ${pg} came back empty and the re-read failed ` +
+            `(${e.message}) — refusing to treat that as the end of the listing.`
+          );
+        }
+        if (confirm.length > 0) {
+          const fresh2 = confirm.filter(r => r.investigation_id && !seen.has(r.investigation_id));
+          for (const r of fresh2) seen.add(r.investigation_id);
+          all.push(...fresh2);
+          if (onPage) onPage(pg, fresh2.length, 'recovered after an empty read');
+          console.error(
+            `SILENT_FAIL_SUSPECT source=atsb page=${pg} first_read=0 second_read=${confirm.length} ` +
+            '— an empty page that was not actually empty; the walk continues.'
+          );
+          continue;
+        }
+        console.error(`atsb: page ${pg} empty on two reads — treating as the end of the listing.`);
         break; // past the last page
       }
     }

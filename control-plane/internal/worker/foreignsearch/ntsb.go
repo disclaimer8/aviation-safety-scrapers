@@ -69,14 +69,14 @@ type carolField struct {
 
 // carolQueryPayload is the POST body for Query/Main.
 type carolQueryPayload struct {
-	QueryGroups   []carolQueryGroup `json:"QueryGroups"`
-	TargetCollection string         `json:"TargetCollection"`
-	AndOr         string            `json:"AndOr"`
-	SortColumn    interface{}       `json:"SortColumn"`
-	SortDescending bool             `json:"SortDescending"`
-	SessionID     int               `json:"SessionId"`
-	ResultSetSize int               `json:"ResultSetSize"`
-	ResultSetOffset int             `json:"ResultSetOffset"`
+	QueryGroups      []carolQueryGroup `json:"QueryGroups"`
+	TargetCollection string            `json:"TargetCollection"`
+	AndOr            string            `json:"AndOr"`
+	SortColumn       interface{}       `json:"SortColumn"`
+	SortDescending   bool              `json:"SortDescending"`
+	SessionID        int               `json:"SessionId"`
+	ResultSetSize    int               `json:"ResultSetSize"`
+	ResultSetOffset  int               `json:"ResultSetOffset"`
 }
 
 type carolQueryGroup struct {

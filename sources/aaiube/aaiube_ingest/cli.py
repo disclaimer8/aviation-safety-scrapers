@@ -2,21 +2,19 @@
 import argparse
 import os
 
-import httpx
 
-from . import db, aaiube
+from . import db, httpc, aaiube
 from .pipeline import discover, fetch, build
 
 
 def _make_client(proxy=None, **_kw):
     # mobilit.belgium.be serves a complete TLS chain (verified 2026-06-04),
     # so the default certifi bundle works — no pinned intermediate needed.
-    return httpx.Client(
-        timeout=120,
-        follow_redirects=True,
-        headers=aaiube.HEADERS,
-        proxy=proxy or None,
-    )
+    #
+    # The retry policy lives in httpc (vendored from _common/http.py):
+    # httpx's own retries= covers connect errors only, so a 502 or a read
+    # timeout used to raise on the first attempt and truncate a run.
+    return httpc.make_client(headers=aaiube.HEADERS, proxy=proxy, timeout=120)
 
 
 def _build_argparser():

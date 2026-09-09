@@ -6,6 +6,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -49,6 +50,76 @@ func TestExtractOneSkipsNonAccident(t *testing.T) {
 	status, err := extractOne(ctx, db, WaybackSource{}, &fixtureOCRClient{Text: "INDEX"}, &fixtureLLMClient{Event: ExtractedEvent{IsAviationAccident: false}}, t.TempDir(), doc)
 	if err != nil {
 		t.Fatalf("ExtractOne: %v", err)
+	}
+	if status != "skipped" {
+		t.Fatalf("status=%q want skipped", status)
+	}
+}
+
+// An accident the model could not pin down must NOT land in 'skipped'.
+// 'skipped' is terminal: PendingDocs excludes it and reset-failed only resets
+// 'failed', so a real accident with an empty date was retired after one pass.
+func TestExtractOneAccidentWithoutCriticalFieldsFailsRatherThanSkips(t *testing.T) {
+	for _, tc := range []struct {
+		name  string
+		event ExtractedEvent
+		want  string
+	}{
+		{"no date", ExtractedEvent{IsAviationAccident: true, AircraftRegistration: "ET-AVJ"},
+			"no usable date"},
+		{"date precision unusable", ExtractedEvent{IsAviationAccident: true, Date: "2019",
+			DatePrecision: "year", AircraftType: "B738"}, "no usable date"},
+		{"no aircraft", ExtractedEvent{IsAviationAccident: true, Date: "2019-03-10",
+			DatePrecision: "exact"}, "no aircraft registration or type"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			ctx := context.Background()
+			db := newExtractTestDB(t)
+			docID, _ := seedDownloadedDoc(t, db, "KE", "k1")
+			writePDF(t, db, docID)
+			doc := loadDoc(t, db, docID)
+
+			status, err := extractOne(ctx, db, WaybackSource{},
+				&fixtureOCRClient{Text: "REPORT"}, &fixtureLLMClient{Event: tc.event},
+				t.TempDir(), doc)
+			if err != nil {
+				t.Fatalf("extractOne: %v", err)
+			}
+			if status != "failed" {
+				t.Fatalf("status=%q want failed — 'skipped' would retire the accident", status)
+			}
+
+			var dbStatus, dbErr string
+			var attempts int
+			db.QueryRowContext(ctx, `SELECT extraction_status, coalesce(extraction_error,''),
+			         extraction_attempts FROM staged_wayback_documents WHERE id=?`,
+				docID).Scan(&dbStatus, &dbErr, &attempts)
+			if dbStatus != "failed" {
+				t.Fatalf("extraction_status=%q want failed", dbStatus)
+			}
+			if attempts != 1 {
+				t.Fatalf("extraction_attempts=%d want 1 — the attempt budget must apply", attempts)
+			}
+			if !strings.Contains(dbErr, tc.want) {
+				t.Fatalf("extraction_error=%q want it to name %q", dbErr, tc.want)
+			}
+		})
+	}
+}
+
+// The mirror case: a document that is genuinely not an accident report stays
+// terminal. CDX hands us every PDF under a domain, so this is the common one.
+func TestExtractOneStillSkipsANonAccident(t *testing.T) {
+	ctx := context.Background()
+	db := newExtractTestDB(t)
+	docID, _ := seedDownloadedDoc(t, db, "KE", "k1")
+	writePDF(t, db, docID)
+	doc := loadDoc(t, db, docID)
+
+	status, err := extractOne(ctx, db, WaybackSource{}, &fixtureOCRClient{Text: "FORM"},
+		&fixtureLLMClient{Event: ExtractedEvent{IsAviationAccident: false}}, t.TempDir(), doc)
+	if err != nil {
+		t.Fatalf("extractOne: %v", err)
 	}
 	if status != "skipped" {
 		t.Fatalf("status=%q want skipped", status)

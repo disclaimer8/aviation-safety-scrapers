@@ -36,7 +36,7 @@ PDFDIR    = os.path.join(HOME, "pdfs")
 OCR_LANG  = "eng"
 
 # Firefox UA is required — Chrome/default UA returns 403 from Akamai WAF
-UA = "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0"
+UA = "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0 (+https://github.com/disclaimer8/aviation-safety-scrapers; usafaib-scraper/1.0)"
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS usafaib_reports (

@@ -2,22 +2,18 @@
 import argparse
 import os
 
-from . import jtsb, db
+from . import jtsb, db, httpc
 from .pipeline import discover, fetch, parse, build
 
 
 def _make_client(proxy=None):
-    import httpx
     from .jtsb import _UA
-    transport = None
-    if proxy:
-        transport = httpx.HTTPTransport(proxy=proxy)
-    return httpx.Client(
-        headers={"User-Agent": _UA},
-        follow_redirects=True,
-        timeout=60.0,
-        transport=transport,
-    )
+
+    # The retry policy lives in httpc (vendored from _common/http.py):
+    # httpx's own retries= covers connect errors only, so a 502 or a read
+    # timeout used to raise on the first attempt and truncate a run.
+    return httpc.make_client(headers={"User-Agent": _UA}, proxy=proxy,
+                             timeout=60.0)
 
 
 def main(argv=None):

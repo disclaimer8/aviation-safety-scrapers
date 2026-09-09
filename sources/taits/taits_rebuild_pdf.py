@@ -32,7 +32,18 @@ DB_PATH = os.path.join(INGEST_DIR, "taits.db")
 OCR_QUEUE = os.path.join(INGEST_DIR, "ocr_queue.json")
 LOG_PATH = os.path.join(INGEST_DIR, "ocr-backfill.log")
 
-# Import aaid ocr_extract (reuse proven remote OCR implementation)
+# ⚠️ HOST-ONLY SCRIPT — it does not run from a checkout of this repository.
+#
+# Both imports below resolve against deployed directories on the ingest box,
+# not against anything in sources/taits:
+#   * aaid_ingest lives in ~/aaid-ingest, and there is no sources/aaid here
+#     at all — this reaches into ANOTHER source's deployment for its OCR
+#     helper (the shared implementation now lives in _common/pdf.py).
+#   * taits_ingest lives in ~/taits-ingest; the repository ships only the two
+#     top-level scripts.
+# Kept because it is a working operator tool on that host. Anyone converting
+# taits to the four-verb package shape should fold this in and drop the
+# cross-source import.
 sys.path.insert(0, os.path.expanduser("~/aaid-ingest"))
 from aaid_ingest.pdf import ocr_extract
 

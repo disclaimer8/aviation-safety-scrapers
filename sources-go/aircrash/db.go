@@ -12,14 +12,14 @@ import (
 
 // Accident represents a single aviation accident record.
 type Accident struct {
-	ID             int    `json:"id"`
-	NormalizedDate string `json:"-"`
-	Date           string `json:"date"`
-	AircraftModel  string `json:"aircraft_model"`
-	Operator       string `json:"operator"`
-	Fatalities     string `json:"fatalities"`
-	Location       string `json:"location"`
-	SourceURL      string `json:"source_url"` // can be comma-separated now
+	ID             int     `json:"id"`
+	NormalizedDate string  `json:"-"`
+	Date           string  `json:"date"`
+	AircraftModel  string  `json:"aircraft_model"`
+	Operator       string  `json:"operator"`
+	Fatalities     string  `json:"fatalities"`
+	Location       string  `json:"location"`
+	SourceURL      string  `json:"source_url"` // can be comma-separated now
 	Lat            float64 `json:"lat"`
 	Lon            float64 `json:"lon"`
 }
@@ -68,7 +68,8 @@ func InitDB(filepath string) (*sql.DB, error) {
 		location TEXT,
 		source_url TEXT,
 		lat REAL,
-		lon REAL
+		lon REAL,
+		geocode_attempts INTEGER NOT NULL DEFAULT 0
 	);`
 
 	_, err = db.Exec(createTableQuery)
@@ -79,6 +80,13 @@ func InitDB(filepath string) (*sql.DB, error) {
 	// Try to alter table if it already exists from previous versions
 	db.Exec(`ALTER TABLE accidents ADD COLUMN lat REAL;`)
 	db.Exec(`ALTER TABLE accidents ADD COLUMN lon REAL;`)
+	// geocode_attempts replaces the lat=lon=0.000001 sentinel that used to mark
+	// "geocoding failed, stop retrying". That sentinel is a real point near
+	// null island, and every consumer had to know to filter it.
+	db.Exec(`ALTER TABLE accidents ADD COLUMN geocode_attempts INTEGER NOT NULL DEFAULT 0;`)
+	// Retire the sentinel from any DB written by an earlier build.
+	db.Exec(`UPDATE accidents SET lat = NULL, lon = NULL, geocode_attempts = 3
+	          WHERE lat = 0.000001 AND lon = 0.000001;`)
 
 	// Create Indexes for performance
 	indexes := []string{
@@ -217,7 +225,15 @@ func insertNew(db *sql.DB, accident Accident) error {
 
 // GetAccidents retrieves accidents with pagination for the API.
 func GetAccidents(db *sql.DB, limit, offset int) ([]Accident, error) {
-	query := `SELECT id, date, aircraft_model, operator, fatalities, location, source_url, COALESCE(lat, 0), COALESCE(lon, 0) FROM accidents ORDER BY normalized_date DESC, id DESC LIMIT ? OFFSET ?`
+	// Every text column is COALESCEd, like lat/lon already were. Scanning a
+	// NULL into a string fails, and the loop below used to log-and-continue on
+	// that — so one row with a NULL operator silently vanished from the API
+	// response, and the caller saw a short page rather than an error.
+	query := `SELECT id, COALESCE(date,''), COALESCE(aircraft_model,''),
+	                 COALESCE(operator,''), COALESCE(fatalities,''),
+	                 COALESCE(location,''), COALESCE(source_url,''),
+	                 COALESCE(lat, 0), COALESCE(lon, 0)
+	            FROM accidents ORDER BY normalized_date DESC, id DESC LIMIT ? OFFSET ?`
 	rows, err := db.Query(query, limit, offset)
 	if err != nil {
 		return nil, err
@@ -228,19 +244,23 @@ func GetAccidents(db *sql.DB, limit, offset int) ([]Accident, error) {
 	for rows.Next() {
 		var a Accident
 		if err := rows.Scan(&a.ID, &a.Date, &a.AircraftModel, &a.Operator, &a.Fatalities, &a.Location, &a.SourceURL, &a.Lat, &a.Lon); err != nil {
-			log.Println("Error scanning row:", err)
-			continue
+			return nil, fmt.Errorf("scan accident row: %w", err)
 		}
 		accidents = append(accidents, a)
+	}
+	// rows.Err() was never checked: an error part-way through iteration ended
+	// the loop and returned a truncated page as a successful one.
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("iterate accidents: %w", err)
 	}
 	return accidents, nil
 }
 
 // StatResult represents an analytical row.
 type StatResult struct {
-	Name        string `json:"name"`
-	Count       int    `json:"count"`
-	Fatalities  int    `json:"fatalities"`
+	Name       string `json:"name"`
+	Count      int    `json:"count"`
+	Fatalities int    `json:"fatalities"`
 }
 
 // GetAircraftStats calculates top aircrafts by accident count.

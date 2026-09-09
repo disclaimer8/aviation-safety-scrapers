@@ -38,7 +38,7 @@ COUNTRY = "MK"
 HOME = os.path.expanduser("~/kinsiv-ingest")
 DB = os.path.join(HOME, "kinsiv.db")
 PDFDIR = os.path.join(HOME, "pdfs")
-UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36 (+https://github.com/disclaimer8/aviation-safety-scrapers; kinsiv-scraper/1.0)"
 
 DELAY = 3.0
 NARRATIVE_FLOOR = 300  # minimum chars

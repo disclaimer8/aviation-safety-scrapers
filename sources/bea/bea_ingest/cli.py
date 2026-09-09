@@ -1,18 +1,17 @@
 # bea_ingest/cli.py
 import argparse
 
-import httpx
 
-from . import db
+from . import db, httpc
 from .pipeline import discover, refetch, fetch, parse, build
 
 
-def _make_client():
-    return httpx.Client(
-        timeout=60,
-        follow_redirects=True,
-        headers={"User-Agent": "bea-ingest/1.0"},
-    )
+def _make_client(proxy=None, **_kw):
+    # The retry policy lives in httpc (vendored from _common/http.py):
+    # httpx's own retries= covers connect errors only, so a 502 or a read
+    # timeout used to raise on the first attempt and truncate a run.
+    return httpc.make_client(headers={"User-Agent": "bea-ingest/1.0"},
+                             proxy=proxy, timeout=60)
 
 
 def main(argv=None):

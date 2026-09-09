@@ -42,7 +42,18 @@ def discover(conn, browser, full=False, max_pages=None):
     html = browser.get_listing_html(1)
     lp = max_pages or cenipa.last_page(html)
 
+    # CENIPA publishes thousands of reports, so zero rows on page 1 never means
+    # "no reports". It means the listing markup changed — which stop-on-empty
+    # inside the walk would report as a clean, empty run. Checked here rather
+    # than in the loop because the per-page catch-all below would swallow it.
+    if not cenipa.parse_listing(html):
+        raise RuntimeError(
+            "[cenipa discover] page 1 yielded 0 rows — listing markup has "
+            "changed (parse_listing no longer matches)"
+        )
+
     inserted = 0
+    failures = []
     for n in range(1, lp + 1):
         try:
             if n > 1:
@@ -50,12 +61,17 @@ def discover(conn, browser, full=False, max_pages=None):
                     html = browser.get_listing_html(n)
                     time.sleep(cenipa.DELAY)
                 except Exception as exc:
+                    # Skip this page but remember it: a fetch error is not the
+                    # end of the listing, and a run that swallows it reports a
+                    # truncated crawl as a successful one.
                     print(f"[cenipa discover] page {n}: fetch error {exc}", file=sys.stderr)
+                    failures.append(f"page {n}: {exc}")
                     continue
 
             rows = cenipa.parse_listing(html)
             if not rows:
-                # Past the last real page — stop early
+                # Past the last real page — stop early. (Page 1 is guarded
+                # before the loop, where the catch-all cannot swallow it.)
                 break
 
             for row in rows:
@@ -132,7 +148,13 @@ def discover(conn, browser, full=False, max_pages=None):
 
         except Exception as exc:
             print(f"[cenipa discover] page {n}: unexpected {exc}", file=sys.stderr)
+            failures.append(f"page {n}: {exc}")
 
+    if failures:
+        raise RuntimeError(
+            f"[cenipa discover] {len(failures)} listing page(s) failed "
+            f"({'; '.join(failures)}) — walk incomplete at {inserted} new rows"
+        )
     return inserted
 
 

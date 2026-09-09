@@ -2,21 +2,15 @@
 import argparse
 import os
 
-from . import ciaape, db
+from . import ciaape, db, httpc
 from .pipeline import discover, fetch, parse, build
 
 
 def _make_client(proxy=None):
-    import httpx
-    transport = None
-    if proxy:
-        transport = httpx.HTTPTransport(proxy=proxy)
-    return httpx.Client(
-        headers=ciaape.HEADERS,
-        follow_redirects=True,
-        timeout=ciaape.TIMEOUT,
-        transport=transport,
-    )
+    # The retry policy lives in httpc (vendored from _common/http.py):
+    # httpx's own retries= covers connect errors only, so a 502 or a read
+    # timeout used to raise on the first attempt and truncate a run.
+    return httpc.make_client(headers=ciaape.HEADERS, proxy=proxy, timeout=ciaape.TIMEOUT)
 
 
 def main(argv=None):
