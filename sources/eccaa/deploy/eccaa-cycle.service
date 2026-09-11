@@ -1,0 +1,14 @@
+# /etc/systemd/system/eccaa-cycle.service
+[Unit]
+Description=ECCAA (Eastern Caribbean CAA) ingest cycle (weekly; discover->fetch->parse->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/eccaa
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/eccaa/eccaa-cycle.log
+StandardError=append:/opt/eccaa/eccaa-cycle.log
+TimeoutStartSec=10800

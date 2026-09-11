@@ -1,0 +1,10 @@
+# /etc/systemd/system/aaid-cycle.timer
+[Unit]
+Description=Weekly AAID (Kenya) ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 02:00:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

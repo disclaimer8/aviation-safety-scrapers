@@ -1,0 +1,13 @@
+[Unit]
+Description=dgcakw ingest cycle (discover->fetch->parse->build->sync)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/dgcakw
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/dgcakw/dgcakw-cycle.log
+StandardError=append:/opt/dgcakw/dgcakw-cycle.log
+TimeoutStartSec=10800

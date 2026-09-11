@@ -42,6 +42,22 @@ import html as _html
 import re
 from pathlib import Path
 
+# NOT PROMOTED TO sources/ — robots.txt forbids it.
+#
+# https://ops.mot.go.th/robots.txt is, in full:
+#     User-agent: *
+#     Disallow: /
+# A blanket ban on the whole host for every agent. Checked 2026-09-11.
+#
+# This package is deployed and running, so it is crawling a site that has
+# said no. sources/ enforces Disallow (the single exemption, bfu, is
+# documented and slated for removal), so promoting this one would mean
+# either violating that policy or adding a second exemption. Neither was
+# mine to choose, so it stays here, unpromoted, with the reason recorded.
+#
+# Routes forward, none of them code: ask ICAO/the Thai AAIC for the reports
+# directly, or ask the site operator whether the ban is intended — a blanket
+# Disallow on a public register is often a default nobody revisited.
 BASE = "https://ops.mot.go.th"
 MOTDRIVE = "https://motdrive.mot.go.th"
 DELAY = 2.0

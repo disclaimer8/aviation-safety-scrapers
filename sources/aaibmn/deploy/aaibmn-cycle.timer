@@ -1,0 +1,10 @@
+# /etc/systemd/system/aaibmn-cycle.timer
+[Unit]
+Description=Weekly Mongolia AAIB ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 15:45:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target
