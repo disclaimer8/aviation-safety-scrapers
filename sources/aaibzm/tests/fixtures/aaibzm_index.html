@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Aircraft Accidents Investigation Board</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="aaib zambia, aircraft, accident, investigation, board, aaib, aircrash, serious, incident, aviation, aerodrome, airstrip, airport, flight, zambia, aircraft accident investigation board of zambia" name="keywords">
+    <meta content="Aircraft Accident Investigation Board of Zambia" name="description">
+
+    <!-- Favicon -->
+    <link href="images/aaib-favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,400,300,500,600,700" rel="stylesheet"> 
+
+    <!-- Icon Font Stylesheet -->
+    <link type="text/css" rel="stylesheet" href="fontawesome/css/all.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+    
+</head>
+
+<body>
+
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+    <!-- Spinner End -->
+
+
+    <!-- Topbar Start -->
+    <div id="home" class="container-fluid top-bar text-light p-0 d-none d-xl-block">
+        <div class="row gx-0 d-none d-lg-flex">
+            <div class="col-lg-7 px-5 text-start">
+                <div class="h-100 d-inline-flex align-items-center me-4">
+                    <small class="fa-solid fa-location-pin text-primary me-2"></small>
+                    <small>KK Int'l Airport, Lusaka, Zambia</small>
+                </div>
+                <div class="h-100 d-inline-flex align-items-center">
+                    <small class="fa-solid fa-clock text-primary me-2"></small>                    
+                    <small>Mon - Fri : 08:30 AM - 17:00 PM</small>
+                </div>
+            </div>
+            <div class="col-lg-5 px-5 text-end">
+                <div class="h-100 d-inline-flex align-items-center me-4">
+                    <small class="fa-solid fa-mobile-screen text-primary me-2"></small>                    
+                    <small>(+260) 211-225-623</small>
+                </div>
+                <div class="h-100 d-inline-flex align-items-center mx-n2">
+                    <a class="btn btn-square btn-link rounded-0 border-0 border-end border-secondary" href=""><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-square btn-link rounded-0 border-0 border-end border-secondary" href=""><i class="fab fa-twitter"></i></a>
+                    <a class="btn btn-square btn-link rounded-0 border-0 border-end border-secondary" href=""><i class="fab fa-linkedin-in"></i></a>
+                    <a class="btn btn-square btn-link rounded-0" href=""><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+    <!-- Navbar Start -->
+    <nav id="nav-bar" class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+        <a href="#" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+            <img src="images/aaib.jpg" alt="" width="40" height="38" class="d-inline-block align-text-top img-fluid">
+            <span class="mx-2 d-none d-xl-block" style="font-weight: 400;">Aircraft Accidents Investigation Board</span>
+            <span class="mx-2 d-block d-xl-none" style="font-weight: 400;">AAIB</span>
+        </a>
+        
+        <!--<button type="button" class="navbar-toggler d-none" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse d-none" id="navbarCollapse">-->
+              
+        <div class="collapse navbar-collapse d-none d-lg-block" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <a href="#" class="nav-item nav-link active">Home</a>
+                <a href="pages/about.php" class="nav-item nav-link">About</a>                 
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Accidents & Incidents</a>
+                    <ul class="dropdown-menu fade-down m-0">
+                        <li><h6 class="dropdown-header">Accidents</h6></li>
+                        <li><a class="dropdown-item" href="pages/9J-GRO.php">Cessna 172 M, 9J-GRO</a></li>
+                        <li><a class="dropdown-item" href="pages/9J-KMN.php">Beech Baron 55, 9J-KMN</a></li>
+                        <li><a class="dropdown-item" href="pages/9J-RHE.php">Cessna U206, 9J-RHE</a></li>                            
+                        <li><a class="dropdown-item" href="pages/9J-PZB.php">Bombardier DHC-8-311, 9J-PZB</a></li>
+                        <li><a class="dropdown-item" href="pages/9J-RDN.php">Piper PA-32-300, 9J-RDN</a></li>
+                        <li><a class="dropdown-item" href="pages/9J-YVT.php">Neo Microlight, 9J-YVT</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header">Serious Incidents</h6></li>
+                        <li><a class="dropdown-item" href="pages/9S-GAP.php">Shorts 360, 9S-GAP</a></li>                                                  
+                    </ul>
+                </div> 
+                <a href="pages/terminology.php" class="nav-item nav-link">Terminology</a>                                   
+                <a href="pages/contact.php" class="nav-item nav-link">Contact</a>
+            </div>
+            <a href="pages/downloads.php" class="btn btn-primary py-4 px-lg-5">Downloads<i class="fa-solid fa-download ms-2"></i></i></a>
+        </div>
+
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Offcanvas side menu -->
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+            <div class="offcanvas-header">
+                <img src="images/aaib.jpg" alt="" width="40" height="38" class="ms-2 d-inline-block align-text-top img-fluid">
+                <h5 class="offcanvas-title ms-3 text-muted" id="offcanvasExampleLabel">AAIB</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-start" id="menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link text-truncate home">
+                            <i class="fs-5 bi-house"></i><span class="ms-2">Home</span>
+                        </a>
+                    </li>                    
+                    <li>
+                        <a href="pages/about.php" class="nav-link text-truncate">
+                            <i class="fs-5 bi bi-people"></i><span class="ms-2">About Us</span></a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="nav-link dropdown-toggle  text-truncate" id="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fs-5 bi bi-file-earmark-text"></i><span class="ms-2">Accidents & Incidents</span>
+                        </a>
+                        <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdown">
+                            <li><h6 class="dropdown-header">Accidents</h6></li>
+                            <li><a class="dropdown-item" href="pages/9J-GRO.php">Cessna 172 M, 9J-GRO</a></li>
+                            <li><a class="dropdown-item" href="pages/9J-KMN.php">Beech Baron 55, 9J-KMN</a></li>
+                            <li><a class="dropdown-item" href="pages/9J-RHE.php">Cessna U206, 9J-RHE</a></li>                            
+                            <li><a class="dropdown-item" href="pages/9J-PZB.php">Bombardier DHC-8-311, 9J-PZB</a></li>
+                            <li><a class="dropdown-item" href="pages/9J-RDN.php">Piper PA-32-300, 9J-RDN</a></li>
+                            <li><a class="dropdown-item" href="pages/9J-YVT.php">Neo Microlight, 9J-YVT</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Serious Incidents</h6></li>
+                            <li><a class="dropdown-item" href="pages/9S-GAP.php">Shorts 360, 9S-GAP</a></li>                           
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="pages/terminology.php" class="nav-link text-truncate">
+                            <i class="fs-5 bi-file-earmark-font"></i><span class="ms-2">Terminology</span></a>
+                    </li>
+                    <li>
+                        <a href="pages/downloads.php" class="nav-link text-truncate">
+                            <i class="fs-5 bi bi-download"></i><span class="ms-2">Downloads</span> </a>
+                    </li>
+                    <li>
+                        <a href="pages/contact.php" class="nav-link text-truncate">
+                            <i class="fs-5 bi bi-envelope"></i><span class="ms-2">Contact Us</span> </a>
+                    </li>
+                </ul>				
+            </div>
+        </div>  
+        <!--// Offcanvas side menu -->       
+    </nav>
+    <!-- Navbar End -->
+
+    <!-- Carousel Start -->
+    <div class="container-fluid p-0 mb-5">
+        <div class="owl-carousel header-carousel position-relative">
+            <div class="owl-carousel-item position-relative">
+                <img class="img-fluid" src="images/aaib1.jpg" alt="">               
+            </div>
+            <div class="owl-carousel-item position-relative">
+                <img class="img-fluid" src="images/aaib2.jpg" alt="">                
+            </div>
+            <div class="owl-carousel-item position-relative">
+                <img class="img-fluid" src="images/aaib3.jpg" alt="">                 
+            </div>
+        </div>
+    </div>
+    <!-- Carousel End -->
+    
+    <!-- Facts Start -->
+    <div class="container-fluid facts py-0 pt-lg-0">
+        <div class="container py-0 pt-lg-0">
+            <div class="row gx-0">               
+                <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="bg-white shadow d-flex align-items-center h-100 p-4" style="min-height: 150px;">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0 btn-lg-square bg-primary">
+                                <i class="fa-solid fa-sitemap text-white"></i>                                
+                            </div>
+                            <div class="ps-4">
+                                <h5>Legal Framework</h5>
+                                <span>We abide by standards and recommended practice for aircraft accidents and incidents.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="bg-white shadow d-flex align-items-center h-100 p-4" style="min-height: 150px;">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0 btn-lg-square bg-primary">
+                                <i class="fa-solid fa-file-lines text-white"></i>                        
+                            </div>
+                            <div class="ps-4">
+                                <h5>Regulations & Manuals</h5>
+                                <span>We draw our regulations as per ICAO standards and recommended practice.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="bg-white shadow d-flex align-items-center h-100 p-4" style="min-height: 150px;">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0 btn-lg-square bg-primary">
+                                <i class="fa-solid fa-people-group text-white"></i>
+                            </div>
+                            <div class="ps-4">
+                                <h5>Accident Reporting</h5>
+                                <span>We maintain a 24-hour-a-day Duty Officer to receive notifications of accidents and incidents..</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Facts End -->
+
+     <!-- About Start -->
+     <div id="about" class="container-xxl about py-6" style="margin-top: 100px;">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="position-relative overflow-hidden ps-5 pt-5 h-100" style="min-height: 400px;">
+                        <img class="position-absolute w-100 h-100 img-fluid" src="images/aaib4.jpg" alt="" style="object-fit: cover;">
+                        <img class="position-absolute top-0 start-0 bg-white pe-3 pb-3 img-fluid" src="images/aaib6.jpg" alt="" style="width: 200px; height: 200px;">
+                    </div>
+                </div>
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="h-100">
+                        <h5 class="text-primary mb-2">Our Mandate</h5>
+                        <h1 class="display-6 mb-4">We're mandated to investigate aircraft incidents and accidents.</h1>
+                        <p>
+                            The Aircraft Accident Investigation Board (AAIB) was established by Act No. 5 of 2016 
+                            as a Corporate Body, mandated to independently investigate civil aircraft accidents and 
+                            serious aircraft incidents in compliance with Annex 13 to the convention on International 
+                            Civil Aviation (Chicago Convention). 
+                        </p>
+                        <p>
+                            The Aircraft Accident Investigation Board draws its regulations as per ICAO standards and recommended 
+                            practice. These regulations are useful when answering the International Civil Aviation Organisation 
+                            (ICAO) Universal Safety Oversight Program Protocol questions. 
+                        </p>                                            
+                        <div class="row g-4">
+                            <div class="col-sm-6">
+                                <a href="pages/about.php" class="btn btn-primary btn-sm py-3 px-5" href="">Read More</a>
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- About End -->
+
+    <!-- Features Start-->
+    <div id="accidents" class="container-xxl py-6" style="margin-top: 80px;">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-12 col-xl-9 wow fadeInUp" data-wow-delay="0.1s">
+                    <h5 class="text-primary mb-2">Accidents & Incidents</h5>
+                    <h1 class="display-6 mb-4">Recent Investigations <br /> and Reports.</h1>
+                    <div class="list-group list-group-flush">
+					
+						<!-- 9J-RDN --> 
+                        <a href="pages/9J-RDN.php" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between align-list-group-items">
+                                <i class="bi bi-journals"></i>                           
+                                <div class="ms-3">                                
+                                    <h6 class="mb-1 fw-medium">Accident involving a Piper PA-32-300 Cherokee Six Aircraft Registration: 9J-RDN, 652m from Mulobezi airstrip runway 03 in Western Province on 27<sup>th</sup> February 2022</h6>
+                                    <p class="mb-1">
+                                        The aircraft involved in the accident was a Piper PA-32-300 cherokee six, with the National Registration Marks 9J-RDN, Manufacturer’s Serial Number 
+                                        32-40030, belonging to Taurus Aviation.
+                                    </p>
+                                    <small>Final Report</small> 
+                                </div>
+                            </div>                           
+                        </a>    
+                        <!--// 9J-RDN --> 
+						
+						<!-- 9J-PZB -->
+                        <a href="pages/9J-PZB.php" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between align-list-group-items">
+                                <i class="bi bi-journals"></i>                           
+                                <div class="ms-3">                                
+                                    <h6 class="mb-1 fw-medium">Accident involving a Bombardier DHC-8-311 Aircraft Registration: 9J-PZB, at Nampundwe area airspace, Central Province, on 25<sup>th</sup> November 2021</h6>
+                                    <p class="mb-1">
+                                        The aircraft involved was a Bombardier DHC-8-311, National Registration Marks 9J-PZB, Manufacturer’s Serial Number 405, 
+                                        belonging to Proflight Commuter Services Limited. 
+                                    </p>
+                                    <small>Final Report</small> 
+                                </div>
+                            </div>                           
+                        </a> 
+                        <!--// 9J-PZB --> 
+						
+                        <!-- 9J-GRO -->
+                        <a href="pages/9J-GRO.php" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between align-list-group-items">
+                                <i class="bi bi-journals"></i>                          
+                                <div class="ms-3">                                
+                                    <h6 class="mb-1 fw-medium">Accident involving Cessna 172 M Registration: 9J-GRO, at Masebe airstrip in Central Province, on 7<sup>th</sup> September 2021</h6>
+                                    <p class="mb-1">
+                                        The aircraft involved was a Cessna 172 M, National Registration Marks 9J-GRO, Manufacturer’s Serial Number 172-66548, 
+                                        belonging to Niner Julliet Logistics. 
+                                    </p>
+                                    <small>Final Report</small> 
+                                </div>
+                            </div>
+                        </a>
+                        <!--// 9J-GRO -->
+						
+						<!-- Shorts 360 -->
+                        <a href="pages/9S-GAP.php" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between align-list-group-items">
+                                <i class="bi bi-journals"></i>                           
+                                <div class="ms-3">                                
+                                    <h6 class="mb-1 fw-medium">Serious Incident involving a Shorts 360 Aircraft Registration: 9S-GAP, at Peter Zuze Military Airport in Ndola, Copperbelt Province on 10<sup>th</sup> January 2020</h6>
+                                    <p class="mb-1">
+                                        The aircraft involved was a Shorts 360, National Registration Marks 9S-GAP, Manufacturer’s Serial Number SH3612, 
+                                        belonging to Malu Aviation of the Democratic Republic of Congo (DRC).
+                                    </p>
+                                    <small>Final Report</small> 
+                                </div>
+                            </div>                           
+                        </a>   
+                        <!--// Shorts 360 -->                         
+						
+						<!-- 9J-YVT -->       
+                        <a href="pages/9J-YVT.php" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between align-list-group-items">
+                                <i class="bi bi-journals"></i>                           
+                                <div class="ms-3">                                
+                                    <h6 class="mb-1 fw-medium">Accident involving a Neo Tanarg Microlight Registration: 9J-YVT, at Maramba Aerodrome in Southern Province, on 10<sup>th</sup> January 2020</h6>
+                                    <p class="mb-1">
+                                        The aircraft involved was a Tanarg Neo Microlight, National Registration Marks 9J-YVT, Manufacturer’s Serial Number T19028, belonging to
+                                        Batoka Sky Limited.
+                                    </p>
+                                    <small>Final Report</small> 
+                                </div>
+                            </div>                           
+                        </a>     
+                        <!--// 9J-YVT --> 
+
+                        <!-- 9J-KMNO -->
+                        <a href="pages/9J-KMN.php" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between align-list-group-items">
+                                <i class="bi bi-journals"></i>                           
+                                <div class="ms-3">                                
+                                    <h6 class="mb-1 fw-medium">Accident involving Beech Baron 55 Registration: 9J-KMN at Chunga airstrip in Central Province, on 10<sup>th</sup> November 2019</h6>
+                                    <p class="mb-1">
+                                        The aircraft involved was a Beechcraft Baron 55, National Registration Marks 9J-KMN, Manufacturer’s Serial Number TH-153, 
+                                        belonging to Staravia Air Charters.
+                                    </p>
+                                    <small>Final Report</small> 
+                                </div>
+                            </div>                            
+                        </a>
+                        <!--// 9J-KMNO -->
+
+                        <!-- 9J-RHE -->
+                        <a href="pages/9J-RHE.php" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between align-list-group-items">   
+                                <i class="bi bi-journals"></i>                           
+                                <div class="ms-3">                                
+                                    <h6 class="mb-1 fw-medium">Accident involving Cessna U206 Registration: 9J-RHE, at Shiwangandu airstrip in Muchinga Province on 3<sup>rd</sup> September 2019</h6>
+                                    <p class="mb-1">
+                                        The aircraft involved was a Cessna U206, National Registration Marks 9J-RHE, Manufacturer’s Serial Number 
+                                        U206-1033, belonging to Skytrails Limited.
+                                    </p>
+                                    <small>Final Report</small> 
+                                </div>
+                            </div>                            
+                        </a>
+                        <!--// 9J-RHE -->
+                                    
+                    </div>                    
+                </div>
+                <div class="col-lg-12 col-xl-3 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="row">
+                        <div class="col-md-12 mb-5">
+                            <div class="card">
+                                <a href="https://www.easa.europa.eu/" target="_blank">
+                                    <img src="images/easa.png" class="card-img-top" title="European Union Aviation Safety Agency">
+                                </a>                                                                
+                                <div class="card-body">
+                                    <h5 class="card-title">Support Areas</h5>
+                                    <p class="card-text">
+                                        The Aircraft Accident Investigation Board (AAIB) held a number of consultative meetings with the 
+                                        European Union Aviation Safety Agency (EASA).
+                                    </p>
+                                    <p class="card-text">
+                                        Thee purpose of these meetings has been to assist the Aircraft Accident Investigation Board
+                                        in developing a practical accident investigations manual tailored to our operating 
+                                        environment. The European Union Aviation Safety Agency (EASA) has also helped in identifying support 
+                                        areas in terms of capacity building, the drafting of MOU's and all the protocol questions of the International Civil Aviation Organization 
+                                        (ICAO).
+                                    </p>                            
+                                </div>                               
+                            </div>         
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="row">
+                                <div class="col-12">
+                                    <figure class="figure">
+                                        <img src="images/CE.jpg" class="img-fluid rounded" alt="">
+                                        <figcaption class="figure-caption text-center pt-3">AAIB Accident Investigations Manual Development Process</figcaption>
+                                    </figure>
+                                </div>
+                            </div>                            
+                        </div>                       
+                    </div>                       
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Features End -->
+    
+    <!-- Footer Start -->
+    <div class="container-fluid text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-4">
+            <div class="row g-5">
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white mb-3">About AAIB</h5>
+                    <a class="btn btn-link" href="index.php#home">Home</a>                   
+                    <a class="btn btn-link" href="pages/about.php">About Us</a>
+                    <a class="btn btn-link" href="#accidents">Accidents & Incidents</a>
+                    <a class="btn btn-link" href="pages/terminology.php">Terminology</a>
+                    <a class="btn btn-link" href="pages/downloads.php">Downloads </a>            
+                    <a class="btn btn-link" href="pages/contact.php">Contact Us</a>                    
+                </div>
+                <div class="col-lg-5 col-md-6">
+                    <h5 class="text-white mb-3">Quick External Links</h5>
+                    <a class="btn btn-link" href="http://www.caa.co.zm/" target="_blank">Civil Aviation Authority </a>           
+                    <a class="btn btn-link" href="https://www.motl.gov.zm/" target="_blank">Ministry of Transport and Logistics </a>                    
+                    <a class="btn btn-link" href="https://www.ntsb.gov/Pages/home.aspx" target="_blank">National Transportation Safety Board </a>
+                    <a class="btn btn-link" href="https://www.icao.int/Pages/default.aspx" target="_blank">International Civil Aviation Organization  </a>
+                    <a class="btn btn-link" href="https://www.easa.europa.eu/" target="_blank">European Union Aviation Safety Agency </a>                        
+                    <a class="btn btn-link" href="https://www.bfu-web.de/EN/Home/homepage_node.html" target="_blank">German Federal Bureau of Aircraft Accident Investigation </a>                    
+                </div>                                           
+                <div class="col-lg-4 col-md-12">
+                    <h5 class="text-white mb-3">Report an Accident or Incident</h5>                                     
+                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>(+260) 211-225-623</p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@aaib.org.zm</p>
+                    <p class="mb-2"><i class="fa-solid fa-globe me-3"></i>www.aaib.org.zm</p>                    
+                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>KK International Airport, Lusaka, Zambia</p>
+                    <div class="d-flex pt-2">
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="copyright">
+                <div class="row">
+                    <div class="col-md-12 col-lg-6 text-center text-md-center text-lg-start mb-3 mb-md-0">
+                        <!--Design by <a href="https://www.zasti.ac.zm/" target="_blank">Zambia Air Services Training Institute</a><br>
+                        Hosting by <a href="https://zamren.zm/" target="_blank">Zambia Research and Education Network</a>                     
+                        <br />-->
+                        Copyright &copy; 2022. <a href="#">Aircraft Accidents Investigation Board</a>. All Right Reserved.
+                    </div>
+                    <div class="col-md-12 col-lg-6 text-center text-md-center text-lg-end">
+                        <div class="footer-menu">
+                            <a href="#home">Home</a>                                                    
+                            <a href="pages/about.php">About</a>
+                            <a href="#accidents">Accidents & Incidents</a>  
+                            <a href="pages/terminology.php">Terminology</a>
+                            <a href="pages/contact.php">Contact</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="lib/wow/wow.min.js"></script>
+    <script type="text/javascript" src="lib/easing/easing.min.js"></script>
+    <script type="text/javascript" src="lib/waypoints/waypoints.min.js"></script>
+    <script type="text/javascript" src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- custom Javascript -->
+    <script src="js/main.js"></script>
+</body>
+
+</html>
