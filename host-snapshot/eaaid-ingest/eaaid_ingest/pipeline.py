@@ -17,6 +17,7 @@ Stages:
 """
 import os
 import re
+import shlex
 import subprocess
 import sys
 import time
@@ -39,8 +40,8 @@ def _acquire_cookie(timeout=60):
     result = subprocess.run(
         ["ssh", HETZNER_HOST,
          f"curl -s --max-time {timeout} -c /tmp/eaaid_cookies.txt -b /tmp/eaaid_cookies.txt "
-         f"-A '{eaaid.UA}' -o /dev/null -w '%{{http_code}}' "
-         f"'{eaaid.LISTING_URL}'"],
+         f"-A {shlex.quote(eaaid.UA)} -o /dev/null -w '%{{http_code}}' "
+         f"{shlex.quote(eaaid.LISTING_URL)}"],
         capture_output=True, timeout=timeout + 10,
     )
     code = result.stdout.decode().strip()
@@ -73,9 +74,9 @@ def discover(conn):
     # Fetch listing HTML
     result = subprocess.run(
         ["ssh", HETZNER_HOST,
-         f"curl -s --max-time 90 -b '{cookie}' "
-         f"-A '{eaaid.UA}' "
-         f"'{eaaid.LISTING_URL}'"],
+         f"curl -s --max-time 90 -b {shlex.quote(cookie)} "
+         f"-A {shlex.quote(eaaid.UA)} "
+         f"{shlex.quote(eaaid.LISTING_URL)}"],
         capture_output=True, timeout=120,
     )
     html = result.stdout.decode("utf-8", "replace")
@@ -151,7 +152,7 @@ def fetch(conn, pdf_dir):
     # Acquire a fresh cookie
     _hetzner_run(
         [f"curl -s --max-time 90 -c /tmp/eaaid_cookies.txt -b /tmp/eaaid_cookies.txt "
-         f"-A '{eaaid.UA}' -o /dev/null '{eaaid.LISTING_URL}'"],
+         f"-A {shlex.quote(eaaid.UA)} -o /dev/null {shlex.quote(eaaid.LISTING_URL)}"],
         capture_output=True, timeout=120,
     )
 
@@ -160,6 +161,19 @@ def fetch(conn, pdf_dir):
         case_id   = row["case_id"]
         guid      = row["guid"]
         url       = row["source_url"]
+        # Rows written before the href allowlist landed were parsed with a
+        # permissive `[^"]+` and may hold anything. Quoting below makes them
+        # inert, but a URL we cannot vouch for should not be fetched at all.
+        if not eaaid.valid_source_url(url):
+            print(f"[eaaid fetch] {case_id}: refusing malformed source_url "
+                  f"{url[:120]!r}", file=sys.stderr)
+            conn.execute(
+                "UPDATE eaaid_reports SET status=?, skip_reason=?, updated_at=? "
+                "WHERE case_id=?",
+                (db.STATUS_SKIPPED, "bad-source-url", db.now_ms(), case_id),
+            )
+            conn.commit()
+            continue
         filename  = eaaid.pdf_filename(case_id, guid)
         remote_dest = f"{REMOTE_TMP}/{filename}"
         local_dest  = os.path.join(pdf_dir, filename)
@@ -187,9 +201,9 @@ def fetch(conn, pdf_dir):
             ["ssh", HETZNER_HOST,
              f"curl -s --max-time 120 "
              f"-b /tmp/eaaid_cookies.txt "
-             f"-A '{eaaid.UA}' "
-             f"-L -o '{remote_dest}' '{url}' "
-             f"&& wc -c < '{remote_dest}'"],
+             f"-A {shlex.quote(eaaid.UA)} "
+             f"-L -o {shlex.quote(remote_dest)} {shlex.quote(url)} "
+             f"&& wc -c < {shlex.quote(remote_dest)}"],
             capture_output=True, timeout=150,
         )
         out = dl_result.stdout.decode().strip()
