@@ -257,6 +257,93 @@ def parse_listing(html: str, year: str = "") -> list[dict]:
 # PDF metadata extraction (post-download)
 # ──────────────────────────────────────────────
 
+# ── probable cause ────────────────────────────────────────────────────────────
+#
+# AAIIB reports carry a "PROBABLE CAUSE" heading on its own line, then either
+# prose or a bulleted list, and end at the next all-caps heading. The heading
+# vocabulary was measured across all 187 PDFs on the host rather than guessed:
+#
+#     SAFETY RECOMMENDATIONS   95
+#     SAFETY RECOMMENDATION    24
+#     SAFETY ACTIONS            1
+#     CONTRIBUTORY FACTOR       1
+#
+# CONTRIBUTORY FACTOR ends the capture even though its content is arguably
+# part of the cause: it is a separate section in the source, and folding it in
+# would put text under a heading the report did not use.
+#
+# This exists because probable_cause is what decides whether a page is
+# indexable at all. prod's quality score needs 50; a narrative over 300 chars
+# scores 30 and a probable_cause over 100 scores 20, and the other three
+# components (factors_json, weather_summary, phase_of_flight) are hardcoded
+# null at projection. So those two fields together are the only route to 50,
+# and this source had 169 rows with neither.
+_PC_HEADING_RE = re.compile(
+    r"^[ \t\f]*(?:\d+(?:\.\d+)*[.)]?[ \t\f]*)?PROBABLE\s+CAUSES?[ \t\f]*:?[ \t\f]*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+_PC_TERMINATOR_RE = re.compile(
+    r"^[ \t\f]*(?:\d+(?:\.\d+)*[.)]?[ \t\f]*)?"
+    r"(?:SAFETY\s+RECOMMENDATIONS?|SAFETY\s+ACTIONS?|CONTRIBUTORY\s+FACTORS?"
+    r"|CONCLUSIONS?|FINDINGS?|APPENDIC?E?S?|ANNEXE?S?)[ \t\f]*:?[ \t\f]*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+# Page furniture that lands mid-section in the text layer.
+_PC_FURNITURE_RE = re.compile(
+    r"^[ \t\f]*(?:Page\s+\d+\s+of\s+\d+"
+    r"|Investigation\s+Report\s+\S+"
+    r"|Aircraft\s+Accident\s+Investigation\s+and\s+Inquiry\s+Board)[ \t\f]*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+# Bullets arrive as whatever glyph the report's font mapped them to. The
+# Wingdings bullet lands in the Private Use Area as U+F0B7, which an
+# enumerated list of "known" bullet characters missed — so the whole PUA
+# range is treated as a bullet rather than guessing which code points a
+# future report will use.
+_PC_BULLET_RE = re.compile(
+    r"^[ \t\f]*[\u2022\u25aa\u25cf\u25a0\u00b7\u2013\u2014\-\*\uE000-\uF8FF]+[ \t\f]*",
+    re.MULTILINE,
+)
+
+# Shorter than this is a heading echo or a stub, not a cause.
+PROBABLE_CAUSE_MIN = 40
+
+
+def parse_probable_cause(text: str) -> str | None:
+    """Return the PROBABLE CAUSE section as one normalised string, or None.
+
+    Bullets are flattened to sentences: prod renders this as a single field,
+    and a list that arrives as "- a - b" reads worse than "a. b."
+    """
+    if not text:
+        return None
+    m = _PC_HEADING_RE.search(text)
+    if not m:
+        return None
+    rest = text[m.end():]
+
+    end = _PC_TERMINATOR_RE.search(rest)
+    body = rest[: end.start()] if end else rest
+
+    body = _PC_FURNITURE_RE.sub("", body)
+    body = _PC_BULLET_RE.sub("", body)
+
+    lines = [ln.strip() for ln in body.splitlines()]
+    out = []
+    for ln in lines:
+        if not ln:
+            continue
+        if out and not out[-1].endswith((".", ";", ":")):
+            out[-1] = out[-1] + " " + ln
+        else:
+            out.append(ln)
+    joined = " ".join(out)
+    joined = re.sub(r"\s+", " ", joined).strip()
+    # A trailing fragment with no terminator usually means the capture ran into
+    # the next page; keep it, but do not emit something too short to be a cause.
+    return joined if len(joined) >= PROBABLE_CAUSE_MIN else None
+
+
 def extract_pdf_metadata(text: str) -> dict:
     """Pull richer metadata out of the extracted PDF text.
 

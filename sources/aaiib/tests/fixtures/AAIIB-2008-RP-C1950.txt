@@ -1,0 +1,86 @@
+CIVIL AVIATION AUTHORITY OF THE PHILIPPINES
+Aircraft Accident Investigation and Inquiry Board
+Aircraft Accident Report
+BASIC INFORMATION
+Aircraft Registration No.
+Make/Model
+Owner and Operator
+Address of Operator
+
+:
+:
+:
+:
+
+Date/Time of Accident
+Place of Accident
+Type of Operation
+Phase of Operation
+Type of Accident
+
+:
+:
+:
+:
+:
+
+RP-C1950
+BE-C50 Twin Bonanza
+Aviation Technology Innovators, Inc
+Delta Gate, Manila Domestic Airport,
+Pasay City
+April 25, 2008 at around 1310H
+Roxas Palawan
+General Aviation
+Missed approach
+Go around/Missed approached after LH engine
+failure
+
+EXECUTIVE SUMMARY
+At around 1310H of April 25, 2008, RP-C1950, a BE-C50 Twin Bonanza type of aircraft
+piloted by Capt. Jose E. Yapparcon took off Manila Domestic Airport bound for Roxas,
+Palawan. This was his second flight for the day. While flying en-route, everything was
+normal. At about 10 nautical miles to Roxas, Palawan, according to pilot, he noticed that his
+LH engine oil pressure drops to 30 PSI. This situation alerted him to closely monitor the left
+engine parameters. At approximately 6 miles to Roxas Airport while descending to traffic
+altitude, the LH engine RPM indicator drops and the aircraft yawed to the left. He continue
+the approach with RH engine operating after securing the LH engine. He continue the
+approach and fly over the airport before joining right downwind for Runway 03. After
+turning final and made sure of the runway, he extended his landing gears and flaps. The
+aircraft touch down at about half of the runway. Thinking that he will not be able to stop the
+aircraft and probably hit the aircraft park at the right end of the runway, the pilot decided to
+make a go around with one engine operating. The aircraft was able to climb but due to heavy
+rain coming and gusty wind the aircraft lost speed and altitude and subsequently hit bamboo
+trees. The aircraft landed in the grassy area with gears retracted, approximately 250 meters
+away from the end of the runway.
+
+Investigation Report RP-C1950
+
+Page 1 of 2
+
+PROBABLE CAUSE
+ Inadequate supply of oil to the main journal bearing caused by clogged up oil screen
+giving low oil pressure indication in the cockpit prompting pilot to initiate engine
+shut down while on flight.
+ The decision of the PIC to go around after touchdown, despite the odds against him
+(one engine out, poor visibility and the presence of obstacles at upwind) was
+probably a major factor.
+ The pilot might have established a high approach (above the glide path) during the
+final approach which causes the aircraft to touch down at the middle of the runway
+or the approach speed is high that causes the aircraft to float after the extension of
+flaps.
+ Low visibility during the approach which causes the pilot to miss the threshold.
+SAFETY RECOMMENDATIONS
+ After disassembly and inspection of LH engine, it was established that the cause of
+low pressure indication was clogged up oil screen. It is recommended that owners and
+operators using AVCO Lycoming GO-480 series engine should accomplish oil screen
+inspection every 25 hours in addition to oil screen inspection accomplish during
+engine oil change every 50 hours Periodic Inspection.
+ The pilot must undergo medical examination and an ATO check ride with emphasis
+on single engine operations.
+
+Investigation Report RP-C1950
+
+Page 2 of 2
+
+
