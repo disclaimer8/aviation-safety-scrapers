@@ -55,3 +55,35 @@ through the fixes the rest of this tree received in the code-review work:
 fail-closed discover, the shared retry policy, the SSRF guard, robots.txt
 enforcement, path sanitisation. Assume every finding in `CODE-REVIEW.md`
 applies to these 39 sources too, and more besides.
+
+## What CodeQL already found here
+
+Adding this directory turned up 15 high-severity alerts on the first scan —
+which is the point of having it in a repository at all. They are recorded here
+as the starting worklist, and dismissed in the security tab as "not built or
+run from this repository" so they do not block unrelated pull requests. None is
+a credential; the snapshot was scanned for those separately before it landed.
+
+**ReDoS in scraper code (6)** — real bugs, in the regexes these six use to
+parse listings. Fix them as each source is converted into `sources/`:
+
+    aaibzm-ingest/aaibzm_ingest/aaibzm.py:308
+    aet-ingest/aet_ingest/aet.py:363
+    beacg-ingest/beacg_ingest/beacg.py:325
+    gcaagy-ingest/gcaagy_ingest/gcaagy.py:268
+    jcaa-ingest/jcaa_ingest/jcaa.py:297
+    ttcaa-ingest/ttcaa_ingest/ttcaa.py:211
+
+**Incomplete URL substring sanitization (9)** — all in test files, the same
+class already triaged and dismissed on `main` for `sources/tsb` and
+`sources/bea`. Worth tightening when the tests are rewritten, not before:
+
+    aaicnp-ingest/tests/test_aaicnp.py:122, 123, 228
+    baaid-ingest/tests/test_pipeline.py:44
+    baaid-ingest/tests/test_nonbleed.py:60
+    bdca-ingest/tests/test_bdca.py:114
+    dgcakw-ingest/tests/test_pipeline.py:44, 94
+
+This list is a floor, not a ceiling. CodeQL sees what CodeQL sees; the findings
+in `CODE-REVIEW.md` — silent truncation, missing retries, unsanitised paths —
+are not things it checks for, and these 39 sources have had none of those fixes.
