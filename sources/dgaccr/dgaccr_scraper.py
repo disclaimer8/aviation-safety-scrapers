@@ -24,6 +24,13 @@ Politeness: 2 s base delay, exponential backoff on 429/503 (30-60 s, 3 retries).
 
 import sys, os, re, time, sqlite3, subprocess, json, urllib.parse, shlex, tempfile
 
+# The country this source covers, as ISO 3166-1 alpha-2. Declared rather
+# than inferred: the coverage database and the scraper inventory had drifted
+# apart, and only 32 of 90 sources stated their country anywhere a machine
+# could read. scripts/check_coverage.py reconciles the two from this.
+COUNTRY_ISO2 = "CR"
+
+
 DGAC_HOST = "sub.dgac.go.cr"
 UPLOADS_BASE = f"https://{DGAC_HOST}/wp-content/uploads/"
 

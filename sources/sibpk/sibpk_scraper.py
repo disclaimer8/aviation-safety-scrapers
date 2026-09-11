@@ -241,6 +241,13 @@ CREATE INDEX IF NOT EXISTS idx_sibpk_status ON sibpk_reports(status);
 # ---------------------------------------------------------------------------
 import httpx
 
+# The country this source covers, as ISO 3166-1 alpha-2. Declared rather
+# than inferred: the coverage database and the scraper inventory had drifted
+# apart, and only 32 of 90 sources stated their country anywhere a machine
+# could read. scripts/check_coverage.py reconciles the two from this.
+COUNTRY_ISO2 = "PK"
+
+
 def _log(msg):
     ts = time.strftime("%Y-%m-%d %H:%M:%S")
     line = f"[{ts}] {msg}"

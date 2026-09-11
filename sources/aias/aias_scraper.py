@@ -9,6 +9,13 @@ parse (pdftotext) | build (aias_accidents). Resumable via status column.
 """
 import sys, os, re, time, base64, sqlite3, subprocess
 
+# The country this source covers, as ISO 3166-1 alpha-2. Declared rather
+# than inferred: the coverage database and the scraper inventory had drifted
+# apart, and only 32 of 90 sources stated their country anywhere a machine
+# could read. scripts/check_coverage.py reconciles the two from this.
+COUNTRY_ISO2 = "RO"
+
+
 BASE = "https://aias.gov.ro"
 SITEMAP = BASE + "/wp-sitemap-posts-investigatii-1.xml"
 DELAY = 2.0

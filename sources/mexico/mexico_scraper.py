@@ -6,6 +6,13 @@ gob.mx/afac/acciones-y-programas/informes-finales-251241 -> per-year sub-pages
 Spanish narratives. Stages: discover|fetch|parse|build|redate (resumable)."""
 import sys, os, re, time, base64, sqlite3, subprocess, shlex, tempfile, uuid
 
+# The country this source covers, as ISO 3166-1 alpha-2. Declared rather
+# than inferred: the coverage database and the scraper inventory had drifted
+# apart, and only 32 of 90 sources stated their country anywhere a machine
+# could read. scripts/check_coverage.py reconciles the two from this.
+COUNTRY_ISO2 = "MX"
+
+
 BASE="https://www.gob.mx"
 HUB=BASE+"/afac/acciones-y-programas/informes-finales-251241"
 DELAY=2.5

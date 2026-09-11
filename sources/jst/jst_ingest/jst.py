@@ -31,6 +31,13 @@ Document preference (FINAL first): ISO > IB > INC > IPROV > IP.
 import re
 import unicodedata
 
+# The country this source covers, as ISO 3166-1 alpha-2. Declared rather
+# than inferred: the coverage database and the scraper inventory had drifted
+# apart, and only 32 of 90 sources stated their country anywhere a machine
+# could read. scripts/check_coverage.py reconciles the two from this.
+COUNTRY_ISO2 = "AR"
+
+
 # There is no intranet endpoint here any more. discover() used to enumerate
 # events from intranet.jst.gob.ar, whose robots.txt is a blanket `Disallow: /`
 # — a host named intranet telling crawlers to stay out. Everything it supplied
