@@ -1,0 +1,12 @@
+[Unit]
+Description=ttcaa ingest cycle
+
+[Timer]
+OnCalendar=*-*-09 11:15
+Persistent=true
+# These sources were dormant for months; a few minutes of jitter keeps a
+# batch of newly-enabled timers from starting in lockstep.
+RandomizedDelaySec=600
+
+[Install]
+WantedBy=timers.target

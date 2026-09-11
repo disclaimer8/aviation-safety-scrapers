@@ -1,0 +1,14 @@
+# /etc/systemd/system/caav-cycle.service
+[Unit]
+Description=CAAV (Vietnam) ingest cycle (weekly; discover->fetch->parse->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/caav
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/caav/caav-cycle.log
+StandardError=append:/opt/caav/caav-cycle.log
+TimeoutStartSec=10800

@@ -1,0 +1,154 @@
+Helicopter Accident Investigation Commission, 2075 of 9N-AMI, H125 (AS350B3e)
+
+GOVERNMENT OF NEPAL
+AIRCRAFT ACCIDENT INVESTIGATION COMMISSION
+
+FINAL REPORT
+OF
+
+9N-AMI H125 (AS350 B3e) Helicopter
+Owned & Operated by Air Dynasty Heli Services Pvt. Ltd.
+at near SisneVir, Pathivara, Nepal
+On February 27, 2019
+
+SUBMITTED BY:
+
+COMMISSION FOR THE ACCIDENT INVESTIGATION
+TO
+
+THE GOVERNMENT OF NEPAL
+MINISTRY OF CULTURE, TOURISM AND CIVIL AVIATION
+23/02/2020 (2076/11/11 B.S.)
+
+Helicopter Accident Investigation Commission, 2075 of 9N-AMI, H125 (AS350B3e)
+
+FOREWORD
+This report on the accident of 9N-AMI, H125 (AS350 B3e) Airbus Helicopter owned and operated by Air
+Dynasty Heli Services Pvt. Ltd., Nepal is based on the investigation carried out by the ‘Accident
+Investigation Commission’ constituted by the Government of Nepal on February 27, 2019. The
+responsibility of the Commission is to find out the cause of the accident and offer recommendations to
+prevent the recurrence of such kind of accident in the future to ensure a safer sky for all forms of aviation
+activities.
+The Commission has compiled all available resources including technical information on the aircraft,
+relevant documents, existing rules and regulations, crash site examination, meteorological reports, Vision
+1000 and VEMD analysis, V2 tracker details, interviews with company flight and ground crew, eyewitnesses and CAAN officials and expert advice from BEA, Airbus helicopters and Safran Helicopters.
+This report is prepared in accordance with the provisions of ICAO Annex 13 and Civil Aviation
+(Investigation of Accident) Rules, 2071 B.S (2014 A.D) with the purpose of preventing future aircraft
+accidents and incidents. It is not the function of the Commission to apportion blame or determine civil and
+criminal liability.
+
+Helicopter Accident Investigation Commission, 2075 of 9N-AMI, H125 (AS350B3e)
+
+Composition of Commission:
+1. Mr. Yajna Prasad Gautam
+
+Chairman
+
+2. Brig. Gen. Dipak Prasad Bastola
+
+Member
+
+3. Pilot Col. Pramod Kumar Lama (Retd.)
+
+Member
+
+4. Mr. Buddhi Sagar Lamichhane
+
+Member- Secretary
+
+________________________
+
+_______________________
+
+Mr. Yajna Prasad Gautam
+
+Aeronautical Engineer Dipak Prasad Bastola
+
+Former Secretary,
+
+Brigadier General
+
+Government of Nepal
+
+Nepali Army
+
+_______________________
+
+_______________________
+
+Capt. Pramod Kumar Lama
+
+Mr. Buddhi Sagar Lamichhane
+
+Colonel (Retd.)
+
+Joint Secretary,
+
+Nepali Army
+
+Ministry of Culture, Tourism &
+Civil Aviation
+
+Invitee Member to the Commission:
+Dr. Rajeeb Kumar Deo, Colonel, Nepal Army
+Ms. Bibhuti Pokharel, Senior Division Meteorologist, DHM
+
+Technical Support to the Commission:
+Yogesh Aryal, Electronics Engineer, Ministry of Culture, Tourism & Civil Aviation
+
+Helicopter Accident Investigation Commission, 2075 of 9N-AMI, H125 (AS350B3e)
+
+Note:
+1. This report contains the facts which have been determined up to the date of publication. This information
+is published to inform the aviation industry and the public of the general circumstances of accidents and
+serious accidents.
+2. The extracts may be published without specific permission provided that the source is duly acknowledged,
+the material is reproduced accurately and it is not used in a derogatory manner or in a misleading context.
+
+Helicopter Accident Investigation Commission, 2075 of 9N-AMI, H125 (AS350B3e)
+
+Acknowledgements:
+The Commission would like to thank to the Government of Nepal, Airbus France, SAFRAN, BEA France
+and all those who spared out their valuable time and suggestionsin course of investigation to prepare this
+report.
+
+Helicopter Accident Investigation Commission, 2075 of 9N-AMI, H125 (AS350B3e)
+
+Abbreviations and Definitions
+AD
+
+Airworthiness Directives
+
+AFT
+
+Rear (Antonym of Forward)
+
+AGL
+
+Above Ground Level
+
+AIG
+
+Aircraft Accident and Incident Investigation
+
+AMSL
+
+Above Mean Sea Level
+
+AMT
+
+Aircraft Maintenance Technician
+
+ATF
+
+Aviation Turbine Fuel
+
+ATC
+
+Air Traffic Controller
+
+ATPL
+
+Airline Transport Pilot License
+
+AT

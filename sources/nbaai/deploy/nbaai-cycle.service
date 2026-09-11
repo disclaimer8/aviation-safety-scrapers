@@ -1,0 +1,14 @@
+# /etc/systemd/system/nbaai-cycle.service
+[Unit]
+Description=NBAAI (Ukraine) ingest cycle (weekly; discover->fetch->parse[OCR ukr+rus]->build->sync)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/nbaai
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/nbaai/nbaai-cycle.log
+StandardError=append:/opt/nbaai/nbaai-cycle.log
+TimeoutStartSec=14400
