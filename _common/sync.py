@@ -58,6 +58,7 @@ VENDORED = {
     "gcaa": {"http": "httpc", "robots": "robots"},
     "griaa": {"http": "httpc", "robots": "robots"},
     "india": {"http": "httpc", "robots": "robots"},
+    "jiaacve": {"http": "httpc", "robots": "robots"},
     "jst": {"http": "httpc", "robots": "robots"},
     "jtsb": {"http": "httpc", "robots": "robots"},
     "knkt": {"http": "httpc", "robots": "robots"},
