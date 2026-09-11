@@ -43,6 +43,13 @@ Politeness: 2s base delay, exponential backoff on 429/503.
 """
 import sys, os, re, time, sqlite3, subprocess, json, urllib.parse, shlex, tempfile, uuid, urllib.request
 
+# The country this source covers, as ISO 3166-1 alpha-2. Declared rather
+# than inferred: the coverage database and the scraper inventory had drifted
+# apart, and only 32 of 90 sources stated their country anywhere a machine
+# could read. scripts/check_coverage.py reconciles the two from this.
+COUNTRY_ISO2 = "EC"
+
+
 DGACEC_BASE = "https://www.aviacioncivil.gob.ec"
 WAYBACK_BASE = "https://web.archive.org/web"
 CDX_BASE = "https://web.archive.org/cdx/search/cdx"

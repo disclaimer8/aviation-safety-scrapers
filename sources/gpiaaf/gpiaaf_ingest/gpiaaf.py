@@ -33,6 +33,13 @@ Part B — GpiaafBrowser: Playwright transport (lazy import so unit tests that
 import re
 from urllib.parse import urljoin, urlparse, parse_qs
 
+# The country this source covers, as ISO 3166-1 alpha-2. Declared rather
+# than inferred: the coverage database and the scraper inventory had drifted
+# apart, and only 32 of 90 sources stated their country anywhere a machine
+# could read. scripts/check_coverage.py reconciles the two from this.
+COUNTRY_ISO2 = "PT"
+
+
 BASE = "https://www.gpiaaf.gov.pt"
 # Aviation-only listing root. Carries the decade/year drill-down links. We
 # crawl /aviacao-civil-reservado/ paths EXCLUSIVELY (the site also covers rail).

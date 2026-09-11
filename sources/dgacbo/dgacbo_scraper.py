@@ -29,6 +29,13 @@ Stages: discover | fetch | parse | parse-skipped | build | recheck | stats
 """
 import sys, os, re, time, sqlite3, subprocess, json, urllib.parse, shlex, tempfile, uuid, urllib.request
 
+# The country this source covers, as ISO 3166-1 alpha-2. Declared rather
+# than inferred: the coverage database and the scraper inventory had drifted
+# apart, and only 32 of 90 sources stated their country anywhere a machine
+# could read. scripts/check_coverage.py reconciles the two from this.
+COUNTRY_ISO2 = "BO"
+
+
 DGACBO_BASE = "https://www.dgac.gob.bo"
 WAYBACK_BASE = "https://web.archive.org/web"
 CDX_BASE = "https://web.archive.org/cdx/search/cdx"

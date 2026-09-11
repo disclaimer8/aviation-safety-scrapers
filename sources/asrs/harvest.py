@@ -155,6 +155,13 @@ from datetime import datetime
 
 import requests
 
+# The country this source covers, as ISO 3166-1 alpha-2. Declared rather
+# than inferred: the coverage database and the scraper inventory had drifted
+# apart, and only 32 of 90 sources stated their country anywhere a machine
+# could read. scripts/check_coverage.py reconciles the two from this.
+COUNTRY_ISO2 = "US"
+
+
 BASE_URL = "https://akama.arc.nasa.gov/ASRSDBOnline"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 (+https://github.com/disclaimer8/aviation-safety-scrapers; asrs-scraper/1.0)"
 SLEEP_BETWEEN_REQUESTS = 2.0

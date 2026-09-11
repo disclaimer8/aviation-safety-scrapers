@@ -11,12 +11,14 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: MO
     delay_seconds: 3.0
     summary: 'aacm — Civil Aviation Authority of Macao SAR aviation accident/incident ingest.'
   - code: aaib
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
+    country: GB
     delay_seconds: 1.0
     pdf_text_min: 600
     user_agent: 'aaib-ingest/1.0'
@@ -24,17 +26,20 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: LY
     summary: 'aaibly — Libya Air Accidents Investigation Bureau (5A/Libya)'
   - code: aaibmm
     shape: script
     verbs: [argv]
     tests: smoke
+    country: MM
     delay_seconds: 2.0
     summary: 'aaibmm — Myanmar Aircraft Accident Investigation Bureau (AAIB / DCA Myanmar) ingest.'
   - code: aaibmy
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: MY
     delay_seconds: 1.5
     narrative_floor: 300
     pdf_text_min: 600
@@ -43,12 +48,14 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: BD
     delay_seconds: 2.0
     summary: 'AAIG (Bangladesh — Aircraft Accident Investigation Group, under CAAB) ingest.'
   - code: aaiibcy
     shape: script
     verbs: [argv]
     tests: smoke
+    country: CY
     delay_seconds: 1.5
     pdf_text_min: 300
     summary: 'aaiibcy — Cyprus AAIIB (Aircraft Accident and Incident Investigation Board)'
@@ -56,11 +63,13 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: KZ
     summary: "aaikz (Kazakhstan – Министерство транспорта РК / ДРПИТ, country KZ, lang 'ru')"
   - code: aaiu
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: IE
     delay_seconds: 1.5
     narrative_floor: 300
     summary: 'discover → fetch(+parse) → build pipeline for AAIU Ireland.'
@@ -68,6 +77,7 @@ sources:
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: BE
     delay_seconds: 1.5
     narrative_floor: 300
     summary: 'discover → fetch → build pipeline for AAIU Belgium.'
@@ -75,6 +85,7 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: UZ
     delay_seconds: 2.0
     pdf_text_min: 300
     user_agent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36'
@@ -83,12 +94,14 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: GN
     delay_seconds: 2.0
     summary: "agacgn — AGAC Guinea (Autorité Guinéenne de l'Aviation Civile, GN)"
   - code: ahac
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
+    country: HN
     delay_seconds: 2.0
     narrative_floor: 300
     pdf_text_min: 600
@@ -97,6 +110,7 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: RO
     delay_seconds: 2.0
     pdf_text_min: 600
     summary: 'AIAS (Romania) accident/incident report ingest — patchright CF transport.'
@@ -104,6 +118,7 @@ sources:
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: DK
     delay_seconds: 2.0
     narrative_floor: 300
     summary: 'discover → fetch(+parse) → build pipeline for AIB Denmark.'
@@ -111,12 +126,14 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: SA
     delay_seconds: 2.0
     summary: 'aibsa — Saudi Arabia Aviation Investigation Bureau (AIB) ingest.'
   - code: akisa
     shape: script
     verbs: [argv]
     tests: smoke
+    country: AL
     delay_seconds: 2.0
     pdf_text_min: 600
     summary: 'AKISA (Albania — Autoriteti Kombëtar i Investigimit për Sigurinë e Operimit'
@@ -124,12 +141,14 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: DZ
     delay_seconds: 2.0
     summary: "anacdz — ANAC Algeria (Agence Nationale de l'Aviation Civile, DZ)"
   - code: ansv
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
+    country: IT
     delay_seconds: 2.0
     narrative_floor: 300
     pdf_text_min: 600
@@ -138,6 +157,7 @@ sources:
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: KR
     delay_seconds: 1.0
     narrative_floor: 300
     summary: 'discover → fetch(+detail+parse) → build pipeline for ARAIB South Korea.'
@@ -145,11 +165,13 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: US
     summary: 'ASRS NASA Voluntary Incident Reports Harvester'
   - code: bea
     shape: package
     verbs: [discover, refetch, fetch, parse, build, all]
     tests: behaviour
+    country: FR
     delay_seconds: 1.5
     narrative_floor: 300
     pdf_text_min: 600
@@ -159,30 +181,35 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: BJ
     delay_seconds: 2.0
     summary: 'beabj — Bureau Enquêtes-Accidents du Bénin (BEA-Bénin)'
   - code: beaci
     shape: script
     verbs: [argv]
     tests: smoke
+    country: CI
     delay_seconds: 2.0
     summary: "beaci — Bureau d'Enquêtes Accidents d'Aviation de Côte d'Ivoire (BEA-CI)"
   - code: beam
     shape: script
     verbs: [argv]
     tests: smoke
+    country: MA
     delay_seconds: 2.0
     summary: "beam (Morocco BEAM — Bureau d'Enquêtes et d'Analyses, country MA, lang 'fr')"
   - code: beasn
     shape: script
     verbs: [argv]
     tests: smoke
+    country: SN
     delay_seconds: 2.0
     summary: 'beasn — Senegal BEA aviation-accident ingest.'
   - code: bfu
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
+    country: DE
     delay_seconds: 3.0
     narrative_floor: 300
     pdf_text_min: 600
@@ -192,23 +219,27 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: BA
     summary: 'bhdca — Bosnia and Herzegovina Directorate of Civil Aviation'
   - code: bpea
     shape: script
     verbs: [argv]
     tests: smoke
+    country: CD
     delay_seconds: 3.0
     summary: 'bpea — Democratic Republic of Congo BPEA aviation-accident ingest.'
   - code: caavvu
     shape: script
     verbs: [argv]
     tests: smoke
+    country: VU
     delay_seconds: 2.0
     summary: 'caavvu — Civil Aviation Authority of Vanuatu (CAAV) accident investigation ingest.'
   - code: caoiran
     shape: script
     verbs: [argv]
     tests: smoke
+    country: IR
     delay_seconds: 3.0
     narrative_floor: 300
     summary: 'caoiri — Iran CAO Aircraft Accident Investigation Board (AAIB)'
@@ -216,6 +247,7 @@ sources:
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
+    country: BR
     delay_seconds: 3.0
     narrative_floor: 300
     pdf_text_min: 600
@@ -224,6 +256,7 @@ sources:
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
+    country: DO
     delay_seconds: 1.8
     narrative_floor: 300
     pdf_text_min: 600
@@ -232,6 +265,7 @@ sources:
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
+    country: PE
     delay_seconds: 2.0
     narrative_floor: 300
     pdf_text_min: 600
@@ -240,6 +274,7 @@ sources:
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
+    country: ES
     delay_seconds: 2.0
     narrative_floor: 300
     pdf_text_min: 600
@@ -248,6 +283,7 @@ sources:
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
+    country: UY
     delay_seconds: 2.0
     narrative_floor: 300
     pdf_text_min: 600
@@ -256,6 +292,7 @@ sources:
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
+    country: RS
     delay_seconds: 1.8
     narrative_floor: 300
     pdf_text_min: 600
@@ -264,29 +301,34 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: PY
     summary: 'cipaa (Paraguay – Centro de Investigación y Prevención de Accidentes Aeronáuticos,'
   - code: daaina
     shape: script
     verbs: [argv]
     tests: smoke
+    country: NA
     delay_seconds: 2.5
     summary: 'daaina (Namibia DAAI — Directorate of Aircraft Accident Investigations, country NA)'
   - code: daibw
     shape: script
     verbs: [argv]
     tests: smoke
+    country: BW
     delay_seconds: 2.0
     summary: 'daibw — Botswana Directorate of Accident Investigation (DAI) ingest.'
   - code: dgacbo
     shape: script
     verbs: [argv]
     tests: smoke
+    country: BO
     delay_seconds: 1.5
     summary: 'DGACBO (Bolivia — Dirección General de Aeronáutica Civil, AIG) aviation-accident ingest.'
   - code: dgaccl
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: CL
     delay_seconds: 1.5
     narrative_floor: 300
     summary: 'discover → fetch(+parse) → build pipeline for DGAC Chile.'
@@ -294,18 +336,21 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: CR
     delay_seconds: 2.0
     summary: "dgaccr (Costa Rica DGAC, country CR, lang 'es') aviation-accident ingest."
   - code: dgacec
     shape: script
     verbs: [argv]
     tests: smoke
+    country: EC
     delay_seconds: 2.0
     summary: 'DGACEC (Ecuador — Dirección General de Aviación Civil) aviation-accident ingest.'
   - code: dgacgt
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
+    country: GT
     delay_seconds: 1.8
     narrative_floor: 300
     pdf_text_min: 600
@@ -314,16 +359,19 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: LB
     summary: "dgcalb (Lebanon DGCA — Directorate General of Civil Aviation, country LB, lang 'en')"
   - code: eaibet
     shape: script
     verbs: [argv]
     tests: smoke
+    country: ET
     summary: 'eaibet — Ethiopian Aircraft Accident Investigation Bureau (ET/Ethiopia)'
   - code: gcaa
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: AE
     delay_seconds: 1.5
     narrative_floor: 300
     summary: 'discover → fetch(+parse) → build pipeline for GCAA UAE.'
@@ -331,6 +379,7 @@ sources:
     shape: script
     verbs: [argv]
     tests: behaviour
+    country: GH
     delay_seconds: 1.5
     user_agent: 'ghana-scraper/1.0 (+https://github.com/denyskolomiiets/aviation-safety-scrapers)'
     summary: 'Ghana AIB (Aircraft Accident & Incident Investigation & Prevention Bureau)'
@@ -338,6 +387,7 @@ sources:
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: PT
     delay_seconds: 1.5
     narrative_floor: 300
     pdf_text_min: 600
@@ -346,6 +396,7 @@ sources:
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
+    country: CO
     delay_seconds: 2.0
     narrative_floor: 300
     summary: 'discover → fetch → parse → build pipeline for GRIAA (Colombia) per-year listing.'
@@ -353,6 +404,7 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: MZ
     delay_seconds: 2.0
     pdf_text_min: 600
     summary: 'IACM (Mozambique civil aviation authority) accident/incident report ingest.'
@@ -360,6 +412,7 @@ sources:
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: IN
     delay_seconds: 2.0
     narrative_floor: 300
     summary: 'discover → fetch(+parse) → build pipeline for AAIB India.'
@@ -367,12 +420,14 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: IL
     delay_seconds: 2.5
     pdf_text_min: 600
   - code: jst
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: AR
     delay_seconds: 1.5
     narrative_floor: 300
     summary: 'discover → fetch(+parse) → build pipeline for JST Argentina.'
@@ -380,6 +435,7 @@ sources:
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
+    country: JP
     delay_seconds: 1.5
     narrative_floor: 300
     pdf_text_min: 600
@@ -388,12 +444,14 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: HU
     delay_seconds: 2.0
     summary: 'Batch download remaining HU PDFs: generate curl script on hetzner, rsync back.'
   - code: kinsiv
     shape: script
     verbs: [argv]
     tests: smoke
+    country: MK
     delay_seconds: 3.0
     narrative_floor: 300
     summary: 'kinsiv (North Macedonia КИНСИВ — Комитет за истрага на воздухопловни несреќи и сериозни инциденти)'
@@ -401,6 +459,7 @@ sources:
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: ID
     delay_seconds: 1.5
     narrative_floor: 300
     summary: 'discover → fetch(+parse) → build pipeline for KNKT / NTSC Indonesia.'
@@ -408,12 +467,14 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: MT
     delay_seconds: 2.5
     summary: 'Malta BAAI (Bureau of Air Accident Investigation) ingest — patchright CF.'
   - code: mexico
     shape: script
     verbs: [argv]
     tests: smoke
+    country: MX
     delay_seconds: 2.5
     pdf_text_min: 600
     summary: "Mexico AFAC (Agencia Federal de Aviacion Civil) 'Informes Finales' ingest --"
@@ -421,6 +482,7 @@ sources:
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: NO
     delay_seconds: 1.5
     narrative_floor: 300
     summary: 'discover → fetch(+parse) → build pipeline for NSIA Norway.'
@@ -428,6 +490,7 @@ sources:
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
+    country: NG
     delay_seconds: 1.5
     narrative_floor: 300
     pdf_text_min: 600
@@ -436,6 +499,7 @@ sources:
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
+    country: US
     delay_seconds: 1.5
     narrative_floor: 1000
     pdf_text_min: 600
@@ -444,6 +508,7 @@ sources:
     shape: package
     verbs: [discover, fetch, parse, build, all, count, verify]
     tests: behaviour
+    country: US
     delay_seconds: 1.5
     narrative_floor: 200
     pdf_text_min: 500
@@ -452,6 +517,7 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: EE
     delay_seconds: 1.5
     pdf_text_min: 600
     summary: 'OJK / ESIB (Estonia) aviation accident-report ingest — plain httpx.'
@@ -459,6 +525,7 @@ sources:
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: FI
     delay_seconds: 1.0
     narrative_floor: 300
     pdf_text_min: 600
@@ -467,12 +534,14 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: OM
     delay_seconds: 2.0
     summary: 'otsb (Oman — Oman Transport Safety Bureau, MTCIT) aviation-accident ingest.'
   - code: ovv
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: NL
     delay_seconds: 2.0
     narrative_floor: 300
     pdf_text_min: 600
@@ -481,6 +550,7 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: PA
     delay_seconds: 1.5
     pdf_text_min: 600
     summary: 'Panama AAC / UPIA accident-report ingest — plain httpx (no browser).'
@@ -488,6 +558,7 @@ sources:
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: PL
     delay_seconds: 1.2
     narrative_floor: 300
     summary: 'discover → fetch(+parse) → build pipeline for PKBWL Poland.'
@@ -495,6 +566,7 @@ sources:
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: IS
     delay_seconds: 1.0
     narrative_floor: 300
     summary: 'discover → fetch(+parse) → build pipeline for RNSA Iceland (aviation).'
@@ -502,6 +574,7 @@ sources:
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
+    country: US
     delay_seconds: 2.5
     narrative_floor: 300
     pdf_text_min: 600
@@ -510,6 +583,7 @@ sources:
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: ZA
     delay_seconds: 1.5
     narrative_floor: 300
     pdf_text_min: 600
@@ -518,6 +592,7 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: SC
     delay_seconds: 1.5
     pdf_text_min: 600
     user_agent: 'curl/7.88.1'
@@ -526,6 +601,7 @@ sources:
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: SE
     delay_seconds: 1.5
     narrative_floor: 300
     summary: 'discover → fetch(+parse) → build pipeline for SHK Sweden.'
@@ -533,12 +609,14 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: PK
     delay_seconds: 2.0
     summary: 'sibpk — Pakistan SIB/BASI/AAIB aviation-accident ingest.'
   - code: sub
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: AT
     delay_seconds: 1.0
     narrative_floor: 300
     summary: 'discover → fetch(+parse) → build pipeline for SUB Austria.'
@@ -546,6 +624,7 @@ sources:
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: CH
     delay_seconds: 1.75
     narrative_floor: 300
     summary: 'discover → fetch(+parse) → build pipeline for SUST / STSB Switzerland.'
@@ -553,6 +632,7 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: SK
     delay_seconds: 1.5
     pdf_text_min: 600
     summary: 'SVK (Slovakia) accident/incident final-report ingest — plain httpx, no browser.'
@@ -560,12 +640,14 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: TZ
     delay_seconds: 2.0
     summary: 'taibtz — Tanzania Aircraft Accident Investigation Bureau (AAIB Tanzania / TAIB) ingest.'
   - code: taic
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: NZ
     delay_seconds: 2.0
     narrative_floor: 300
     summary: 'discover → fetch(+parse) → build pipeline for TAIC (New Zealand).'
@@ -573,12 +655,14 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: LT
     narrative_floor: 80
     summary: 'Salvage builder: populate taits_accidents from detail-page summary_text.'
   - code: tsb
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: CA
     delay_seconds: 1.0
     narrative_floor: 300
     summary: 'discover → fetch+parse → build pipeline for TSB (Transportation Safety Board of Canada).'
@@ -586,6 +670,7 @@ sources:
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: SG
     delay_seconds: 1.5
     narrative_floor: 300
     summary: 'discover -> fetch(+parse) -> build pipeline for TSIB Singapore.'
@@ -593,6 +678,7 @@ sources:
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: TW
     delay_seconds: 1.0
     narrative_floor: 300
     summary: 'discover → fetch(+parse) → build pipeline for TTSB Taiwan.'
@@ -600,6 +686,7 @@ sources:
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: TR
     delay_seconds: 1.0
     narrative_floor: 300
     summary: 'discover → fetch(+parse) → build pipeline for UEIM Turkey.'
@@ -607,6 +694,7 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: GB
     delay_seconds: 1.5
     pdf_text_min: 300
     summary: 'OCR recovery script for ukmaa stubs (narrative < 300 chars).'
@@ -614,6 +702,7 @@ sources:
     shape: script
     verbs: [argv]
     tests: smoke
+    country: US
     delay_seconds: 2.0
     pdf_text_min: 600
     summary: 'USAF Accident Investigation Board (AIB) reports ingest — httpx, no browser needed.'
@@ -621,6 +710,7 @@ sources:
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
+    country: CZ
     delay_seconds: 1.0
     narrative_floor: 300
     summary: 'discover → fetch(+parse) → build pipeline for UZPLN (Czech Republic).'

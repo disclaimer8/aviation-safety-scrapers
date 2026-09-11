@@ -31,6 +31,13 @@ Italian body-text patterns used for extraction (all defensive / None on miss):
 import re
 from urllib.parse import urljoin, urlparse
 
+# The country this source covers, as ISO 3166-1 alpha-2. Declared rather
+# than inferred: the coverage database and the scraper inventory had drifted
+# apart, and only 32 of 90 sources stated their country anywhere a machine
+# could read. scripts/check_coverage.py reconciles the two from this.
+COUNTRY_ISO2 = "IT"
+
+
 BASE = "https://ansv.it"
 LISTING_URL = "https://ansv.it/category/relazioni-dinchiesta/"
 DELAY = 2.0

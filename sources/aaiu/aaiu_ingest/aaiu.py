@@ -20,6 +20,13 @@ PDF → the synopsis itself is the narrative (tier 'html').
 import html as _html
 import re
 
+# The country this source covers, as ISO 3166-1 alpha-2. Declared rather
+# than inferred: the coverage database and the scraper inventory had drifted
+# apart, and only 32 of 90 sources stated their country anywhere a machine
+# could read. scripts/check_coverage.py reconciles the two from this.
+COUNTRY_ISO2 = "IE"
+
+
 BASE = "https://aaiu.ie"
 REST_URL = BASE + "/wp-json/wp/v2/aaiu_report"
 PER_PAGE = 100

@@ -22,6 +22,13 @@ in the DB; do NOT reconstruct filenames.
 import html as _html
 import re
 
+# The country this source covers, as ISO 3166-1 alpha-2. Declared rather
+# than inferred: the coverage database and the scraper inventory had drifted
+# apart, and only 32 of 90 sources stated their country anywhere a machine
+# could read. scripts/check_coverage.py reconciles the two from this.
+COUNTRY_ISO2 = "RS"
+
+
 BASE = "https://arhiva.cins.gov.rs"
 INDEX_URL = BASE + "/latinica/nesrece-u-vazdusnom-saobracaju.php"
 REFERER = INDEX_URL

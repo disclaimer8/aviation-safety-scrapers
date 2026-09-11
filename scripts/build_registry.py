@@ -22,6 +22,7 @@ REGISTRY = ROOT / "registry.yaml"
 
 _UA_RE = re.compile(r'User-Agent["\']?\s*[:=]\s*["\']([^"\']+)["\']')
 _DELAY_RE = re.compile(r"^DELAY\s*=\s*([0-9.]+)", re.M)
+_COUNTRY_RE = re.compile(r'^COUNTRY_ISO2\s*=\s*["\']([A-Z]{2})["\']', re.M)
 # TWO DIFFERENT DECISIONS, reported separately. One regex matching both was
 # wrong and made this file lie: whichever constant a package happened to define
 # first became its "narrative_floor".
@@ -108,6 +109,7 @@ def describe(pkg_dir):
         "shape": shape,
         "verbs": verbs,
         "user_agent": _first(_UA_RE, texts),
+        "country": _first(_COUNTRY_RE, texts),
         "delay_seconds": _first(_DELAY_RE, texts),
         "narrative_floor": _first(_FLOOR_RE, texts),
         "pdf_text_min": _first(_OCRMIN_RE, texts),
@@ -134,6 +136,8 @@ def render():
         out.append(f"    shape: {r['shape']}")
         out.append(f"    verbs: [{', '.join(r['verbs'])}]")
         out.append(f"    tests: {r['tests']}")
+        if r["country"]:
+            out.append(f"    country: {r['country']}")
         if r["delay_seconds"]:
             out.append(f"    delay_seconds: {r['delay_seconds']}")
         if r["narrative_floor"]:

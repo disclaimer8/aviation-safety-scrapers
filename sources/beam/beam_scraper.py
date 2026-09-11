@@ -39,6 +39,13 @@ Politeness: 2s base delay, exponential backoff on 429/503.
 
 import sys, os, re, time, sqlite3, subprocess, json, urllib.parse
 
+# The country this source covers, as ISO 3166-1 alpha-2. Declared rather
+# than inferred: the coverage database and the scraper inventory had drifted
+# apart, and only 32 of 90 sources stated their country anywhere a machine
+# could read. scripts/check_coverage.py reconciles the two from this.
+COUNTRY_ISO2 = "MA"
+
+
 BEA_HOST = "bea.aviationcivile.gov.ma"
 ASSETS_URL = f"https://{BEA_HOST}/assets/doc/"
 PORTAIL_URL = f"https://{BEA_HOST}/portail/web/uploads/images/"
