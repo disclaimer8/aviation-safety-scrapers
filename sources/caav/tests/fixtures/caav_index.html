@@ -3,21 +3,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head><meta charset="utf-8" /><link type="image/x-icon" href="/favicon.png" rel="shortcut&#32;icon" /><title>THE PORTAL OF CIVIL AVIATION AUTHORITY OF VIET NAM | Cục hàng không Việt Nam</title><meta name="news_keywords" content="CAAV, CAA, Civil Aviation Administration of Vietnam, Cuc hang khong, Cuc hang khong dan dung viet nam, Hang khong" /><meta name="description" content="Cục Hàng không Việt Nam là cơ quan trực thuộc Bộ Giao thông vận tải, thực hiện chức năng tham mưu, giúp Bộ trưởng Bộ Giao thông vận tải quản lý nhà nước về hàng không dân dụng trong phạm vi cả nước" /><link href="/styles/css.css?v=51" rel="stylesheet" /><link href="/styles/jquery.bxslider.css?v=5" rel="stylesheet" /><meta name="viewport" content="width=device-width" />
-    <script type="text/javascript" src="/Scripts/jquery-1.8.2.min.js"></script>
-    <script type="text/javascript" src="/Scripts/jquery.bpopup.min.js"></script>
-    <script type="text/javascript" src="/Scripts/jquery.bxslider.min.js"></script>
-    <script type="text/javascript" src="/Scripts/jquery.slimscroll.min.js"></script>
-    <script type="text/javascript" src="/Scripts/js.js"></script>
+    <!-- script block removed: site JS, not read by this parser -->
+    <!-- script block removed: site JS, not read by this parser -->
+    <!-- script block removed: site JS, not read by this parser -->
+    <!-- script block removed: site JS, not read by this parser -->
+    <!-- script block removed: site JS, not read by this parser -->
     
     <!-- Google tag (gtag.js) -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-R5H0VM3842"></script>
-	<script>
-	  window.dataLayer = window.dataLayer || [];
-	  function gtag(){dataLayer.push(arguments);}
-	  gtag('js', new Date());
-
-	  gtag('config', 'G-R5H0VM3842');
-	</script>
+	<!-- script block removed: site JS, not read by this parser -->
+	<!-- script block removed: site JS, not read by this parser -->
 	<!-- Begin EMC Tracking Code -->
     
 <!-- End EMC Tracking Code -->
@@ -89,37 +83,7 @@
         </ul>
     </div>
 </div>
-<script type="text/javascript">
-    function activeMenu() {
-        var path = location.pathname;
-        if (path == "/") {
-            $("#header .menu_h a[href='/']").addClass("active");
-        }
-        else {
-            var arr = path.split('/');
-            if (arr.length >= 2) {
-                $("#header .menu_h a[href='/" + arr[1].replace(".htm", "") + ".htm']").addClass("active");
-            }
-        }
-    }
-
-    function search() {
-        var txt = $("#txtsearch").val().trim();
-        if (txt != "") {
-            window.location.href = "/tim-kiem/" + txt + ".htm";
-        }
-    }
-
-    $(function () {
-        activeMenu();
-        $("#txtsearch").keypress(function (e) {
-            if (e.keyCode == 13) search();
-        })
-        $("#txtPassword").keypress(function (e) {
-            if (e.keyCode == 13) chk_schedule.login();
-        })
-    })
-</script>
+<!-- script block removed: site JS, not read by this parser -->
 
     <div id="wrapper">
         
@@ -138,71 +102,9 @@
         <div class="fl">
             
     <link href="/Styles/jquery.datetimepicker.css" rel="stylesheet" />
-    <script type="text/javascript" src="/Scripts/jquery.datetimepicker.js"></script>
+    <!-- script block removed: site JS, not read by this parser -->
 
-    <script type="text/javascript">
-
-        $(function () {
-            $("#txtTimeBegin").datetimepicker({
-                lang: 'vi',
-                timepicker: false,
-                format: 'd/m/Y'
-            });
-            $("#txtTimeEnd").datetimepicker({
-                lang: 'vi',
-                timepicker: false,
-                format: 'd/m/Y'
-            });
-
-            $(".method_search input[type='radio']").change(function () {
-                var vl = $(this).val();
-                switch (vl) {
-                    case "basic":
-                        $(".search_doc_form_basic").show();
-                        $(".search_doc_form_advance").hide();
-                        break;
-                    case "advance":
-                        $(".search_doc_form_basic").hide();
-                        $(".search_doc_form_advance").show();
-                        break;
-                }
-            })
-        });
-
-        function searchBasic(page) {
-            var key = $("#txtSearchDoc").val();
-            if (key != "") {
-                $.ajax({
-                    type: "GET",
-                    url: "/ajax/ajaxdocument.aspx?option=basic&page=" + page + "&key=" + key,
-                    success: function (res) {
-                        if (res != "") $("#document_wrapper").html(res);
-                    }
-                })
-            }
-        }
-
-        function searchAdvance(page) {
-            var type = $("#slc_type").val();
-            var skh = $("#txtSkh").val();
-            var key = $("#txtKey").val();
-            var form = $("#slc_form").val();
-            var agency = $("#slc_agency").val();
-            var sign = $("#slc_sign").val();
-            var order = $("#slc_order").val();
-            var dateBegin = $("#txtTimeBegin").val();
-            var dateEnd = $("#txtTimeEnd").val();
-
-            $.ajax({
-                type: "GET",
-                url: "/ajax/ajaxdocument.aspx"/*?option=advance&page=" + page + "&type=" + type + "&skh=" + skh + "&key=" + key + "&form=" + form + "&agency=" + agency + "&sign=" + sign + "&order=" + order + "&dateBegin=" + dateBegin + "&dateEnd=" + dateEnd*/,
-                data: { option: "advance", page: page, type: type, skh: skh, key: key, form: form, agency: agency, sign: sign, order: order, dateBegin: dateBegin, dateEnd: dateEnd },
-                success: function (res) {
-                    if (res != "") $("#document_wrapper").html(res);
-                }
-            })
-        }
-    </script>
+    <!-- script block removed: site JS, not read by this parser -->
     <div class="ovh method_search" style="display: none">
         <span>
             <input type="radio" name="method_search" value="basic" checked>Tìm kiếm đơn giản</span>
@@ -418,15 +320,7 @@ INVESTIGATION RESULT OF SERIOUS INCIDENT FLIGHT NUMBER VJ689; VN-AVN-A695 DATED 
 
 
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $(".home__box-wrap .box-list-content .item-content .accordion-header").click(function (e) {
-            e.preventDefault();
-            $(this).closest('.item-content').toggleClass('show');
-            $(this).closest('.item-content').find('.accordion-content').slideToggle();
-        });
-    });
-</script>
+<!-- script block removed: site JS, not read by this parser -->
 
         </div>
     </div>
@@ -493,16 +387,7 @@ INVESTIGATION RESULT OF SERIOUS INCIDENT FLIGHT NUMBER VJ689; VN-AVN-A695 DATED 
         </div>
     </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('.lienket_slide').bxSlider({
-            slideWidth: 136,
-            minSlides: 1,
-            maxSlides: 6,
-            slideMargin: 20
-        });
-    });
-</script>
+<!-- script block removed: site JS, not read by this parser -->
     
 <div id="footer">
     <div class="cf menu_f">

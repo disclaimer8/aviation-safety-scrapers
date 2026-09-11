@@ -1,5 +1,6 @@
 # tests/test_aaicnp.py
 """Offline tests for aaicnp_ingest.aaicnp using saved fixtures + synthetic HTML."""
+from urllib.parse import urlsplit
 import os
 import re
 
@@ -119,8 +120,12 @@ def test_harvest_report_links_synth():
     links = aaicnp.harvest_report_links(html)
     urls = [u for u, _ in links]
     # exactly the two real reports, both made absolute
-    assert any("9N-AMI" in u and u.startswith("https://giwmscdnone.gov.np") for u in urls)
-    assert any("Pokhara" in u and u.startswith("https://caanepal.gov.np") for u in urls)
+    # Compare the parsed host: "https://giwmscdnone.gov.np.evil.com" also
+    # satisfies startswith(). Nothing in this package validates hosts that
+    # way — httpc's SSRF guard does it properly — but an assertion that
+    # cannot fail the case it names is not worth keeping.
+    assert any("9N-AMI" in u and urlsplit(u).hostname == "giwmscdnone.gov.np" for u in urls)
+    assert any("Pokhara" in u and urlsplit(u).hostname == "caanepal.gov.np" for u in urls)
     # negatives excluded
     assert not any("aeroplane-accident-1revised" in u for u in urls)
     assert not any("procedure-manual" in u for u in urls)
@@ -225,7 +230,9 @@ def test_index_url_and_cdn():
 
 def test_seed_urls_are_gov_or_cdn():
     for u in aaicnp.SEED_REPORT_URLS:
-        assert u.startswith("https://giwmscdnone.gov.np") or u.startswith("https://caanepal.gov.np")
+        parts = urlsplit(u)
+        assert parts.scheme == "https"
+        assert parts.hostname in ("giwmscdnone.gov.np", "caanepal.gov.np")
         assert u.lower().endswith(".pdf")
 
 
