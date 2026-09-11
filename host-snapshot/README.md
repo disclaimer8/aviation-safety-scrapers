@@ -44,6 +44,14 @@ the four-verb shape. That work happens source by source, out of here and into
 Excluded: virtualenvs, `node_modules`, caches, and every harvested artefact
 (`*.db`, `pdfs/`, logs). Only code.
 
+The first pull of this archive missed the JavaScript: its file filter listed
+`.py`, `.sh`, `.toml`, `.md`, `.json` and the unit extensions but not `.js`, so
+the six sources that are written in JavaScript — `caaccn`, `china`, `laser`,
+`ourairports`, `uas`, `wildlife` — arrived as a `package.json` and nothing
+else. Caught by the review of this directory, which reported six packages with
+no scraper code in them, and fixed. If you take another snapshot, enumerate the
+extensions that are present rather than the ones you expect.
+
 `_deployed-units/` holds the 77 `*-cycle.service` / `.timer` files as they exist
 in `/etc/systemd/system` — the authoritative version, against which the
 templates in `sources/*/deploy/` are the stale copy.
