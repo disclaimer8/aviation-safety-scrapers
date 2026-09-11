@@ -1,0 +1,105 @@
+CIVIL AVIATION AUTHORITY OF THE PHILIPPINES
+Aircraft Accident Investigation and Inquiry Board
+Aircraft Accident Report
+BASIC INFORMATION
+Aircraft Registration No.
+
+:
+
+RP-C7254
+
+Aircraft Type/Model
+
+:
+
+Avions de Transport Regional ATR 72-500
+(ATR 72-212A)
+
+Owner/Operator
+
+:
+
+Cebu Pacific Air, Inc.
+
+Date/Time of Accident
+
+:
+
+July 18, 2010 at 03:15 PM
+
+Type of Operation
+
+:
+
+Scheduled Commercial Passenger Service
+
+Phase of Operation
+
+:
+
+Landing
+
+Type of Occurrence
+
+:
+
+Hard landing
+
+Place of Accident
+
+:
+
+Runway 24, Ninoy Aquino International Airport
+
+EXECUTIVE SUMMARY
+At around 1359H of July 18, 2010, RP-C7254, an ATR 72-500 (ATR 72-212A) type of
+aircraft with Flight No.5J509 took off Tuguegarao Airport (RPUT) bound for Ninoy Aquino
+International Airport (RPLL). The First Officer was the Pilot Flying (PF) while the Captain
+was the Pilot Not Flying (PNF).
+Approaching Manila, the flight was under radar vector for VOR/DME approach on runway
+24. At 7 miles on finals the approach was stabilized. A sudden tailwind was experienced by
+the crew at 500 feet RA which resulted to an increase in airspeed and vertical speed. The
+Captain took over the controls and continued the approach. Suddenly, the visibility went to
+zero and consequently the aircraft experienced a bounced landing three times, before a goaround was initiated. During climb out the crew noticed cockpit instruments were affected
+including both transponders and landing gears. They requested for priority landing and they
+were vectored and cleared to land at runway 13. After landing the aircraft was taxied to F4
+where normal deplaning was carried out. No injuries were reported on the crew and
+passengers.
+
+Investigation Report RP-C7254
+
+Page 1 of 2
+
+PROBABLE CAUSE
+The Aircraft Accident Investigation and Inquiry Board determined that the probable cause of
+this accident was:
+ Primary Cause Factor
+Failure of the flight crew to discontinue the approach when deteriorating weather and
+their associated hazards to flight operations had moved into the airport (Human
+Factor)
+ Contributory Factor
+The adverse weather condition affected the judgment and decision-making of the PIC
+even prior to the approach to land. With poor weather conditions being encountered,
+the PIC still continued the approach and landing. (Environmental Factor)
+ Underlying Factor
+As a result of the bounced landing, several cockpit instruments were affected
+including both transponders on board. One of the nosewheels was detached and all the
+landing gears could not be retracted. Further, the integrity of the structure may have
+been affected and chance airframe failure was imminent. With all of these conditions,
+the Captain still opted to request for a priority landing when emergency landing was
+needed.
+SAFETY RECOMMENDATIONS
+As a result of this investigation, the Aircraft Accident Investigation and Inquiry Board made
+the following safety recommendation:
+ CAAP-FSIS to re-examine the operator’s initial and re-current pilot training program,
+putting strong emphasis on the need to instill crew awareness on the importance of
+MISSED APPROACHES on adverse weather conditions.
+ CAAP-FSIS to require Cebu Air Inc. to review their procedures on:
+a. Go-around during bounced landing
+b. Declaring priority and emergency landing.
+
+Investigation Report RP-C7254
+
+Page 2 of 2
+
+

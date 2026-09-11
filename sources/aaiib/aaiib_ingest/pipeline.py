@@ -225,6 +225,19 @@ def build(conn):
         source_url = row["pdf_url"] or row["report_url"]
         site_slug = text.make_site_slug(row["case_id"])
 
+        # Parsed here rather than in parse(): narrative_text already holds the
+        # full extracted PDF text, and aaiib_reports has no probable_cause
+        # column — adding one would mean migrating a live database for no gain.
+        #
+        # This field is not cosmetic. prod marks a page indexable at a quality
+        # score of 50; a narrative over 300 chars scores 30 and a
+        # probable_cause over 100 scores 20, while factors_json,
+        # weather_summary and phase_of_flight are hardcoded null at projection.
+        # Those two fields are therefore the only route to 50, and this source
+        # had 169 rows carrying neither. Measured against all 187 PDFs on the
+        # host: 152 yield a cause, 115 of them long enough to count.
+        probable_cause = aaiib.parse_probable_cause(narrative)
+
         conn.execute(
             "INSERT OR REPLACE INTO aaiib_accidents "
             "(case_id, event_date, aircraft, registration, operator, location, country, "
@@ -239,7 +252,7 @@ def build(conn):
                 row["location"],
                 "PH",
                 narrative,
-                None,
+                probable_cause,
                 source_url,
                 row["event_class"],
                 site_slug,
