@@ -1,0 +1,10 @@
+# /etc/systemd/system/aaicnp-cycle.timer
+[Unit]
+Description=Weekly Nepal AAIC (CAAN) ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 12:15:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

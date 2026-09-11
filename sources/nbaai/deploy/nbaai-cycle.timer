@@ -1,0 +1,10 @@
+# /etc/systemd/system/nbaai-cycle.timer
+[Unit]
+Description=Weekly NBAAI ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 23:15:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

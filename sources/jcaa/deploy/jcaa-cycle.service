@@ -1,0 +1,13 @@
+[Unit]
+Description=jcaa ingest cycle (discover->fetch->parse->build->sync)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/jcaa
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/jcaa/jcaa-cycle.log
+StandardError=append:/opt/jcaa/jcaa-cycle.log
+TimeoutStartSec=10800

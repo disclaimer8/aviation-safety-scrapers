@@ -1,0 +1,1238 @@
+REPUBLIQUE DU CONGO
+
+MINISTERE DES TRANSPORTS, DE L’AVIATION CIVILE ET DE LA MARINE MARCHANDE
+BUREAU DES ENQUETES ET DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+Enquête :
+
+BEA-03-2023
+
+Type d’exploitation :
+
+Transport aérien commercial - passager
+
+Incident survenu le 17 décembre 2023
+à Brazzaville
+à l’aéronef Boeing B737-36N
+immatriculé TN-AKC
+exploité par Africa Airlines
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+TABLE DES MATIERES
+I.1
+I.2
+I.2.1
+I.2.1
+I.2.2
+I.2.3
+I.3
+I.3.1
+1.4
+1.4.1
+1.4.2
+1.4.3
+1.4.4
+1.4.5
+1.5
+1.6
+1.7
+1.8
+1.9
+1.10
+1.11
+1.12
+1.13
+1.14
+1.15
+1.15.1
+1.16
+II.
+III.
+3.1
+3.2
+3.2.1
+3.2.2
+IV.
+
+DÉROULEMENT DU VOL .................................................................................. 3
+DOMMAGES À L’AÉRONEF.............................................................................. 6
+ROUE N°02 DU TRAIN D’ATTERRISSAGE PRINCIPAL GAUCHE ......................6
+ROULEMENT ET JOINT DE GRAISSE EXTERIEUR ............................................7
+AUTRES COMPOSANTS DE LA ROUE N°02......................................................9
+BLOC DE FREIN N°02 ......................................................................................10
+RENSEIGNEMENTS SUR LE PERSONNEL ...................................................... 10
+ÉQUIPAGE DE CONDUITE ..............................................................................10
+RENSEIGNEMENTS SUR L’AÉRONEF ............................................................ 11
+CELLULE .........................................................................................................11
+TRAINS D’ATTERRISSAGE PRINCIPAUX........................................................12
+ROUES DES TRAINS D’ATTERRISSAGE PRINCIPAUX ...................................12
+MASSE ET CENTRAGE ....................................................................................13
+SUIVI DES OPERATIONS DE MAINTENANCE ................................................13
+CONDITIONS MÉTÉOROLOGIQUES .............................................................. 14
+AIDES À LA NAVIGATION ............................................................................... 14
+TÉLÉCOMMUNICATIONS ............................................................................... 14
+RENSEIGNEMENTS SUR L’AÉRODROME ...................................................... 14
+ENREGISTREURS DE BORD ........................................................................... 14
+RENSEIGNEMENTS SUR L’ÉPAVE ET SUR L’IMPACT ................................... 14
+RENSEIGNEMENTS MÉDICAUX ET PATHOLOGIQUES ................................. 15
+INCENDIE ........................................................................................................ 15
+QUESTIONS RELATIVES À LA SURVIE DES OCCUPANTS ............................. 15
+ESSAIS ET RECHERCHES ................................................................................ 15
+RENSEIGNEMENTS SUR LES ORGANISMES ................................................. 19
+AFRICA AIRLINES ...........................................................................................19
+TECHNIQUE D’ENQUÊTE UTILISÉE ............................................................... 19
+ANALYSE ........................................................................................................ 20
+CONCLUSIONS ............................................................................................... 23
+FAITS ÉTABLIS PAR L’ENQUÊTE.................................................................... 23
+CAUSES ET FACTEURS CONTRIBUTIFS ......................................................... 24
+CAUSE PRINCIPALE........................................................................................ 24
+FACTEURS CONTRIBUTIFS ............................................................................ 24
+RECOMMANDATIONS DE SECURITE ............................................................ 25
+
+Page 1 sur 1
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+GLOSSAIRE
+ANAC
+Agence nationale de l’aviation civile
+AERCO Aéroports du Congo
+ASECNA Agence pour la Sécurité de la Navigation Aérienne en Afrique et à
+Madagascar
+CVR
+Enregistreur de conversations de poste de pilotage
+FAA
+Fédéral Aviation Administration
+FCBB
+Aéroport Maya Maya
+FCPP
+Aéroport Agostinho Neto
+FDR
+Enregistreur de données de vol
+FL
+Niveau de vol (Flight Level)
+ILS
+Système d’atterrissage aux instruments
+m
+Mètre(s)
+mm
+Millimètre(s)
+NTSB
+Bureau national de la sécurité des transports
+OACI
+Organisation de l’aviation civile internationale
+PF
+Pilot flying / Pilote aux commandes
+PM/PNF Pilot monitoring / Pilote non aux commandes - Pilote surveillant
+QAR
+Quick Access Recorder
+QNH
+Calage altimétrique faisant indiquer, au sol, l’altitude de l’aérodrome
+(calage altimétrique pour indiquer l’altitude au-dessus du niveau
+moyen de la mer)
+SACAA
+UTC
+Temps Universel Coordonné
+
+Page 1 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+SYNOPSIS
+Aéronef
+
+Boeing B737-36N, TN-AKC, MSN 28 560
+
+Date et heure
+
+17 décembre 2023 à 14h09 (UTC)
+
+Exploitant
+
+Africa Airlines
+
+Lieu
+
+Aéroport Maya Maya, Brazzaville, au décollage
+de la piste 23
+
+Nature du vol
+
+Transport aérien commercial - passagers
+
+Personnes à bord
+
+02 personnel navigant technique (PNT),
+03 personnel navigant commercial,
+54 passagers (dont 1 enfant et 2 bébés)
+
+Conséquences et dommages
+
+Détachement de la roue n°02 du train principal
+gauche et endommagement du bloc de frein
+associé et du roulement extérieur (Outboard)
+
+ORGANISATION DE L'ENQUETE
+Le Bureau des enquêtes et des accidents d’aviation (BEA) a ouvert une enquête de
+sécurité n°BEA-03-2023 sur l’incident survenu le 17 décembre 2023, vers 14 h 10 UTC,
+impliquant l’aéronef de type Boeing 737-36N, immatriculé TN-AKC, au décollage,
+lors du vol AAT108 reliant les aéroports Maya-Maya (FCBB) de Brazzaville et
+Agostinho Neto (FCPP) de Pointe Noire.
+Cette enquête a été ouverte conformément à l’annexe 13 de la Convention relative
+à l’aviation civile internationale et aux dispositions pertinentes du code de
+l’aviation civile.
+Les organismes suivants ont pris part à cette enquête :
+-
+
+-
+
+-
+
+Bureau national de la sécurité des transports (NTSB) des États Unis
+d’Amérique, les États Unis d’Amérique étant l’Etat de conception et de
+construction de l’aéronef,
+Département d’enquête de l’Autorité de l’Aviation Civile d’Afrique du Sud
+(SACAA), l’Afrique du Sud étant l’Etat des organismes de maintenance
+ayant réalisé les dernières visites de l’aéronef et de ses roues.
+Fédéral Aviation Administration (FAA), autorité de certification de l’aéronef
+Boeing, constructeur de l’aéronef,
+Timken, fabricant des roulements des roues.
+
+Page 2 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+RENSEIGNEMENTS DE BASE
+I.1
+Déroulement du vol
+Note : Les informations suivantes sont principalement issues des entretiens avec le personnel
+d’exploitation, des enregistrements de radiocommunications entre l’aéronef, l’approche BZV et les
+tours de contrôle FCBB et FCPP ainsi que des enregistrements collectés sur site.
+
+Le 17 décembre 2023, l’aéronef Boeing 737-36N (immatriculé TN-AKC, numéro de
+série 28560) exploité par Africa Airlines, effectuait le vol AAT108 entre les
+aéroports Maya-Maya (FCBB) et Agostinho Neto (FCPP), avec à son bord 54
+passagers et 5 membres d’équipage.
+Le commandant de bord était le pilote aux commandes (PF) et le premier officier
+était le pilote surveillant (PM/PNF).
+A 13 h 54 min 25, l’équipage établit le premier contact avec la tour de contrôle de
+FCBB sur la fréquence 118,7 Mhz.
+A 13 h 57 min 13, l’équipage est autorisé par le contrôleur à effectuer le refoulement
+de l’aéronef (« push back ») pour un décollage sur la piste 23. Les conditions
+météorologiques sur la piste 23 étaient les suivantes: « WIND 280°/03KTS 24/22
+QNH1008».
+A 14 h 03 min 56, les instructions suivantes sont données à l’équipage par le
+contrôleur : « le vol FCBB-FCPP est autorisé en passant par le point VORAX pour un
+niveau vol en palier de FL 280 ; après le décollage, maintenir le cap de la piste
+jusqu’à 2500 pieds et ensuite tourner à droite ».
+A 14 h 10 min 10, l’équipage reçoit l’autorisation de décollage. La direction du vent
+et sa vitesse étaient respectivement de 230 degré et 04 nœuds.
+A 14 h 11 min 18, le contrôleur est informé du détachement en vol et de la chute
+d’une des roues du TN-AKC par un agent du service de sécurité incendie.
+Le contrôleur le signale à l’équipage qui décide, à 14 h 13 min 16, de poursuivre son
+vol à destination de FCPP.
+A 14 h 14 min 30, l’équipage demande à arrêter sa montée au FL 240.
+Le contrôleur en réponse, demande à AAT108 de monter au FL 240 et de contacter
+l’Approche de Brazzaville sur la fréquence 121.1 Mhz.
+A 14 h 18 min, l’équipage contacte l’Approche de Brazzaville, l’indique avoir
+dépassé le FL 140 et poursuivre sa montée jusqu’au FL 240.
+Le contrôleur demande à l’équipage de monter jusqu’au FL 280 et de le
+recontacter une fois le point VORAX atteint.
+Page 3 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+L’équipage réitère sa demande d’arrêter sa montée au FL 240 et le contrôleur l’y
+autorise.
+A 14 h 23 min 12 , avec l’autorisation du contrôleur, pour des raisons de météo,
+l’équipage dévie de son cap de 30 degré.
+Les données du vol AAT108 indiquent que l’aéronef, stabilisé à FL 240, a amorcé
+une descente à partir de 14 h 23 min 15.
+A 14 h 25 min 50, l’AAT108 est au niveau FL 148 et l’équipage demande à descendre
+au FL 100.
+A 14 h 25 min 59, l’autorisation est accordée par le contrôleur qui demande à être
+recontacter une fois le point VORAX atteint.
+A 14 h 26 min 56, le contrôleur demande des précisions sur les raisons de sa
+descente au FL 100.
+A la question de connaître si cette descente au FL 100 est liée à la météo,
+l’équipage indique au contrôleur, à 14 h 27 min 46, qu’il a un problème de
+pressurisation.
+Le parebrise L1 du cockpit s’est fissuré en plein vol .
+A 14 H 28 min 19 , AAT108 est stabilisé au FL100 et à 14 H 30 min 54, l’équipage
+informe le contrôleur avoir traversé le nord du point VORAX.
+Pour la suite du vol, le contrôleur demande à l’équipage de contacter la tour de
+contrôle de Pointe Noire sur la fréquence 124.3 MHz.
+A 14 h 32 min, l’équipage contacte la tour de contrôle de Pointe Noire et l’indique
+sa position. Le contrôleur précise que l’atterrissage se ferait sur la piste 17 et
+renseigne sur les conditions météorologiques « wind 190°/08kt, visibility 07 km,
+SCT 1000ft, BKN 2000ft, Few CB 2800ft, T27 DP24, QNH1007, CB N, NE, AND SW,
+RETS, TREND NOSIG ».
+L’équipage confirme au contrôleur opter pour une approche au moyen du système
+d’atterrissage aux instruments (ILS) et demande une assistance à l’arrivée.
+Le contrôleur l’informe de la disponibilité des pompiers.
+Précédemment informé par la tour de contrôle de Brazzaville de l’incident survenu
+au décollage de FCBB et que la recherche et l’identification de l’élément détaché
+du TN-AKC était en cours, le contrôle de la tour de FCPP recommande à l’équipage
+Page 4 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+d’effectuer un survol de l’aérodrome sans y atterrir (« low pass ») à l’effet de
+vérifier et confirmer si le problème se situe au niveau de la roue.
+L’équipage indique qu’en fonction de la météo sur la piste 17 un low pass sera
+effectué pour qu’une confirmation soit faite.
+A 14 h 48 min, l’équipage confirme son intention d’effectuer un survol de la piste à
+une altitude de 2000 pieds, de virer ensuite à droite pour rejoindre la branche vent
+arrière du circuit à droite de la piste 17, puis s’aligner pour un atterrissage ILS .
+Le survol à basse altitude est autorisé par le contrôleur en indiquant que la
+direction du vent est de 140° et la vitesse de 07 nœuds.
+A 14 h 55 min, après son survol, le contrôleur confirme à l’équipage l’absence d’une
+roue du train principal gauche.
+A 15 h 02 min, le contrôleur autorise l’atterrissage
+sur la piste 17 et indique que la direction du vent est
+de 140° et la vitesse de 17 nœuds.
+A 15 h 05 min, l’aéronef a atterri sans incident.
+Aucun mort, ni de blessé n'a été enregistré.
+L’inspection au sol du TN-AKC révèle que la roue
+détachée au décollage est la roue n°02 du train
+d’atterrissage principal gauche.
+
+Fig. 1 Bloc de frein gauche et autres
+composants de l’ensemble roue à
+l'atterrissage (aéroport FCPP)
+
+La roue détachée a été retrouvée à 16h06 dans la zone aéroportuaire de FCBB.
+Après s’être détaché du TN-AKC au décollage, la roue a terminé sa course en
+percutant le mur de clôture de l’aéroport Maya Maya entraînant une brèche.
+
+Fig. 2 Localisation de la roue n°02 du train d’atterrissage principal gauche détachée au décollage
+
+Page 5 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+I.2 Dommages à l’aéronef
+I.2.1 Roue n°02 du train d’atterrissage principal gauche
+La roue n°02 détachée du train d’atterrissage principal gauche est de type
+Honeywell.
+Sur la partie intérieure, on relève des marques de frottements sur le moyeu et les
+clavettes d’entrainement des rotors de frein.
+
+Fig. 3 Vue d’ensemble de roue n°02 – coté intérieur
+
+Le pneu de la roue n°02 est de type Goodyear (P/N 419K62T2).
+La roue n°02 se trouvait dans les limites de service prescrites par les constructeurs.
+La partie extérieure de la roue ne présente aucun dommage apparent. Le
+capuchon de moyeu de roue est resté attaché à la roue après l’événement et ne
+présente aucun dommage.
+
+Fig. 3
+
+Vue d’ensemble de la roue n°02 – coté extérieur
+
+Page 6 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+I.2.1 Roulement et joint de graisse extérieur
+Les rouleaux, les fragments du joint de graisse et de la cage du roulement extérieur
+ont été retrouvés dans le moyeu de roue.
+
+Fig. 4
+
+Rouleaux, fragments de Joint de graisse et de la cage du roulement extérieur
+
+Page 7 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+Le cône et une partie de la cage du roulement extérieur de la roue n°02 ont été
+retrouvés attachés à l’axe de roue du train principal gauche.
+
+Fig. 6
+
+Cône et fragment de cage du roulement extérieur
+
+Page 8 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+I.2.2 Autres composants de la roue n°02
+Le roulement intérieur, le joint de graisse intérieur, les deux (02) circlips sont restés
+attachés à l’axe de roue du train principal gauche. (figures 1 et 7)
+
+Fig. 7
+
+Circlips, rondelle, écrou, joint de graisse et roulement intérieur
+
+Page 9 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+I.2.3
+
+RAPPORT FINAL
+
+Bloc de frein n°02
+
+Le bloc de frein n°02 du train d’atterrissage principal gauche a été endommagé et
+son examen révèle des marques de frottement sur le support de frein.
+Les disques stator et rotor du bloc de frein présentent des dommages visibles.
+
+Fig. 8
+
+Bloc de frein n°02
+
+I.3 Renseignements sur le personnel
+I.3.1 Équipage de conduite
+Les dossiers examinés indiquent que l’équipage de conduite possédait les licences
+et les qualifications nécessaires pour effectuer le vol, conformément à la
+réglementation en vigueur.
+I.3.1.1 Commandant de bord
+Homme, 52 ans, de nationalité marocaine.
+• Licence, ATPL n°393(A) du 13 mars 2013 délivrée par la direction générale de
+l’aviation civile du Maroc;
+Page 10 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+•
+•
+•
+•
+•
+•
+
+RAPPORT FINAL
+
+Autorisation de vol n°02472/ANAC/DSA/SPAA du 15 décembre 2023 valide
+jusqu’au 19 décembre 2023 ;
+Qualification de type B737-300/900 ;
+Qualification de vol aux instruments valide jusqu’au 30 avril 2024 ;
+Dernière visite d’aptitude médicale de classe 1 effectuée le 02 mars 2023 et
+valide jusqu’au 31 mars 2024 ;
+Compétence linguistique en langue anglaise de niveau 4 valide jusqu’au 25
+janvier 2025.
+Expérience :
+✓ totale : 11426,16 heures de vol, dont 3 773,28 en qualité de commandant de
+bord
+✓ sur type : 10545,19 heures de vol, dont 2907,11 en qualité de commandant
+de bord
+✓ dans les 3 derniers mois : 76,21 heures de vol
+✓ dans les 7 derniers jours: 15,15 heures de vol
+
+I.3.1.2 Co-pilote
+Homme, 36 ans, de nationalité tunisienne.
+•
+•
+•
+•
+•
+•
+
+1.4
+
+Licence, CPL(A) n°1177(A) du 22 mars 2023, valide jusqu’au 10 mars 2027,
+délivrée par la direction générale de l’aviation civile de Tunisie;
+Qualification de type B737-300/800 ;
+Qualification de vol aux instruments valide jusqu’au 21 juillet 2024 ;
+Dernière visite d’aptitude médicale de classe 1 effectuée le 25 septembre 2023
+et valable jusqu’au 30 septembre 2024 ;
+Compétence linguistique en langue anglaise de niveau 4 valide jusqu’au 31 mai
+2026.
+Expérience :
+✓ totale : 797,46 heures de vol
+✓ sur type : 592,30 heures de vol
+✓ dans les 3 derniers mois : 141,50 heures de vol
+✓ dans les 7 derniers jours: 17,27 heures de vol
+Renseignements sur l’aéronef
+
+Construit en mai 1997, le Boeing 737-36N, MSN 28 560 a été inscrit le 05 août 2020
+sur le registre d’immatriculation congolais, sous l’immatriculation TN-AKC.
+1.4.1
+
+Cellule
+
+Constructeur
+Type
+Numéro de série
+Immatriculation
+Mise en service
+
+BOEING AIRCRAFT COMPANY
+B737-36N
+28 560
+TN-AKC
+(certificat d’immatriculation n°00266)
+11/05/1997
+Page 11 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+Certificat de navigabilité
+
+n°01/2021 du 26 janvier 2021 délivré par l’ANAC
+valide jusqu’au 14 novembre 2024
+Nombre total d’heures et de 46 697 heures de vol et 31 485 cycles
+cycles depuis construction
+Nombre total d’heures et 46 605 heures de vol et 31 365 cycles
+cycles lors de la dernière
+révision générale
+(C check ; 09/10/2023)
+Utilisation depuis la dernière 92 heures de vol et 120 cycles
+révision générale
+La dernière grande visite de maintenance (type C) du TN-AKC (CRS WP1009 & WO
+19/07/2022) a été réalisée du 21 janvier 2023 au 09 octobre 2023, à Bonaero Park
+(Afrique du Sud) par Jet Center Aircraft Maintenance.
+1.4.2 Trains d’atterrissage principaux
+Position
+Constructeur
+Type
+Numéro de série
+Date d’installation
+Dernière révision
+générale
+
+Gauche
+Boeing
+65-73761-127
+MC05371P2693
+30/05/2015
+30/05/2015 par HML
+Aviation Services
+
+Droite
+Boeing
+65-73761-128
+MC05372P2693
+30/05/2015
+30/05/2015 par HML
+Aviation Services
+
+1.4.3 Roues des trains d’atterrissage principaux
+Les roues des trains d’atterrissage principaux sont montées sur l’axe et retenues
+en place par une rondelle et un écrou de roue fixé par des boulons de verrouillage.
+Les roues sont composées de deux
+parties, une moitié intérieure
+supportant le bloc de frein et une
+moitié extérieure. Elles tournent sur
+deux roulements intérieur et
+extérieur à rouleaux coniques.
+Le chemin de roulement est un
+ajustement serré à l’intérieur du
+moyeu et la cage, un ajustement
+coulissant sur la fusée d’essieu. Les
+rouleaux roulent sur des rails dans le
+chemin de roulement et la cage.
+
+Fig. 9
+
+Ensemble roue-pneu
+
+Page 12 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+Les roulements intérieur et extérieur sont équipés de joints de graisse maintenus
+par des circlips dans les rainures du moyeu de roue.
+Les roues installées sur les trains principaux étaient de type Honeywell.
+Train principal
+gauche
+droit
+
+Position
+Roue n°01 (gauche)
+Roue n°02 (droite)
+Roue n°03 (gauche)
+Roue n°04 (droite)
+
+P/N
+2606671-2
+2606671-2
+2606671-2
+2609801-1
+
+S/N
+B3345
+B4202
+B12600
+B0976
+
+Au cours de la visite de type C du TN-AKC, réalisée par Jet Center Aircraft
+Maintenance en Afrique du Sud, les roues des trains d’atterrissage principaux ont
+été réparées par BNT International (non-routine works 31815, 31817, 31819 et
+31821).
+Les enregistrements des travaux de réparation réalisés sur ses roues, non
+disponibles chez l’exploitant, ont été collectés auprès de BNT International par le
+truchement de la SACAA.
+Les dossiers de maintenance fournis n’ont pas mis en évidence de défauts liés aux
+roulements ou aux roues ayant donné lieu à des interventions entre la remise en
+service après la visite C et la survenue de l’événement.
+1.4.4 Masse et centrage
+Lors de l’événement, la masse et le centrage du TN-AKC étaient dans les limites
+définies par le constructeur.
+1.4.5 Suivi des opérations de maintenance
+La gestion du maintien de navigabilité et l’entretien de l’aéronef
+TN-AKC sont décrites dans le manuel des spécifications de maintenance de
+l’exploitant et le programme d’entretien approuvés par l’ANAC.
+Le programme d’entretien du TN-AKC était à jour des documents constructeur.
+L’organisme de maintenance Africa Airlines (AAT) agréé par l’ANAC sous le
+certificat n°CG-0MA-028, valide jusqu’au 28 novembre 2025, assure la maintenance
+en ligne du TN-AKC.
+Les visites de maintenance en base sont sous-traitées à l’organisme de
+maintenance sud-africain « Jet Center Aircraft Maintenance (agrément n°1235 du
+25 octobre 2022) », agréé par l’ANAC sous le certificat d’acceptation CG-OMA-029.
+
+Page 13 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+1.5
+
+RAPPORT FINAL
+
+Conditions météorologiques
+
+Sans objet.
+1.6
+
+Aides à la navigation
+
+Il n'y avait aucune indication de pannes des aides à la navigation au cours du vol
+AAT108.
+1.7
+
+Télécommunications
+
+Les communications et les services de contrôle de la circulation aérienne fournis
+par l’ASECNA étaient clairs et sans équivoque pendant le vol. Aucune difficulté
+technique n’a été relevée.
+Les enregistrements du contrôle de la circulation aérienne (ATC) concernés ont
+été récupérés aux fins d’examen.
+1.8
+
+Renseignements sur l’aérodrome
+
+L’aérodrome international Maya-Maya de Brazzaville est doté d’une (01) piste en
+béton bitumineux (23/05) mesurant 3 300 mètres de longueur et 45 mètres de
+largeur.
+L’élévation de l’aéroport est de 321 mètres. L ’altitude minimum de sécurité est de
+320,61m / 1051,9 ft (pieds).
+Les coordonnées géographiques WGS84 du point de référence de l’aérodrome
+sont Lat. 04°14’22.66’’ S – Long. 15°15’52.05’’ E .
+1.9
+
+Enregistreurs de bord
+
+L’aéronef était équipé de deux (02) enregistreurs de bord (FDR et CVR)
+conformément à la règlementation en vigueur.
+Les données enregistrées n’ont pas été téléchargées, considérées non pertinentes
+pour déterminer les causes sous-jacentes et les facteurs contributifs de
+l’évènement.
+1.10 Renseignements sur l’épave et sur l’impact
+Il n’y a pas d’épave. Les renseignements sur l’impact figurent dans la section
+1.2 – Dommages à l’aéronef.
+
+Page 14 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+1.11
+
+RAPPORT FINAL
+
+Renseignements médicaux et pathologiques
+
+Sans objet.
+1.12 Incendie
+Aucune trace d’incendie avant ou après l’événement n’a été relevée.
+1.13 Questions relatives à la survie des occupants
+Après l’immobilisation de l’aéronef, les passagers et les membres d’équipage sont
+sortis indemnes par la porte principale.
+1.14 Essais et recherches
+Le roulement extérieur (P/N 27690-20629), le joint de graisse extérieur
+(P/N 2610036), le roulement intérieur (P/N 598-20629), le joint de graisse intérieur
+(P/N 2606693) et le circlip intérieur (P/N 2606169) ont été analysés au laboratoire
+métallurgique de Boeing à Huntington Beach (États unis).
+L'examen de ses pièces a donné lieu à plusieurs constatations qui complètent la
+section 1.2 – Dommages à l’aéronef :
+a) Roulement intérieur
+(figure 10)
+-
+
+-
+
+la référence du roulement intérieur «598-20629 » installé sur le train
+principal gauche du TN-AKC ne correspond pas au numéro de pièce
+(596-20629) exigé par le manuel de maintenance des composants (CMM);
+le roulement intérieur ne présente pas de dommages importants et peut
+être librement tourné à la main ;
+des marques d'usure ont été identifiées sur la cage, du côté intérieur des
+emplacements des rouleaux;
+aucun dommage apparent n’a été identifié sur la surface de contact du
+cône lors de l’examen visuel. Une empreinte d'essai de dureté a été
+identifiée sur la surface intérieure de la nervure.
+
+Page 15 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+Fig. 10
+
+RAPPORT FINAL
+
+Roulement intérieur, face avant et arrière (après nettoyage)
+
+b) Joint de graisse intérieur
+(figure 11)
+Aucun dommage significatif n'a été identifié sur le joint de graisse intérieur.
+
+Fig. 11
+
+Joint de graisse du roulement intérieur
+
+c) Roulement extérieur
+(figures 12 à 16)
+-
+
+-
+
+le roulement extérieur a subi des dommages importants ;
+des traces d'oxyde de fer (rouille) ont été identifiées sur le cône du
+roulement extérieur (figures 12 à 14);
+le cône est décoloré et corrodé à environ 150° le long de la circonférence
+de la surface de contact et au niveau du diamètre intérieur. La nervure
+intérieure du cône présente une décoloration dans la même région ainsi
+que des écailles et des fissures sur le bord extérieur (figures 12 à 14);
+la nervure extérieure du cône est déformée. La face extérieure de la
+nervure présente des dommages mécaniques et un aplatissement.
+
+Page 16 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+Fig. 12
+
+Cône du roulement extérieur, face avant et arrière
+
+Fig. 13
+
+Cône du roulement extérieur (Diamètre extérieur)
+
+Page 17 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+Fig. 14
+
+RAPPORT FINAL
+
+Cône du roulement intérieur (Diamètre intérieur)
+
+La cage de roulement extérieure s’est pliée et fracturée lors de l’évènement
+(figure 15).
+
+Fig. 15
+
+Fragments de la cage du roulement extérieur
+
+L'inspection visuelle de treize des rouleaux du roulement extérieur a révélé
+une usure importante et des déformations.
+L'un des rouleaux était cassé. Les rouleaux ne présentaient pas de
+décoloration ou de rouille significative. (figure 16).
+
+Fig. 16
+
+Rouleaux du roulement extérieur
+
+Page 18 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+d) Joint de graisse extérieur
+(figure 17)
+Le joint de graisse extérieur s’était fragmenté pendant l’événement.
+
+Fig. 17
+
+Joint de graisse du roulement extérieur
+
+e) Analyse des échantillons de graisse des roulements intérieur et extérieur
+Des échantillons de graisse des
+roulements
+intérieur
+et
+extérieur ont été prélevés pour
+une analyse Transformée de
+Fourier (FTIR) (figure 18).
+
+Fig. 18
+
+Spectre FTIR de la graisse des roulements
+intérieur (A) et extérieur (B) en bleu
+Spectre des graisses de référence (C-F) en rouge
+
+Les spectres FTIR (figure 18 A-B)
+des deux échantillons de graisse
+étaient
+similaires
+et
+correspondaient à ceux de
+Mobilith SHC 100 lithium
+(figure 18 C). Les spectres ne
+correspondaient pas à ceux des
+graisses
+Mobilgrease
+28,
+Aeroshell 5 ou Aeroshell 22
+(figure 18 D-F).
+
+1.15 Renseignements sur les organismes
+1.15.1 Africa Airlines
+La compagnie Africa Airlines est certifiée par l’agence nationale de l’aviation civile
+du Congo (ANAC) pour le transport commercial des passagers. Son certificat de
+transporteur aérien (CTA), numéro CG-CTA-008, est valide jusqu’au 08 août 2024.
+Elle effectue du transport aérien commercial de passagers en national et dispose
+de deux aéronefs inscrits sur sa liste de flotte (B737-300 et ATR 72-212A).
+1.16 Technique d’enquête utilisée
+-
+
+Exploitation des communications entre l’aéronef et le contrôle de la
+circulation aérienne ;
+Page 19 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+-
+
+Interviews du personnel d’exploitation ;
+Examen des documents techniques, opérationnels et administratifs ;
+Examen des équipements/pièces d’aéronef collectés par les enquêteurs.
+
+II.
+
+ANALYSE
+
+L’examen des roulements a révélé que le numéro de référence (P/N) du roulement
+intérieur était non conforme.
+Le roulement intérieur de la roue n°02 du train principal gauche portait la référence
+« 598-20629 » (figures 7 et 10). Pour cette position, le manuel de maintenance du
+constructeur requiert l’installation d’un roulement référencé «596-20629».
+a) Différence entre les roulements référencés « 598-20629 » et « 596-20629 »
+Les roulements «598-20629» et «596-20629» sont des roulements à rouleaux
+coniques fabriqués par Timken.
+
+Fig. 19
+
+Schémas d’un roulement à rouleaux coniques
+
+L’alésage du «598-20629» est plus grand que celui du «596-20629» :
+-
+
+l’alésage nominal du roulement “598-20629” est de 3,6250 pouces
+(92,075 mm);
+l’alésage nominal du roulement “596-20629” est de 3,3750 pouces
+(85,725 mm).
+l’alésage mesuré en laboratoire sur le roulement intérieur de la roue n°02
+du train principal gauche du TN-AKC était de 3,624 pouces (92,0496 mm),
+ce qui correspond au roulement « 598-20629 ».
+Ce type de roulement intérieur, référencé P/N 598-20629, n’est pas
+compatible avec les roues du Boeing 737, mais il l’est avec celles du Boeing
+707.
+
+b) Effet de l’installation d’un roulement intérieur non conforme sur l’axe de
+roue
+
+Page 20 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+Le diamètre extérieur (OD) de l’essieu à l’emplacement prévu pour le
+montage
+du
+roulement
+intérieur
+est
+de
+3,375
+pouces
+(85,725 mm). (Figure 20)
+
+Fig. 20
+
+Schémas de l’axe de roue
+(Extrait du Dessin d’ingénierie de Boeing. Boeing Proprietary Information. © Copyright Boeing.)
+
+L’installation du roulement intérieur non conforme (P/N 598-20629) sur cet
+essieu aurait créé un jeu diamétral d'environ 0,25 pouce (6,35 mm)
+engendrant une charge dynamique excessive sur le roulement extérieur et
+une accumulation anormale de chaleur.
+c) Séquence de défaillance du roulement extérieur
+Le roulement extérieur s'est rompu sous l’effet des charges dynamiques
+excessives induites par le jeu diamétral excessif (0,25 pouce) du roulement
+intérieur.
+Le cône de roulement extérieur a subi des dommages mécaniques : Sa
+grande nervure a été aplatie au point de ne devenir non identifiable, ce qui
+a conduit à la désintégration de la cage et la libération des rouleaux.
+(seuls 13 des 24 rouleaux du roulement ont été retrouvés).
+La perte d'intégrité du roulement a compromis la fonction de serrage
+(maintien) sur l’axe de roue (via l'écrou d'essieu, la rondelle d'essieu et le
+roulement), entrainant la séparation de la roue. (figure 21)
+Le diamètre intérieur (ID) du moyeu de roue étant plus grand que les
+diamètres du cône du roulement et de la rondelle/écrou d'essieu,
+
+Page 21 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+l'ensemble roue-pneu s’est détaché, bien que l'écrou et la rondelle soient
+restés fixés sur l'axe de roue (essieu).
+
+Fig. 21
+
+Vue en coupe transversale d’une roue installée sur l'axe de roue (essieu)
+Boeing Proprietary Information. © Copyright Boeing.
+
+d) Hypothèses écartées : Roulement extérieur non conforme , graisse
+contaminée ou non conforme
+Les dommages subis par le roulement extérieur ont empêché
+l’identification de sa référence, mais l'alésage mesuré (3,287 pouces /
+83,4898 mm) correspondait à celui du roulement requis (P/N 27690-20629),
+conforme aux prescriptions du constructeur.
+Les échantillons de graisse prélevés sur chacun des roulements ont été
+analysés et correspondaient à de la graisse Mobilith SHC 100 lithium,
+conforme aux spécifications approuvées.
+
+Page 22 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+III.
+3.1
+
+RAPPORT FINAL
+
+CONCLUSIONS
+Faits établis par l’enquête
+
+À l’issue de l’enquête, les faits suivants ont été établis sur la base des éléments
+collectés et analysés :
+1. l’équipage possédait des licences et les qualifications requises et en cours
+de validité au moment du vol;
+2. l’équipage de conduite était conforme aux règlements en vigueur en
+matière de temps de vol et de service;
+3. l’aéronef TN-AKC détenait un certificat de navigabilité valide et était certifié
+et équipé conformément à la règlementation applicable;
+4. l’aéronef était à jour de son cycle d’entretien;
+5. les roues du TN-AKC et leurs composants ont été réparés dans un atelier de
+maintenance lors de la dernière grande visite de maintenance de l’aéronef;
+6. la roue n°02 s’est détachée au décollage du vol AAT108, après 92 heures de
+vol et 120 cycles depuis la grande visite de maintenance ;
+7. le moyeu de la roue n°02 ainsi que le bloc de frein associé présentaient des
+marques de frottement;
+8. la référence du roulement intérieur installé sur la roue n°02 était non
+conforme (« 598-20629 » au lieu de « 596-20629 »);
+9. Les dommages subis par le roulement extérieur ont empêché
+l’identification de sa référence, mais l'alésage mesuré (3,287 pouces /
+83,4898 mm) correspondait à celui du roulement requis (P/N 27690-20629),
+conforme aux prescriptions du constructeur;
+10. le contrôle effectué par l’organisme de maintenance des roues n’a pas
+permis de détecter la non-conformité du roulement intérieur;
+11. Le roulement non conforme, envoyé avec la roue chez BNT pour révision,
+était déjà installé sur la roue lors de l'entrée de l'aéronef en visite;
+12. l’absence d’enregistrements complets dans les dossiers de maintenance de
+l’exploitant notamment relatifs aux réparations antérieures de la roue et à
+l’installation de ses composants, a limité la traçabilité du roulement non
+conforme et la reconstitution précise de son historique.
+Faits établis quant aux risques :
+1. La non-détection d’une non-conformité lors des contrôles qualité effectués
+à la réception ou à l’installation d’un composant de roue augmente le risque
+d’intégration de pièces incompatibles, susceptibles de compromettre la
+sécurité du vol.
+2. L’utilisation d’un composant non conforme aux spécifications du
+constructeur, en l’occurrence un roulement, même si ses dimensions sont
+proches de celles spécifiées, entraîne un mauvais ajustement mécanique.
+Ce désajustement peut favoriser une élévation locale de température,
+accélérer l’usure des éléments porteurs et conduire inévitablement à une
+défaillance structurale du roulement, compromettant ainsi l’intégrité
+mécanique du système roue-essieu et la sécurité opérationnelle de
+l’aéronef.
+3. La documentation incomplète des réparations antérieures ainsi que de
+l’installation des roues limite la traçabilité des composants, ce qui réduit la
+Page 23 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+
+RAPPORT FINAL
+
+capacité à identifier l’origine de la non-conformité et à prévenir des
+événements similaires.
+3.2 Causes et facteurs contributifs
+3.2.1 Cause principale
+L’installation d’un roulement intérieur de référence non conforme
+(« 598-20629 » au lieu de « 596-20629 ») sur la roue n°02 du train principal
+gauche a entraîné un jeu excessif sur l’axe de roue. Ce jeu a provoqué une
+élévation de température, la détérioration progressive du roulement
+extérieur, puis la perte d’intégrité mécanique de la fixation de la roue,
+conduisant à son détachement lors du décollage.
+3.2.2
+
+Facteurs contributifs
+1. Les procédures de l’exploitant pour le contrôle de conformité des
+composants lors de leur acquisition, réception et installation n’ont pas
+permis de détecter précocement la non-conformité du roulement;
+2. le contrôle de conformité du roulement, réalisé par l’organisme de
+maintenance lors de la révision de la roue, n’a pas permis d’identifier la
+non-conformité de la référence du roulement.
+
+Page 24 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+BUREAU DES ENQUETES ET
+DES ACCIDENTS D’AVIATION
+IV.
+
+RAPPORT FINAL
+
+RECOMMANDATIONS DE SECURITE
+
+Rappel : Conformément aux dispositions de la section XIII du Règlement 05/23-UEAC-066-CM-40 du 18
+juin 2024 portant adoption du code aviation civile des États membres de la communauté économique
+et monétaires des États de l’Afrique centrale, une recommandation de sécurité ne constitue en aucun
+cas une présomption de faute ou de responsabilité dans un accident ou un incident.
+
+A. Recommandations à l’attention de l’exploitant de l’aéronef (Africa Airlines)
+RECO_BEA-03-2023_01
+
+Renforcement du contrôle
+composants critiques
+
+de
+
+conformité
+
+des
+
+Le Bureau recommande à Africa Airlines de mettre en œuvre des procédures de
+contrôle de conformité renforcé et systématique des références des roulements et
+autres composants critiques, à l’acquisition, à la réception et avant leur installation,
+afin de garantir la conformité aux spécifications du constructeur.
+RECO_BEA-03-2023_02
+
+Amélioration de la gestion et de la traçabilité des
+enregistrements de maintenance
+
+Le Bureau recommande à Africa Airlines de veiller à l’enregistrement systématique,
+complet, accessible et traçable des opérations de maintenance, notamment celles
+relatives aux réparations des roues et à l’installation des composants, en conformité
+avec les exigences réglementaires en vigueur et les prescriptions des constructeurs.
+B. Recommandations à l’attention de l’organisme de maintenance des roues
+(BNT)
+RECO_BEA-03-2023_03
+
+Contrôle systématique des références des composants
+critiques avant installation
+
+Le Bureau recommande à BNT d’effectuer un contrôle systématique de conformité
+des références des composants reçus avant installation, notamment des roulements
+de roue, afin de garantir leur conformité aux spécifications du constructeur avant la
+remise en service de la roue.
+C. Recommandation à l’attention de l’autorité de supervision (ANAC)
+RECO_BEA-03-2023_04 Renforcement de la surveillance réglementaire de la
+tenue des dossiers de maintenance
+Le Bureau recommande à l’ANAC de renforcer la surveillance réglementaire de
+l’ensemble des exploitants placés sous sa juridiction, notamment en matière de
+tenue, conservation et accessibilité des dossiers de maintenance , afin d’assurer une
+traçabilité adéquate des opérations de maintenance et la disponibilité des
+informations en cas d’événement.
+Page 25 sur 25
+
+RF BEA-03-2023
+
+Le s en qu êtes du Bu re au de s en qu ê te s e t d es ac ci den ts d’ avi a ti on o nt po ur un i que obj ec ti f l ’a mé li or a ti on de la
+sé cur i té aé ri enn e e t ne vi sen t nu l le men t la dé term in a ti o n de s f au te s ou re sp on sa bil i té s.
+
+Page 1 sur 1
+
+
