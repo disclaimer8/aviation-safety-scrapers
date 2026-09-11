@@ -1,0 +1,200 @@
+INFORME DE
+INTERVENCIÓN
+Expediente: EX-2022-04080004-APN-DNISAE#JST
+Título: Falla o malfuncionamiento de grupo motor, Embraer ERJ-190, matrícula LVCMB, Aeropuerto Internacional Teniente Benjamín Matienzo, provincia de Tucumán
+Fecha y hora del suceso: 12 de enero de 2022 a las 16:57 horas (UTC)
+Dirección Nacional de Investigación de Sucesos Aeronáuticos
+
+ID
+
+INFORME BÁSICO
+
+FECHA
+
+HORA UTC
+
+4080004-22
+
+INTERVENCIÓN
+
+12/01/22
+
+16:57
+
+Lugar del suceso
+Lugar
+
+Aeropuerto Internacional Teniente Benjamín Matienzo
+
+Provincia
+
+Tucumán
+25°
+
+Coordenadas
+
+Reseña
+
+50’
+
+18″
+
+Categoría de suceso
+
+65°
+
+S
+
+1
+
+06′
+
+SCF-PP
+
+16″
+
+W
+
+2
+
+En el vuelo AR1743 que cubría el tramo TUC-IGR, la tripulación de cabina informó al
+Comandante inmediatamente después de la rotación, que en la cabina de pasajeros había
+humo y olor. El Comandante decidió efectuar QRF a TUC, donde aterrizó normalmente.
+Una vez aterrizados, apareció en el EICAS la indicación “Pack 2 fail”
+
+Aeronave
+Tipo
+
+1
+
+Nº
+
+Avión
+
+Nº Serie
+
+Matrícula
+
+Marca
+
+Embraer
+
+Modelo
+
+ERJ-190
+
+PMD
+
+27001-272000 kg
+
+Daños
+
+Ninguno
+
+Propietario
+
+Aerolíneas Argentinas S.A.
+
+Operador
+
+Aerolíneas Argentinas S.A.
+
+Itinerario
+
+LV-CMB
+
+DESPEGUE
+
+Fase de Vuelo
+
+Lugar de Salida
+
+Aeropuerto Tucumán
+
+Código
+
+SANT
+
+Lugar de Destino
+
+Aeropuerto Iguazú
+
+Código
+
+SARI
+
+Duración Vuelo
+
+00:15
+
+MET
+
+VMC
+
+Tipo de Operación
+
+Nº Vuelo AR1743
+
+Aviación Comercial - Regular
+
+Lesiones
+
+Tripulación
+
+Pasajeros
+
+Otros
+
+Total
+
+Mortales
+
+0
+
+0
+
+0
+
+0
+
+Graves
+
+0
+
+0
+
+0
+
+0
+
+Leves
+
+0
+
+0
+
+0
+
+0
+
+Ninguna
+
+5
+
+98
+
+0
+
+103
+
+Total
+
+5
+
+98
+
+0
+
+103
+
+

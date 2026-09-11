@@ -1,0 +1,256 @@
+Informe Preliminar ADREP
+
+Informe Preliminar
+Datos del Suceso
+Accident
+LOC-G: Loss of control - ground
+
+Instancia
+
+Preliminary
+17/6/2026
+
+Estado/lugar del suceso
+
+South America
+Argentina
+
+Nombre del lugar
+
+Los Nanos, Cipolletti
+
+Latitud
+
+38:53:31 South
+
+Longitud
+
+68:02:16 West
+
+entrenamiento.
+
+Severidad
+Substantial
+Nivel de lesiones
+
+None
+No
+
+21:40
+
+Lugar de salida
+
+Argentina (LADH3157)
+
+Argentina (LADH3157)
+Lugar de destino
+
+0,25 Hour(s)
+Indicativo
+
+LV-GUI
+
+Fase del vuelo
+
+Manoeuvring
+
+Lesiones al Personal
+Mortales
+
+Graves
+
+Leves
+
+Ninguna
+
+Desc.
+
+Total
+
+Total en superficie
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+Total en aeronave
+
+0
+
+0
+
+0
+
+1
+
+0
+
+1
+
+Total
+
+0
+
+0
+
+0
+
+1
+
+0
+
+1
+
+LV-GUI
+Argentina
+Substantial
+Fabricante/modelo
+
+ROBINSON
+R66
+
+Rotorcraft
+Helicopter
+Small/light Helicopter
+Small Helicopter
+2016
+0735
+PMD
+
+1225 kg
+
+Grupo masa
+
+0-2 250 kg
+
+Ciclos totales
+
+1416
+
+Tipo de combustible
+
+Turbine engine fuel - Jet A-1 / JP-8 (US) / F34 (NATO) / AVTUR
+
+Horas totales
+
+1918,8 Hour(s)
+
+Doc. de mantenimiento
+
+Current
+
+Certificado de
+aeronavegabilidad
+
+Valid
+
+1
+Fabricante/modelo
+
+ROLLS-ROYCE
+
+RRE-200745
+Horas totales
+
+1918,8 Hour(s)
+
+Ciclos totales
+
+1416
+
+Horas DURG
+Ciclos DURG
+Horas DUI
+
+81,1 Hour(s)
+
+Edad
+
+55 Year(s)
+
+Sexo
+
+Male
+
+Pilot-in-command
+Tipo de licencia
+
+Helicopter pilots
+Commercial pilot
+
+Licencia emitida en
+
+State of Registry
+
+Habilitaciones
+
+Rating not required
+
+Horas de vuelo - General
+Totales
+
+Horas de vuelo - En el tipo
+Totales
+
+No
+Condiciones MET
+
+VMC
+
+Visibilidad
+Condiciones de luz
+
+Daylight
+
+Intensidad del viento
+
+Lugar de los restos
+
+On aerodrome/airstrip
+
+Tipo de terreno
+
+Level/flat
+0 ft
+
+Tipo de superficie
+
+Grass
+
+Distancia recorrida
+
+Supervivencia
+Supervivencia
+
+Yes
+Sighting of occupants
+
+Estado del ELT
+Lap belt used
+
+Tiempo de escape
+
+1 Minute(s)
+
+Non-Commercial Operations
+Flight Training/Instructional
+Other
+Scheduled
+Operador
+
+Argentina
+Private Operator
+
+Tipo de operador
+
+Private owner
+
+

@@ -1,0 +1,200 @@
+2024: “Año de la Defensa de la Vida, la Libertad y la Propiedad”
+
+ID
+
+INFORME BÁSICO
+
+FECHA
+
+HORA UTC
+
+7925524
+
+ACCIDENTE
+
+21/01/24
+
+16:30
+
+Lugar del suceso
+Lugar
+
+Aeródromo Morón
+
+Provincia
+
+Buenos Aires
+
+Coordenadas
+
+34°
+
+Reseña
+
+40’
+
+S
+
+43″
+
+Categoría de suceso
+
+058°
+
+1
+
+38′
+
+W
+
+37″
+
+2
+
+ARC
+
+En un vuelo de aviación general de entrenamiento, durante la fase de aterrizaje, la
+aeronave hizo contacto con la pista con el tren de aterrizaje replegado, produciéndose
+daños en las palas y en la parte ventral del fuselaje. Los ocupantes no sufrieron lesiones.
+
+Aeronave
+Tipo
+Nº Serie
+
+Nº
+
+Matrícula
+
+1
+
+Avión
+
+Marca
+
+AR-28R-7837188
+
+PMD
+
+Propietario
+
+Privado
+
+Operador
+
+Privado
+
+Itinerario
+
+Piper
+0-2250 kg
+
+Fase de Vuelo
+
+LV-MGT
+Modelo
+
+PA-A28-201
+
+Daños
+
+Leves
+
+ATERRIZAJE
+
+Lugar de Salida
+
+Aeródromo Matanza
+
+Código
+
+MAT
+
+Lugar de Destino
+
+Aeródromo Morón
+
+Código
+
+SADM
+
+Duración Vuelo
+
+00:15
+
+MET
+
+VMC
+
+Tipo de Operación
+
+Nº Vuelo
+
+-
+
+Aviación General - Entrenamiento
+
+Lesiones
+
+Tripulación
+
+Pasajeros
+
+Otros
+
+Total
+
+Mortales
+
+0
+
+0
+
+0
+
+0
+
+Graves
+
+0
+
+0
+
+0
+
+0
+
+Leves
+
+0
+
+0
+
+0
+
+0
+
+Ninguna
+
+1
+
+1
+
+0
+
+2
+
+Total
+
+1
+
+1
+
+0
+
+2
+
+Nota: Este informe presenta datos preliminares recopilados por la Junta de Seguridad en el
+Transporte (JST) y está sujeto a posibles modificaciones conforme avance el proceso de
+investigación.
+
+
