@@ -17,12 +17,24 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 # FlightFinder server/scripts/build-source-narratives.js, checked 2026-09-11.
 PROD_NARRATIVE_MIN = 300
 
-# Two documented exceptions, both stricter than prod — a source may decide its
-# own reports are longer than the general case. Nothing may be LOOSER.
-STRICTER_BY_DESIGN = {
+# Per-source exceptions, in either direction, each with its reason. The name
+# and the old comment said "nothing may be LOOSER", but ntsbcarol has always
+# been 200 — looser than prod — so the rule as written never matched the rule
+# as enforced. Corrected here rather than left as a trap for the next reader.
+#
+# Looser is allowed because _NARRATIVE_FLOOR gates building the occurrence
+# ROW, not just its page. A row below prod's minimum renders noindex, but its
+# structured fields — date, registration, aircraft type, event class — are
+# still the occurrence. Dropping it loses data, not only a page. A source may
+# take that trade deliberately; it may not take it silently.
+BY_DESIGN = {
     "ntsbcarol": 200,   # CAROL abstracts are short by nature
     "ntsbaar": 1000,    # "an AAR is a long document; less than this is a scan"
+    "aaibmn": 30,       # scans with no text layer; the listing title carries
+                        # the date, aircraft and registration, and is the only
+                        # narrative these rows will ever have
 }
+STRICTER_BY_DESIGN = BY_DESIGN  # kept: existing name, corrected meaning
 
 _FLOOR = re.compile(r"^_NARRATIVE_FLOOR\s*=\s*(\d+)", re.M)
 

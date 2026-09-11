@@ -66,6 +66,25 @@ VENDORED = {
     "gcaagy": {"http": "httpc", "robots": "robots", "text": "text"},
     "aaibzm": {"http": "httpc", "robots": "robots", "text": "text"},
     "aacsv": {"http": "httpc", "robots": "robots", "text": "text"},
+    "aaid": {"http": "httpc", "robots": "robots", "text": "text"},
+    "dgcakw": {"http": "httpc", "robots": "robots", "text": "text"},
+    # aaibmn carries the canon three byte-for-byte plus Mongolian date,
+    # registration and event-class parsing, so the canon lands as
+    # _textbase.py and text.py re-exports it — the nsib/aaiahk shape.
+    "aaibmn": {"http": "httpc", "robots": "robots", "text": "_textbase"},
+    # text is NOT vendored into the five below. Each deliberately keys
+    # site_slug on an intrinsic case_id from its source instead of the
+    # canon's (aircraft, registration, location) — a different signature,
+    # not drift — and ainhr additionally folds Croatian diacritics inside
+    # slugify. Syncing the canon over them would silently change every slug
+    # they have ever produced.
+    "aaiib": {"http": "httpc", "robots": "robots"},
+    "aaiubg": {"http": "httpc", "robots": "robots"},
+    "ainhr": {"http": "httpc", "robots": "robots"},
+    "baaid": {"http": "httpc", "robots": "robots"},
+    "bagaia": {"http": "httpc", "robots": "robots"},
+    "eccaa": {"http": "httpc", "robots": "robots"},
+    "ipiaam": {"http": "httpc", "robots": "robots"},
     "aaicnp": {"http": "httpc", "robots": "robots", "text": "text"},
     "aaisl": {"http": "httpc", "robots": "robots", "text": "text"},
     "aicpng": {"http": "httpc", "robots": "robots", "text": "text"},

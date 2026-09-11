@@ -1,0 +1,10 @@
+# /etc/systemd/system/aaiubg-cycle.timer
+[Unit]
+Description=Weekly Bulgaria AAIU (aaiubg) ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 09:30:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

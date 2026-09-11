@@ -1,0 +1,14 @@
+# /etc/systemd/system/baaid-cycle.service
+[Unit]
+Description=BAAID (Bahamas) ingest cycle (weekly; discover->fetch->parse->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/baaid
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/baaid/baaid-cycle.log
+StandardError=append:/opt/baaid/baaid-cycle.log
+TimeoutStartSec=10800

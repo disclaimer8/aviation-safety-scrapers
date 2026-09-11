@@ -1,0 +1,13 @@
+[Unit]
+Description=ipiaam ingest cycle (discover->fetch->parse->build->sync)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/ipiaam
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/ipiaam/ipiaam-cycle.log
+StandardError=append:/opt/ipiaam/ipiaam-cycle.log
+TimeoutStartSec=10800
