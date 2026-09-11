@@ -42,10 +42,50 @@ def _safe_filename(name: str) -> str:
 _NARRATIVE_FLOOR = 300
 
 
+class SourcePaused(RuntimeError):
+    """This source is deliberately not running. See the message."""
+
+
+# ── PAUSED 2026-09-11 ────────────────────────────────────────────────────────
+# discover() enumerates events from intranet.jst.gob.ar, whose robots.txt is:
+#
+#     User-agent: *
+#     Disallow: /
+#
+# That is a blanket prohibition on a host that calls itself an intranet, not a
+# crawl-budget rule about a search UI. JST's PUBLIC host so.jst.gob.ar serves
+# `Allow: /` and carries both the manifest (Index.json) and the report PDFs, so
+# the data is published — this pipeline just reaches it through the wrong door.
+#
+# Paused rather than exempted: bfu carries the tree's one robots exemption
+# because its rule is aimed at a search form, and stretching that to a host
+# saying "do not crawl me at all" is a different decision. Reopen by finding an
+# allowed route to the event metadata (does Index.json carry enough on its own?
+# is there a public listing on so.jst.gob.ar?), not by adding the exemption.
+#
+# fetch/parse/build are untouched: they read so.jst.gob.ar, which allows them,
+# so rows already discovered still complete.
+_PAUSED_REASON = (
+    "jst discover is paused: it enumerates events from intranet.jst.gob.ar, "
+    "whose robots.txt is `Disallow: /`. The public host so.jst.gob.ar allows "
+    "everything and serves the manifest and the PDFs — the fix is an allowed "
+    "route to the event metadata, not a robots exemption. Disable the "
+    "jst-cycle timer until then. See sources/jst/jst_ingest/pipeline.py."
+)
+
+
 def discover(conn, client, max_pages=None, full=False):
+    """PAUSED — see _PAUSED_REASON. Raises rather than crawling a Disallowed host."""
+    raise SourcePaused(_PAUSED_REASON)
+
+
+def _discover_impl(conn, client, max_pages=None, full=False):
     """
     Paginate the events API + fetch the manifest once; INSERT new
     doc-bearing rows keyed on the 8-digit expediente core (case_id).
+
+    Kept intact behind the pause so the allowed-route work has something to
+    start from rather than a deleted function.
     """
     manifest = jst.fetch_manifest(client)
     existing = {

@@ -18,7 +18,7 @@ sources:
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
     delay_seconds: 1.0
-    narrative_floor: 600
+    pdf_text_min: 600
     user_agent: 'aaib-ingest/1.0'
   - code: aaibly
     shape: script
@@ -36,7 +36,8 @@ sources:
     verbs: [discover, fetch, build, all]
     tests: behaviour
     delay_seconds: 1.5
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     summary: 'discover → fetch(+parse) → build pipeline for AAIB Malaysia.'
   - code: aaig
     shape: script
@@ -49,7 +50,7 @@ sources:
     verbs: [argv]
     tests: smoke
     delay_seconds: 1.5
-    narrative_floor: 300
+    pdf_text_min: 300
     summary: 'aaiibcy — Cyprus AAIIB (Aircraft Accident and Incident Investigation Board)'
   - code: aaikz
     shape: script
@@ -75,7 +76,7 @@ sources:
     verbs: [argv]
     tests: smoke
     delay_seconds: 2.0
-    narrative_floor: 300
+    pdf_text_min: 300
     user_agent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36'
     summary: 'Patchright helper: render mintrans.uz listing page and print HTML to stdout.'
   - code: agacgn
@@ -89,14 +90,15 @@ sources:
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
     delay_seconds: 2.0
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     summary: 'discover -> fetch -> parse -> build pipeline for Honduras AHAC.'
   - code: aias
     shape: script
     verbs: [argv]
     tests: smoke
     delay_seconds: 2.0
-    narrative_floor: 600
+    pdf_text_min: 600
     summary: 'AIAS (Romania) accident/incident report ingest — patchright CF transport.'
   - code: aibdk
     shape: package
@@ -116,7 +118,7 @@ sources:
     verbs: [argv]
     tests: smoke
     delay_seconds: 2.0
-    narrative_floor: 600
+    pdf_text_min: 600
     summary: 'AKISA (Albania — Autoriteti Kombëtar i Investigimit për Sigurinë e Operimit'
   - code: anacdz
     shape: script
@@ -129,7 +131,8 @@ sources:
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
     delay_seconds: 2.0
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     summary: 'discover → fetch → parse → build pipeline for ANSV (Italy) WordPress listing.'
   - code: araib
     shape: package
@@ -148,7 +151,8 @@ sources:
     verbs: [discover, refetch, fetch, parse, build, all]
     tests: behaviour
     delay_seconds: 1.5
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     user_agent: 'bea-ingest/1.0'
     summary: 'discover → fetch → parse → build pipeline for bea.aero notified-events.'
   - code: beabj
@@ -180,7 +184,8 @@ sources:
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
     delay_seconds: 3.0
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     user_agent: 'bfu-ingest/1.0'
     summary: 'discover → fetch → parse → build pipeline for BFU Untersuchungsberichte.'
   - code: bhdca
@@ -212,42 +217,48 @@ sources:
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
     delay_seconds: 3.0
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     summary: 'discover → fetch → parse → build pipeline for CENIPA (Brazil).'
   - code: ciaado
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
     delay_seconds: 1.8
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     summary: 'discover → fetch → parse → build pipeline for CIAA (Dominican Republic).'
   - code: ciaape
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
     delay_seconds: 2.0
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     summary: 'discover -> fetch -> parse -> build pipeline for CIAA Peru (gob.pe, multi-hop).'
   - code: ciaiac
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
     delay_seconds: 2.0
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     summary: 'discover → fetch → parse → build pipeline for CIAIAC (Spain) per-year listing.'
   - code: ciaiauy
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
     delay_seconds: 2.0
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     summary: 'discover -> fetch -> parse -> build pipeline for CIAIA (Uruguay).'
   - code: cins
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
     delay_seconds: 1.8
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     summary: 'discover -> fetch -> parse -> build pipeline for CINS (Serbia).'
   - code: cipaa
     shape: script
@@ -296,7 +307,8 @@ sources:
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
     delay_seconds: 1.8
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     summary: 'discover -> fetch -> parse -> build pipeline for DGAC Guatemala (UIA).'
   - code: dgcalb
     shape: script
@@ -327,21 +339,22 @@ sources:
     verbs: [discover, fetch, build, all]
     tests: behaviour
     delay_seconds: 1.5
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     summary: 'discover → fetch → build pipeline for GPIAAF Portugal (civil aviation).'
   - code: griaa
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
     delay_seconds: 2.0
-    narrative_floor: 80
+    narrative_floor: 300
     summary: 'discover → fetch → parse → build pipeline for GRIAA (Colombia) per-year listing.'
   - code: iacm
     shape: script
     verbs: [argv]
     tests: smoke
     delay_seconds: 2.0
-    narrative_floor: 600
+    pdf_text_min: 600
     summary: 'IACM (Mozambique civil aviation authority) accident/incident report ingest.'
   - code: india
     shape: package
@@ -355,7 +368,7 @@ sources:
     verbs: [argv]
     tests: smoke
     delay_seconds: 2.5
-    narrative_floor: 600
+    pdf_text_min: 600
   - code: jst
     shape: package
     verbs: [discover, fetch, build, all]
@@ -368,7 +381,8 @@ sources:
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
     delay_seconds: 1.5
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     summary: 'discover → fetch → parse → build pipeline for JTSB (Japan) listing.'
   - code: kbsz
     shape: script
@@ -401,7 +415,7 @@ sources:
     verbs: [argv]
     tests: smoke
     delay_seconds: 2.5
-    narrative_floor: 600
+    pdf_text_min: 600
     summary: "Mexico AFAC (Agencia Federal de Aviacion Civil) 'Informes Finales' ingest --"
   - code: nsia
     shape: package
@@ -415,14 +429,16 @@ sources:
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
     delay_seconds: 1.5
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     summary: 'discover -> fetch -> parse -> build pipeline for NSIB (Nigeria).'
   - code: ntsbaar
     shape: package
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
     delay_seconds: 1.5
-    narrative_floor: 600
+    narrative_floor: 1000
+    pdf_text_min: 600
     summary: 'discover → fetch → parse → build for the NTSB Aircraft Accident Reports.'
   - code: ntsbcarol
     shape: package
@@ -430,20 +446,22 @@ sources:
     tests: behaviour
     delay_seconds: 1.5
     narrative_floor: 200
+    pdf_text_min: 500
     summary: 'discover → fetch → parse → build pipeline for ntsbcarol.'
   - code: ojk
     shape: script
     verbs: [argv]
     tests: smoke
     delay_seconds: 1.5
-    narrative_floor: 600
+    pdf_text_min: 600
     summary: 'OJK / ESIB (Estonia) aviation accident-report ingest — plain httpx.'
   - code: otkes
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
     delay_seconds: 1.0
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     summary: 'discover → fetch → build pipeline for OTKES Finland.'
   - code: otsb
     shape: script
@@ -456,14 +474,15 @@ sources:
     verbs: [discover, fetch, build, all]
     tests: behaviour
     delay_seconds: 2.0
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     summary: 'discover → fetch(+parse) → build pipeline for OVV / Dutch Safety Board.'
   - code: panama
     shape: script
     verbs: [argv]
     tests: smoke
     delay_seconds: 1.5
-    narrative_floor: 600
+    pdf_text_min: 600
     summary: 'Panama AAC / UPIA accident-report ingest — plain httpx (no browser).'
   - code: pkbwl
     shape: package
@@ -484,21 +503,23 @@ sources:
     verbs: [discover, fetch, parse, build, all]
     tests: behaviour
     delay_seconds: 2.5
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     summary: 'discover → fetch → parse → build for the ROSA P CAB collection.'
   - code: sacaa
     shape: package
     verbs: [discover, fetch, build, all]
     tests: behaviour
     delay_seconds: 1.5
-    narrative_floor: 600
+    narrative_floor: 300
+    pdf_text_min: 600
     summary: 'discover → fetch(+parse) → build pipeline for SACAA AIID (South Africa).'
   - code: scaa
     shape: script
     verbs: [argv]
     tests: smoke
     delay_seconds: 1.5
-    narrative_floor: 600
+    pdf_text_min: 600
     user_agent: 'curl/7.88.1'
     summary: 'SCAA (Seychelles Civil Aviation Authority, scaa.sc) accident-report ingest.'
   - code: shk
@@ -533,7 +554,7 @@ sources:
     verbs: [argv]
     tests: smoke
     delay_seconds: 1.5
-    narrative_floor: 600
+    pdf_text_min: 600
     summary: 'SVK (Slovakia) accident/incident final-report ingest — plain httpx, no browser.'
   - code: taibtz
     shape: script
@@ -559,7 +580,7 @@ sources:
     verbs: [discover, fetch, build, all]
     tests: behaviour
     delay_seconds: 1.0
-    narrative_floor: 80
+    narrative_floor: 300
     summary: 'discover → fetch+parse → build pipeline for TSB (Transportation Safety Board of Canada).'
   - code: tsib
     shape: package
@@ -587,14 +608,14 @@ sources:
     verbs: [argv]
     tests: smoke
     delay_seconds: 1.5
-    narrative_floor: 300
+    pdf_text_min: 300
     summary: 'OCR recovery script for ukmaa stubs (narrative < 300 chars).'
   - code: usafaib
     shape: script
     verbs: [argv]
     tests: smoke
     delay_seconds: 2.0
-    narrative_floor: 600
+    pdf_text_min: 600
     summary: 'USAF Accident Investigation Board (AIB) reports ingest — httpx, no browser needed.'
   - code: uzpln
     shape: package

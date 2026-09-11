@@ -12,6 +12,12 @@ import pytest
 from cenipa_ingest import cenipa, db
 from cenipa_ingest.pipeline import discover, fetch, parse, build
 
+# Sized against the package's own build floor rather than a literal,
+# so these fixtures keep meaning what they mean when it moves.
+from cenipa_ingest import pipeline as _pipeline_mod
+_FLOOR = _pipeline_mod._NARRATIVE_FLOOR
+
+
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -362,7 +368,7 @@ def _insert_parsed(
 def test_build_pdf_tier_creates_accident():
     """pdf tier + narrative ≥ 80 → cenipa_accidents row; country='BR'."""
     conn = _conn()
-    narrative = "X" * 200
+    narrative = "X" * (_FLOOR + 100)
     _insert_parsed(conn, "A-076/CENIPA/2023", narrative, source_tier="pdf")
 
     n = build(conn)
@@ -388,7 +394,7 @@ def test_build_report_type_is_classificacao():
     """report_type in cenipa_accidents matches classificacao from cenipa_reports."""
     conn = _conn()
     _insert_parsed(
-        conn, "A-001/CENIPA/2024", "Y" * 200,
+        conn, "A-001/CENIPA/2024", "Y" * (_FLOOR + 100),
         source_tier="pdf", classificacao="INCIDENTE GRAVE",
     )
     build(conn)
@@ -450,7 +456,7 @@ def test_build_source_url_falls_back_to_report_url():
     conn = _conn()
     report_url = "https://sistema.cenipa.fab.mil.br/cenipa/paginas/relatorios/A-076"
     _insert_parsed(
-        conn, "A-NOPDF/2023", "Z" * 200, source_tier="pdf",
+        conn, "A-NOPDF/2023", "Z" * (_FLOOR + 100), source_tier="pdf",
         pdf_url=None, report_url=report_url,
     )
 
@@ -465,7 +471,7 @@ def test_build_mixed_rows():
     """One pdf + one scanned → 1 built, 1 skipped."""
     conn = _conn()
     _insert_parsed(
-        conn, "A-PDF/2024", "Z" * 200, source_tier="pdf",
+        conn, "A-PDF/2024", "Z" * (_FLOOR + 100), source_tier="pdf",
         registration="PUEPF", location="BOA VISTA, RR", aircraft="C172",
     )
     _insert_parsed(

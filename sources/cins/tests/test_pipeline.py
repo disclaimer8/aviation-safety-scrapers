@@ -5,6 +5,11 @@ import os
 from cins_ingest import cins, db, pipeline
 from cins_ingest.pdf import MIN_NARRATIVE
 
+# Sized against the package's own build floor rather than a literal,
+# so these fixtures keep meaning what they mean when it moves.
+_FLOOR = pipeline._NARRATIVE_FLOOR
+
+
 
 def _conn():
     c = db.connect(":memory:")
@@ -245,7 +250,7 @@ def _seed_parsed(conn, case_id, *, aircraft=None, registration=None,
 
 def test_build_creates_accident_row():
     conn = _conn()
-    narr = "Н" * 200
+    narr = "Н" * (_FLOOR + 100)
     _seed_parsed(conn, "01-24", aircraft="Embraer E190", registration="OY-GDC",
                  location="Beograd", date="2024-02-18", narrative=narr,
                  event_class="Accident",
@@ -277,13 +282,13 @@ def test_build_skips_empty_narrative():
 
 def test_build_skips_below_floor():
     conn = _conn()
-    _seed_parsed(conn, "01-24", narrative="X" * 79, event_class="Accident")
+    _seed_parsed(conn, "01-24", narrative="X" * (_FLOOR - 1), event_class="Accident")
     assert pipeline.build(conn) == 0
 
 
 def test_build_country_is_rs():
     conn = _conn()
-    _seed_parsed(conn, "01-24", narrative="N" * 200, event_class="Accident")
+    _seed_parsed(conn, "01-24", narrative="N" * (_FLOOR + 100), event_class="Accident")
     pipeline.build(conn)
     assert conn.execute(
         "SELECT country FROM cins_accidents WHERE case_id='01-24'"

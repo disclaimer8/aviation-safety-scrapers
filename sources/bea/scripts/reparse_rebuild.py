@@ -42,7 +42,10 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from bea_ingest import db, pipeline
 from bea_ingest.text import parse_event_title
 
-_NARRATIVE_FLOOR = 80  # must match pipeline._NARRATIVE_FLOOR
+# Imported, not copied. This was `= 80  # must match pipeline._NARRATIVE_FLOOR`
+# and stopped matching the moment the pipeline floor moved to 300 — a constant
+# that has to agree with another one should not be typed twice.
+_NARRATIVE_FLOOR = pipeline._NARRATIVE_FLOOR
 
 
 def reparse_rebuild(conn, dry_run=False):

@@ -72,16 +72,21 @@ def fast(monkeypatch):
 
 
 # ── discover ──────────────────────────────────────────────────────────────────
+#
+# These drive _discover_impl, the real walk. discover() itself is paused (it
+# enumerates a host whose robots.txt is `Disallow: /`); the pause is covered by
+# test_paused.py. Keeping the logic under test means the allowed-route work
+# starts from something that still provably works.
 
 def test_discover_keeps_doc_bearing_only(conn):
-    n = pipeline.discover(conn, FakeClient([_EVENTS], _MANIFEST))
+    n = pipeline._discover_impl(conn, FakeClient([_EVENTS], _MANIFEST))
     assert n == 2  # the doc-less 99999999 stub skipped
     ids = sorted(r["case_id"] for r in conn.execute("SELECT case_id FROM jst_reports"))
     assert ids == ["00201220", "00934360"]
 
 
 def test_discover_picks_iso_over_ib(conn):
-    pipeline.discover(conn, FakeClient([_EVENTS], _MANIFEST))
+    pipeline._discover_impl(conn, FakeClient([_EVENTS], _MANIFEST))
     row = conn.execute(
         "SELECT doc_tipo, doc_path, pdf_url, registration, occurrence_type "
         "FROM jst_reports WHERE case_id='00201220'").fetchone()
@@ -93,8 +98,8 @@ def test_discover_picks_iso_over_ib(conn):
 
 
 def test_discover_idempotent(conn):
-    assert pipeline.discover(conn, FakeClient([_EVENTS], _MANIFEST)) == 2
-    assert pipeline.discover(conn, FakeClient([_EVENTS], _MANIFEST)) == 0
+    assert pipeline._discover_impl(conn, FakeClient([_EVENTS], _MANIFEST)) == 2
+    assert pipeline._discover_impl(conn, FakeClient([_EVENTS], _MANIFEST)) == 0
 
 
 def test_discover_paginates_until_short_page(conn):
@@ -104,7 +109,7 @@ def test_discover_paginates_until_short_page(conn):
     manifest = {f"{i:08d}": [{"tipo": "IB", "path": f"AE/{i}.pdf"}]
                 for i in list(range(1, 21)) + [99]}
     client = FakeClient([p1, p2], manifest)
-    n = pipeline.discover(conn, client)
+    n = pipeline._discover_impl(conn, client)
     assert n == 21
     # page 2 was requested (page 1 was full → paginate), page 3 was not
     assert any("pagina=2" in u for u in client.requested)
@@ -117,14 +122,14 @@ def test_discover_respects_max_pages(conn):
     manifest = {f"{i:08d}": [{"tipo": "IB", "path": f"AE/{i}.pdf"}]
                 for i in list(range(1, 21)) + [99]}
     client = FakeClient([p1, p2], manifest)
-    pipeline.discover(conn, client, max_pages=1)
+    pipeline._discover_impl(conn, client, max_pages=1)
     assert not any("pagina=2" in u for u in client.requested)
 
 
 # ── fetch ─────────────────────────────────────────────────────────────────────
 
 def test_fetch_success_parses(conn, tmp_path, monkeypatch):
-    pipeline.discover(conn, FakeClient([_EVENTS], _MANIFEST))
+    pipeline._discover_impl(conn, FakeClient([_EVENTS], _MANIFEST))
     pdfs = {_ISO_URL: b"%PDF iso", _IP_URL: b"%PDF ip"}
     monkeypatch.setattr(pipeline.pdf, "extract_text", lambda p: "N" * 6000)
     pipeline.fetch(conn, FakeClient([_EVENTS], _MANIFEST, pdfs=pdfs),
@@ -137,7 +142,7 @@ def test_fetch_success_parses(conn, tmp_path, monkeypatch):
 
 
 def test_fetch_failure_stays_new(conn, tmp_path):
-    pipeline.discover(conn, FakeClient([_EVENTS], _MANIFEST))
+    pipeline._discover_impl(conn, FakeClient([_EVENTS], _MANIFEST))
     pipeline.fetch(conn, FakeClient([_EVENTS], _MANIFEST, pdfs={}),
                    pdf_dir=str(tmp_path))
     assert conn.execute(
@@ -146,7 +151,7 @@ def test_fetch_failure_stays_new(conn, tmp_path):
 
 
 def test_fetch_scanned_tier(conn, tmp_path, monkeypatch):
-    pipeline.discover(conn, FakeClient([_EVENTS], _MANIFEST))
+    pipeline._discover_impl(conn, FakeClient([_EVENTS], _MANIFEST))
     pdfs = {_ISO_URL: b"%PDF", _IP_URL: b"%PDF"}
     monkeypatch.setattr(pipeline.pdf, "extract_text", lambda p: "short")
     pipeline.fetch(conn, FakeClient([_EVENTS], _MANIFEST, pdfs=pdfs),
@@ -159,7 +164,7 @@ def test_fetch_scanned_tier(conn, tmp_path, monkeypatch):
 # ── build ─────────────────────────────────────────────────────────────────────
 
 def _discover_fetch(conn, tmp_path, monkeypatch, text="N" * 6000):
-    pipeline.discover(conn, FakeClient([_EVENTS], _MANIFEST))
+    pipeline._discover_impl(conn, FakeClient([_EVENTS], _MANIFEST))
     pdfs = {_ISO_URL: b"%PDF", _IP_URL: b"%PDF"}
     monkeypatch.setattr(pipeline.pdf, "extract_text", lambda p: text)
     pipeline.fetch(conn, FakeClient([_EVENTS], _MANIFEST, pdfs=pdfs),

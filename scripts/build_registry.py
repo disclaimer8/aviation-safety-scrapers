@@ -22,12 +22,17 @@ REGISTRY = ROOT / "registry.yaml"
 
 _UA_RE = re.compile(r'User-Agent["\']?\s*[:=]\s*["\']([^"\']+)["\']')
 _DELAY_RE = re.compile(r"^DELAY\s*=\s*([0-9.]+)", re.M)
-# Surfaced because it silently disagrees across the tree: the same corpus is
-# admitted at 80 characters by bea/aaib/bfu/tsb/cenipa/nsib/cins/ahac/ansv, at
-# 200 by ntsbcarol, and at 300 by ovv/india/aaibmy/sacaa/rosap and others.
-# Which is right is a data decision, not a refactor — but it should at least
-# be visible in one place rather than buried in fourteen files.
-_FLOOR_RE = re.compile(r"^_?(?:NARRATIVE_FLOOR|MIN_NARRATIVE)\s*=\s*(\d+)", re.M)
+# TWO DIFFERENT DECISIONS, reported separately. One regex matching both was
+# wrong and made this file lie: whichever constant a package happened to define
+# first became its "narrative_floor".
+#
+#   _NARRATIVE_FLOOR  build admission — does this row reach <code>_accidents?
+#                     Should match FlightFinder's NARRATIVE_MIN (300): below it
+#                     prod builds the page but renders it noindex.
+#   MIN_NARRATIVE     PDF text-layer quality — is pdftotext output usable, or
+#                     do we need OCR? Canonically 600, from _common/pdf.py.
+_FLOOR_RE = re.compile(r"^_?NARRATIVE_FLOOR\s*=\s*(\d+)", re.M)
+_OCRMIN_RE = re.compile(r"^MIN_NARRATIVE\s*=\s*(\d+)", re.M)
 
 
 def _docstring(path):
@@ -105,6 +110,7 @@ def describe(pkg_dir):
         "user_agent": _first(_UA_RE, texts),
         "delay_seconds": _first(_DELAY_RE, texts),
         "narrative_floor": _first(_FLOOR_RE, texts),
+        "pdf_text_min": _first(_OCRMIN_RE, texts),
         "tests": tier,
         "summary": summary,
     }
@@ -132,6 +138,8 @@ def render():
             out.append(f"    delay_seconds: {r['delay_seconds']}")
         if r["narrative_floor"]:
             out.append(f"    narrative_floor: {r['narrative_floor']}")
+        if r["pdf_text_min"]:
+            out.append(f"    pdf_text_min: {r['pdf_text_min']}")
         if r["user_agent"]:
             out.append(f"    user_agent: {r['user_agent']!r}")
         if r["summary"]:

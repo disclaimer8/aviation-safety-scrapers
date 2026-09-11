@@ -7,6 +7,11 @@ import os
 from bfu_ingest import bfu, db, pipeline
 from bfu_ingest.pdf import MIN_NARRATIVE
 
+# Sized against the package's own build floor rather than a literal,
+# so these fixtures keep meaning what they mean when it moves.
+_FLOOR = pipeline._NARRATIVE_FLOOR
+
+
 # ── German Identifikation header used as a fake narrative ────────────────────
 # Must be ≥ MIN_NARRATIVE (600) chars and contain a parseable Identifikation
 # block so that header.parse_header() populates all key fields.
@@ -361,7 +366,7 @@ def test_build_skips_short_narrative():
 def test_build_floor_boundary():
     """Narrative of exactly 79 chars → skipped (one below floor of 80)."""
     conn = _conn()
-    _seed_parsed(conn, "BFU22-0001-1X", narrative="X" * 79, detail_url="https://x.com/r.pdf")
+    _seed_parsed(conn, "BFU22-0001-1X", narrative="X" * (_FLOOR - 1), detail_url="https://x.com/r.pdf")
     assert pipeline.build(conn) == 0
     assert conn.execute(
         "SELECT status FROM bfu_reports WHERE case_id='BFU22-0001-1X'"
@@ -371,7 +376,7 @@ def test_build_floor_boundary():
 def test_build_80_chars_is_built():
     """Narrative of exactly 80 chars meets the floor and must be built."""
     conn = _conn()
-    _seed_parsed(conn, "BFU22-0002-1X", narrative="X" * 80, detail_url="https://x.com/r.pdf")
+    _seed_parsed(conn, "BFU22-0002-1X", narrative="X" * (_FLOOR + 100), detail_url="https://x.com/r.pdf")
     assert pipeline.build(conn) == 1
     acc = conn.execute("SELECT * FROM bfu_accidents WHERE country='DE'").fetchone()
     assert acc is not None
@@ -384,7 +389,7 @@ def test_build_mixed_rows():
     _seed_parsed(conn, "BFU23-0022-1X", narrative=long_narr, event_class="Accident",
                  aircraft="Learjet Corporation Learjet 35 A", location="Rendsburg",
                  date="2023-01-16", detail_url="https://x.com/r1.pdf")
-    _seed_parsed(conn, "BFU22-0055-3X", narrative="Z" * 200, event_class="Serious incident",
+    _seed_parsed(conn, "BFU22-0055-3X", narrative="Z" * (_FLOOR + 100), event_class="Serious incident",
                  aircraft="Cessna Citation II", location="Hamburg",
                  date="2022-05-10", detail_url="https://x.com/r2.pdf")
     _seed_parsed(conn, "BFU21-0001-1X", narrative="", event_class="Incident",

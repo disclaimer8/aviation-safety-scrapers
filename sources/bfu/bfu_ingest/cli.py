@@ -16,6 +16,26 @@ def _make_client(proxy=None, **_kw):
     # The retry policy lives in httpc (vendored from _common/http.py):
     # httpx's own retries= covers connect errors only, so a 502 or a read
     # timeout used to raise on the first attempt and truncate a run.
+    # ⚠️ THE ONE robots.txt EXEMPTION IN THE TREE. Do not copy it.
+    #
+    # bfu-web.de's robots.txt is:
+    #     Disallow: /SiteGlobals/    (plus /DE/Service/, /EN/Service/)
+    #     Crawl-delay: 30
+    # and discover() enumerates reports through
+    #     /SiteGlobals/Forms/Suche/Untersuchungsberichtesuche_Formular.html
+    # so the whole source is Disallowed. Everything else BFU publishes — the
+    # report PDFs, and the official OpenData CSVs under
+    # /DE/Publikationen/OpenData/ — is explicitly allowed. The prohibition is
+    # aimed at BFU's search UI, which is exactly what we drive.
+    #
+    # This is a stopgap, not a position. The right fix is to enumerate from
+    # the allowed OpenData files instead of the search form; until that lands,
+    # this keeps a working source alive rather than pretending the conflict is
+    # not there. It is the single obey_robots=False in the repository, and CI
+    # asserts that (see tests/test_robots_exemption.py).
+    #
+    # Checked 2026-09-11 against the live robots.txt of all 39 packages that
+    # vendor the guard: BFU is the only one affected.
     return httpc.make_client(
         headers={
             "User-Agent": _BROWSER_UA,
@@ -23,6 +43,7 @@ def _make_client(proxy=None, **_kw):
         },
         proxy=proxy,
         timeout=60,
+        obey_robots=False,
     )
 
 
