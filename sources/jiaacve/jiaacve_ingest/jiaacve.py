@@ -1,0 +1,401 @@
+# jiaacve_ingest/jiaacve.py
+"""JIAAC Venezuela scraper: listing discovery and PDF download.
+
+Source: https://www.mppt.gob.ve/jiaac/informes/
+Authority: Junta Investigadora de Accidentes de Aviación Civil (JIAAC),
+           Ministerio del Poder Popular para el Transporte (MppT), Venezuela.
+
+Site structure:
+  - Single listing page with Elementor accordion sections (one per year, 2005-2026).
+  - Each section contains a <ul class="dlm-downloads"> with Download Monitor (DLM)
+    links in format:
+        <a class="download-link" href="https://www.mppt.gob.ve/download/{id}/?tmstv=...">
+            Informe NNN_YYYY REG [Final|Preliminar|Provisional]   (N descargas)
+        </a>
+    Older entries (pre-2019) use format:
+        Expediente REG_NNN   (N descargas)
+  - Download URLs are WordPress DLM IDs — NOT sequential, MUST be scraped from
+    the listing. Never enumerate IDs.
+  - Site returns plain static HTML (WordPress + Astra theme), no anti-bot.
+
+case_id scheme:
+  - From PDF: "EXPEDIENTE: 007/2024" → case_id = '007/2024'
+  - In the listing title 'Informe NNN_YYYY REG' → number NNN, year YYYY → NNN/YYYY
+  - For Expediente titles 'Expediente REG_NNN' → NNN, year from accordion section
+  - Normalised to zero-padded 3-digit number: '007/2024'
+
+Report types (superseded resolution):
+  - 'Final' > 'Provisional' > 'Preliminar' > 'Expediente' (bare/old format)
+  - When the same expediente number has both Preliminar and Final, keep the Final
+    as the primary; mark the Preliminar with superseded_by = final.case_id.
+
+Politeness: sequential downloads, DELAY seconds between requests.
+"""
+import re
+import sys
+
+# ──────────────────────────────────────────────
+# Constants
+# ──────────────────────────────────────────────
+
+BASE = "https://www.mppt.gob.ve"
+LISTING_URL = BASE + "/jiaac/informes/"
+DELAY = 1.5  # seconds between downloads
+#
+# mppt.gob.ve publishes `Crawl-delay: 3600` for `*`. It is not applied, and
+# that is a deliberate divergence rather than an oversight: 563 documents at
+# one request per hour is 23 days for the first pass. The value reads as a
+# WordPress anti-scraper default rather than a considered rate — the same
+# robots.txt Disallows only /wp-admin, /wp-includes and the plugin, cache and
+# theme directories, and permits /jiaac/informes/ outright.
+#
+# The robots gate logs the divergence on every run (see _common/http.py,
+# RobotsGuardTransport) and the Disallow rules ARE enforced. This mirrors the
+# existing precedent in bfu, where the site asks 30s and the source paces 3s.
+# If the site starts refusing us, this is the first number to revisit.
+
+UA = (
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/124.0 Safari/537.36"
+)
+
+HEADERS = {
+    "User-Agent": UA,
+    "Referer": LISTING_URL,
+}
+
+# Minimum text length to treat as a usable text-layer PDF
+SCANNED_THRESHOLD = 300
+
+# Report type precedence: higher = better (lower number is superseded by higher)
+_TYPE_RANK = {
+    "final": 4,
+    "provisional": 3,
+    "preliminar": 2,
+    "expediente": 1,
+    "": 1,
+}
+
+# Spanish months for date parsing
+_ES_MONTHS = {
+    "enero": 1, "febrero": 2, "marzo": 3, "abril": 4,
+    "mayo": 5, "junio": 6, "julio": 7, "agosto": 8,
+    "septiembre": 9, "octubre": 10, "noviembre": 11, "diciembre": 12,
+}
+
+# ──────────────────────────────────────────────
+# Listing parsing
+# ──────────────────────────────────────────────
+
+_ACCORDION_TAB_RE = re.compile(
+    r'<a\s+class="elementor-accordion-title"[^>]*>(\d{4})</a>'
+    r'.*?<ul\s+class="dlm-downloads">(.*?)</ul>',
+    re.DOTALL,
+)
+
+_DL_LINK_RE = re.compile(
+    r'<a[^>]+href="(https://www\.mppt\.gob\.ve/download/(\d+)/[^"]*)"[^>]*>\s*([^\t<]+)',
+    re.DOTALL,
+)
+
+# Match "Informe NNN_YYYY REG [type]"
+_INFORME_RE = re.compile(
+    r'Informe\s+(?:(Final|Preliminar|Provisional)\s+)?(\d+)[-_ ](\d{4})\s+([\w-]+)\s*(Final|Preliminar|Provisional)?',
+    re.IGNORECASE,
+)
+
+# Match "Expediente REG_NNN"
+_EXPEDIENTE_RE = re.compile(
+    r'Expediente\s+([\w-]+)[-_](\d+)',
+    re.IGNORECASE,
+)
+
+
+def parse_listing(html: str) -> list[dict]:
+    """Parse the JIAAC informes listing page → list of report dicts.
+
+    Each dict:
+      dl_id         str   WordPress download ID
+      pdf_url       str   https://www.mppt.gob.ve/download/{id}/
+      listing_title str   cleaned title text
+      listing_year  int   year from accordion section
+      case_id       str   NNN/YYYY (zero-padded 3 digits), or dl_id as fallback
+      registration  str|None
+      report_type_raw str  'Final'|'Preliminar'|'Provisional'|'Expediente'|''
+    """
+    rows = []
+    seen_dl_ids = set()
+
+    for tab_m in _ACCORDION_TAB_RE.finditer(html):
+        year = int(tab_m.group(1))
+        section_html = tab_m.group(2)
+
+        for link_m in _DL_LINK_RE.finditer(section_html):
+            pdf_url_raw = link_m.group(1)
+            dl_id = link_m.group(2)
+            raw_text = link_m.group(3).strip()
+
+            if dl_id in seen_dl_ids:
+                continue
+            seen_dl_ids.add(dl_id)
+
+            # Strip the "(N descargas)" suffix
+            title = re.sub(r'\s*\(\s*\d+\s+descargas\s*\)\s*$', '', raw_text).strip()
+
+            # Canonical PDF URL (strip tmstv timestamp so URL is stable)
+            pdf_url = f"https://www.mppt.gob.ve/download/{dl_id}/"
+
+            # Determine case_id and report_type from title
+            case_id = None
+            registration = None
+            report_type_raw = ""
+
+            informe_m = _INFORME_RE.search(title)
+            if informe_m:
+                pre_type = (informe_m.group(1) or "").strip()
+                num_str = informe_m.group(2).zfill(3)
+                yr = informe_m.group(3)
+                registration = informe_m.group(4)
+                post_type = (informe_m.group(5) or "").strip()
+                # pre_type captures keyword before number; post_type captures it after
+                rtype = post_type or pre_type
+                case_id = f"{num_str}/{yr}"
+                report_type_raw = rtype or ""
+            else:
+                exp_m = _EXPEDIENTE_RE.search(title)
+                if exp_m:
+                    registration = exp_m.group(1)
+                    num_str = exp_m.group(2).zfill(3)
+                    case_id = f"{num_str}/{year}"
+                    report_type_raw = "Expediente"
+
+            if not case_id:
+                # Fallback: use dl_id as identifier
+                case_id = f"dlm-{dl_id}"
+
+            rows.append({
+                "dl_id": dl_id,
+                "pdf_url": pdf_url,
+                "listing_title": title,
+                "listing_year": year,
+                "case_id": case_id,
+                "registration": registration,
+                "report_type_raw": report_type_raw,
+            })
+
+    return rows
+
+
+def resolve_superseded(rows: list[dict]) -> list[dict]:
+    """For the same case_id, keep the highest-ranked type as primary;
+    mark lower-ranked duplicates with superseded_by.
+
+    Modifies rows in-place (adds 'superseded_by' key).
+    Returns the same list.
+    """
+    # Build: case_id → list of rows
+    by_case: dict[str, list] = {}
+    for r in rows:
+        by_case.setdefault(r["case_id"], []).append(r)
+
+    for case_id, group in by_case.items():
+        if len(group) == 1:
+            group[0]["superseded_by"] = None
+            continue
+        # Sort by rank descending; highest rank = primary
+        ranked = sorted(
+            group,
+            key=lambda x: _TYPE_RANK.get(x["report_type_raw"].lower(), 1),
+            reverse=True,
+        )
+        primary = ranked[0]
+        primary["superseded_by"] = None
+        for secondary in ranked[1:]:
+            secondary["superseded_by"] = primary["dl_id"]  # reference by dl_id
+
+    return rows
+
+
+# ──────────────────────────────────────────────
+# PDF text extraction helpers
+# ──────────────────────────────────────────────
+
+def parse_case_id_from_pdf(text: str) -> str | None:
+    """Extract the canonical EXPEDIENTE number from PDF text.
+
+    Patterns observed:
+      'EXPEDIENTE: 007/2024'
+      'EXPEDIENTE 006/2009'
+      'EXPEDIENTE N° 001/2026'
+      'cursa en los registros de este despacho bajo el N°001/2026'
+
+    Returns NNN/YYYY (zero-padded 3 digits) or None.
+    """
+    m = re.search(
+        r'(?:EXPEDIENTE|bajo\s+el\s+N[°o])\s*[:\s]*N?[°o]?\s*0*(\d{1,4})/(\d{4})',
+        text, re.IGNORECASE
+    )
+    if m:
+        num = m.group(1).zfill(3)
+        yr = m.group(2)
+        return f"{num}/{yr}"
+    return None
+
+
+def parse_event_date(text: str) -> str | None:
+    """Extract event date from PDF text.  Returns ISO YYYY-MM-DD or None.
+
+    Patterns:
+      'FECHA: 24/02/2024'
+      'FECHA: 06/01/2026'
+      '06 de febrero de 2009'
+    """
+    # DD/MM/YYYY
+    m = re.search(r'FECHA\s*:\s*(\d{1,2})/(\d{1,2})/(\d{4})', text, re.IGNORECASE)
+    if m:
+        d, mo, y = m.groups()
+        return f"{int(y):04d}-{int(mo):02d}-{int(d):02d}"
+
+    # DD de MES de YYYY
+    m = re.search(
+        r'(\d{1,2})\s+de\s+([a-záéíóú]+)\s+de\s+(\d{4})',
+        text, re.IGNORECASE
+    )
+    if m:
+        d_str, month_str, y_str = m.groups()
+        mo = _ES_MONTHS.get(month_str.lower())
+        if mo:
+            return f"{int(y_str):04d}-{mo:02d}-{int(d_str):02d}"
+
+    return None
+
+
+def parse_registration(text: str) -> str | None:
+    """Extract registration (matrícula) from PDF text."""
+    # MATRÍCULA (with accent) and MATRICULA (ascii) both appear in PDFs
+    m = re.search(r'MATR[IÍÍ]CULA\s*:\s*([A-Z0-9\-]{3,12})', text, re.IGNORECASE)
+    if m:
+        return m.group(1).strip()
+    return None
+
+
+def parse_aircraft(text: str) -> str | None:
+    """Extract aircraft make/model from PDF text."""
+    # Try FABRICANTE + MODELO
+    fab = re.search(r'FABRICANTE[^:]*:\s*([^\n]{3,60})', text, re.IGNORECASE)
+    mod = re.search(r'MODELO\s*:\s*([^\n]{2,40})', text, re.IGNORECASE)
+    parts = []
+    if fab:
+        # Trim long manufacturer names
+        parts.append(fab.group(1).strip().rstrip('.').strip())
+    if mod:
+        parts.append(mod.group(1).strip())
+    if parts:
+        return " ".join(parts)[:120]
+    return None
+
+
+def parse_operator(text: str) -> str | None:
+    """Extract operator (explotador) from PDF text."""
+    m = re.search(r'EXPLOTADOR\s*:\s*([^\n]{3,120})', text, re.IGNORECASE)
+    if m:
+        return m.group(1).strip()
+    return None
+
+
+def parse_location(text: str) -> str | None:
+    """Extract location (lugar) from PDF text."""
+    m = re.search(r'LUGAR\s*:\s*([^\n]{3,120})', text, re.IGNORECASE)
+    if m:
+        return m.group(1).strip()
+    return None
+
+
+def parse_probable_cause(text: str) -> str | None:
+    """Extract CAUSA PROBABLE section from PDF text.
+
+    Returns the section text (up to 3000 chars) or None.
+    """
+    m = re.search(
+        r'CAUS[AAS]+\s+PROBABLE[S]?\s*[\n:]+\s*(.*?)(?=\n\s*\n\s*[A-Z\d]|\Z)',
+        text, re.DOTALL | re.IGNORECASE
+    )
+    if m:
+        cp = m.group(1).strip()
+        if len(cp) > 50:
+            return cp[:3000]
+    return None
+
+
+def parse_fatalities(text: str) -> int | None:
+    """Extract total fatalities from LESIONES A PERSONAS section."""
+    # Look for "Fallecidos: N" or "Muertos: N" pattern
+    m = re.search(r'(?:Fallecidos|Muertos|Fatales?)\s*:?\s*(\d+)', text, re.IGNORECASE)
+    if m:
+        n = int(m.group(1))
+        if n > 0:
+            return n
+    return None
+
+
+def parse_phase(text: str) -> str | None:
+    """Extract phase of flight (fase de vuelo) from PDF text."""
+    m = re.search(r'(?:FASE|FASE\s+DE\s+VUELO)\s*:\s*([^\n]{3,60})', text, re.IGNORECASE)
+    if m:
+        return m.group(1).strip()[:80]
+    return None
+
+
+# ──────────────────────────────────────────────
+# Narrative extraction
+# ──────────────────────────────────────────────
+
+_NARRATIVE_SECTIONS = re.compile(
+    r'(?:INFORMACI[OÓ]N\s+SOBRE\s+LOS\s+HECHOS|RESEÑA\s+DEL\s+VUELO|'
+    r'INFORMACI[OÓ]N\s+DE\s+LOS\s+HECHOS|ACLARATORIA|'
+    r'HECHOS\s+RELATIVOS\s+AL\s+SUCESO)',
+    re.IGNORECASE
+)
+
+
+def extract_narrative(text: str, cap: int = 12000, floor: int = 300) -> str:
+    """Return narrative body from PDF text.
+
+    Tries to start from the main narrative section heading; falls back to
+    stripping the cover/preamble block (ACLARATORIA boilerplate).
+    Returns empty string if below floor.
+    """
+    if not text:
+        return ""
+
+    # Try to find the main informational section
+    m = _NARRATIVE_SECTIONS.search(text)
+    if m:
+        narrative = text[m.start():].strip()
+    else:
+        # Fallback: skip the first ~1500 chars (cover + aclaratoria)
+        narrative = text[1500:].strip() if len(text) > 1500 else text.strip()
+
+    # Cap length
+    narrative = narrative[:cap]
+
+    if len(narrative) < floor:
+        return ""
+    return narrative
+
+
+# ──────────────────────────────────────────────
+# Download
+# ──────────────────────────────────────────────
+
+def download(client, pdf_url: str, dest: str) -> None:
+    """GET pdf_url and write bytes to dest.
+
+    Raises httpx.HTTPStatusError on non-2xx responses.
+    The DLM plugin issues a redirect to the actual file URL.
+    """
+    resp = client.get(pdf_url, headers={"Referer": LISTING_URL}, follow_redirects=True)
+    resp.raise_for_status()
+    with open(dest, "wb") as fh:
+        fh.write(resp.content)
