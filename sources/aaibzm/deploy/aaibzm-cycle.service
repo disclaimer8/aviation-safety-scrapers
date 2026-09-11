@@ -1,0 +1,14 @@
+# /etc/systemd/system/aaibzm-cycle.service
+[Unit]
+Description=AAIB Zambia ingest cycle (weekly; discover->fetch->parse->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/aaibzm
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/aaibzm/aaibzm-cycle.log
+StandardError=append:/opt/aaibzm/aaibzm-cycle.log
+TimeoutStartSec=10800

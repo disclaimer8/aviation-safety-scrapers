@@ -1,0 +1,10 @@
+# /etc/systemd/system/aet-cycle.timer
+[Unit]
+Description=Luxembourg AET ingest cycle
+
+[Timer]
+OnCalendar=Sun *-*-* 19:45:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

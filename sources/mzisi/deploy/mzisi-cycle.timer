@@ -1,0 +1,10 @@
+# /etc/systemd/system/mzisi-cycle.timer
+[Unit]
+Description=Weekly MzI (Slovenia) aviation ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 11:30:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

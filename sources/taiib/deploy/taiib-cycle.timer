@@ -1,0 +1,10 @@
+# /etc/systemd/system/taiib-cycle.timer
+[Unit]
+Description=Weekly TAIIB ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 10:30:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

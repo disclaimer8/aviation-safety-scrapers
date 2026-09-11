@@ -1,0 +1,14 @@
+# /etc/systemd/system/taiib-cycle.service
+[Unit]
+Description=TAIIB (Latvia) ingest cycle (weekly; discover->fetch->parse->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=scraper
+WorkingDirectory=/opt/taiib
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/opt/taiib/taiib-cycle.log
+StandardError=append:/opt/taiib/taiib-cycle.log
+TimeoutStartSec=10800

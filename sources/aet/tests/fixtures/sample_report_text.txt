@@ -1,0 +1,481 @@
+FACTUAL REPORT
+
+EMERGENCY LANDING OF A
+CESSNA C177 NEAR STEGEN (L)
+ON 18 JANUARY 2015
+
+DATE OF ISSUE: 14 DECEMBER 2018
+
+ADMINISTRATION OF TECHNICAL INVESTIGATIONS
+CIVIL AVIATION – RAILWAYS – MARITIME – RIVER – ROAD
+
+Ministry of Mobility and Public Works
+Department of mobility and transports
+Administration of Technical Investigations
+Report N° AET/AC-2018/02
+
+FACTUAL REPORT
+Emergency landing of a Cessna C177
+near Stegen (L) on 18 January 2015
+
+Administration des enquêtes techniques (AET)
+B.P. 1388 L-1013 Luxembourg
+Tél: +352 247-84403
+Fax: +352 247-94404
+Email: info@aet.etat.lu
+Web: https://aet.gouvernement.lu/
+1|Page
+
+FOREWORD
+
+In accordance with Annex 13 to the Convention on International Civil Aviation,
+Regulation (EU) No 996/2010 of the European Parliament and of the Council and
+Luxembourg amended law dated 30 April 2008 on technical investigations in
+relation to accidents and serious incidents which happened in the domains of civil
+aviation, maritime transport, railways and vehicle traffic on public roads, it is not
+the purpose of the aircraft accident investigation to apportion blame or liability.
+The sole objective of the safety investigation and the Final Report is the prevention of
+accidents and incidents.
+Consequently, the use of this report for purposes other than accident prevention may
+lead to wrong interpretations.
+
+Note:
+
+All times indicated in this report are in UTC (LT = UTC+1), unless stated
+otherwise.
+2|Page
+
+CONTENTS
+GLOSSARY OF ABBREVIATIONS AND ACRONYMS..................................................... 4
+1.
+
+SYNOPSIS ................................................................................................................. 5
+
+2.
+
+FACTUAL INFORMATION ......................................................................................... 6
+2.1
+
+History of the flight ............................................................................................... 6
+
+2.2
+
+Injuries to persons ................................................................................................ 7
+
+2.3
+
+Damage to aircraft................................................................................................ 8
+
+2.4
+
+Other damage ...................................................................................................... 8
+
+2.5
+
+Personnel information .......................................................................................... 8
+
+2.6
+
+Aircraft information ............................................................................................... 9
+
+2.7
+
+Meteorological information ................................................................................... 9
+
+2.8
+
+Aids to navigation ............................................................................................... 10
+
+2.9
+
+Communications ................................................................................................ 11
+
+2.10 Aerodrome information ....................................................................................... 11
+2.11 Flight recorders .................................................................................................. 11
+2.12 Wreckage and impact information ...................................................................... 11
+2.13 Medical and pathological information ................................................................. 11
+2.14 Fire ..................................................................................................................... 11
+2.15 Survival aspects ................................................................................................. 11
+3.
+
+CONCLUSIONS ....................................................................................................... 12
+
+3|Page
+
+GLOSSARY OF ABBREVIATIONS AND ACRONYMS
+°C
+
+Degree Celsius
+
+AET
+
+Administration des enquêtes techniques (Luxembourg safety investigation
+authority)
+
+APP
+
+Luxembourg Approach
+
+AVGAS
+
+Aviation gasoline (100 LL)
+
+cm
+
+Centimeter
+
+EHBK
+
+ICAO code of Maastricht Aachen Airport
+
+ELLX
+
+ICAO code of Luxembourg International Airport
+
+FAA
+
+United States Federal Aviation Administration
+
+ft
+
+Foot
+
+hPa
+
+Hectopascal
+
+ICAO
+
+International civil aviation organization
+
+IFR
+
+Instrument Flight Rules
+
+km
+
+Kilometer
+
+kt
+
+Knot
+
+L
+
+Luxembourg
+
+LT
+
+Local time
+
+m
+
+Meter
+
+METAR
+
+Aerodrome routine meteorological report (ICAO Annex 3)
+
+MSL
+
+Mean sea level
+
+NL
+
+The Netherlands
+
+NM
+
+Nautical mile
+
+NOSIG
+
+No significant change
+
+TAF
+
+Aerodrome forecast (ICAO Annex 3)
+
+UTC
+
+Universal coordinated time
+
+4|Page
+
+1. SYNOPSIS
+On 18 January 2015, the pilot and two passengers were on a flight conducted under
+Instrument Flight Rules (IFR) from Maastricht (NL) to Luxembourg (L) in a single engine
+piston airplane of the type Cessna C177B Cardinal. At an altitude of 4´000 feet near
+Dierkirch, the engine suffered a loss of power. As power could not be restored, the pilot
+selected a field north of the village of Stegen (L) for an emergency landing.
+During the landing sequence, the aircraft suffered damage to the rear fuselage structure,
+the propeller, the nose and main landing gear, the right wing and the rear back window.
+All three occupants left the aircraft uninjured.
+
+© ORIGINE CADASTRE: DROITS RESERVES A L’ETAT DU GRAND-DUCHE DE LUXEMBOURG
+
+5|Page
+
+2. FACTUAL INFORMATION
+2.1
+
+History of the flight
+
+On 18 January 2015, the pilot and two passengers were on an IFR flight from Maastricht
+(NL) to Luxembourg (L) in a single engine piston airplane of the type Cessna C177B
+Cardinal. The weather conditions at Luxembourg International Airport (ELLX) showed at
+the time of the occurrence a visibility of more than 10 km, a sky covered with clouds up to
+one quarter with a cloud base at 1´200 ft. The temperature at Luxembourg airport was
+2°C, with the wind coming from a southern direction at 9 kt. The dew point was 0°C.
+The pilot reported that during the approach to ELLX, after levelling off at an altitude of
+4´000 feet, the engine suffered a loss of power. As power could not be restored, the pilot
+selected a field near Stegen (L) for an emergency landing and informed Luxembourg
+Approach (APP) at approximately 12:30 PM about the emergency situation and his
+intentions to perform an off-airport landing.
+The selected field was bordered by a paved rural road on the east side, which was the
+side the pilot was approaching from. The aircraft first touched down in the adjoining field
+to the east of the rural road, approximately 3.5 m from the road, leaving visible marks in
+the muddy soil. It should be noted that he paved rural road is elevated by approximately
+10 cm in relation to the adjoining fields. The tire marks continued for about 2 m across
+the rural road before disappearing. Small pieces of the nose wheel fairing could be found
+in close proximity to the rural road, leading to the conclusion that the nose wheel fairing
+had been damaged when impacting that road.
+After the initial touch-down, while crossing the rural road, the aircraft became airborne
+again (absence of tire marks in the muddy soil). About 23 m further west, the tire marks
+reappeared. Based on the marks in the field, the aircraft’s second touch-down was in a
+nose-down attitude. The nose wheel fairing then probably detached from the aircraft and
+came to rest in that area. Approximately 5 m after the second touchdown, the propeller
+impacted the muddy field several times, indicating that it was still turning. Approximately
+10 m further down, the nose wheel broke off.
+Shortly before coming to a stop and with the nose wheel detached, the aircraft veered to
+the left and the right hand wing tip impacted the field, damaging the outer portion of the
+leading edge.
+The landing distance measured from the first contact in the field situated east of the rural
+road, up to the final aircraft position, was approximately 59 m. All three occupants were
+able to leave the aircraft on their own and uninjured.
+During the landing sequence, the aircraft suffered damage to the rear fuselage structure,
+the propeller, the nose and main landing gear, the right wing and the rear back window.
+The owner later confirmed that the aircraft was damaged beyond repair and
+subsequently written off.
+6|Page
+
+Tire marks from first touchdown
+
+Elevated rural road crossing the fields
+
+(Source: www.rtl.lu)
+
+(Source: www.rtl.lu)
+
+Tire marks from second touchdown
+
+(Source: www.rtl.lu)
+
+2.2
+
+Injuries to persons
+Injuries
+
+Crew
+
+Passengers
+
+Others
+
+Fatal
+
+0
+
+0
+
+0
+
+Serious
+
+0
+
+0
+
+0
+
+Minor/None
+
+1
+
+2
+
+0
+
+7|Page
+
+2.3
+
+Damage to aircraft
+
+The aircraft sustained damage to the rear fuselage structure, the propeller, the nose and
+main landing gear, the right wing and the rear back window and was subsequently
+written off.
+
+Source: AET (pictures taken one day after the occurrence)
+
+2.4
+
+Other damage
+
+None.
+2.5
+
+Personnel information
+
+The pilot was 66 years old and held a valid private pilot license for airplane, singleengine, land and a valid instrument rating issued by the US Federal Aviation
+Administration (FAA). He held a valid US second class medical certificate in compliance
+with the prevailing regulation.
+The pilot had logged a total of 884 flight hours, 5.2 hours thereof during the last three
+months flown on the occurrence airplane.
+
+8|Page
+
+2.6
+
+Aircraft information
+
+The Cessna 177B Cardinal is a light single-engine, high-wing general aviation aircraft.
+Aircraft manufacturer:
+Manufacturer’s designation of aircraft:
+Aircraft registration:
+
+Cessna Aircraft Company
+C177B
+N34937
+
+The ‘Weight and Balance’ calculations for the occurrence flight were not available, but a
+reasonable assumption permitted to conclude that the aircraft remained within the
+prescribed envelope.
+The type of fuel used for the accident aircraft was AVGAS 100LL. The pilot’s logbook
+shows a ‘fuel flight’ to Luxembourg International Airport (ELLX) on 13 November 2014
+and a return flight to Maastricht Aachen Airport (EHBK) the same day. The return flight
+took approximately one hour and was the last flight before the occurrence flight on
+18 January 2015. About 1.8 hours of fuel had been used since the last refueling.
+2.7
+
+Meteorological information
+
+The aerodrome forecast (TAF) is a format for reporting weather forecast information for
+aviation. TAF bulletins are issued every six hours and generally apply to a 24- hour or a
+30- hour period.
+ELLX TAF:
+TAF ELLX 180500Z 1806/1912 18005KT 7000 BKN010
+TEMPO 1806/1810 2000 BR BKN002
+PROB40 TEMPO 1806/1810 0500 FZFG BKN001
+BECMG 1810/1813 17010KT 9999 BKN012
+PROB40 TEMPO 1807/1813 2000 -SHSN -SHRASN BKN002
+BECMG 1820/1823 VRB03KT 3000 BR BKN003
+PROB40 TEMPO 1901/1907 0300 FZFG BKN001
+TEMPO 1907/1912 1200 -SHSN BKN002=
+TAF ELLX 181100Z 1812/1918 18005KT 9999 SCT030
+BECMG 1822/1824 4000 BR
+PROB40 TEMPO 1903/1908 0800 BCFG SCT000
+BECMG 1908/1910 31004KT
+BECMG 1912/1914 SCT020 BKN100
+TEMPO 1914/1918 8000 -SNRA SCT009 BKN015=
+TAF ELLX 181700Z 1818/1924 16005KT CAVOK
+BECMG 1822/1824 4000 BR NSC
+TEMPO 1903/1908 0800 BCFG SCT001
+BECMG 1909/1911 VRB02KT CAVOK
+BECMG 1914/1916 33005KT SCT025 BKN100
+TEMPO 1916/1920 5000 -SN SCT009 BKN015
+BECMG 1920/1922 3500 BR BKN006=
+
+9|Page
+
+The observed meteorological conditions were available as coded information through the
+aerodrome routine meteorological report (METAR). A new METAR is published every
+30 minutes.
+ELLX METAR:
+201501181120 METAR ELLX 181120Z 18009KT 150V220 9999 FEW012 01/00 Q1014
+NOSIG=
+201501181150 METAR ELLX 181150Z 17008KT 140V210 9999 FEW012 01/00 Q1014
+NOSIG=
+201501181220 METAR ELLX 181220Z 17009KT 140V210 9999 FEW012 02/00 Q1013
+NOSIG=
+201501181250 METAR ELLX 181250Z 17008KT 140V210 9999 FEW012 01/00 Q1014
+NOSIG=
+201501181320 METAR ELLX 181320Z 19007KT 150V220 9999 FEW012 01/00 Q1013
+NOSIG=
+The relevant METAR at Luxembourg International Airport, which is situated 13 NM South
+of the accident site, was as follows:
+Time of the weather report:
+Wind direction:
+Wind force:
+Visibility:
+Cloud:
+Temperature:
+Dew point:
+Local atmospheric pressure:
+Weather evolution:
+
+2.8
+
+12:20
+170° (Magnetic North)
+Wind variable between 140° and 210°
+9 kt
+More than 10 km
+Few at 1´200 ft
+2°C
+0°C
+1´013 hPa
+NOSIG (no significant weather change is expected to
+the reported conditions within the next 2 hours)
+
+Aids to navigation
+
+Not relevant.
+
+10 | P a g e
+
+2.9
+
+Communications
+
+The pilot was in contact with Luxembourg Approach (APP) when the engine suffered a
+loss of power. He subsequently informed APP about an engine failure and his intention to
+perform an emergency landing in a field.
+APP contacted the police helicopter which was operating in the vicinity of the occurrence
+site. The police helicopter landed on-site and informed APP that there were three
+persons on board the occurrence aircraft and no injuries. Later on, an air rescue
+helicopter also landed at the occurrence site.
+2.10 Aerodrome information
+The pilot made an emergency landing in a field situated approximately 13 NM north of
+Luxembourg International Airport, close to the town of Stegen.
+2.11 Flight recorders
+The accident aircraft was not equipped with any kind of flight recorders, nor was it
+required to carry such equipment.
+2.12 Wreckage and impact information
+The field is situated about 13 NM north (~350° magnetic heading) of the aerodrome
+reference point of Luxembourg International Airport.
+During landing, the aircraft sustained damage to the rear fuselage structure, the
+propeller, the nose- and main landing gear, the right wing and the rear back window.
+There was no third party damage.
+2.13 Medical and pathological information
+Not available.
+2.14 Fire
+The airplane did not catch fire.
+2.15 Survival aspects
+All three occupants were uninjured. Damage to the airplane did not impair the livable
+space of the cabin.
+
+11 | P a g e
+
+3. CONCLUSIONS
+On an IFR flight from Maastricht (NL) to Luxembourg (L), the aircraft suffered a loss of
+engine power after leveling off at an altitude of 4´000 ft. Unable to restore the engine
+power, the pilot performed an off-airport emergency landing in a field.
+During the landing, the aircraft sustained damage to the rear fuselage structure, the
+propeller, the nose- and main landing gear, the right wing and the rear back window. All
+three occupants were able to leave the aircraft on their own and uninjured. The aircraft
+was considered to be damaged beyond repair and subsequently written off.
+
+12 | P a g e
+
+
