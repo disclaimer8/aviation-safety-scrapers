@@ -1,0 +1,55 @@
+Informe
+
+Preliminar
+SUCESO: Accidente
+TÍTULO: Fallo o malfuncionamiento de sistema/componente (Grupo motor).
+NAVION (NA-145), matrícula LV-YYL, Zona Rural próxima al AD Saint Exupery,
+San Antonio Oeste, provincia de Río Negro
+FECHA Y HORA DEL SUCESO: 04 de enero de 2026 a las 10:23 horas UTC
+EXPEDIENTE: EX-2026-00934360--APN-DNISAE#JST
+
+DIRECCIÓN NACIONAL DE INVESTIGACIÓN DE SUCESOS AERONÁUTICOS
+
+PISO
+
+1
+
+2026 – Año de la Grandeza Argentina
+
+Junta de Seguridad en el Transporte
+Av. del Libertador 405 1° piso, Buenos Aires, Argentina CP1001.
+www.argentina.gob.ar/jst
+info@jst.gob.ar
+Publicado por la JST. En caso de utilizar este material de forma total o parcial se
+sugiere citar según el siguiente formato: Aviación. Accidente. LV-YYL. Zona Rural
+próxima al AD Saint Exupery, San Antonio Oeste, provincia de Río Negro. Fuente:
+Junta de Seguridad en el Transporte.
+El presente informe se encuentra disponible en www.argentina.gob.ar/jst
+
+Informe Preliminar (ADREP) - Página 2 de 7
+
+2026 – Año de la Grandeza Argentina
+
+ÍNDICE
+SOBRE LA JST ................................................................................................................................................ 4
+SOBRE EL MODELO SISTÉMICO DE INVESTIGACIÓN ............................................................ 5
+SOBRE EL INFORME PRELIMINAR .................................................................................................... 7
+
+Informe Preliminar (ADREP) - Página 3 de 7
+
+2026 – Año de la Grandeza Argentina
+
+SOBRE LA JST
+En 2019, mediante la Ley N.º 27.514, se declaró de interés público y objetivo de la
+República Argentina la Política de Seguridad en el Transporte. En el marco de esta
+normativa, se creó la Junta de Seguridad en el Transporte (JST) como un organismo
+descentralizado, dotado de autarquía económico-financiera, personalidad jurídica
+propia y capacidad para actuar tanto en el ámbito del derecho público como
+privado. Inicialmente bajo la órbita del entonces Ministerio de Transporte, la JST
+depende actualmente de la Secretaría de Transporte, que forma parte del
+Ministerio de Economía.
+La misión de la JST es mejorar la seguridad operacional mediante la investigación
+de accidentes e incidentes, y la emisión de recomendaciones que promuevan
+acciones eficaces. Este objetivo se desarrolla a través del análisis sistémico de los
+factores desencadenantes, las fallas en las defensas y los factores humanos y
+organizacionales asociados al suceso, con el fin de prevenir futuros e

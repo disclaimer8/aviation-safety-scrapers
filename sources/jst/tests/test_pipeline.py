@@ -1,7 +1,7 @@
 """Pipeline state-machine tests with a fake HTTP client (no network)."""
 import pytest
 
-from jst_ingest import jst, pipeline
+from jst_ingest import db, jst, pipeline
 
 
 class FakeResp:
@@ -31,7 +31,7 @@ class FakeClient:
         self.requested.append(url)
         if url == jst.MANIFEST_URL:
             return FakeResp(payload=self.manifest)
-        if url.startswith(jst.EVENTS_BASE):
+        if "intranet" in url:   # the old route; nothing should ask for it now
             # extract pagina=N
             import re
             n = int(re.search(r"pagina=(\d+)", url).group(1))
@@ -62,8 +62,10 @@ _MANIFEST = {
                  {"tipo": "ISO", "path": "AE/ISO-201220.pdf"}],
     "00934360": [{"tipo": "IP", "path": "AE/IP-934360.pdf"}],
 }
-_ISO_URL = "https://so.jst.gob.ar/static/informes/AE/ISO-201220.pdf"
-_IP_URL = "https://so.jst.gob.ar/static/informes/AE/IP-934360.pdf"
+_ISO_PATH = "AE/2022/021922-00201220/ISO-00201220-22.pdf"
+_IP_PATH = "AE/2026/010426-00934360/IP-00934360-26.pdf"
+_ISO_URL = "https://so.jst.gob.ar/static/informes/" + _ISO_PATH
+_IP_URL = "https://so.jst.gob.ar/static/informes/" + _IP_PATH
 
 
 @pytest.fixture(autouse=True)
@@ -73,63 +75,31 @@ def fast(monkeypatch):
 
 # ── discover ──────────────────────────────────────────────────────────────────
 #
-# These drive _discover_impl, the real walk. discover() itself is paused (it
-# enumerates a host whose robots.txt is `Disallow: /`); the pause is covered by
-# test_paused.py. Keeping the logic under test means the allowed-route work
-# starts from something that still provably works.
-
-def test_discover_keeps_doc_bearing_only(conn):
-    n = pipeline._discover_impl(conn, FakeClient([_EVENTS], _MANIFEST))
-    assert n == 2  # the doc-less 99999999 stub skipped
-    ids = sorted(r["case_id"] for r in conn.execute("SELECT case_id FROM jst_reports"))
-    assert ids == ["00201220", "00934360"]
+# The discover tests that lived here drove the intranet events walk, which is
+# gone: that host answers `Disallow: /`. The manifest route that replaced it is
+# covered end to end in test_allowed_route.py, against fixtures taken from real
+# reports. What remains below is fetch and build, seeded directly.
 
 
-def test_discover_picks_iso_over_ib(conn):
-    pipeline._discover_impl(conn, FakeClient([_EVENTS], _MANIFEST))
-    row = conn.execute(
-        "SELECT doc_tipo, doc_path, pdf_url, registration, occurrence_type "
-        "FROM jst_reports WHERE case_id='00201220'").fetchone()
-    assert row["doc_tipo"] == "ISO"
-    assert row["doc_path"] == "AE/ISO-201220.pdf"
-    assert row["pdf_url"] == _ISO_URL
-    assert row["registration"] == "LV-ABC"
-    assert row["occurrence_type"] == "Accidente"
+def _seed_new(conn, case_id, doc_tipo="ISO", doc_path=None, date="2022-02-19"):
+    """One discovered row, as the manifest route produces it: identifiers and
+    the path date, with the report's own fields still empty."""
+    doc_path = doc_path or f"AE/2022/021922-{case_id}/{doc_tipo}-{case_id}-22.pdf"
+    ts = db.now_ms()
+    conn.execute(
+        "INSERT INTO jst_reports (case_id, doc_path, doc_tipo, "
+        "date_of_occurrence, pdf_url, status, discovered_at, updated_at) "
+        "VALUES (?,?,?,?,?,?,?,?)",
+        (case_id, doc_path, doc_tipo, date, jst.pdf_url(doc_path),
+         db.STATUS_NEW, ts, ts),
+    )
+    conn.commit()
 
-
-def test_discover_idempotent(conn):
-    assert pipeline._discover_impl(conn, FakeClient([_EVENTS], _MANIFEST)) == 2
-    assert pipeline._discover_impl(conn, FakeClient([_EVENTS], _MANIFEST)) == 0
-
-
-def test_discover_paginates_until_short_page(conn):
-    # page 1 = full 20 doc-bearing, page 2 = 1 event then stop
-    p1 = [_event(f"{i:08d}/20", matricula=f"LV-{i:04d}") for i in range(1, 21)]
-    p2 = [_event("00000099/20", matricula="LV-LAST")]
-    manifest = {f"{i:08d}": [{"tipo": "IB", "path": f"AE/{i}.pdf"}]
-                for i in list(range(1, 21)) + [99]}
-    client = FakeClient([p1, p2], manifest)
-    n = pipeline._discover_impl(conn, client)
-    assert n == 21
-    # page 2 was requested (page 1 was full → paginate), page 3 was not
-    assert any("pagina=2" in u for u in client.requested)
-    assert not any("pagina=3" in u for u in client.requested)
-
-
-def test_discover_respects_max_pages(conn):
-    p1 = [_event(f"{i:08d}/20", matricula=f"LV-{i:04d}") for i in range(1, 21)]
-    p2 = [_event("00000099/20")]
-    manifest = {f"{i:08d}": [{"tipo": "IB", "path": f"AE/{i}.pdf"}]
-                for i in list(range(1, 21)) + [99]}
-    client = FakeClient([p1, p2], manifest)
-    pipeline._discover_impl(conn, client, max_pages=1)
-    assert not any("pagina=2" in u for u in client.requested)
-
-
-# ── fetch ─────────────────────────────────────────────────────────────────────
 
 def test_fetch_success_parses(conn, tmp_path, monkeypatch):
-    pipeline._discover_impl(conn, FakeClient([_EVENTS], _MANIFEST))
+    _seed_new(conn, "00201220", doc_path=_ISO_PATH)
+    _seed_new(conn, "00934360", doc_tipo="IP", doc_path=_IP_PATH,
+              date="2026-01-04")
     pdfs = {_ISO_URL: b"%PDF iso", _IP_URL: b"%PDF ip"}
     monkeypatch.setattr(pipeline.pdf, "extract_text", lambda p: "N" * 6000)
     pipeline.fetch(conn, FakeClient([_EVENTS], _MANIFEST, pdfs=pdfs),
@@ -142,7 +112,8 @@ def test_fetch_success_parses(conn, tmp_path, monkeypatch):
 
 
 def test_fetch_failure_stays_new(conn, tmp_path):
-    pipeline._discover_impl(conn, FakeClient([_EVENTS], _MANIFEST))
+    _seed_new(conn, "00201220", doc_path=_ISO_PATH)
+    _seed_new(conn, "00934360", doc_tipo="IP", doc_path=_IP_PATH, date="2026-01-04")
     pipeline.fetch(conn, FakeClient([_EVENTS], _MANIFEST, pdfs={}),
                    pdf_dir=str(tmp_path))
     assert conn.execute(
@@ -151,7 +122,9 @@ def test_fetch_failure_stays_new(conn, tmp_path):
 
 
 def test_fetch_scanned_tier(conn, tmp_path, monkeypatch):
-    pipeline._discover_impl(conn, FakeClient([_EVENTS], _MANIFEST))
+    _seed_new(conn, "00201220", doc_path=_ISO_PATH)
+    _seed_new(conn, "00934360", doc_tipo="IP", doc_path=_IP_PATH,
+              date="2026-01-04")
     pdfs = {_ISO_URL: b"%PDF", _IP_URL: b"%PDF"}
     monkeypatch.setattr(pipeline.pdf, "extract_text", lambda p: "short")
     pipeline.fetch(conn, FakeClient([_EVENTS], _MANIFEST, pdfs=pdfs),
@@ -164,7 +137,9 @@ def test_fetch_scanned_tier(conn, tmp_path, monkeypatch):
 # ── build ─────────────────────────────────────────────────────────────────────
 
 def _discover_fetch(conn, tmp_path, monkeypatch, text="N" * 6000):
-    pipeline._discover_impl(conn, FakeClient([_EVENTS], _MANIFEST))
+    _seed_new(conn, "00201220", doc_path=_ISO_PATH)
+    _seed_new(conn, "00934360", doc_tipo="IP", doc_path=_IP_PATH,
+              date="2026-01-04")
     pdfs = {_ISO_URL: b"%PDF", _IP_URL: b"%PDF"}
     monkeypatch.setattr(pipeline.pdf, "extract_text", lambda p: text)
     pipeline.fetch(conn, FakeClient([_EVENTS], _MANIFEST, pdfs=pdfs),
@@ -176,7 +151,8 @@ def test_build(conn, tmp_path, monkeypatch):
     assert pipeline.build(conn) == 2
     acc = {r["case_id"]: r for r in conn.execute("SELECT * FROM jst_accidents")}
     assert acc["00201220"]["country"] == "AR"
-    assert acc["00201220"]["event_date"] == "2020-01-01"
+    # The date comes off the manifest path now (021922 = 19/02/22).
+    assert acc["00201220"]["event_date"] == "2022-02-19"
     assert acc["00201220"]["report_type"] == "ISO"
     assert acc["00201220"]["source_url"] == _ISO_URL
     assert acc["00934360"]["report_type"] == "IP"
