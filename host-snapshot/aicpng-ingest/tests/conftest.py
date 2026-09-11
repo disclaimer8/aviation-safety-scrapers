@@ -2,6 +2,24 @@
 import json as _json
 import pytest
 
+from aicpng_ingest import aicpng
+
+
+@pytest.fixture(autouse=True)
+def _no_politeness_delay(monkeypatch):
+    """Zero the inter-request delay for every test in this package.
+
+    pipeline.fetch() sleeps aicpng.DELAY (2.0s) per document, and two tests
+    walk all 20 fixtures, so the suite spent 255s of its 255s runtime asleep.
+    CI allows `timeout 300` per package — this was passing with 45s of margin
+    on a quiet runner and would have started flaking on a busy one.
+
+    autouse and declared here rather than in one test module: a fixture in
+    test_pipeline.py does not apply to the others, which is how the same
+    problem survived in pkbwl until it was found a second time.
+    """
+    monkeypatch.setattr(aicpng, "DELAY", 0.0)
+
 
 class FakeResp:
     def __init__(self, *, json_data=None, content=b"", status_code=200):
