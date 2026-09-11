@@ -2,7 +2,7 @@
 name = "cenipa-ingest"
 version = "0.1.0"
 requires-python = ">=3.11"
-dependencies = ["httpx>=0.28.1", "patchright>=1.62.1"]
+dependencies = ["httpx>=0.28.1", "patchright>=1.62.3"]
 
 [project.optional-dependencies]
 dev = ["pytest>=9.1.1"]

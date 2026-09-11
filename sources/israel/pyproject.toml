@@ -2,10 +2,10 @@
 name = "israel-ingest"
 version = "0.1.0"
 requires-python = ">=3.11"
-dependencies = ["patchright>=1.40"]
+dependencies = ["patchright>=1.62.3"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8"]
+dev = ["pytest>=9.1.1"]
 
 [tool.setuptools]
 py-modules = ["il_fix", "israel_scraper"]
