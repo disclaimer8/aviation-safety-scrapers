@@ -6,7 +6,11 @@ Usage: python3 cins_ocr_backfill.py
 import os, sys, subprocess, shlex, uuid, sqlite3, time, re
 
 DB = os.path.expanduser("~/cins-ingest/cins.db")
-OCR_REMOTE = os.environ.get("OCR_REMOTE", "root@136.243.144.209")
+# No default. This hardcoded the production host as a fallback — in a PUBLIC
+# repository, which published the prod IP and the fact that it is reached as
+# root. An unset OCR_REMOTE now means "no remote OCR", which is what the rest
+# of the tree already does (_common/pdf.py).
+OCR_REMOTE = os.environ.get("OCR_REMOTE", "")
 OCR_LANG = "rus"  # hetzner has rus (Cyrillic) but not srp
 FLOOR = 600
 MIN_MARKERS = 2

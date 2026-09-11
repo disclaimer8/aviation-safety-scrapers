@@ -1,0 +1,10 @@
+# /etc/systemd/system/jtsb-cycle.timer
+[Unit]
+Description=Weekly JTSB ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 20:00:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

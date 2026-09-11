@@ -1,0 +1,14 @@
+# /etc/systemd/system/india-cycle.service
+[Unit]
+Description=AAIB India ingest cycle (weekly; discover->fetch->build->sync)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/india-ingest
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/home/a1/india-ingest/india-cycle.log
+StandardError=append:/home/a1/india-ingest/india-cycle.log
+TimeoutStartSec=7200

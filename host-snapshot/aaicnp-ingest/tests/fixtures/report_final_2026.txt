@@ -1,0 +1,102 @@
+Aircraft Accident Investigation Report 1/2026
+
+Final Report
+of the accident to
+Airbus (AS350B3e) Helicopter, registration 9N-AMS,
+operated by Altitude Air Pvt. Ltd.
+On 29th October 2025
+at Lobuche, Solukhumbu, Nepal
+
+Aviation Safety and Accident Investigation Section
+Civil Aviation Division
+Ministry of Culture, Tourism and Civil Aviation
+
+This investigation has been carried out in accordance with The Civil Aviation (Investigation of
+Accident) Regulation 2014, Annex 13 to the Convention on International Civil Aviation and The
+Procedure Manual of Aircraft Accident/Incident Investigation, 2022.
+
+The sole objective of the investigation of an accident or incident under these Regulations
+shall be the prevention of accidents and incidents. It shall not be the purpose of such an
+investigation to apportion blame or liability.
+
+This report contains facts which have been determined up to the time of publication. This
+information is published to inform the aviation industry and the public of the general
+circumstances of the accident.
+Extracts may be published without specific permission providing that the source is duly
+acknowledged, the material is reproduced accurately and it is not used in a derogatory manner or
+in a misleading context.
+
+Published on 23 March 2026
+
+2
+
+TABLE OF CONTENTS
+FACTUAL INFORMATION .............................................................................................................................. 6
+1.1
+
+History of Flight ............................................................................................................................ 6
+
+1.2
+
+Injuries to persons ........................................................................................................................ 7
+
+1.3
+
+Damage to Aircraft ....................................................................................................................... 7
+
+1.4
+
+Other damages ............................................................................................................................. 7
+
+1.5
+
+Personnel Information ................................................................................................................. 7
+
+1.6
+
+Aircraft Information ..................................................................................................................... 8
+
+1.7
+
+Aircraft Maintenance History ...................................................................................................... 9
+
+1.8
+
+Meteorological Information......................................................................................................... 9
+
+1.9
+
+Navigation Aid .............................................................................................................................. 9
+
+1.10
+
+Communication Aid ...................................................................................................................... 9
+
+1.11
+
+Helipad Information ..................................................................................................................... 9
+
+1.12
+
+Flight recorders........................................................................................................................... 10
+
+1.13
+
+Wreckage and Impact Information ............................................................................................ 10
+
+1.14
+
+Medical and pathological information ...................................................................................... 10
+
+1.15
+
+Survival Aspect ........................................................................................................................... 10
+
+ANALYSIS ................................................................................................................................................ 11
+2.1
+
+Sequence of Events and Accident Dynamics ............................................................................. 11
+
+2.2
+
+Technical Aspect ..................................................................

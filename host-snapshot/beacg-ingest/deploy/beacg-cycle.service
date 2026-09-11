@@ -1,0 +1,14 @@
+# /etc/systemd/system/beacg-cycle.service
+[Unit]
+Description=BEA Congo ingest cycle
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/beacg-ingest
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/home/a1/beacg-ingest/beacg-cycle.log
+StandardError=append:/home/a1/beacg-ingest/beacg-cycle.log
+TimeoutStartSec=10800

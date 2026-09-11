@@ -1,0 +1,14 @@
+# /etc/systemd/system/knkt-cycle.service
+[Unit]
+Description=KNKT NTSC (Indonesia) ingest cycle (weekly; discover->fetch->build->sync)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/knkt-ingest
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/home/a1/knkt-ingest/knkt-cycle.log
+StandardError=append:/home/a1/knkt-ingest/knkt-cycle.log
+TimeoutStartSec=7200

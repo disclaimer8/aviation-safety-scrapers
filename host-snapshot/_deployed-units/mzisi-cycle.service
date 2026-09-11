@@ -1,0 +1,14 @@
+# /etc/systemd/system/mzisi-cycle.service
+[Unit]
+Description=MzI (Slovenia) aviation ingest cycle (weekly; discover->fetch->parse->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/mzisi-ingest
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/home/a1/mzisi-ingest/mzisi-cycle.log
+StandardError=append:/home/a1/mzisi-ingest/mzisi-cycle.log
+TimeoutStartSec=10800

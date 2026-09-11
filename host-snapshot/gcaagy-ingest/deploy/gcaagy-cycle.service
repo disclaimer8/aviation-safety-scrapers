@@ -1,0 +1,14 @@
+# /etc/systemd/system/gcaagy-cycle.service
+[Unit]
+Description=GCAA (Guyana) ingest cycle (weekly; discover->fetch->parse->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/gcaagy-ingest
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/home/a1/gcaagy-ingest/gcaagy-cycle.log
+StandardError=append:/home/a1/gcaagy-ingest/gcaagy-cycle.log
+TimeoutStartSec=10800

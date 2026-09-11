@@ -1,0 +1,14 @@
+# /etc/systemd/system/kinsiv-cycle.service
+[Unit]
+Description=KINSIV (North Macedonia) ingest cycle (weekly; FlareSolverr discover->fetch->parse->build->sync)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/kinsiv-ingest
+ExecStart=/bin/bash -lc "./run-cycle.sh"
+StandardOutput=append:/home/a1/kinsiv-ingest/kinsiv-cycle.log
+StandardError=append:/home/a1/kinsiv-ingest/kinsiv-cycle.log
+TimeoutStartSec=7200

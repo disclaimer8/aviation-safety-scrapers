@@ -1,0 +1,13 @@
+[Unit]
+Description=MAK seed+scrape+sync cycle (weekly)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/flightfinder/server
+ExecStart=/bin/bash -lc "./scripts/mak-cycle.sh"
+StandardOutput=append:/home/a1/flightfinder/mak-cycle.log
+StandardError=append:/home/a1/flightfinder/mak-cycle.log
+TimeoutStartSec=3600

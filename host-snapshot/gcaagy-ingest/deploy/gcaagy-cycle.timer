@@ -1,0 +1,10 @@
+# /etc/systemd/system/gcaagy-cycle.timer
+[Unit]
+Description=Weekly GCAA (Guyana) ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 16:45:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

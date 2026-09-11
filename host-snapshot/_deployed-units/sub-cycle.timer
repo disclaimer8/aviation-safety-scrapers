@@ -1,0 +1,10 @@
+# /etc/systemd/system/sub-cycle.timer
+[Unit]
+Description=Weekly SUB Austria ingest cycle
+
+[Timer]
+OnCalendar=Sun 16:30 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

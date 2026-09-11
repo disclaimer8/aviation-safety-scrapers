@@ -1,0 +1,25 @@
+# Install on the mini-PC:
+#   sudo cp ops/systemd/ntsb-cycle.{service,timer} /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now ntsb-cycle.timer
+#
+# Mirrors mak-cycle.service / baaa-cycle.service, which live only on the box —
+# these are committed so the next person does not have to reconstruct them from
+# a running system.
+#
+# The binary itself is built on the mini-PC from bin/ntsb-ingest and lives at
+# ~/ntsb-ingest, the same arrangement as ~/aircrash/aircrash-parser:
+#   export PATH=/usr/local/go/bin:$PATH   # 1.26.3; /usr/bin/go is 1.22.2
+#   cd ~/ntsb-ingest-src && CGO_ENABLED=1 go build -o ~/ntsb-ingest .
+[Unit]
+Description=NTSB monthly event ingest into the AirCrash sidecar
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/flightfinder/server
+ExecStart=/bin/bash -lc "./scripts/ntsb-cycle.sh"
+StandardOutput=append:/home/a1/flightfinder/ntsb-cycle.log
+StandardError=append:/home/a1/flightfinder/ntsb-cycle.log
+TimeoutStartSec=7200

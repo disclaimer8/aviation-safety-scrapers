@@ -1,0 +1,14 @@
+# /etc/systemd/system/sacaa-cycle.service
+[Unit]
+Description=SACAA AIID (South Africa) ingest cycle (weekly; discover->fetch->build->sync)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/sacaa-ingest
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/home/a1/sacaa-ingest/sacaa-cycle.log
+StandardError=append:/home/a1/sacaa-ingest/sacaa-cycle.log
+TimeoutStartSec=14400

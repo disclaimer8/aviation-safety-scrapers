@@ -1,0 +1,10 @@
+# /etc/systemd/system/cenipa-cycle.timer
+[Unit]
+Description=Weekly CENIPA (Brazil) ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 18:00:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

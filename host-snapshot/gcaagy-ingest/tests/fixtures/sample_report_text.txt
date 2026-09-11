@@ -1,0 +1,81 @@
+GAAIIU
+
+GUYANA AIRCRAFT ACCIDENT &
+INCIDENT INVESTIGATION UNIT
+
+File No: AAIIU: 3.1.22
+
+GENERAL
+Report / File. No:
+
+- AAIIU: 3/1/22/3
+
+Name of Operator
+
+- FLY JAMAICA AIRWAYS
+
+Aircraft Manufacturer
+
+- BOEING AIRCRAFT COMPANY
+
+Aircraft Model/Type
+
+- BOEING 757-200
+
+Nationality & Registration Marks
+
+- N524AT
+
+Place of Accident/Region
+
+- CHEDDI JAGAN INTERNATIONAL AIRPORT
+(ICAO REFERENCE SYCJ), DISTRICT
+REGION 4, TIMEHRI, EAST BANK
+DEMERARA, GUYANA, SOUTH AMERICA
+
+Date of Accident
+
+- 9TH NOVEMBER 2018
+
+Time of Accident
+
+- 06:53 UTC (02:53 GST)
+
+Page 1 of 96
+
+GAAIIU
+
+GUYANA AIRCRAFT ACCIDENT &
+INCIDENT INVESTIGATION UNIT
+
+File No: AAIIU: 3.1.22
+
+This investigation was conducted in accordance with the methodology
+and requirements of ICAO Annex 13, and therefore, it is not intended to
+apportion blame, or to assess individual or collective liability. Its sole
+objective is to draw lessons from the occurrence which may help to
+prevent future accidents. Consequently, the use of this Report for any
+purpose other than for the prevention of future accidents could lead to
+erroneous conclusions.
+
+GENERAL NOTE:
+All times in this Report are Coordinated Universal Time (UTC) unless
+otherwise stated. UTC is four hours ahead of Guyana Standard Time
+(GST), that is, GST+4. Where Greenwich Mean Time (GMT) is quoted, it
+only relates to that specific topic or section, and correlates with UTC
+(denoting a similar time difference with GST).
+
+SPECIAL NOTE:
+The Cheddi Jagan International Airport Corporation (CJIAC) is the
+corporate body responsible for the control and management of the
+Cheddi Jagan International Airport (CJIA).
+SYCJ is the International Civil Aviation Organisation's (ICAO) reference
+assigned to the CJIA.
+Thus, wherever used in this Final Report, SYCJ and CJIA is being used
+interchangeably to refer to the same Airport. SYCJ is mostly used to
+refer to Pilot's reference for the Airport, while CJIA is used in the
+general sense as the official name assigned to the Airport.
+
+Page 2 of 96
+
+

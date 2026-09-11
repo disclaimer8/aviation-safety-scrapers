@@ -1,0 +1,10 @@
+# /etc/systemd/system/shk-cycle.timer
+[Unit]
+Description=Weekly SHK (Sweden) ingest cycle
+
+[Timer]
+OnCalendar=Sun 13:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

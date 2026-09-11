@@ -1,0 +1,10 @@
+# /etc/systemd/system/beacg-cycle.timer
+[Unit]
+Description=Weekly BEA Congo ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 18:45:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

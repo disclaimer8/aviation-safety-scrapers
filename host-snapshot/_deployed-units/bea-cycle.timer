@@ -1,0 +1,10 @@
+# /etc/systemd/system/bea-cycle.timer
+[Unit]
+Description=Weekly BEA ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 09:00:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

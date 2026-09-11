@@ -1,0 +1,14 @@
+# /etc/systemd/system/jtsb-cycle.service
+[Unit]
+Description=JTSB (Japan) ingest cycle (weekly; discover->fetch->parse->build->sync)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/jtsb-ingest
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/home/a1/jtsb-ingest/jtsb-cycle.log
+StandardError=append:/home/a1/jtsb-ingest/jtsb-cycle.log
+TimeoutStartSec=7200

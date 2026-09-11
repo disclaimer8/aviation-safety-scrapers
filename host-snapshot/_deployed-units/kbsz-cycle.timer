@@ -1,0 +1,10 @@
+# /etc/systemd/system/kbsz-cycle.timer
+[Unit]
+Description=Weekly KBSZ (Hungary) ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 20:15:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,13 @@
+[Unit]
+Description=Weekly SIBPK Pakistan ingest cycle
+
+[Timer]
+# 21:15 UTC — free slot on the Sunday 15-minute grid (20:45 and 21:15 were the
+# only gaps between 16:45 and 23:30). Persistent so a powered-off minipc still
+# catches up on the next boot instead of silently skipping the week.
+OnCalendar=Sun *-*-* 21:15:00 UTC
+Persistent=true
+RandomizedDelaySec=1800
+
+[Install]
+WantedBy=timers.target

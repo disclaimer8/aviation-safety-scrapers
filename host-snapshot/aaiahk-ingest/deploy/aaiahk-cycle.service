@@ -1,0 +1,14 @@
+# /etc/systemd/system/aaiahk-cycle.service
+[Unit]
+Description=HK AAIA (Hong Kong) ingest cycle (weekly; discover->fetch->parse->build->sync)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/aaiahk-ingest
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/home/a1/aaiahk-ingest/aaiahk-cycle.log
+StandardError=append:/home/a1/aaiahk-ingest/aaiahk-cycle.log
+TimeoutStartSec=10800

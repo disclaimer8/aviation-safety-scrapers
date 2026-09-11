@@ -1,0 +1,10 @@
+# /etc/systemd/system/aaibzm-cycle.timer
+[Unit]
+Description=AAIB Zambia ingest cycle
+
+[Timer]
+OnCalendar=Sun *-*-* 19:15:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

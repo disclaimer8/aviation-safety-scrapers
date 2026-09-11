@@ -1,0 +1,14 @@
+# /etc/systemd/system/ovv-cycle.service
+[Unit]
+Description=OVV (Netherlands) ingest cycle (weekly; discover->fetch->build->sync)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/ovv-ingest
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/home/a1/ovv-ingest/ovv-cycle.log
+StandardError=append:/home/a1/ovv-ingest/ovv-cycle.log
+TimeoutStartSec=14400

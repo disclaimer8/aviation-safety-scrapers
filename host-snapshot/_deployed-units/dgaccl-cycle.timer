@@ -1,0 +1,10 @@
+# /etc/systemd/system/dgaccl-cycle.timer
+[Unit]
+Description=Weekly DGAC Chile ingest cycle
+
+[Timer]
+OnCalendar=Sat 23:30 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target
