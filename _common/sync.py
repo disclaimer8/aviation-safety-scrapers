@@ -30,6 +30,11 @@ VENDORED = {
     "aaibmy": {"pdf": "pdf", "http": "httpc", "robots": "robots", "text": "text"},
     "ahac": {"pdf": "pdf", "http": "httpc", "robots": "robots", "text": "text"},
     "ciaiauy": {"pdf": "pdf", "http": "httpc", "robots": "robots", "text": "text"},
+    # aaiahk carries the canon three plus a Hong Kong registration parser,
+    # so the canon lands as _textbase.py and text.py re-exports it — same
+    # shape as nsib. pdf is NOT vendored: its variant is one function, not
+    # the canonical five.
+    "aaiahk": {"http": "httpc", "robots": "robots", "text": "_textbase"},
     "nsib": {"pdf": "pdf", "http": "httpc", "robots": "robots", "text": "_textbase"},
     "ntsbaar": {"pdf": "pdf", "http": "httpc", "robots": "robots", "text": "text"},
     "ovv": {"pdf": "pdf", "http": "httpc", "robots": "robots", "text": "text"},
@@ -58,6 +63,7 @@ VENDORED = {
     "gcaa": {"http": "httpc", "robots": "robots"},
     "griaa": {"http": "httpc", "robots": "robots"},
     "india": {"http": "httpc", "robots": "robots"},
+    "gcaagy": {"http": "httpc", "robots": "robots", "text": "text"},
     "jiaacve": {"http": "httpc", "robots": "robots"},
     "jst": {"http": "httpc", "robots": "robots"},
     "jtsb": {"http": "httpc", "robots": "robots"},
