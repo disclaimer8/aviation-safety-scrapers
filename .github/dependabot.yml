@@ -1,5 +1,20 @@
 version: 2
 
+# host-snapshot/ is deliberately absent from every glob below.
+#
+# It holds 30 pyproject.toml and 5 package.json files belonging to code this
+# repository does not build, test or run — an archive of what lived only on the
+# ingest host (see host-snapshot/README.md). Watching it would mean a steady
+# stream of pull requests against a snapshot, and merging any of them would
+# stop it being one.
+#
+# Note that this only governs VERSION updates. Dependabot's security updates
+# ignore `directories` entirely, so an advisory with an available fix will
+# still open a PR against the archive; close it and dismiss the alert as
+# archived code. The alerts themselves are worth keeping — they are recorded in
+# host-snapshot/README.md, and the first scan found a real one that npm cannot
+# fix at all.
+
 updates:
   # Python packages — one pyproject.toml per source under sources/<code>/.
   # The /sources/* glob covers every Python source with a single block;

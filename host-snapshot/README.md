@@ -87,3 +87,37 @@ class already triaged and dismissed on `main` for `sources/tsb` and
 This list is a floor, not a ceiling. CodeQL sees what CodeQL sees; the findings
 in `CODE-REVIEW.md` — silent truncation, missing retries, unsanitised paths —
 are not things it checks for, and these 39 sources have had none of those fixes.
+
+## What Dependabot found, including one npm cannot fix
+
+Eight open alerts on the first scan. These are the first dependency report this
+code has ever had: nothing was watching it while it lived on the mini-PC.
+
+**`xlsx` — high, and there is no fix on npm (6 alerts).**
+
+    laser-ingest, uas-ingest, wildlife-ingest
+
+GHSA-5pgg-2g8v-p4x9 (ReDoS) and the prototype-pollution advisory both want
+`xlsx >= 0.20.2`. The npm registry's latest is **0.18.5** — SheetJS stopped
+publishing there and ships from its own CDN instead, so Dependabot will report
+this for ever and can never resolve it. Verified against the registry on
+2026-09-11.
+
+This one matters beyond the archive: laser, uas and wildlife are live
+FlightFinder data verticals, and they run this code on the ingest host today.
+Closing it means either pulling `xlsx` from the SheetJS CDN with an integrity
+pin, or reading those FAA spreadsheets with something else. Neither is a
+Dependabot PR.
+
+**`csv-parse` — medium, fixable (2 alerts).**
+
+    ourairports-ingest, wildlife-ingest
+
+`< 7.0.2`, prototype replacement reachable via `columns`. Dismissed here as
+archived code rather than patched, because patching a snapshot stops it being
+one — fix it when the source moves into `sources/`.
+
+`host-snapshot/` is excluded from Dependabot's version updates by omission from
+every glob in `.github/dependabot.yml`. Security updates ignore that config, so
+an occasional PR against the archive is expected; close it and dismiss the
+alert.
