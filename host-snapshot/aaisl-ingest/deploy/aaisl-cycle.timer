@@ -1,0 +1,10 @@
+# /etc/systemd/system/aaisl-cycle.timer
+[Unit]
+Description=Weekly AAII Sri Lanka ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 13:15:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

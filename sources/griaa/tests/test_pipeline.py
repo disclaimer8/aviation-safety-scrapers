@@ -5,6 +5,11 @@ import os
 from griaa_ingest import griaa, db, pipeline
 from griaa_ingest.pdf import SCANNED_THRESHOLD
 
+# Sized against the package's own build floor rather than a literal,
+# so these fixtures keep meaning what they mean when it moves.
+_FLOOR = pipeline._NARRATIVE_FLOOR
+
+
 
 def _conn():
     c = db.connect(":memory:")
@@ -267,7 +272,7 @@ def _seed_parsed(conn, case_id, *, aircraft=None, registration=None, location=No
 
 def test_build_creates_accident_row():
     conn = _conn()
-    narr = "N" * 200
+    narr = "N" * (_FLOOR + 100)
     _seed_parsed(conn, "COL-08-31-GIA", aircraft="L-410UVP-E", registration="HK4235",
                  location="Acandí", date="2008-12-12", narrative=narr,
                  event_class="Accidente", tier="pdf",
@@ -305,7 +310,7 @@ def test_build_skips_none_tier():
 
 def test_build_skips_below_narrative_floor():
     conn = _conn()
-    _seed_parsed(conn, "COL-08-02-GIA", narrative="X" * 79, tier="pdf",
+    _seed_parsed(conn, "COL-08-02-GIA", narrative="X" * (_FLOOR - 1), tier="pdf",
                  event_class="Accidente")
     assert pipeline.build(conn) == 0
     assert conn.execute("SELECT status FROM griaa_reports WHERE case_id='COL-08-02-GIA'").fetchone()["status"] == db.STATUS_SKIPPED
@@ -313,7 +318,7 @@ def test_build_skips_below_narrative_floor():
 
 def test_build_source_url_falls_back_to_report_url():
     conn = _conn()
-    _seed_parsed(conn, "COL-08-31-GIA", narrative="N" * 200, tier="pdf",
+    _seed_parsed(conn, "COL-08-31-GIA", narrative="N" * (_FLOOR + 100), tier="pdf",
                  event_class="Accidente", pdf_url=None,
                  report_url="https://www.aerocivil.gov.co/r")
     pipeline.build(conn)
@@ -322,17 +327,17 @@ def test_build_source_url_falls_back_to_report_url():
 
 def test_build_country_is_co():
     conn = _conn()
-    _seed_parsed(conn, "COL-08-31-GIA", narrative="N" * 200, tier="pdf", event_class="Accidente")
+    _seed_parsed(conn, "COL-08-31-GIA", narrative="N" * (_FLOOR + 100), tier="pdf", event_class="Accidente")
     pipeline.build(conn)
     assert conn.execute("SELECT country FROM griaa_accidents WHERE case_id='COL-08-31-GIA'").fetchone()["country"] == "CO"
 
 
 def test_build_mixed_rows():
     conn = _conn()
-    narr = "Z" * 200
+    narr = "Z" * (_FLOOR + 100)
     _seed_parsed(conn, "COL-08-01-GIA", narrative=narr, tier="pdf", event_class="Accidente")
     _seed_parsed(conn, "COL-08-02-GIA", narrative=narr, tier="pdf", event_class="Incidente grave")
-    _seed_parsed(conn, "COL-08-03-GIA", narrative="x" * 200, tier="scanned", event_class="Accidente")
+    _seed_parsed(conn, "COL-08-03-GIA", narrative="x" * (_FLOOR + 100), tier="scanned", event_class="Accidente")
     assert pipeline.build(conn) == 2
     assert conn.execute("SELECT COUNT(*) FROM griaa_accidents").fetchone()[0] == 2
     assert conn.execute("SELECT status FROM griaa_reports WHERE case_id='COL-08-03-GIA'").fetchone()["status"] == db.STATUS_SKIPPED

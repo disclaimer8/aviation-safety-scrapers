@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "better-sqlite3": "^12.11.1",
+    "xlsx": "^0.18.5"
+  },
+  "name": "laser-ingest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "inspect-laser.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

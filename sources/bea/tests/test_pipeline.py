@@ -8,6 +8,11 @@ import sys
 from bea_ingest import bea, db, pipeline
 from bea_ingest.pdf import MIN_NARRATIVE
 
+# Sized against the package's own build floor rather than a literal,
+# so these fixtures keep meaning what they mean when it moves.
+_FLOOR = pipeline._NARRATIVE_FLOOR
+
+
 # Make scripts/ importable without installing
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
 
@@ -383,7 +388,7 @@ def _seed_parsed(conn, slug, aircraft_type, registration, location,
 
 def test_build_creates_accident_row():
     conn = _conn()
-    long_narrative = "N" * 200
+    long_narrative = "N" * (_FLOOR + 100)
     _seed_parsed(
         conn,
         slug="cessna-208-f-hfdz-2026-05-24",
@@ -478,7 +483,7 @@ def test_build_short_narrative_floor():
         registration="F-XXXX",
         location="Nice",
         date="2022-03-15",
-        narrative="X" * 79,  # one below the 80-char floor
+        narrative="X" * (_FLOOR - 1),  # one below the 80-char floor
         event_class="Serious incident",
         detail_url="https://bea.aero/en/investigation-reports/notified-events/detail/floor-event/",
     )
@@ -498,7 +503,7 @@ def test_build_relative_detail_url_prefixed():
         registration="F-GRRR",
         location="Bordeaux",
         date="2021-07-04",
-        narrative="R" * 200,
+        narrative="R" * (_FLOOR + 100),
         event_class="Accident",
         detail_url="/en/investigation-reports/notified-events/detail/relative-url-event/",
     )
@@ -510,7 +515,7 @@ def test_build_relative_detail_url_prefixed():
 def test_build_mixed_rows():
     """Two buildable rows + one skipped → build() returns 2, skipped row correct."""
     conn = _conn()
-    long_narr = "Z" * 200
+    long_narr = "Z" * (_FLOOR + 100)
     # buildable row 1
     _seed_parsed(conn, "ev1", "Cessna 208", "F-AA01", "Rennes", "2026-01-01", long_narr, "Accident",
                  detail_url="https://bea.aero/detail/ev1/")
@@ -556,7 +561,7 @@ def test_reparse_rebuild_on_tiny_db():
     from reparse_rebuild import reparse_rebuild  # imported via sys.path above
 
     conn = _conn()
-    long_narr = "N" * 200
+    long_narr = "N" * (_FLOOR + 100)
 
     # A: previously skipped, good title
     _seed_report(conn, "slug-a",

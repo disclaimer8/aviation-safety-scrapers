@@ -1,0 +1,14 @@
+[Unit]
+Description=ATSB seed+scrape+sync cycle (weekly, headed Chromium under Xvfb)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/flightfinder/server
+Environment=ATSB_PROFILE_DIR=/home/a1/flightfinder/data/atsb-profile
+ExecStart=/bin/bash -lc "./scripts/atsb-cycle.sh"
+StandardOutput=append:/home/a1/flightfinder/atsb-cycle.log
+StandardError=append:/home/a1/flightfinder/atsb-cycle.log
+TimeoutStartSec=7200

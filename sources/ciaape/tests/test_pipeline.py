@@ -6,6 +6,11 @@ from ciaape_ingest import ciaape, db, pipeline
 from ciaape_ingest.pdf import MIN_NARRATIVE
 from ciaape_ingest.pipeline import SCANNED_MIN
 
+# Sized against the package's own build floor rather than a literal,
+# so these fixtures keep meaning what they mean when it moves.
+_FLOOR = pipeline._NARRATIVE_FLOOR
+
+
 
 def _conn():
     c = db.connect(":memory:")
@@ -366,7 +371,7 @@ def test_build_creates_accident_row_country_pe():
 
 def test_build_source_url_falls_back_to_report_url():
     conn = _conn()
-    _seed_parsed(conn, "CIAA-ACCID-009-2022", narrative="N" * 200,
+    _seed_parsed(conn, "CIAA-ACCID-009-2022", narrative="N" * (_FLOOR + 100),
                  event_class="Accident", source_tier="short", pdf_url=None,
                  report_url="https://www.gob.pe/institucion/mtc/informes-publicaciones/9-x")
     pipeline.build(conn)
@@ -398,7 +403,7 @@ def test_build_skips_none_tier():
 
 def test_build_skips_below_floor():
     conn = _conn()
-    _seed_parsed(conn, "CIAA-ACCID-012-2022", narrative="X" * 79,
+    _seed_parsed(conn, "CIAA-ACCID-012-2022", narrative="X" * (_FLOOR - 1),
                  event_class="Serious incident", source_tier="short")
     assert pipeline.build(conn) == 0
     assert conn.execute(
@@ -408,7 +413,7 @@ def test_build_skips_below_floor():
 
 def test_build_report_type_from_event_class():
     conn = _conn()
-    _seed_parsed(conn, "CIAA-SINCID-001-2022", narrative="N" * 200,
+    _seed_parsed(conn, "CIAA-SINCID-001-2022", narrative="N" * (_FLOOR + 100),
                  event_class="Serious incident", source_tier="pdf")
     pipeline.build(conn)
     assert conn.execute(

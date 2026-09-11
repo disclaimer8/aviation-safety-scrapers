@@ -1,0 +1,14 @@
+# /etc/systemd/system/kbsz-cycle.service
+[Unit]
+Description=KBSZ (Hungary) ingest cycle (weekly; discover->fetch->parse->OCR->build->sync)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/kbsz-ingest
+ExecStart=/bin/bash -lc "./run-cycle.sh"
+StandardOutput=append:/home/a1/kbsz-ingest/kbsz-cycle.log
+StandardError=append:/home/a1/kbsz-ingest/kbsz-cycle.log
+TimeoutStartSec=10800

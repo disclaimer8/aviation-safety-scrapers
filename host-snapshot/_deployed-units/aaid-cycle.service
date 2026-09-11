@@ -1,0 +1,14 @@
+# /etc/systemd/system/aaid-cycle.service
+[Unit]
+Description=AAID (Kenya) ingest cycle (weekly; discover->fetch->parse->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/aaid-ingest
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/home/a1/aaid-ingest/aaid-cycle.log
+StandardError=append:/home/a1/aaid-ingest/aaid-cycle.log
+TimeoutStartSec=10800

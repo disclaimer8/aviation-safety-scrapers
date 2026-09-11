@@ -1,0 +1,10 @@
+# /etc/systemd/system/aibdk-cycle.timer
+[Unit]
+Description=Weekly AIB Denmark ingest cycle
+
+[Timer]
+OnCalendar=Sun 07:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

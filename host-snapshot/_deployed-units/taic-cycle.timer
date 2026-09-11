@@ -1,0 +1,10 @@
+# /etc/systemd/system/taic-cycle.timer
+[Unit]
+Description=Weekly TAIC (New Zealand) ingest cycle
+
+[Timer]
+OnCalendar=Sun 19:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

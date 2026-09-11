@@ -8,6 +8,12 @@ from jtsb_ingest import db
 from jtsb_ingest.pipeline import discover, fetch, parse, build
 from jtsb_ingest.pdf import MIN_NARRATIVE
 
+# Sized against the package's own build floor rather than a literal,
+# so these fixtures keep meaning what they mean when it moves.
+from jtsb_ingest import pipeline as _pipeline_mod
+_FLOOR = _pipeline_mod._NARRATIVE_FLOOR
+
+
 # ── helpers ────────────────────────────────────────────────────────────────────
 
 _SAMPLE_ROWS = [
@@ -360,7 +366,7 @@ class TestBuild:
 
     def test_pdf_tier_above_floor_is_built(self):
         conn = _make_conn()
-        narrative = "X" * 200  # well above _NARRATIVE_FLOOR=80
+        narrative = "X" * (_FLOOR + 100)  # well above _NARRATIVE_FLOOR=80
         self._seed_parsed(conn, "AA2024-3-1", narrative, "pdf")
 
         count = build(conn)
@@ -383,7 +389,7 @@ class TestBuild:
 
     def test_scanned_tier_is_skipped(self):
         conn = _make_conn()
-        narrative = "X" * 200  # long enough, but scanned
+        narrative = "X" * (_FLOOR + 100)  # long enough, but scanned
         self._seed_parsed(conn, "AI2024-5-2", narrative, "scanned")
 
         count = build(conn)
@@ -427,7 +433,7 @@ class TestBuild:
 
     def test_country_is_jp(self):
         conn = _make_conn()
-        self._seed_parsed(conn, "AA2024-3-1", "X" * 200, "pdf")
+        self._seed_parsed(conn, "AA2024-3-1", "X" * (_FLOOR + 100), "pdf")
         build(conn)
         acc = conn.execute(
             "SELECT country FROM jtsb_accidents WHERE case_id=?", ("AA2024-3-1",)
@@ -436,7 +442,7 @@ class TestBuild:
 
     def test_report_type_carried_through(self):
         conn = _make_conn()
-        self._seed_parsed(conn, "AI2024-5-2", "X" * 200, "pdf", report_type="Serious Incident")
+        self._seed_parsed(conn, "AI2024-5-2", "X" * (_FLOOR + 100), "pdf", report_type="Serious Incident")
         build(conn)
         acc = conn.execute(
             "SELECT report_type FROM jtsb_accidents WHERE case_id=?", ("AI2024-5-2",)
@@ -447,7 +453,7 @@ class TestBuild:
         conn = _make_conn()
         pdf = "https://example.com/pdf.pdf"
         rep = "https://example.com/report.pdf"
-        self._seed_parsed(conn, "AA2024-3-1", "X" * 200, "pdf", pdf_url=pdf, report_url=rep)
+        self._seed_parsed(conn, "AA2024-3-1", "X" * (_FLOOR + 100), "pdf", pdf_url=pdf, report_url=rep)
         build(conn)
         acc = conn.execute(
             "SELECT source_url FROM jtsb_accidents WHERE case_id=?", ("AA2024-3-1",)
@@ -457,7 +463,7 @@ class TestBuild:
     def test_source_url_falls_back_to_report_url(self):
         conn = _make_conn()
         rep = "https://example.com/report.pdf"
-        self._seed_parsed(conn, "AA2024-3-1", "X" * 200, "pdf", pdf_url=None, report_url=rep)
+        self._seed_parsed(conn, "AA2024-3-1", "X" * (_FLOOR + 100), "pdf", pdf_url=None, report_url=rep)
         build(conn)
         acc = conn.execute(
             "SELECT source_url FROM jtsb_accidents WHERE case_id=?", ("AA2024-3-1",)
@@ -466,7 +472,7 @@ class TestBuild:
 
     def test_insert_or_replace_idempotent(self):
         conn = _make_conn()
-        narrative = "X" * 200
+        narrative = "X" * (_FLOOR + 100)
         self._seed_parsed(conn, "AA2024-3-1", narrative, "pdf")
         build(conn)  # builds
 
@@ -483,8 +489,8 @@ class TestBuild:
 
     def test_mixed_rows_only_pdf_built(self):
         conn = _make_conn()
-        self._seed_parsed(conn, "AA2024-3-1", "X" * 200, "pdf")
-        self._seed_parsed(conn, "AI2024-5-2", "X" * 200, "scanned",
+        self._seed_parsed(conn, "AA2024-3-1", "X" * (_FLOOR + 100), "pdf")
+        self._seed_parsed(conn, "AI2024-5-2", "X" * (_FLOOR + 100), "scanned",
                           registration="JA5678", location="Osaka")
         self._seed_parsed(conn, "AA2023-1-3", "", "none",
                           registration="JA9900", location="Sapporo")

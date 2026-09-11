@@ -7,6 +7,11 @@ import os
 from ciaiac_ingest import ciaiac, db, pipeline
 from ciaiac_ingest.pdf import MIN_NARRATIVE
 
+# Sized against the package's own build floor rather than a literal,
+# so these fixtures keep meaning what they mean when it moves.
+_FLOOR = pipeline._NARRATIVE_FLOOR
+
+
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -375,7 +380,7 @@ def _seed_parsed(conn, case_id, *, aircraft=None, registration=None,
 
 def test_build_creates_accident_row():
     conn = _conn()
-    long_narrative = "N" * 200
+    long_narrative = "N" * (_FLOOR + 100)
     _seed_parsed(
         conn,
         "A-005/2024",
@@ -421,7 +426,7 @@ def test_build_source_url_falls_back_to_report_url():
         registration="EC-NNN",
         location="Sevilla",
         date="2024-06-01",
-        narrative="N" * 200,
+        narrative="N" * (_FLOOR + 100),
         event_class="Accident",
         pdf_url=None,
         report_url="https://www.transportes.gob.es/report/a-099-2024",
@@ -456,7 +461,7 @@ def test_build_skips_below_narrative_floor():
     _seed_parsed(
         conn, "A-002/2024",
         aircraft="AIRBUS A320",
-        narrative="X" * 79,  # one below the 80-char floor
+        narrative="X" * (_FLOOR - 1),  # one below the 80-char floor
         event_class="Serious incident",
     )
 
@@ -471,7 +476,7 @@ def test_build_country_is_es():
     _seed_parsed(
         conn, "A-005/2024",
         aircraft="AIRBUS A320",
-        narrative="N" * 200,
+        narrative="N" * (_FLOOR + 100),
         event_class="Accident",
     )
     pipeline.build(conn)
@@ -486,7 +491,7 @@ def test_build_report_type_from_event_class():
     _seed_parsed(
         conn, "IN-002/2024",
         aircraft="BOEING 737",
-        narrative="N" * 200,
+        narrative="N" * (_FLOOR + 100),
         event_class="Serious incident",
     )
     pipeline.build(conn)
@@ -499,7 +504,7 @@ def test_build_report_type_from_event_class():
 def test_build_mixed_rows():
     """Two buildable rows + one skipped → build() returns 2."""
     conn = _conn()
-    long_narr = "Z" * 200
+    long_narr = "Z" * (_FLOOR + 100)
 
     _seed_parsed(conn, "A-001/2024", aircraft="A320", narrative=long_narr,
                  event_class="Accident")

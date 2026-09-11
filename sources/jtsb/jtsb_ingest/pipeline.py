@@ -28,7 +28,11 @@ import time
 from . import jtsb, db, text
 from .pdf import extract_text, MIN_NARRATIVE
 
-_NARRATIVE_FLOOR = 80  # chars; rows with less are treated as non-report events
+_NARRATIVE_FLOOR = 300  # chars. Matches prod's NARRATIVE_MIN (FlightFinder
+# server/scripts/build-source-narratives.js): below it a row is built but
+# rendered noindex with quality score 30. This was 80, which shipped rows
+# that could only ever become noindex pages — and index bloat has already
+# cost this project a traffic cliff once.
 
 
 def discover(conn, client, full=False):

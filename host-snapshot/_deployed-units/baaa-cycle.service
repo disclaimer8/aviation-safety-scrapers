@@ -1,0 +1,15 @@
+# /etc/systemd/system/baaa-cycle.service
+[Unit]
+Description=BAAA-acro seed+scrape+sync cycle (weekly, headed Chromium under Xvfb)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/flightfinder/server
+Environment=BAAA_PROFILE_DIR=/home/a1/flightfinder/data/baaa-profile
+ExecStart=/bin/bash -lc "./scripts/baaa-cycle.sh"
+StandardOutput=append:/home/a1/flightfinder/baaa-cycle.log
+StandardError=append:/home/a1/flightfinder/baaa-cycle.log
+TimeoutStartSec=7200

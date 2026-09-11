@@ -1,0 +1,10 @@
+# /etc/systemd/system/tsib-cycle.timer
+[Unit]
+Description=Weekly TSIB (Singapore) ingest cycle
+
+[Timer]
+OnCalendar=Sun 05:30 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,14 @@
+[Unit]
+Description=SKYbrary cross-reference scrape+sync cycle (weekly, headed Chromium under Xvfb)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/flightfinder/server
+Environment=SKYBRARY_PROFILE_DIR=/home/a1/flightfinder/data/skybrary-profile
+ExecStart=/bin/bash -lc "./scripts/skybrary-cycle.sh"
+StandardOutput=append:/home/a1/flightfinder/skybrary-cycle.log
+StandardError=append:/home/a1/flightfinder/skybrary-cycle.log
+TimeoutStartSec=10800

@@ -1,0 +1,10 @@
+# /etc/systemd/system/araib-cycle.timer
+[Unit]
+Description=Weekly ARAIB South Korea ingest cycle
+
+[Timer]
+OnCalendar=Sun 12:30 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

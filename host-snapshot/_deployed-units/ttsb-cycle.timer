@@ -1,0 +1,10 @@
+# /etc/systemd/system/ttsb-cycle.timer
+[Unit]
+Description=Weekly TTSB Taiwan ingest cycle
+
+[Timer]
+OnCalendar=Sun 13:30 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

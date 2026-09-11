@@ -1,0 +1,10 @@
+# /etc/systemd/system/kinsiv-cycle.timer
+[Unit]
+Description=Weekly KINSIV (North Macedonia) ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 22:15:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

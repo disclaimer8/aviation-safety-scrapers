@@ -1,0 +1,10 @@
+# /etc/systemd/system/ovv-cycle.timer
+[Unit]
+Description=Weekly OVV (Netherlands) ingest cycle
+
+[Timer]
+OnCalendar=Sun 11:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

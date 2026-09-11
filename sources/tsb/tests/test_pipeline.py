@@ -10,6 +10,11 @@ import os
 from tsb_ingest import db, tsb
 from tsb_ingest import pipeline
 
+# Sized against the package's own build floor rather than a literal,
+# so these fixtures keep meaning what they mean when it moves.
+_FLOOR = pipeline._NARRATIVE_FLOOR
+
+
 FIXTURES = os.path.join(os.path.dirname(__file__), "fixtures")
 
 
@@ -301,7 +306,7 @@ def test_build_creates_accident_row_country_ca():
 
 def test_build_stores_operator_from_index():
     conn = _conn()
-    _seed_parsed(conn, "A24A0019", narrative="X" * 200,
+    _seed_parsed(conn, "A24A0019", narrative="X" * (_FLOOR + 100),
                  operator="Custom Helicopters Ltd.", aircraft="Bell 206L-4",
                  location="Goose Bay", date="2024-05-02")
     pipeline.build(conn)
@@ -323,7 +328,7 @@ def test_build_skips_short_narrative():
 def test_build_floor_boundary_79():
     """Narrative of exactly 79 chars → skipped (one below floor of 80)."""
     conn = _conn()
-    _seed_parsed(conn, "A99C0001", narrative="X" * 79)
+    _seed_parsed(conn, "A99C0001", narrative="X" * (_FLOOR - 1))
     assert pipeline.build(conn) == 0
     assert conn.execute(
         "SELECT status FROM tsb_reports WHERE case_id='A99C0001'"
@@ -333,7 +338,7 @@ def test_build_floor_boundary_79():
 def test_build_floor_boundary_80():
     """Narrative of exactly 80 chars meets the floor and must be built."""
     conn = _conn()
-    _seed_parsed(conn, "A99C0001", narrative="X" * 80)
+    _seed_parsed(conn, "A99C0001", narrative="X" * (_FLOOR + 100))
     assert pipeline.build(conn) == 1
     acc = conn.execute("SELECT country FROM tsb_accidents WHERE case_id='A99C0001'").fetchone()
     assert acc is not None

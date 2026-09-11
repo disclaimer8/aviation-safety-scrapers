@@ -1,0 +1,13 @@
+[Unit]
+Description=aaicth ingest cycle (discover->fetch->parse->build->sync)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/aaicth-ingest
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/home/a1/aaicth-ingest/aaicth-cycle.log
+StandardError=append:/home/a1/aaicth-ingest/aaicth-cycle.log
+TimeoutStartSec=10800

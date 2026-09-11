@@ -1,0 +1,9 @@
+[Unit]
+Description=Weekly SKYbrary cross-reference cycle
+
+[Timer]
+OnCalendar=Sun *-*-* 11:00:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

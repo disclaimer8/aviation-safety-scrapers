@@ -28,7 +28,11 @@ import time
 from . import dgacgt, db, text
 from .pdf import extract_text, MIN_NARRATIVE, SCANNED_THRESHOLD
 
-_NARRATIVE_FLOOR = 80  # chars; below this a row is not a real report body
+_NARRATIVE_FLOOR = 300  # chars. Matches prod's NARRATIVE_MIN (FlightFinder
+# server/scripts/build-source-narratives.js): below it a row is built but
+# rendered noindex with quality score 30. This was 80, which shipped rows
+# that could only ever become noindex pages — and index bloat has already
+# cost this project a traffic cliff once.
 
 
 def discover(conn, client, full=False):

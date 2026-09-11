@@ -1,0 +1,12 @@
+[Unit]
+Description=Fire the NTSB monthly event ingest
+
+[Timer]
+# 01:00 on the 5th. Two hours ahead of the 03:00 AirCrash scrape, which writes
+# the same SQLite file, and early enough that new rows ride that night's 04:30
+# sync to prod and the 07:00 build-occurrences on the other side.
+OnCalendar=*-*-05 01:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

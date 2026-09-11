@@ -7,27 +7,29 @@ Wants=network-online.target
 [Service]
 Type=oneshot
 User=scraper
-WorkingDirectory=/opt/ciaiauy
+WorkingDirectory=%h/ciaiauy-ingest
 ExecStart=/bin/bash -c "deploy/run-cycle.sh"
-StandardOutput=append:/opt/ciaiauy/ciaiauy-cycle.log
-StandardError=append:/opt/ciaiauy/ciaiauy-cycle.log
+StandardOutput=append:%h/ciaiauy-ingest/ciaiauy-cycle.log
+StandardError=append:%h/ciaiauy-ingest/ciaiauy-cycle.log
 TimeoutStartSec=10800
 
 # ── sandboxing ───────────────────────────────────────────────────────────────
 # This unit used to be `/bin/bash -lc`. A LOGIN shell sources ~/.profile and
-# friends, so anything that could write the scraper user's home got code
-# execution on the next timer tick — and this box stores scraped data under
-# that same home. `-c` reads no profile.
-#
-# ProtectSystem=full (not strict) is deliberate: strict makes the whole
-# filesystem read-only and would need an explicit ReadWritePaths for both
-# WorkingDirectory and the per-source ~/<code>-ingest data directory. That
-# pair has not been verified on the live host, and getting it wrong fails
-# every timer. `full` covers /usr, /boot and /etc while leaving the data
-# paths writable.
+# friends, so anything able to write the scraper user's home got code execution
+# on the next timer tick. `-c` reads no profile.
 NoNewPrivileges=true
 PrivateTmp=true
-ProtectSystem=full
+# strict: the whole filesystem is read-only except what is listed below.
+#
+# The paths here were /opt/<code>, which is not where anything runs. Checked
+# against the mini-PC on 2026-09-11: all 77 deployed units use
+# %h/<code>-ingest and none uses /opt. %h follows User= rather than hardcoding
+# one operator's home.
+ProtectSystem=strict
+ReadWritePaths=%h/ciaiauy-ingest
+# ssh writes known_hosts on first connect when OCR_REMOTE is set. The leading
+# '-' makes this tolerant of the directory not existing.
+ReadWritePaths=-%h/.ssh
 ProtectKernelTunables=true
 ProtectKernelModules=true
 ProtectControlGroups=true

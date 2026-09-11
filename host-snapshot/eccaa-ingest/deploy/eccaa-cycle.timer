@@ -1,0 +1,10 @@
+# /etc/systemd/system/eccaa-cycle.timer
+[Unit]
+Description=Weekly ECCAA ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 18:15:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

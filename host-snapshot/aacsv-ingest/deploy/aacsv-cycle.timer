@@ -1,0 +1,10 @@
+# /etc/systemd/system/aacsv-cycle.timer
+[Unit]
+Description=Weekly El Salvador AAC ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 17:45:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

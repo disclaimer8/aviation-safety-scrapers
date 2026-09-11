@@ -1,0 +1,14 @@
+# /etc/systemd/system/gpiaaf-cycle.service
+[Unit]
+Description=GPIAAF (Portugal) civil-aviation ingest cycle (weekly; Playwright/Xvfb; discover->fetch->build->sync)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/gpiaaf-ingest
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/home/a1/gpiaaf-ingest/gpiaaf-cycle.log
+StandardError=append:/home/a1/gpiaaf-ingest/gpiaaf-cycle.log
+TimeoutStartSec=21600

@@ -4,6 +4,11 @@ import os
 from ciaiauy_ingest import ciaiauy, db, pipeline
 from ciaiauy_ingest.pdf import MIN_NARRATIVE, SCANNED_MAX
 
+# Sized against the package's own build floor rather than a literal,
+# so these fixtures keep meaning what they mean when it moves.
+_FLOOR = pipeline._NARRATIVE_FLOOR
+
+
 
 def _conn():
     c = db.connect(":memory:")
@@ -285,14 +290,14 @@ def test_build_skips_scanned():
 
 def test_build_skips_below_floor():
     conn = _conn()
-    _seed_parsed(conn, "caso-611", narrative="X" * 79, source_tier="short")
+    _seed_parsed(conn, "caso-611", narrative="X" * (_FLOOR - 1), source_tier="short")
     assert pipeline.build(conn) == 0
     assert conn.execute("SELECT status FROM ciaiauy_reports WHERE case_id='caso-611'").fetchone()["status"] == db.STATUS_SKIPPED
 
 
 def test_build_source_url_falls_back_to_report_url():
     conn = _conn()
-    _seed_parsed(conn, "cx-mgp", narrative="N" * 200, pdf_url=None,
+    _seed_parsed(conn, "cx-mgp", narrative="N" * (_FLOOR + 100), pdf_url=None,
                  report_url="https://www.gub.uy/x/mgp.pdf")
     pipeline.build(conn)
     assert conn.execute("SELECT source_url FROM ciaiauy_accidents WHERE case_id='cx-mgp'").fetchone()["source_url"] == "https://www.gub.uy/x/mgp.pdf"
@@ -300,6 +305,6 @@ def test_build_source_url_falls_back_to_report_url():
 
 def test_build_country_is_uy():
     conn = _conn()
-    _seed_parsed(conn, "cx-mgp", narrative="N" * 200)
+    _seed_parsed(conn, "cx-mgp", narrative="N" * (_FLOOR + 100))
     pipeline.build(conn)
     assert conn.execute("SELECT country FROM ciaiauy_accidents WHERE case_id='cx-mgp'").fetchone()["country"] == "UY"

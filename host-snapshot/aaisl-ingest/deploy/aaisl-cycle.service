@@ -1,0 +1,14 @@
+# /etc/systemd/system/aaisl-cycle.service
+[Unit]
+Description=AAII Sri Lanka (CAA Sri Lanka) ingest cycle (weekly; discover->fetch->parse->build)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/aaisl-ingest
+ExecStart=/bin/bash -lc "deploy/run-cycle.sh"
+StandardOutput=append:/home/a1/aaisl-ingest/aaisl-cycle.log
+StandardError=append:/home/a1/aaisl-ingest/aaisl-cycle.log
+TimeoutStartSec=10800

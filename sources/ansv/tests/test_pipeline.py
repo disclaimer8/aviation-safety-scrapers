@@ -13,6 +13,12 @@ from ansv_ingest import ansv, db
 from ansv_ingest.pipeline import discover, fetch, parse, build
 from tests.conftest import FakeResp, FakeClient
 
+# Sized against the package's own build floor rather than a literal,
+# so these fixtures keep meaning what they mean when it moves.
+from ansv_ingest import pipeline as _pipeline_mod
+_FLOOR = _pipeline_mod._NARRATIVE_FLOOR
+
+
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -363,7 +369,7 @@ def _insert_parsed(conn, case_id, narrative, source_tier="pdf",
 def test_build_pdf_tier_creates_accident(monkeypatch):
     """A 'pdf' tier row with narrative >= 80 → ansv_accidents row with country='IT'."""
     conn = _conn()
-    narrative = "X" * 200
+    narrative = "X" * (_FLOOR + 100)
     _insert_parsed(conn, "I-COLK_2024-03-16", narrative, source_tier="pdf")
 
     n = build(conn)
@@ -434,7 +440,7 @@ def test_build_pdf_short_narrative_skipped():
 def test_build_source_url_falls_back_to_report_url():
     """When pdf_url is None, source_url in ansv_accidents = report_url."""
     conn = _conn()
-    narrative = "Y" * 200
+    narrative = "Y" * (_FLOOR + 100)
     _insert_parsed(
         conn, "I-NOPDF_2023-03-03", narrative, source_tier="pdf",
         pdf_url=None, report_url=REPORT_URL,
@@ -450,7 +456,7 @@ def test_build_source_url_falls_back_to_report_url():
 def test_build_mixed_rows():
     """One pdf + one scanned → 1 built, 1 skipped."""
     conn = _conn()
-    _insert_parsed(conn, "I-PDF_2024-01-01", "Z" * 200, source_tier="pdf",
+    _insert_parsed(conn, "I-PDF_2024-01-01", "Z" * (_FLOOR + 100), source_tier="pdf",
                    registration="I-PDF", location="Milan", aircraft="B738")
     _insert_parsed(conn, "I-SCAN_2024-01-02", "", source_tier="scanned",
                    registration="I-SCAN", location="Rome", aircraft="C172")

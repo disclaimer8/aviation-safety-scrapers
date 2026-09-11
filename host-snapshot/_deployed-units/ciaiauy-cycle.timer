@@ -1,0 +1,12 @@
+# /etc/systemd/system/ciaiauy-cycle.timer
+# NOTE: requested 22:00 UTC was taken by sacaa-cycle; the 21:00-23:30
+# UTC grid is fully packed. Moved to the nearest free slot: 00:00 UTC.
+[Unit]
+Description=Weekly CIAIA (Uruguay) ingest
+
+[Timer]
+OnCalendar=Sun *-*-* 00:00:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

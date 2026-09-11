@@ -1,0 +1,131 @@
+AIRCRAFT ACCIDENT INVESTIGATION BOARD
+FINAL AIRCRAFT ACCIDENT REPORT FOR A TANARG
+NEO MICROLIGHT, 9J – YVT THAT OCCURRED IN
+LIVINGSTONE, ZAMBIA ON 10th JANUARY, 2020.
+
+Kenneth Kaunda International
+Airport
+P.O. Box 310140
+Lusaka, Zambia.
+Mobile: +260 971232741
+Tel: +260212892357
+
+INTRODUCTION
+On Friday 10th January, 2020, an accident involving a Microlight operated by Batoka
+Sky Limited was reported to the Director General, Civil Aviation Authority (CAA) who
+immediately relayed the information to the Aircraft Accident investigation Board
+(AAIB). The aircraft involved was a Tanarg Neo Microlight, National Registration Marks
+9J-YVT, Manufacturer’s Serial Number T19028. It was reported to have crash landed
+away from Maramba Aerodrome.
+The interim Director Aircraft Accident Investigation Board immediately constituted an
+investigation team made of 2 staff pertaining to the domains of operations and
+airworthiness to travel to the accident scene.
+SYNOPSIS
+On Friday January 10, 2020, a Tanarg Neo Microlight operated by Batoka Sky Limited
+departed from Maramba aerodrome with the intention of conducting a performance
+check flight below the special rules area (SRA). At about 05:42 Hours UTC the Pilot
+tried to make an emergency landing on the road leading to Baobab Ridge helipad with
+the Microlight in a simulated engine failure mode. However, during the process of
+emergency landing, the Microlight right hand main landing gear hooked up in the 11kV
+ZESCO powerline causing the microlight to lose control and crash about 15 meters
+from the power lines. One Crew member on board died on impact while the other
+survived. The microlight sustained substantial damage. No post-crash fire broke out.
+The investigation team concluded that the cause of the accident was due to executing
+of simulated emergency landing in hazardous conditions. Further, other possible
+contributory and latent factors were identified.
+
+1
+
+1. FACTUAL INFORMATION
+1.1 History of Flight
+The Microlight took off from Batoka Sky airfield for a performance check in emergency
+situations with two (2) Batoka Sky limited staff [Pilot in command (P1) and observer
+pilot (P2)]. Weather observed at Harry Mwaanga Nkumbula International Airport at the
+time of the accident was as follows:
+METAR FLHN 100700Z VRBO1KT
+CAVOK 23/21, Q1016 AT 0600Z, QFE WAS 902.9 and QNH 1016
+Batoka Sky’s Tanarg Neo Air Creation Trike (Microlight), Registration number 9J-YVT,
+and Manufacturer’s Serial Number T19028 was on a line Check flight as well as
+Performance check in Emergency Situations. Having completed the line checks
+around the Batoka Sky Airfield, the Microlight headed for the performance check in
+emergency situations away from the airfiled. During an attempt to perform a simulated
+emergency landing off road, a decision was made to overshoot due to sudden sighting
+of 11 kV ZESCO cables crossing in close proximity.
+The Microlight rear right wheel ended up hooking in the power lines (Fig.2, Fig 4.2)
+pitching the aircraft forward and simultaneously swinging the nose end to the right,
+initiating an uncontrolled spin. It crashed into the bushes 15 meters ahead of the Power
+lines on the left-hand side of the gravel road leading to Baobab Ridge Helipad (Fig 6.1
+– Fig. 6.4).
+Maintenance log books state that no anomalies were found in the pre-flight check done
+by the Pilots and the technical crew at Batoka Sky Airfield. There was no flight plan
+filed to Harry Mwaanga Nkumbula International Airport Office.
+TABLE 1: Factual Information
+Flight Rules
+
+Visual Flight Rules (VFR)
+
+Departure Aerodrome
+
+Maramba Aerodrome (Batoka Sky Airfield)
+
+Estimated
+
+Off
+
+Block 05:15 UTC
+
+Time
+Cruising Speed
+
+60 Knots
+
+Cruising Altitude
+
+4500FT
+
+Route Of Flight
+
+Batoka Sky Airfield-Victoria Falls-Batoka Sky Airfield
+
+Destination Aerodrome
+
+Circuit Flight terminating at Batoka Sky Airfield
+
+Endurance
+
+2 Hours
+
+Persons On Board
+
+2
+
+2
+
+The progress of the flight up to the accident after take-off from Batoka Sky Airfield was
+stated by the Pilot (P2) as follows;
+“The Pilot and myself set out to Complete his 6 monthly Line Check and at the same
+time review the Air Creation Tanarg Neo performance in Emergency Situations.
+It was discussed, beforehand, the decreased performance of the Air Creation Trike
+compared to the Delta Tryke Aviation (DTA) Microlight. So, our goal was to determine
+the Emergency Handling Characteristics of the Aircraft in Simulated Conditions.
+After the line check was completed around Batoka Sky Airfield, the Pilot and I set out
+to do Emergencies off field. We discussed the main road as the Emergency Landing
+Zone after take-off when a return to FLMR (Maramba Airfield) is not possible. At first,
+we made a practise approach to the main road and commenced go-around when it
+was deemed possible to safely land on the main road that leads towards the Avani /
+Royal Livingstone Hotels. All the time my job at the back was to take mental notes of
+the Microlight’s decent rate from the back seat and record its glide speeds and
+characteristics, so as to compare the characteristics with the other microlight. The
+pilot’s responsibility as Front Pilot was to control the Microlight as the Tanarg Neo
+Microlight has no Dual Controls.
+It was at that point that a question was raised in conditions not favourable to land on
+the road, such as too much traffic, wind direction and speeds. It was selected by the
+pilot and myself that the Dirt road leading from the main road towards United Air
+Charter (UAC) might be an option at last resort. The obstacles on the ground such as
+the Baobab tree and Electric Poles on the overshoot and shallow trees on the
+undershoot were noted. The initial touch down point on the road was also discussed.
+This was acknowledged by the Pilot in the front. We climbed back out towards
+Maramba.
+We then returned to the height of around 400-500ft Above Ground Level (AGL) and
+positioned above Maramba River. At this point it was determined to be unable to safely
+return to FLM

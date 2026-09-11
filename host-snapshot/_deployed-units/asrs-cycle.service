@@ -1,0 +1,17 @@
+[Unit]
+Description=ASRS NASA Incident Reports Monthly Top-Up
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=a1
+WorkingDirectory=/home/a1/asrs-ingest
+ExecStart=/usr/bin/bash /home/a1/asrs-ingest/topup.sh
+StandardOutput=append:/home/a1/asrs-ingest/topup.log
+StandardError=append:/home/a1/asrs-ingest/topup.log
+Nice=10
+IOSchedulingClass=idle
+
+[Install]
+WantedBy=multi-user.target
