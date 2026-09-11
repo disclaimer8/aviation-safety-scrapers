@@ -1,0 +1,18 @@
+[project]
+name = "eaaid-ingest"
+version = "0.1.0"
+requires-python = ">=3.11"
+description = "Egypt ECAA accident report ingest"
+# httpx is a real dependency now: the fetch path used to shell out to
+# `ssh HETZNER curl` and declared nothing, so an undeclared import could not
+# fail. It goes through httpc (vendored from _common/http.py) instead.
+dependencies = ["httpx>=0.27"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+include = ["eaaid_ingest*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

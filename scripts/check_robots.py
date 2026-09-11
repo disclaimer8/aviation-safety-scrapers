@@ -26,9 +26,24 @@ SOURCES = ROOT / "sources"
 
 # The constants a package uses to name where its walk starts, most specific
 # first: several define more than one and the earlier ones are the real entry.
-# Sources that knowingly run with obey_robots=False. Kept in step with
-# _common/tests/test_robots_exemption.py, which fails if a new one appears.
-EXEMPT = {"bfu"}
+# Sources that knowingly run with obey_robots=False. Read from the package
+# sources rather than restated here: a hand-kept copy of this list is how the
+# report ends up claiming a source is BLOCKED when it is actually a documented
+# exemption, which is exactly what it did for aaicth and eaaid until they were
+# added. _common/tests/test_robots_exemption.py holds the authoritative set and
+# fails if an undeclared one appears.
+def _exempt_sources():
+    root = pathlib.Path(__file__).resolve().parent.parent
+    out = set()
+    for path in sorted(root.glob("sources/*/**/*.py")):
+        if "tests" in path.parts:
+            continue
+        if "obey_robots=False" in path.read_text(encoding="utf-8", errors="replace").replace(" ", ""):
+            out.add(path.relative_to(root).parts[1])
+    return out
+
+
+EXEMPT = _exempt_sources()
 
 ENTRY_CONSTANTS = ("SEARCH", "SEARCH_URL", "LISTING_URL", "LISTING", "INDEX_URL",
                    "MAIN_URL", "LANDING", "HUB_URL", "LIST_URL", "REPORTS_URL",

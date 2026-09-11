@@ -1,18 +1,27 @@
-"""robots.txt enforcement must stay the default, with one named exception.
+"""robots.txt enforcement must stay the default, with named exceptions only.
 
 The gate is only worth having if `obey_robots=False` is hard to add quietly.
-BFU is the single source that needs it — its robots.txt Disallows /SiteGlobals/
-and its discover() enumerates through the search form that lives there — and
-that is a documented stopgap until it moves to the allowed OpenData files.
+Three sources carry one, each for a different reason and each argued where it
+is used:
 
-If a second source turns up here, that is a decision to make on purpose, not a
-line to copy from bfu/cli.py.
+  bfu     robots Disallows /SiteGlobals/, which is where the search form
+          discover() drives lives. A stopgap until it enumerates from the
+          allowed OpenData files instead.
+  eaaid   robots allows Googlebot and Bingbot by name and Disallows everyone
+          else. A named-agent allowlist, not a refusal to be read.
+  aaicth  robots Disallows everything for every agent, with no exceptions
+          named. The bluntest of the three, and the one to revisit first.
+
+Every one of them is a decision taken on purpose, not a line copied from
+another package. Adding a fourth means arguing for it in that package's
+cli.py, and adding it here — which is the point: the list is short and the
+diff is visible.
 """
 import pathlib
 import re
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
-ALLOWED = {"bfu"}
+ALLOWED = {"bfu", "eaaid", "aaicth"}
 
 _OPT_OUT = re.compile(r"obey_robots\s*=\s*False")
 

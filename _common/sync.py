@@ -65,6 +65,13 @@ VENDORED = {
     "india": {"http": "httpc", "robots": "robots"},
     "gcaagy": {"http": "httpc", "robots": "robots", "text": "text"},
     "aaibzm": {"http": "httpc", "robots": "robots", "text": "text"},
+    # aaicth and eaaid take documented robots exemptions (see their cli.py
+    # and _common/tests/test_robots_exemption). They still vendor the guard:
+    # the opt-out is per-client, so the module must be present to be opted
+    # out of, and check_robots.py reports them as exempt rather than hiding
+    # them.
+    "aaicth": {"http": "httpc", "robots": "robots"},
+    "eaaid": {"http": "httpc", "robots": "robots"},
     "aacsv": {"http": "httpc", "robots": "robots", "text": "text"},
     "aaid": {"http": "httpc", "robots": "robots", "text": "text"},
     "dgcakw": {"http": "httpc", "robots": "robots", "text": "text"},
