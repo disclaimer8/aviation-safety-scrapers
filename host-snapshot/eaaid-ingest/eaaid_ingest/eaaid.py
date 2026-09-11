@@ -51,10 +51,33 @@ GUID dedup math: 528 total href references / 88 unique GUIDs = 6 links per
   row level; MS804 has 4 separate GUIDs (3 interims + 1 final).
 """
 import re
+import sys
 import time
 
 LISTING_URL = "https://www.civilaviation.gov.eg/Accident/reports"
 DOWNLOAD_BASE = "https://www.civilaviation.gov.eg"
+
+# The only href shape the ECAA listing emits (see the module docstring):
+#   /Accident_GenDownloadRes?id=<36-char GUID>%5C<timestamp>_<seq>.pdf&name=<label>
+#
+# The tail is an explicit allowlist, NOT `[^"]+`. This value is carried into a
+# remote shell command in pipeline.fetch(); `[^"]+` admits single quotes,
+# backticks and $(...) from a page we do not control, which made the href an
+# arbitrary-command vector on the fetch host. Quoting in pipeline.py is the
+# second layer — this is the first.
+_HREF_TAIL  = r"[A-Za-z0-9_.%&;=\-]+"
+_HREF_RE    = re.compile(
+    r'href="(/Accident_GenDownloadRes\?id=([0-9a-f\-]{36})(' + _HREF_TAIL + r'))"'
+)
+_HREF_VALID = re.compile(
+    r"\A/Accident_GenDownloadRes\?id=[0-9a-f\-]{36}" + _HREF_TAIL + r"\Z"
+)
+
+
+def valid_href(href):
+    """True if `href` is a download link we are willing to hand to a shell."""
+    return isinstance(href, str) and bool(_HREF_VALID.match(href))
+
 DELAY = 2.0  # seconds between requests — polite sequential fetching
 
 UA = (
@@ -110,10 +133,7 @@ def parse_listing_html(html):
         tds = re.findall(r"<td>(.*?)</td>", row, re.DOTALL)
         if len(tds) < 6:
             continue
-        link_m = re.search(
-            r'href="(/Accident_GenDownloadRes\?id=([0-9a-f\-]{36})([^"]+))"',
-            tds[0],
-        )
+        link_m = _HREF_RE.search(tds[0])
         if not link_m:
             continue
         full_href = link_m.group(1)
@@ -129,6 +149,12 @@ def parse_listing_html(html):
 
         # Rebuild download URL: decode HTML entities but preserve %5C encoding
         href_clean = full_href.replace("&amp;", "&")
+        # Re-check after entity decoding: `&amp;` -> `&` changes the string, so
+        # the shape that _HREF_RE accepted is not necessarily the shape we store.
+        if not valid_href(href_clean):
+            print(f"[eaaid parse] rejecting malformed href: {href_clean[:120]!r}",
+                  file=sys.stderr)
+            continue
 
         events.append({
             "guid":        guid,
@@ -174,3 +200,10 @@ def pdf_filename(case_id, guid):
 def source_url(href):
     """Build full absolute source URL from relative href."""
     return DOWNLOAD_BASE + href
+
+
+def valid_source_url(url):
+    """True if `url` is an absolute download URL we are willing to shell out on."""
+    if not isinstance(url, str) or not url.startswith(DOWNLOAD_BASE):
+        return False
+    return valid_href(url[len(DOWNLOAD_BASE):])
