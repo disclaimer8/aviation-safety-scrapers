@@ -193,3 +193,32 @@ def test_extract_cover_fields_absent():
     assert gcaagy.extract_operator("nothing labelled here") is None
     assert gcaagy.extract_aircraft("") is None
     assert gcaagy.extract_location(None) is None
+
+
+def test_value_regex_does_not_backtrack_on_blank_text_layer():
+    """A scanned PDF whose text layer is only newlines must not hang the parse.
+
+    The original pattern was `\\s*[-:–—]?\\s*(?:\\n\\s*)*([^\\n]+)`. Because \\s
+    already matches \\n, the two constructs could split the same run of
+    newlines exponentially many ways, and input that never reaches [^\\n]+
+    doubled the match time per newline — 24 newlines took 0.9s against a
+    _HEAD_CHARS ceiling of 2500.
+
+    Asserting a wall-clock budget rather than inspecting the pattern: the
+    property that matters is that it finishes, and a future rewrite that
+    reintroduces the ambiguity should fail here.
+    """
+    import time
+
+    for n in (24, 200, gcaagy._HEAD_CHARS):
+        start = time.perf_counter()
+        gcaagy._VALUE_RE.match("\n" * n)
+        assert time.perf_counter() - start < 0.5, (
+            f"{n} newlines took too long — the value regex is backtracking again"
+        )
+
+
+def test_value_regex_still_skips_a_separator_on_its_own_line():
+    """Behaviour the possessive rewrite had to preserve."""
+    m = gcaagy._VALUE_RE.match(" \n:\n8R-GRE\nnext")
+    assert m and m.group(1) == "8R-GRE"

@@ -263,11 +263,20 @@ def _extract_labelled(text: str, label_re: re.Pattern) -> str | None:
     if not m:
         return None
     rest = head[m.end():]
-    # consume the separator and any blank lines, then take the first line of value
-    vm = re.match(
-        r"\s*[-:–—]?\s*(?:\n\s*)*([^\n]+)",
-        rest,
-    )
+    # Consume the separator and any blank lines, then take the first line of
+    # value.
+    #
+    # Every quantifier here is possessive. The original was
+    #     \s*[-:–—]?\s*(?:\n\s*)*([^\n]+)
+    # and \s already matches \n, so \s* and (?:\n\s*)* could divide the same
+    # run of newlines between them in exponentially many ways. On input that
+    # never reaches [^\n]+ — a scanned PDF whose text layer is blank lines,
+    # which this source produces — the match time doubled per newline: 24
+    # newlines took 0.9s, and _HEAD_CHARS allows 2500. Possessive quantifiers
+    # let nothing be given back, so there is no backtracking to blow up;
+    # 2500 newlines now take 0.03ms. Behaviour is unchanged (checked against
+    # the old pattern over 200k random inputs at function level).
+    vm = _VALUE_RE.match(rest)
     if not vm:
         return None
     val = vm.group(1)
@@ -275,6 +284,10 @@ def _extract_labelled(text: str, label_re: re.Pattern) -> str | None:
     val = _WS_RE.sub(" ", val).strip(" -:–—\t")
     return val or None
 
+
+_VALUE_RE = re.compile(
+    r"[^\S\n]*+(?:\n[^\S\n]*+)*+[-:–—]?[^\S\n]*+(?:\n[^\S\n]*+)*+([^\n]+)"
+)
 
 _AIRCRAFT_LABEL_RE = re.compile(
     r"Aircraft\s+(?:Model|Make)\s*/?\s*(?:Type)?",
