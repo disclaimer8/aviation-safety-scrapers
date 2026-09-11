@@ -344,6 +344,19 @@ def extract_event_date(text: str | None) -> str | None:
     return _word_date_at(head)
 
 
+# Possessive throughout. The original was
+#     \s*[-:–—]?\s*(?:\n\s*)*([^\n]+)
+# and \s already matches \n, so \s* and (?:\n\s*)* could divide the same
+# run of newlines exponentially many ways. On input that never reaches
+# [^\n]+ — a scanned PDF whose text layer is blank lines — match time
+# doubled per newline: 24 newlines took 0.9s. Possessive quantifiers give
+# nothing back, so there is no backtracking to blow up. Python 3.11+, which
+# this tree already requires.
+_VALUE_RE = re.compile(
+    r"[^\S\n]*+(?:\n[^\S\n]*+)*+[-:–—]?[^\S\n]*+(?:\n[^\S\n]*+)*+([^\n]+)"
+)
+
+
 def _extract_labelled(text: str, label_re: re.Pattern) -> str | None:
     """
     Return the value following a cover-block label.
@@ -360,7 +373,7 @@ def _extract_labelled(text: str, label_re: re.Pattern) -> str | None:
     if not m:
         return None
     rest = head[m.end():]
-    vm = re.match(r"\s*[-:–—]?\s*(?:\n\s*)*([^\n]+)", rest)
+    vm = _VALUE_RE.match(rest)
     if not vm:
         return None
     val = vm.group(1)

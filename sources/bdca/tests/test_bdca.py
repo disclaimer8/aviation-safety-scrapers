@@ -1,5 +1,6 @@
 # tests/test_bdca.py
 """Offline tests for bdca_ingest.bdca using the saved PhocaDownload fixture."""
+from urllib.parse import urlsplit
 import os
 import re
 
@@ -111,7 +112,12 @@ def test_parse_listing_synthetic_row():
     assert r["case_id"] == "BDCA-2024-V3-ZZZ"
     assert r["registration"] == "V3-ZZZ"
     assert r["year"] == 2024
-    assert r["pdf_url"].startswith("https://www.civilaviation.gov.bz")
+    # Assert the host, not a prefix: "https://www.civilaviation.gov.bz.evil"
+    # also satisfies startswith(). Nothing in this package validates hosts
+    # that way — the SSRF guard in httpc does it properly — but an
+    # assertion that cannot fail the case it names is not worth keeping.
+    assert urlsplit(r["pdf_url"]).hostname == "www.civilaviation.gov.bz"
+    assert urlsplit(r["pdf_url"]).scheme == "https"
 
 
 def test_parse_listing_dup_marker_synthetic():

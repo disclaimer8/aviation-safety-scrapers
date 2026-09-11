@@ -198,3 +198,31 @@ def test_extract_cover_fields_absent():
     assert aaibzm.extract_location("nothing labelled here") is None
     assert aaibzm.extract_aircraft("") is None
     assert aaibzm.extract_location(None) is None
+
+
+def test_value_regex_does_not_backtrack_on_blank_text_layer():
+    """A scanned PDF whose text layer is only newlines must not hang the parse.
+
+    The original pattern was `\\s*[-:–—]?\\s*(?:\\n\\s*)*([^\\n]+)`. \\s already
+    matches \\n, so the two constructs could divide the same run of newlines
+    exponentially many ways, and input that never reaches [^\\n]+ doubled the
+    match time per newline — 24 newlines took 0.9s.
+
+    Asserting a wall-clock budget rather than inspecting the pattern: what
+    matters is that it finishes, and a rewrite that reintroduces the
+    ambiguity should fail here.
+    """
+    import time
+
+    for n in (24, 200, 2500):
+        start = time.perf_counter()
+        aaibzm._VALUE_RE.match("\n" * n)
+        assert time.perf_counter() - start < 0.5, (
+            f"{n} newlines took too long — the value regex is backtracking again"
+        )
+
+
+def test_value_regex_skips_a_separator_on_its_own_line():
+    """Behaviour the possessive rewrite had to preserve."""
+    m = aaibzm._VALUE_RE.match(" \n:\nthe value\nnext")
+    assert m and m.group(1) == "the value"
