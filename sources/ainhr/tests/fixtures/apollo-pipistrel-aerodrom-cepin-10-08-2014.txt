@@ -1,0 +1,1156 @@
+REPUBLIKA HRVATSKA
+Agencija za istraživanje nesreća u zračnom, pomorskom i željezničkom prometu
+Odjel za istrage nesreća u zračnom prometu
+
+KLASA:
+URBROJ:
+Zagreb,
+
+343-08/14-02/08
+699-04/1-17-43
+14. lipnja 2017.
+
+ZAVRŠNO IZVJEŠĆE
+O NESREĆI SPORTSKO REKREATIVNOG ZRAKOPLOVA KLASE
+II – MOTORNI ZMAJ
+APOLLO/PIPISTREL, REG. OZNAKE 9A-UEB
+10. kolovoza 2014.
+AERODROM ČEPIN
+
+AIN/04-DFR-01
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+OBJAVA IZVJEŠĆA I ZAŠTITA AUTORSKIH PRAVA
+Ovo izvješće izradila je i objavila Agencija za istraživanje nesreća u zračnom, pomorskom i željezničkom
+prometu (u daljnjem tekstu: AIN) na temelju članka 6. stavka 1. i 2. Zakona o osnivaju Agencije za
+istraživanje nesreća u zračnom, pomorskom i željezničkom prometu (Narodne novine broj 54/13),
+članka 7. stavka 1. i 2. Statuta Agencije za istraživanje nesreća u zračnom, pomorskom i željezničkom
+prometu, članka 16. Uredbe (EU) br. 996/2010 Europskog parlamenta i Vijeća o istragama i sprečavanju
+nesreća i nezgoda u civilnom zrakoplovstvu, odredaba Zakona o zračnom prometu (Narodne novine
+broj 69/09, 84/11, 54/13, 127/13 i 92/14), te na temelju poglavlja 6. Dodatka 13 ICAO.
+Nitko ne smije proizvoditi, reproducirati ili prenositi u bilo kojem obliku ili na bilo koji način ovo
+izvješće ili bilo koji njegov dio, bez izričitog pisanog dopuštenja AIN.
+Ovo izvješće može se slobodno koristiti isključivo u obrazovne svrhe.
+Za sve dodatne informacije kontaktirajte AIN.
+
+Cilj istraga koje se odnose na sigurnost, ni u kojem slučaju nije utvrđivanje krivnje ili
+odgovornosti.
+Istrage su neovisne i odvojene od sudskih ili upravnih postupaka i ne smiju dovoditi u pitanje
+utvrđivanje krivnje ili odgovornosti pojedinaca.
+Završno izvješće ne može biti korišteno kao dokaz u sudskom postupku koji ima za cilj utvrđivanje
+građanskopravne ili kaznenopravne odgovornosti pojedinca.
+
+AIN/04-DFR-01
+
+Stranica: 2/25
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+SADRŽAJ
+OZNAKE I KRATICE .........................................................................................................................5
+OSNOVNI PODACI ..........................................................................................................................6
+SAŽETAK........................................................................................................................................6
+ISTRAGA ........................................................................................................................................6
+1.
+
+ČINJENIČNE INFORMACIJE .....................................................................................................7
+1.1.
+1.2.
+1.3.
+1.4.
+1.5.
+
+1.6.
+
+POVIJEST LETA ...........................................................................................................................................7
+Povijest leta ......................................................................................................................................7
+OZLIJEĐENE OSOBE .....................................................................................................................................8
+OŠTEĆENJA NA ZRAKOPLOVU ........................................................................................................................8
+DRUGA OŠTEĆENJA ...................................................................................................................................10
+OSOBNI PODACI .......................................................................................................................................10
+Pilot .................................................................................................................................................10
+Putnik ..............................................................................................................................................11
+INFORMACIJE O ZRAKOPLOVU......................................................................................................................11
+Općenito .........................................................................................................................................11
+Karakteristike zrakoplova ...............................................................................................................11
+1.6.2.1.
+1.6.2.2.
+
+1.7.
+1.8.
+1.9.
+1.10.
+1.11.
+1.12.
+1.13.
+1.14.
+1.15.
+1.16.
+
+2.
+
+Krilo ...................................................................................................................................................... 12
+Podvozje ............................................................................................................................................... 13
+
+Motor ..............................................................................................................................................13
+Propeler ..........................................................................................................................................14
+Plovidbenost ...................................................................................................................................14
+Operativni podaci o zrakoplovu ......................................................................................................15
+METEOROLOŠKI PODACI .............................................................................................................................15
+Opis meteorološke situacije ............................................................................................................15
+NAVIGACIONI PODACI ................................................................................................................................17
+Plan leta ..........................................................................................................................................17
+KOMUNIKACIJA ........................................................................................................................................17
+INFORMACIJE O AERODROMU .....................................................................................................................17
+ZABILJEŽBA LETA.......................................................................................................................................18
+PODACI O UDARU I OSTACIMA ZRAKOPLOVA ...................................................................................................18
+MEDICINSKE I PATOLOŠKE INFORMACIJE ........................................................................................................18
+Toksikološki nalazi......................................................................................................................18
+POŽAR....................................................................................................................................................18
+SPAŠAVANJE ............................................................................................................................................18
+DODATNE INFORMACIJE .............................................................................................................................19
+Izjava pilota ................................................................................................................................19
+Putnica .......................................................................................................................................19
+Masa zrakoplova ........................................................................................................................19
+Osposobljavanje pilota...............................................................................................................19
+Uvjeti za prijevoz putnika ...........................................................................................................20
+
+ANALIZA .............................................................................................................................. 20
+2.1.
+
+ANALIZA LETA ..........................................................................................................................................20
+
+AIN/04-DFR-01
+
+Stranica: 3/25
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+3.
+
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+ZAKLJUČAK .......................................................................................................................... 21
+3.1.
+3.2.
+
+4.
+
+Završno izvješće
+
+NALAZI ...................................................................................................................................................21
+UZROK ...................................................................................................................................................23
+
+SIGURNOSNE PREPORUKE.................................................................................................... 23
+
+PRILOG 1. – KONFIGURACIJE ........................................................................................................ 24
+PRILOG 2. – AERODROM ČEPIN .................................................................................................... 25
+
+AIN/04-DFR-01
+
+Stranica: 4/25
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+OZNAKE I KRATICE
+AGL
+AIN
+AIP SUP
+AKZP
+
+Iznad razine tla
+Agencija za istraživanje nesreća u zračnom, pomorskom i željezničkom prometu
+Aeronautical Information Publication Supplement
+Aerodromska kontrola zračnog prometa
+
+ARP
+
+Odnosna točka aerodroma
+
+CAPE
+CTR
+CVR
+FDR
+IAS
+LT
+MLZ
+USS
+UTC
+VFR
+
+Convection available potential energy
+Controlled Traffic Region
+Cockpit Voice Recorder
+Flight Data Recorder
+Indicirana zračna brzina
+Mjesno vrijeme
+Mikrolaki zrakoplov
+Uzletno sletna staza
+Univerzalno vrijeme
+Pravila za vizualno letenje
+
+Napomena: Sva vremena u Izvješću navedena su kao mjesno vrijeme, osim ako drukčije nije
+naznačeno.
+
+AIN/04-DFR-01
+
+Stranica: 5/25
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+OSNOVNI PODACI
+Vlasnik zrakoplova
+
+Fizička osoba
+
+Operator zrakoplova
+
+Fizička osoba
+
+Zrakoplov
+
+Proizvođač:
+Tip i model:
+Serijski broj:
+Hrvatska
+9A-UEB
+2
+Pilot – lakše
+Aerodrom Čepin
+10. kolovoza 2014.
+
+Država i registracija
+Broj osoba u zrakoplovu
+Ozljede
+Mjesto događaja
+Datum događaja
+
+Apollo/Pipisrel
+C15D/Spider
+220609/36921
+
+Putnik - teže
+
+SAŽETAK
+Dana 10. kolovoza 2014. godine oko 19:30 s aerodroma Čepin poletio je sportsko rekreativni zrakoplov
+klase II na let rubnim dijelovima grada Osijeka. U zrakoplovu se nalazio pilot i putnik.
+Prilikom slijetanja sportsko rekreativnog zrakoplova klase II, na travnatu uzletno sletnu stazu
+aerodroma Čepin, prvi kontakt s tlom ostvaren je nosnom nogom što je uvjetovalo deformaciju nosnog
+kotača. Nakon 13 m rulanja po stazi dolazi do udara prednjeg dijela zrakoplova u zemlju i njegovog
+okretanja na gornju stranu krila. Tom prilikom putnik je pretrpio teže tjelesne ozljede, dok je pilot
+prošao s lakšim tjelesnim ozljedama.
+Neposredni uzrok nesreće je kriva procjena prilaza, odnosno nedostatak situacijske svijesti o brzini
+zrakoplova u odnosu na stvarnu masu zrakoplova.
+U svrhu povećanja sigurnosti u zračnom prometu Agencija za istraživanje nesreća u zračnom,
+pomorskom i željezničkom prometu izdala je sigurnosne preporuke prema Hrvatskoj agenciji za civilno
+zrakoplovstvo i operatoru zrakoplova.
+ISTRAGA
+Istražitelji zrakoplovnih nesreća Agencije za istraživanje nesreća u zračnom, pomorskom i željezničkom
+prometu (u daljnjem tekstu: AIN) informaciju o nesreći zrakoplova dobili su od Ministarstva unutarnjih
+poslova. Istražitelji su izašli na očevid i otvorena je istraga predmetne nesreće.
+
+AIN/04-DFR-01
+
+Stranica: 6/25
+
+Završno izvješće
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+Nakon izrade i dostave Nacrta završnog izvješća zainteresiranim stranama, AIN je zaprimila komentare
+od strane Hrvatske agencije za civilno zrakoplovstvo te ih uvažila u mjeri u kojoj to smatra opravdanim.
+Istragu je proveo i Nacrt završnog izvješća izradio istražitelj Vlatko Hajmburger. Spomenuti istražitelj u
+trenutku izrade i objave ovog Završnog izvješća više nije zaposlenik AIN. Stoga je minimalne korekcije
+ovog izvješća u smislu uvažavanja zaprimljenih komentara, proveo sadašnji Glavni istražitelj
+zrakoplovnih nesreća.
+
+1.
+
+ČINJENIČNE INFORMACIJE
+
+1.1.
+
+POVIJEST LETA
+Povijest leta
+
+Dana 10. kolovoza 2014. godine oko 19:30 s aerodroma Čepin poletio je sportsko rekreativni zrakoplov
+klase II Apollo/Pipistrel na let rubnim djelom grada Osijeka. U zrakoplovu se nalazio pilot i putnik
+(ženska osoba).
+Sukladno izjavi pilota vremenski uvjeti su bili pogodni za letenje. Dolaskom iznad rijeke Drave let je
+postao nemiran, zrakoplov se nagnuo u lijevu stranu te je pilot dodavanjem gasa uspio napustiti
+navedeno područje. Nakon što je stabilizirao zrakoplov pilot se odlučio na povratak prema aerodromu
+Čepin. U trenutku slijetanja na aerodromu je prevladavala meteorološka situacija bez neke značajne
+termičke aktivnosti sa slabim vjetrom. Slijetanje je bilo u smjeru 10R, na travnatu uzletno sletnu stazu
+aerodroma. U trenutku kada je pilot pokušao napraviti zaokret (rotaciju oko poprečne osi) kako bi
+napravio dodir zadnjih kotača s tlom, zrakoplov nije odreagirao na zadanu komandu te je nastavio
+kretanje s nosom prema dolje. Prvi kontakt s tlom ostvaren je s nosnim kotačem, uslijed čega dolazi do
+deformacije istoga. Zbog blokiranja prednjeg kotača dolazi do zabijanja zrakoplova nosom u zemlju i
+okretanja na gornji dio krila. Prilikom pada putnik je pretrpio teže tjelesne ozljede, dok je pilot prošao
+s lakšim tjelesnim ozljedama.
+
+19:30
+
+Polijetanje u
+smjeru 10L
+
+Let iznad
+grada Osijeka
+
+Let iznad
+rijeke Drave i
+naginjanje
+zrakoplova na
+lijevu stranu
+
+Povratak na
+aerodrom
+
+19:40
+Slijetanje na
+nosni kotač i
+okretanje
+zmaja na krilo
+
+Slika 1.1. Vremenski tijek događaja
+
+AIN/04-DFR-01
+
+Stranica: 7/25
+
+Završno izvješće
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+1.2.
+
+OZLIJEĐENE OSOBE
+Ozlijeđeni
+smrtno
+ozbiljno
+malo/ništa
+
+1.3.
+
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+Posada
+0
+0
+1/0
+
+Putnici
+0
+1
+0/0
+
+Ostali
+0
+0
+0/0
+
+OŠTEĆENJA NA ZRAKOPLOVU
+
+Pregledom zrakoplova ustanovljeno je da su sva oštećenja nastala uslijed udara zrakoplova o uzletno
+sletnu stazu. Na zrakoplovu su vidljiva mehanička oštećenja nosnog kotača, cijevi podvozja u području
+nosnog kotača i ploče s instrumentima. Također, uslijed okretanja zrakoplova oko poprečne osi došlo
+je i do mehaničkog oštećenja jednog kraka propelera i krila.
+Sve sajle su bile uredno spojene, te na njima nisu pronađene nikakve deformacije.
+
+Slika 1.2. Sportsko rekreativni zrakoplov klase II nakon nesreće
+
+AIN/04-DFR-01
+
+Stranica: 8/25
+
+Završno izvješće
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+Slika 1.3. Prednji dio zrakoplova (nosni kotač, podvozje i ploča s instrumentima)
+
+Slika 1.4. Propeler
+
+AIN/04-DFR-01
+
+Stranica: 9/25
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+Slika 1.5. Spojevi i sajle
+1.4.
+
+DRUGA OŠTEĆENJA
+
+Od posljedica udara nosnog kotača u zemlju i njegovim struganjem došlo je do manjeg oštećenja
+uzletno sletne staze.
+1.5.
+
+OSOBNI PODACI
+Pilot
+
+Osoba
+Dozvola
+
+Rođen:
+1947.
+Dozvola pilota mikrolakog zrakoplova, Klasa II1
+Dozvola pilota sportsko rekreativnog zrakoplova, Klasa II1
+Datum izdavanja
+02.05.2013.2
+Datum valjanosti dozvole pilota 02.05.2015.
+mikrolakog zrakoplova
+Datum prvog izdanja dozvole
+26.07.2011.3
+Ukupan nalet (sati)4
+152:30
+Ukupan broj letova
+420
+Certifikat
+o
+zdravstvenoj Kategorija 2, datum izdavanja 13.03.2014., vrijedi do 13.03.2015.
+sposobnosti
+1
+
+Avioni kojima se upravlja prvenstveno promjenom težišta, Pravilnik o uvjetima i načinu upotrebe sportsko
+rekreativnih zrakoplova (Narodne novine, broj 34/14)
+2
+Dozvola pilota mikrolakog zrakoplova i Dozvola pilota sportsko rekreativnog zrakoplova izdane su na isti dan 02.
+svibnja 2013. godine
+3
+Pilot je prvi put stekao dozvolu A1/RWL dana 26. srpnja 2011. godine, koju je izdao Mađarski savez pilota
+mikrolakog zrakoplovstva. Ista je istekla 30. kolovoza 2013. godine
+4
+Ukupni nalet i ukupni broj letova uzet je iz Knjižice letenja broj 2. Zadnji zapis u knjižici bio je 03. kolovoza 2014.
+godine
+AIN/04-DFR-01
+
+Stranica: 10/25
+
+Završno izvješće
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+Ograničenja VML – Correction for defective distant, intermediate and
+near vision
+U posljednjih 30 dana pilot je letio uglavnom zonu i školske krugove u svrhu trenaže na sportsko
+rekreativnom zrakoplovu klase II registarske oznake 9A-UEB. Ukupan nalet koji je ostvario u posljednjih
+30 dana iznosio je 5 sati.
+
+Putnik
+U zrakoplovu se nalazio putnik, ženska osoba rođena 1982. godine.
+1.6.
+
+INFORMACIJE O ZRAKOPLOVU
+Općenito
+
+Registracija
+Tip i model zrakoplova
+Proizvođač
+Serijski broj
+Godina proizvodnje
+Vlasnik zrakoplova
+Područje upotrebe
+Motor
+Ukupan nalet zrakoplova
+Broj letova
+Polica obveznog osiguranja
+
+9A-UEB
+Apollo C15D (krilo) / Pipistrel Spider (podvozje)
+Halley / Pipistrel
+220609 / 36921
+/
+Fizička osoba
+VFR
+Klipni
+48:20
+203
+Važeća od
+05.05.2014.
+Vrijedi do
+05.05.2015.
+
+Karakteristike zrakoplova
+Zrakoplov registarske oznake 9A-UEB spada u kategoriju sportsko rekreativnih zrakoplova klase II.
+Sukladno Pravilniku o uvjetima i načinu upotrebe sportsko rekreativnih zrakoplova (Narodne novine,
+broj 34/14) sportsko rekreativni zrakoplovi klase II su avioni kojima se ponajprije upravlja promjenom
+težišta.
+Navedeni zrakoplov sastavljen je od sljedeće konfiguracije:
+1. Krilo zrakoplova je Apollo C15D, proizvođača HALLEY Ltd. Mađarska
+2. Podvozje je Spider, proizvođača Pipistrel Slovenija
+
+AIN/04-DFR-01
+
+Stranica: 11/25
+
+Završno izvješće
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+1.6.2.1. Krilo5
+
+Tip i model krila
+Površina krila [m2]
+Raspon krila [m]
+Maksimalna brzina [km/h]
+Minimalna brzina [km/h]
+Masa krila [kg]
+Minimalna masa pilota [kg]
+Maksimalna masa pilota [kg]
+
+Apollo C15D Toples
+14.8
+10
+168
+55
+60
+55
+2x100
+
+Slika 1.6. Krilo Apollo C15D
+
+5
+
+Podaci o krilu uzeti su s službene stranice proizvođača www.halley.hu/apollo.php?kat_nev=C15D Toples
+AIN/04-DFR-01
+
+Stranica: 12/25
+
+Završno izvješće
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+1.6.2.2. Podvozje6
+
+Tip i model podvozja
+Sjedala
+Brzina gubitka uzgona
+Masa podvozja bez krila [kg]
+Maksimalna masa [kg]
+Korisni teret [kg]
+
+Pipistrel Spider
+2 - tandem
+Ovisi o krilu
+105
+Ovisi o krilu
+Ovisi o krilu
+
+Slika 1.7. Podvozje, izvor Operation’s manual Pipistrel, 2006.
+
+Motor
+Na zrakoplovu je bio ugrađen motor Rotax 582, serijski broj: 4084457. Rotax 582 je klipni dvotaktni
+dvocilindrični motor namijenjen za male sportske zrakoplove i zmajeve. Motor razvija snagu 64 KS i
+hlađen je tekućinom.
+
+6
+
+Podaci o podvozju uzeti su s službene stranice proizvođača www.pipistrel.si/trike/spider/technical-data
+AIN/04-DFR-01
+
+Stranica: 13/25
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+Slika 1.8. Motor Rotax 582 i propeler
+
+Propeler
+Na zrakoplovu je bio ugrađen propeler s četiri kraka nepromjenjivog koraka (slika 1.4 i 1.8). Proizvođač
+propelera je Pipistrel.
+
+Plovidbenost
+Dana 17. lipnja 2013. godine Hrvatska agencija za civilno zrakoplovstvo izdala je potvrdu o registraciji
+zrakoplova, te isti dan izdaje i dopuštenje za letenje.
+Hrvatska agencija za civilno zrakoplovstvo objavila je i popis prihvaćenih tipova mikrolakih zrakoplova
+u Republici Hrvatskoj. Na popisu nalazi se i konfiguracija Apollo C15D, motor Rotax 582 i podvozje
+Pipistrel Spider s napomenom „samo uz pisano odobrenje proizvođača“.
+Proizvođač krila Halley Ltd. daje tablicu mogućih konfiguracija podvozja i krila (Prilog 1.). Za krilo Apollo
+C15D i podvozje Pipistrel proizvođač navodi da je let moguć jedino ako odobrenje potpiše tvornica ili
+testni pilot kojeg ovlasti tvornica.
+Tvornica Halley Ltd. dana 01. ožujka 2013. godine izdaje izjavu o ovlastima fizičkoj osobi u Republici
+Hrvatskoj da može samostalno raditi na manjim popravcima krila Apollo svih tipova. Ista ima ovlasti
+donositi samostalne odluke o istrošenosti kao i o ispravnosti krila Apollo kod tehničkih pregleda (200
+satni ili dvogodišnji), te potpisati dokumente o pregledu. Također, s obzirom da se u klasi II sportsko
+rekreativnih zrakoplova pojavljuju razne konfiguracije isti ima ovlasti i kao probni pilot kod ispitivanja
+takvih konfiguracija.
+Navedenu izjavu Halley Ltd. potpisuje na temelju tečaja koju je fizička osoba završila u tvornici u
+Mađarskoj.
+
+AIN/04-DFR-01
+
+Stranica: 14/25
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+Sukladno tome, osoba ovlaštena za ispitivanje konfiguracija dana 01. svibnja 2013. godine na
+aerodromu Klisa obavila je probni let zrakoplova reg. oznake 9A-UEB, te je u izvješću o kompatibilnosti
+MLZ kategorije II konstatirala da je konfiguracija (C15D, Pipistrel Spider i Rotax 582) sigurna za letenje.
+
+Operativni podaci o zrakoplovu
+Vlasnik zrakoplova dana 15. travnja 2013. godine podnio je zahtjev za odobrenjem Programa
+održavanja zrakoplova Apollo C15D/Pipistrel Hrvatskoj agenciji za civilno zrakoplovstvo (u daljnjem
+tekstu: HACZ). Dana 29. travnja 2013. godine HACZ donosi rešenje kojim se odobrava podnositelju
+zahtjeva Program održavanja zrakoplova, izdanje br. 1, revizija br. 0, od 06. veljače 2013. godine.
+Dana 09. lipnja 2014. godine na zrakoplovu je obavljen godišnji pregled u skladu s odobrenim
+programom održavanja, te je istom izdana Potvrda o vraćanju zrakoplova u upotrebu. Godišnji pregled
+obavljen je na naletu od 41 sat i na 148 ciklusa.
+Dana 18. kolovoza 2015. godine izdana je status lista popravaka i preinaka u kojoj su navedeni radovi
+koji su obavljeni na zrakoplovu nakon nesreće, i to:
+
+
+
+
+
+Izvršen pregled/popravak motora Rotax 582, dana 17. kolovoza 2015.
+Ugrađena nova četverokraka elisa Pipistrel LN4, dana 17. kolovoza 2015.
+Izvršen pregled/popravak podvozja Pipistrel Spider, dana 17. kolovoza 2015.
+Izvršen pregled/popravak krila Apollo C15D, dana 20. srpnja 2015.
+
+Dana 25. kolovoza 2015. godine ovlaštena organizacija za održavanje i provjeru plovidbenosti
+mikrolakih zrakoplova SHAFT, u skladu s Priručnikom za održavanje i provjeru plovidbenosti, izdanje br.
+1, revizija br. 0, od 18. svibnja 2013. godine izrađuje „Listu pregleda za provjeru plovidbenosti“ i isti dan
+izdaje preporuku za produžavanje valjanosti „Dopuštenja za letenje“.
+1.7.
+
+METEOROLOŠKI PODACI
+Opis meteorološke situacije
+
+U svrhu opisa meteorološke situacije Geo-meteo j.d.o.o. izradio je numeričku analizu vremena
+korištenjem numeričkog modela WRF rezolucije 3 km.
+
+AIN/04-DFR-01
+
+Stranica: 15/25
+
+Završno izvješće
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+18:30
+
+19:00
+
+19:30
+
+20:00
+Slika 1.9. CAPE index nestabilnosti
+
+7
+
+Ista pokazuje kako je atmosfera nad cijelim područjem bila uglavnom neznatno nestabilna. Kako se
+radilo o večernjim satima, slabe termičke aktivnosti je moglo biti samo nad širim centrom grada Osijeka
+zbog zagrijanosti zgrada i prometnica, te na obali Drave.
+Tablica 1. Podaci s meteorološke postaje Čepin
+Termin
+
+Tip vremena
+
+Naoblaka
+
+Vidljivost
+
+Vjetar
+
+Temp
+
+19:00
+20:00
+
+Vedro
+Pretežno vedro
+
+Ukupno 2/8, iznad 2500m.
+Altokumulus translucidus 1/8, Cirus
+fibratus (tanak)
+
+10 km
+10 km
+
+SE 1 m/s
+S 1 m/s
+
+29°C
+27°C
+
+Iz podataka meteorološke postaje na aerodromu Čepin (tablica 1.) vidljivo je kako se radilo o
+meteorološkoj situaciji bez neke značajne termičke aktivnosti sa slabim vjetrom.
+
+7
+
+Convection available potential energy (CAPE) indeks opisuje količinu raspoložive potencijalne energije koja se
+može upotrijebiti za vertikalno kretanje zraka.
+Referentne vrijednosti CAPE indeksa prikazane su u tablici ispod.
+CAPE vrijednost
+
+Nestabilnost
+
+1 - 999 J/kg
+1000 – 2499 J/kg
+2500 – 3499 J/kg
+>= 3500 J/kg
+
+Neznatno nestabilna
+Umjereno nestabilna
+Jako nestabilna
+Ekstremno nestabilna
+
+AIN/04-DFR-01
+
+Stranica: 16/25
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+1.8.
+
+Završno izvješće
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+NAVIGACIONI PODACI
+
+Aerodrom Osijek – Čepin nalazi se unutar CTR Osijek/Klisa i tijekom radnog vremena AKZP Osijek nema
+vlastitu zonu aerodromskog prometa. Tijekom radnog vremena AKZP Osijek pilot je dužan postupati po
+odredbama i uputama nadležne kontrole zračnog prometa.
+Sukladno AIP SUP 005/2014 koji je na snagu stupio dana 15. svibnja 2014. godine, a vrijedio je do 25.
+listopada 2014. radno vrijeme aerodroma Osijek/Klisa za period od 26. srpnja do 01. rujna 2014. godine
+je bilo:
+MON 0430-1000 i 1400-1630, TUE i WED 0430-1000 i 1400-1500, THU 0430-0700 i 1400-2100,
+FRI 0430-0700 i 1400-1930, SUN 1500-16008.
+Zrakoplov je poletio dana 10. kolovoza 2014. godine (nedjelja) oko 19:30, izvan radnog vremena AKZP
+Osijek.
+
+Plan leta
+Plan leta nije predan iz razloga što se let odvijao u klasi G zračnog prostora i unutar aerodromske zone
+prometa.
+1.9.
+
+KOMUNIKACIJA
+
+Komunikacija nije vođena na službenim frekvencijama Hrvatske kontrole zračne plovidbe.
+1.10. INFORMACIJE O AERODROMU
+Aerodrom Osijek – Čepin nalazi se 3.5 km jugozapadno od grada Osijeka na nadmorskoj visini od 297
+ft. Aerodrom ima dvije uzletno sletne staze: asfaltnu (28R/10L) dimenzija 1200x30 m i travnatu
+(28L/10R) dimenzija 1200x45 m.
+Operator aerodroma je Aeroklub Osijek, koji je sukladno članku 74. Zakona o zračnom prometu
+(Narodne novine, broj 69/09, 84/11, 54/13, 127/13 i 92/14) ishodio trajno odobrenje za uporabu
+aerodrome.
+Sukladno Naputku o uporabi aerodroma Čepin9, izdanje br. 1, revizija br. 2, od siječnja 2013. godine na
+aerodromu Čepin dozvoljeno je letenje u VFR uvjetima, a primjenjuju se meteorološki minimumi za VFR
+letove prema Pravilniku o letenju zrakoplova, članak 53. dodatak 6., za klasu zračnog prostora G.
+
+8
+
+Navedena vremena zapisana su u UTC formatu.
+Naputak o uporabi aerodroma Čepin napisan je u skladu sa odredbama: Zakona o zračnom prometu (Narodne
+novine, broj 69/09 i 84/11); Pravilnika o aerodromima (Narodne novine, broj 64/12); Pravilnika o letenju
+9
+
+AIN/04-DFR-01
+
+Stranica: 17/25
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+Zona aerodromskog prometa je zračni prostor unutar kruga R=2.5 NM sa središtem u referentnoj točci
+aerodroma do visine 1000 ft AGL (Prilog 2.)
+1.11. ZABILJEŽBA LETA
+U zrakoplovu nisu bili ugrađeni uređaji za snimanje parametara leta (FDR) i razgovora (CVR).
+1.12. PODACI O UDARU I OSTACIMA ZRAKOPLOVA
+Ostaci zrakoplova su se nalazili oko 300 m od praga 10R uzletno sletne staze. Prvi kontakt s pistom
+zrakoplov je ostvario s nosnim kotačem te se nakon 13 m rulanja zabija nosom u zemlju i potom nakon
+5.4 m zaustavlja okrenut na gornjem dijelu krila. Nakon što je napravljen očevid zrakoplov je vraćen
+vlasniku, te se rastavio i otpremio se u hangar.
+1.13. MEDICINSKE I PATOLOŠKE INFORMACIJE
+Na mjesto nesreće izašla je ekipa Hitne medicinske pomoći koja je unesrećene prevezla u Klinički
+bolnički centar Osijek na daljnju hospitalizaciju.
+Pilotu je dijagnosticiran prijelom nosne kosti i kontuzija prsnog koša, dok je putnica pretrpjela teže
+tjelesne ozljede - vanjski prijelom noge.
+
+Toksikološki nalazi
+Nad pilotom je obavljeno ispitivanje o prisutnosti alkohola u organizmu korištenjem uređaja Drager
+7410, kojim je utvrđena koncentracija alkohola od 0.00 g/kg.
+1.14. POŽAR
+Nije došlo do pojave požara.
+1.15. SPAŠAVANJE
+Nakon nesreće pilot je samostalno napustio zrakoplov te je pomogao putnici koja je pretrpjela teže
+tjelesne ozljede. Isti je kod sebe imao mobitel i nakon što je pomogao putnici nazvao je kolege koji su
+se u tom trenutku nalazili na aerodromu, te su oni obavijestili policiju i hitnu medicinsku pomoć.
+zrakoplova (Narodne novine, broj 109/09); Pravilnika o spasilačko vatrogasnoj zaštiti na aerodromu (Narodne
+novine, broj 39/09); Ostalih važećih pravilnika i sigurnosnih direktiva, te isti nije u skladu s važećom regulativom.
+Do okončanja istrage operator aerodroma napravio je reizdanje Naputka o upotrebi aerodroma Čepin. Kako bi
+isti mogao biti poslan na odobrenje Hrvatskoj agenciji za civilno zrakoplovstvo operater čeka reviziju elaborata
+operativnih površina od strane Građevinskog fakulteta u Osijeku.
+AIN/04-DFR-01
+
+Stranica: 18/25
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+1.16. DODATNE INFORMACIJE
+
+Izjava pilota
+U svojoj izjavi pilot navodi kako je sa putnicom poletio na informativni let rubnim dijelom grada Osijeka.
+Informacije o meteorološkim uvjetima dobio je od kolega koji su se nalazili na aerodromu. Također,
+navodi da mu je tijekom leta bilo teže upravljati zmajem jer je osoba bila teža, te se zbog toga odlučio
+na slijetanje na travnatu pistu u smjeru 10R. Slijetanje je bilo s brzinom oko 70 km/h. Navodi da kada
+je pokušao podignuti nos zrakoplova isti nije odreagirao na komandu i nastavio se gibati nosom prema
+dolje.
+Nakon udarca nosom u zemlju došlo je do prevrtanja.
+Isto tako navodi da je nad Dravom imao jednu jaču termiku koja ga je bacila u lijevo te je dodao puni
+gas kako bi napustio navedeno područje.
+
+Putnica
+Navodi da je sam let bio ugodan, nije bilo vjetra, niti je osjetila turbulencije. Nad Dravom je imala osjećaj
+da će pasti u rijeku jer su se nagnuli skroz na lijevu stranu, skoro pa okomito u odnosu na rijeku.
+Prilikom slijetanja ništa nije vidjela osim tragova kotača prijašnjih slijetanja, te se sjeća udarca kotača o
+zemlju, nakon čega dolazi do podizanja gore, odnosno zadnji dio zrakoplova poletio je gore i postavio
+ju je u relativno okomiti položaj u odnosu na pilota, te nakon toga počinje kotrljanje zrakoplova po
+uzletno sletnoj stazi.
+
+Masa zrakoplova
+Sportsko rekreativni zrakoplovi klase II – motorni zmajevi - su autostabilni zrakoplovi. To znači da će
+centar težišta podvozja biti pozicioniran ispod krila točno u centru težišta cijelog zrakoplova. Sukladno
+tome periodičko vaganje zrakoplova nije propisano programom održavanja zrakoplova.
+Kako se radi o konfiguraciji koja se sastoji od dva različita proizvođača krilo Apollo C15D i podvozja
+Pipistrel Spider, te za takvu konfiguraciju ne postoje nikakvi operacijski priručnici niti liste provjere
+(checklist)10, ukupna masa zrakoplova dobivena je računanjem masi pojedinih komponenti zrakoplova.
+Shodno tome, težina praznog zrakoplova iznosi 165 kg.
+
+Osposobljavanje pilota
+Pilot zrakoplova prvu dozvolu stekao je dana 26. srpnja 2011. godine. Navedenu dozvolu izdao je
+Mađarski savez pilota mikrolakog zrakoplovstva.
+
+10
+
+Člankom 12. Pravilnika o uvjetima i načinu upotrebe sportsko rekreativnih zrakoplova (Narodne novine, broj
+34/14) propisano je da Operator mora za svaki sportsko rekreativni zrakoplov napraviti listu provjere (checklist)
+koja sadrži normalne procedure i procedure u slučaju nužde, te iste sukladno članku 11. istog pravilnika moraju
+se nalaziti u zrakoplovu.
+AIN/04-DFR-01
+
+Stranica: 19/25
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+Dana 25. travnja 2014. godine Obučni centar zrakoplovnog kluba Bjelovar izdaje Potvrdu o završetku
+teorijskog i praktičnog osposobljavanja. Praktična provjera u letu obavljena je na zrakoplovu Apollo
+JetStar, reg. oznaka 9A-UBZ. Ukupno trajanje leta bilo je 10 minuta. Rezultat provjere je bio da je pilot
+položio ispit. Teoretski dio ispita sastojao se od zrakoplovnih propisa i radiofonije.
+Konverzija dozvole napravljena je na temelju Izvješća o evaluaciji programa teorijskog osposobljavanja
+za stjecanje dozvole pilota mikrolakih zrakoplova klase II koju izdaje Mađarski savez pilota mikrolakih
+zrakoplova11. Navedeni izvještaj primjenjuje se na hrvatske građane, imatelje dozvola pilota mikrolakih
+zrakoplova klase II koju izdaje Mađarski savez pilota mikrolakih zrakoplova, koji su podnijeli zahtjev za
+priznavanje mađarske dozvole i izdavanje hrvatske dozvole pilota mikrolakog zrakoplova klase II
+temeljem mađarske dozvole. Svrha izvještaja je utvrđivanje razlika i definiranje uvjeta pod kojim će se
+provesti priznavanje mađarskih dozvola za sve hrvatske državljane, imatelje valjanih mađarskih
+dozvola, koji su podnijeli zahtjev za priznavanje i izdavanje hrvatske dozvole.
+Evaluacijom je utvrđeno da hrvatski građani, imatelji valjanih mađarskih dozvola koji su podnijeli
+zahtjev za priznavanje mađarske dozvole i izdavanje hrvatske dozvole moraju:
+1. položiti teorijski ispit iz predmeta Pravila i propisi
+2. položiti teorijski ispit iz predmeta Radiofonija i
+3. položiti praktičnu provjeru u letu.
+
+Uvjeti za prijevoz putnika
+Piloti sportsko rekreativnih zrakoplova sukladno Pravilniku o uvjetima i načinu upotrebe sportsko
+rekreativnih zrakoplova smiju prevoziti putnike u zrakoplovima nakon što ostvare ukupni nalet od 50
+sati i 100 letova na pojedinoj klasi. Također, piloti moraju informirati putnike koji će letjeti u zrakoplovu
+i osigurati da razumiju kako zrakoplov nije u skladu sa standardnim zahtjevima za sigurnost zrakoplova
+i da lete na vlastitu odgovornost, te ih upoznati sa procedurama u slučaju nužde.
+2.
+
+ANALIZA
+
+2.1.
+
+ANALIZA LETA
+
+Dana 01. svibnja 2013. godine ovlašteni pilot obavio je ispitivanje kompatibilnosti konfiguracije
+zrakoplova Apollo C15D/Spider s motorom Rotax 582. Prilikom ispitivanja obavljen je pregled spoja
+podvozja i krila, pregled ispravnosti vijaka i sigurnosne sajle, te je obavljena provjera u letu. Tijekom
+provjere u letu konstatirano je da je polijetanje, penjanje, zaokret lijevo, zaokret desno, stoling,
+poniranje i slijetanje uredno, bez navođenja graničnih vrijednosti brzina. Granične brzine nisu
+evidentirane iz razloga što sukladno Pravilniku o uvjetima i načinu upotrebe mikrolakih zrakoplova
+
+11
+
+Izvješće o evaluaciji, izdanje br. 0, od dana 11. travnja 2013. godine. Isto je napravljeno na temelju programa
+teorijskog osposobljavanja za stjecanje dozvole pilota mikrolakog zrakoplova klase II (A1 RWL) i njihove razrade
+koje izdaje Mađarski savez pilota mikrolakih zrakoplova i Pravilnika o uvjetima i načinu upotrebe mikrolakih
+zrakoplova (Narodne novine, broj 56/08).
+AIN/04-DFR-01
+
+Stranica: 20/25
+
+Završno izvješće
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+(Narodne novine, broj 56/08)12 za mikrolake zrakoplove koji se koristi za letenje u nekontroliranom
+zračnom prostoru nije potrebno imati brzinomjer. Također, sukladno važećem Pravilniku o uvjetima i
+načinu upotrebe sportsko rekreativnih zrakoplova (Narodne novine, broj 66/14) stoji da sportsko
+rekreativni zrakoplovi moraju imati instrument za mjerenje i prikazivanje indicirane zračne brzine (IAS)
+osim sportsko rekreativnih zrakoplova klase II koji se ne upotrebljava u svrhu osposobljavanja.
+Shodno tome, u svrhu izrade analize prilaza korišteni su podaci koji su dani na službenim
+stranicama proizvođača krila i podvozja. Proizvođač krila Halley za krilo Apollo C15D navodi da je
+minimalna brzina leta 55 km/h, dok proizvođač podvozja Pipistrel za podvozje Spider navodi da brzina
+gubitka uzgona ovisi o krilu.
+Brzina slijetanja iznosi 1.3xVstall, gdje je Vstall brzina gubitka uzgona koja je proporcionalno ovisna
+2×𝑚×𝑔
+
+o masi, što se može vidjeti iz slijedeće jednadžbe 𝑉 = √𝜌×𝑆𝑟𝑒𝑓×𝐶 , gdje je „V“ brzina zrakoplova „m“
+𝐿
+
+masa zrakoplova, „g“ ubrzanje sile teže, „“ gustoća zraka, „Sref“ referentna površina krila i „CL“
+koeficijent uzgona.
+Masa praznog zrakoplova iznosi oko 165 kg, težina pilota je oko 90 kg, težina putnice oko 110 kg i u
+zrakoplovu se sukladno izjavi pilota nalazilo oko 15 l goriva (oko 12 kg), te je ukupna masa zrakoplova
+bila oko 377 kg.
+Sam pilot je u svojoj izjavi rekao da mu je zbog veće mase bilo teže upravljati zrakoplovom. Ovo može
+upućivati na to da se i cijeli let odvijao sa brzinama koje su bile kritične za stvarno opterećenje
+zrakoplova (veća masa zahtjeva let s većom brzinom). U prilog tome ide i činjenica da je tijekom leta u
+jednom trenutku došlo do zanošenja zrakoplova. Dodavanjem gasa i povećanjem brzine zrakoplov se
+stabilizirao. Nakon toga, pilot se odlučuje na slijetanje na travnatu uzletno sletnu stazu brzinom od oko
+70 km/h, sukladno njegovoj izjavi.
+3.
+
+ZAKLJUČAK
+
+3.1.
+
+NALAZI
+
+12
+
+
+
+Vremenski uvjeti nisu imali utjecaja na ovu nesreću
+
+
+
+Analizom zrakoplova je utvrđeno da su svi sustavi na zrakoplovu bili ispravni
+
+
+
+Sva oštećenja na zrakoplovu nastala su uslijed udara zrakoplova o uzletno sletnu stazu
+
+
+
+Zrakoplov se održavao u skladu s odobrenim Programom održavanja
+
+
+
+Pilot je posjedovao važeću pilotsku dozvolu koja mu je izdana od strane Hrvatske
+agencija za civilno zrakoplovstvo na temelju priznavanja mađarske dozvole polaganjem
+teorijskog ispita iz predmeta 'Pravila i propisi' i 'Radiografije' i nakon praktične provjere
+u letu, sukladno Izvješću o evaluaciji.
+
+Važeći pravilnik u vremenu ispitivanja konfiguracije zrakoplova.
+
+AIN/04-DFR-01
+
+Stranica: 21/25
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+
+
+Operator zrakoplova ne posjeduje, u skladu s člankom 12. Pravilnika o uvjetima i načinu
+uporabe sportsko rekreativnih zrakoplova (Narodne novine, broj 34/14 i 66/14), nikakve
+liste provjere niti operacijske priručnike za predmetnu konfiguraciju, u kojima bi bile
+propisane normalne procedure i procedure u nuždi
+
+
+
+Pilot zrakoplova do nesreće je imao 152 sata i 420 letova što zadovoljava propisane
+uvjete od 50 sati i 100 letova za prijevoz putnika
+
+
+
+Na temelju izjave pilota, može se pretpostaviti da se let i slijetanje odvijalo s brzinama
+koje nisu odgovarale stvarnom opterećenju zrakoplova.
+
+
+
+Ukupna masa zrakoplova bila je oko 380 kg
+
+AIN/04-DFR-01
+
+Stranica: 22/25
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+3.2.
+
+Završno izvješće
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+UZROK
+
+Neposredni uzrok nesreće je kriva procjena prilaza, odnosno nedostatak situacijske svijesti o brzini
+zrakoplova u odnosu na stvarnu masu zrakoplova.
+
+4.
+
+SIGURNOSNE PREPORUKE
+
+Može se smatrati da je uzrok nesreće naveden pod točkom 3.2. proizašao iz:
+- nedostatne obuke koju je pilot prošao u Mađarskoj, gdje je nakon ispita stekao i dozvolu. Ista
+dozvola priznata mu je u Hrvatskoj te mu je na temelju nje izdana važeća hrvatska Dozvola
+pilota sportsko rekreativnog zrakoplova. U procesu verifikacije strane dozvole u Hrvatskoj nije
+provjeravano znanje iz aerodinamike i mehanike letenja, jer tadašnjim propisima to nije bilo
+traženo.
+- ne utvrđivanja granične brzine za određenu konfiguraciju zrakoplova testnim letom, jer
+tadašnjim propisima to nije bilo traženo.
+Navedeno se može smatrati ključnim čimbenicima na koje je moguće utjecati kako se u budućnosti ne
+bi ponavljale ovakve nesreće.
+Obzirom da su uočeni nedostaci u međuvremenu zadovoljavajuće regulirani člankom 2. i člankom 12.
+Pravilnika o uvjetima i načinu uporabe sportsko rekreativnih zrakoplova ('Narodne novine' broj 34/14 i
+66/14), Agencija za istraživanje nesreća i zračnom, pomorskom i željezničkom prometu u ovom slučaju
+nema sigurnosnu preporuku.
+
+AIN/04-DFR-01
+
+Stranica: 23/25
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+PRILOG 1. – KONFIGURACIJE
+
+AIN/04-DFR-01
+
+Stranica: 24/25
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Motorni zmaj 9A-UEB
+10.08.2014., Aerodrom Čepin
+
+PRILOG 2. – AERODROM ČEPIN
+
+AIN/04-DFR-01
+
+Stranica: 25/25
+
+

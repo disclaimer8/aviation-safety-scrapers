@@ -206,6 +206,17 @@ def build(conn):
         source_url = row["pdf_url"] or row["report_url"]
         site_slug = text.make_site_slug(row["case_id"])
 
+        # Parsed from the narrative, which already holds the full extracted PDF
+        # text. ainhr_reports has no probable_cause column and adding one would
+        # mean migrating a live database for no gain.
+        #
+        # This is what decides indexability: prod needs a quality score of 50,
+        # a narrative over 300 chars scores 30 and a cause over 100 scores 20,
+        # and factors_json, weather_summary and phase_of_flight are hardcoded
+        # null at projection. Measured against all 62 PDFs on the host: 46
+        # yield a cause, 45 of them long enough to count.
+        probable_cause = ainhr.parse_probable_cause(narrative)
+
         conn.execute(
             "INSERT OR REPLACE INTO ainhr_accidents "
             "(case_id, event_date, aircraft, registration, operator, location, country, "
@@ -220,7 +231,7 @@ def build(conn):
                 row["location"],
                 "HR",
                 narrative,
-                None,
+                probable_cause,
                 source_url,
                 row["event_class"],
                 site_slug,

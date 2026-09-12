@@ -1,0 +1,661 @@
+REPUBLIKA HRVATSKA
+Agencija za istraživanje nesreća u zračnom, pomorskom i željezničkom prometu
+Odjel za istrage nesreća u zračnom prometu
+
+KLASA:
+URBROJ:
+Zagreb,
+
+343-08/15-02/07
+699-04/1-17-59
+14. rujna 2017.
+
+ZAVRŠNO IZVJEŠĆE
+O NESREĆI
+SPORTSKO REKREATIVNOG ZRAKOPLOVA KLASE I
+Apollo Fox, 9A-UDS
+Daruvar, 01. kolovoza 2015.
+
+AIN04-FR-1
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Apollo Fox, 01.08.2015., Daruvar
+
+OBJAVA IZVJEŠĆA I ZAŠTITA AUTORSKIH PRAVA
+
+Ovo izvješće izradila je i objavila Agencija za istraživanje nesreća u zračnom, pomorskom i željezničkom
+prometu (u daljnjem tekstu: AIN) na temelju članka 6. stavka 1. i 2. Zakona o osnivaju Agencije za
+istraživanje nesreća u zračnom, pomorskom i željezničkom prometu (Narodne novine broj 54/13),
+članka 7. stavka 1. i 2. Statuta Agencije za istraživanje nesreća u zračnom, pomorskom i željezničkom
+prometu, članka 16. Uredbe (EU) br. 996/2010 Europskog Parlamenta i Vijeća o istragama i sprečavanju
+nesreća i nezgoda u civilnom zrakoplovstvu, odredaba Zakona o zračnom prometu (Narodne novine
+broj 69/09, 84/11, 54/13, 127/13 i 92/14), te na temelju poglavlja 6. Dodatka 13 ICAO.
+
+Nitko ne smije proizvoditi, reproducirati ili prenositi u bilo kojem obliku ili na bilo koji način ovo
+izvješće ili bilo koji njegov dio, bez izričitog pisanog dopuštenja AIN.
+Ovo izvješće može se slobodno koristiti isključivo u obrazovne svrhe.
+Za sve dodatne informacije kontaktirajte AIN.
+
+Cilj istraga koje se odnose na sigurnost, ni u kojem slučaju nije utvrđivanje krivnje ili
+odgovornosti.
+Istrage su neovisne i odvojene od sudskih ili upravnih postupaka i ne smiju dovoditi u pitanje
+utvrđivanje krivnje ili odgovornosti pojedinaca.
+Završno izvješće ne može biti korišteno kao dokaz u sudskom postupku koji ima za cilj utvrđivanje
+građanskopravne ili kaznenopravne odgovornosti pojedinca.
+
+AIN04-FR-1
+
+Stranica:
+2/14
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Apollo Fox, 01.08.2015., Daruvar
+
+SADRŽAJ
+PODACI O DOGAĐAJU....................................................................................................................4
+ISTRAGA ........................................................................................................................................4
+KRATKI SADRŽAJ ............................................................................................................................5
+1.
+
+ČINJENICE I INFORMACIJE ....................................................................................................5
+1.1.
+PODACI O LETU ................................................................................................................................... 5
+1.2.
+OZLIJEĐENE OSOBE .............................................................................................................................. 6
+1.3.
+OŠTEĆENJE ZRAKOPLOVA....................................................................................................................... 6
+1.4.
+DRUGA OŠTEĆENJA .............................................................................................................................. 7
+1.5.
+PODACI O OSOBAMA ............................................................................................................................ 8
+1.5.1
+PILOT ............................................................................................................................................... 8
+1.5.2
+PUTNIK ............................................................................................................................................. 8
+1.6.
+PODACI O ZRAKOPLOVU ........................................................................................................................ 8
+APOLLO FOX - OPĆENITO .................................................................................................................................... 8
+APOLLO FOX 9A-UDS ....................................................................................................................................... 9
+1.7.
+METEOROLOŠKI PODACI ........................................................................................................................ 9
+1.8.
+KOMUNIKACIJA ................................................................................................................................... 9
+1.9.
+AERODROMSKE INFORMACIJE ............................................................................................................... 10
+1.10.
+PODACI O UDARU I OSTACIMA ZRAKOPLOVA ............................................................................................ 10
+1.11.
+MEDICINSKE INFORMACIJE................................................................................................................... 10
+1.12.
+1.13.
+
+2.
+3.
+
+ANALIZA .............................................................................................................................. 12
+ZAKLJUČAK .......................................................................................................................... 13
+3.1.
+3.2.
+
+4.
+
+SPAŠAVANJE I ASPEKTI PREŽIVLJAVANJA .................................................................................................. 11
+DODATNE INFORMACIJE ...................................................................................................................... 11
+
+NALAZI ........................................................................................................................................... 13
+UZROK ............................................................................................................................................ 14
+
+SIGURNOSNE PREPORUKE.................................................................................................... 14
+
+AIN04-FR-1
+
+Stranica:
+3/14
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Apollo Fox, 01.08.2015., Daruvar
+
+PODACI O DOGAĐAJU
+Vrsta događaja:
+Datum:
+Lokalno vrijeme:
+Mjesto:
+Vrsta zrakoplova:
+Proizvođač / model:
+Država registracije:
+Registarska oznaka:
+Vlasnik:
+Operator:
+Broj osoba u zrakoplovu:
+Ozljede:
+Oštećenja na zrakoplovu:
+
+Nesreća
+01. kolovoza 2015.
+18.00 LT
+Brdo Gradina kod aerodroma Daruvar
+Sportsko rekreativni zrakoplov klase I
+Halley ltd. (Mađarska) / Apollo Fox
+Republika Hrvatska
+9A-UDS
+Fizička osoba
+Fizička osoba
+Dvije
+Dvije smrtno stradale osobe
+Potpuno uništen, izgorio
+
+Slika 1. – mjesto pada zrakoplova 9A-UDS pored grada Daruvara
+
+ISTRAGA
+Prve informacije o nesreći AIN je dobila od Državne uprave za zaštitu i spašavanje i Ministarstva
+unutarnjih poslova. Istražitelji su izašli na očevid i otvorena je istraga.
+Nakon očevida na mjestu nesreće, olupina aviona premještena je u zatvoreni hangar Aerokluba 'Ždral'
+na aerodromu Daruvar. Tamo je bila zadržana do završetka istražnih radnji.
+AIN04-FR-1
+
+Stranica:
+4/14
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Apollo Fox, 01.08.2015., Daruvar
+
+AIN je dan nakon nesreće izdala priopćenje za javnost. Sukladno odredbama ICAO Annex 13, mjesec
+dana od dana nesreće, AIN je izdala Preliminarno izvješće u kojem su navedene informacije o događaju
+te saznanja do kojih se došlo u ranoj fazi istrage.
+U sklopu istrage uzete su izjave očevidaca i ostalih osoba bitnih za istragu predmetne nesreće.
+Prikupljeni su podaci i potrebna dokumentacija te obavljene potrebne tehničke analize.
+
+KRATKI SADRŽAJ
+Dana 01.08.2015. Aeroklub Ždral organizirao je na Aerodromu Daruvar radnu akciju uređenja
+aerodroma. Nakon radova, u poslijepodnevnim satima, vlasnik zrakoplova 9A-UDS obavio je dva leta.
+Prvi let odvijao se u okolici aerodroma Daruvar. Drugi let započeo je oko 18:00 LT. Ubrzo nakon
+polijetanja, zrakoplov je ušao u lijevi zaokret i pao.
+Na ostacima zrakoplova bile su vidljive znatne deformacije koje su nastale uslijed udara u tlo. Nakon
+pada, zrakoplov se zapalio i potpuno izgorio. Dvije osobe koje su se nalazile u avionu, smrtno su
+stradale.
+Prema saznanjima do kojih se došlo u dosadašnjem tijeku istrage, nema indikacija koje bi upućivale na
+neispravnost zrakoplova. Meteorološki uvjeti bili su povoljni za letenje.
+Pilot, koji je ujedno i vlasnik zrakoplova, imao je veliko letačko iskustvo na sportsko rekreativnim
+letjelicama. Putnik, prema izjavama kolega iz kluba, nije upravljao zrakoplovima, no često je letio kao
+putnik.
+Kao neposredni uzrok ove nesreće utvrđen je gubitak uzgona. Kao kontributivni faktor utvrđen je
+utjecaj alkohola.
+AIN nije izdala sigurnosnu preporuku.
+
+1.
+
+ČINJENICE I INFORMACIJE
+
+1.1.
+
+PODACI O LETU
+
+Let zrakoplova 9A-UDS koji je završio nesrećom, bio je drugi let toga dana. U oba leta pilot je bio isti, a
+putnici su se promijenili.
+Prema izjavama očevidaca, prvi let odvijao se u blizini aerodroma i iznad grada Daruvara i trajao je oko
+dvadesetak minuta. Taj let je, prema izjavama putnika i očevidaca, protekao normalno. Nakon
+slijetanja, pilot je napravio pauzu od petnaestak minuta te oko 18:00 LT poletio s drugim putnikom.
+U drugom letu, prema izjavama očevidaca, avion je nakon odvajanja od tla počeo skretati ulijevo.
+Skrenuo je za oko 180 stupnjeva, izgubio visinu te udario u manji brežuljak tristotinjak metara zapadno
+od kraja uzletno sletne staze.
+
+AIN04-FR-1
+
+Stranica:
+5/14
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Apollo Fox, 01.08.2015., Daruvar
+
+Slika 2. – smjer polijetanja s aerodroma Daruvar (zelena strelica) i mjesto pada zrakoplova 9A-UDS
+
+1.2.
+
+OZLIJEĐENE OSOBE
+Ozlijeđeni
+smrtno
+ozbiljno
+malo / ništa
+
+1.3.
+
+Posada
+1
+0
+0
+
+Putnici
+1
+0
+0
+
+Ostali
+0
+0
+0
+
+OŠTEĆENJE ZRAKOPLOVA
+
+U ovoj nesreći zrakoplov 9A-UDS potpuno je uništen. Uslijed udara u tlo nastala su znatna mehanička
+oštećenja i deformacije, nakon čega je izbio požar u kojem je zrakoplov potpuno izgorio.
+
+AIN04-FR-1
+
+Stranica:
+6/14
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Apollo Fox, 01.08.2015., Daruvar
+
+Slika 3. - Olupina zrakoplova 9A-UDS na mjestu nesreće
+
+1.4.
+
+DRUGA OŠTEĆENJA
+
+Na mjestu pada i požara izgorjela je manja travnata površina. Ostalih oštećenja nije bilo.
+
+Slika 4. – Mjesto pada i požara nakon uklanjanja olupine
+
+AIN04-FR-1
+
+Stranica:
+7/14
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+1.5.
+
+PODACI O OSOBAMA
+
+1.5.1
+
+Pilot
+
+Završno izvješće
+Apollo Fox, 01.08.2015., Daruvar
+
+Muška osoba, hrvatski državljanin rođen 1957. godine. Posjedovao je važeću Dozvolu pilota sportsko
+rekreativnog zrakoplova klase I. Bio je upravitelj aerodroma Daruvar i član aerokluba 'Ždral' Daruvar.
+Imao je veliko letačko iskustvo na sportsko rekreativnim letjelicama. Na zrakoplovu 9A-UDS pilot je u
+posljednje dvije godine naletio 85 sati, a u posljednjih mjesec dana na istom je avionu imao 28
+polijetanja i 4:18 sati naleta.
+Pilot je 2008. godine doživio nesreću s istim tipom zrakoplova. Nesreća se dogodila prilikom prilaza
+sletištu. Obje osobe koje su se tada nalazile u zrakoplovu, preživjele su.
+1.5.2
+
+Putnik
+
+Muška osoba, hrvatski državljanin rođen 1988. godine. Predsjednik aerokluba 'Ždral' Daruvar, nije
+posjedovao pilotsku dozvolu.
+
+1.6.
+
+PODACI O ZRAKOPLOVU
+
+Apollo Fox - općenito
+Proizvođač:
+Tip:
+Kapacitet:
+Masa zrakoplova:
+MTOW:
+Brzina krstarenja:
+Maksimalna brzina:
+Brzina prevlačenja:
+Dolet:
+Duljina polijetanja:
+Duljina slijetanja:
+Površina krila.
+Dimenzije zrakoplova:
+
+Halley Kft., Mađarska
+Apollo Fox
+dvije osobe
+265 – 285 kg
+450 kg
+150 km/h
+200 km/h
+64 km/h (stall speed)
+800 km
+120 m (take off lenght)
+200 m (landing lenght)
+11,4 m2
+dužina – 5,8 m; raspon krila – 9,15 m; visina – 1,7 m
+
+Apollo Fox je zrakoplov mađarske proizvodnje, namijenjen za sportsko rekreativno letenje u VFR
+uvjetima. Po konstrukciji je avion visokokrilac s fiksnim stajnim trapom tipa tricikl. Može primiti dvije
+osobe, a sjedala su raspoređena jedno do drugog (side by side). Pogonsku grupu čine jedan klipni motor
+i propeler smješten na prednjem kraju aviona.
+
+AIN04-FR-1
+
+Stranica:
+8/14
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Apollo Fox, 01.08.2015., Daruvar
+
+Slika 4. – Zrakoplov Apollo Fox
+Apollo Fox 9A-UDS
+Serijski broj zrakoplova: 141106
+Motor:
+Subaru EA-81 ; s/n 774868
+Propeler:
+Halley kft., 4KR Plastik
+Predmetni zrakoplov proizveden je 2006. godine. Motor i propeler tvornički su ugrađeni na avion i nisu
+mijenjani. Motor je četverocilindrični, četverotaktni, tekućinom hlađen benzinski motor. Zrakoplov je
+bio opremljen padobranom za spašavanje.
+Zrakoplov 9A-UDS bio je upisan u Hrvatski registar civilnih zrakoplova pod rednim brojem 462. Od
+siječnja 2012. operator i vlasnik aviona bio je pilot koji je smrtno stradao u predmetnoj nesreći.
+Zrakoplov je bio uredno održavan i imao je važeće Dopuštenje za letenje (Permit to Fly).
+
+1.7.
+
+METEOROLOŠKI PODACI
+
+Meteorološki uvjeti bili su povoljni za letenje i nisu imali utjecaja na ovu nesreću. U vrijeme nesreće na
+aerodromu Daruvar prevladavali su stabilni meteorološki uvjeti. Vrijeme je u 18:00 LT bilo sunčano i
+bez vjetra, a temperatura zraka bila je 24oC.
+
+1.8.
+
+KOMUNIKACIJA
+
+Obzirom da se letenje odvijalo u zoni Aerodroma Daruvar i u G sloju, komunikacija s kontrolom zračnog
+prometa nije bila potrebna.
+AIN04-FR-1
+
+Stranica:
+9/14
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Apollo Fox, 01.08.2015., Daruvar
+
+Piloti i članovi aerokluba koji su toga dana bili aktivni na Aerodromu Daruvar, međusobno su
+komunicirali putem radio veze na frekvenciji 123.500 MHz.
+Prema izjavi jednog od članova kluba, učenika koji se obučavao za pilota, isti je imao zadaću da putem
+radio veze koordinira promet na aerodromu. Na taj se način ujedno uvježbavala komunikacija u svrhu
+obuke i pripreme učenika.
+Pilot predmetnog zrakoplova je putem radio veze zatražio odobrenje za polijetanje te dobio odgovor
+'slobodno polijetanje u 31'. To je bila posljednja komunikacija zrakoplova 9A-UDS.
+
+1.9.
+
+AERODROMSKE INFORMACIJE
+
+Aerodrom Daruvar (LDVR) namijenjen je za prihvat i otpremu zrakoplova najveće dopuštene mase do
+1.111 kg kojima se obavljaju nekomercijalne operacije u VMC uvjetima. Aerodrom je smješten oko 1
+km jugozapadno od grada Daruvara, na nadmorskoj visini 147 m. Operator je Aeroklub 'Ždral' iz
+Daruvara.
+Uzletno sletna staza (USS) je travnate površine. Dužine je 600 m, širine 30 m, a smjer je 13/31. Pored
+jugoistočnog kraja USS-a nalazi se hangar i manji objekt s uredskim prostorom.
+Zaštitu od požara obavlja Javna vatrogasna postrojba grada Daruvara, a medicinsku pomoć u slučaju
+potrebe pruža bolnica u gradu Pakracu.
+
+1.10.
+
+PODACI O UDARU I OSTACIMA ZRAKOPLOVA
+
+Zrakoplov 9A-UDS pao je pri vrhu manjeg brda zvanog Gradina, koje se nalazi u neposrednoj blizini
+aerodroma, oko 300 m jugozapadno od praga 13 uzletno-sletne staze. Koordinate mjesta pada su: N
+45o35,082' i E 017o12,259, a nadmorska visina 165 m.
+Spomenuto omanje brdo djelomično je obraslo drvećem, a djelomično je prekriveno travom. Zrakoplov
+je pao na travnatu površinu.
+Po položaju i deformacijama olupine zaključuje se da je zrakoplov u tlo udario prednjim krajem i pod
+velikim kutom.
+Udar zrakoplova u tlo bio je takav da preživljavanje osoba u njemu nije bilo moguće.
+Odmah nakon pada izbio je požar u kojem je zrakoplov potpuno izgorio. Prepoznatljiva je ostala
+metalna konstrukcija (kostur) zrakoplova, motor te još neki metalni dijelovi.
+Nakon očevida na mjestu pada, olupina zrakoplova premještena je i zapečaćena u hangaru Aerokluba
+Daruvar na Aerodromu Daruvar, gdje je idućih dana obavljen pregled ostataka zrakoplova.
+
+1.11.
+
+MEDICINSKE INFORMACIJE
+
+Obje osobe u zrakoplovu smrtno su stradale. Obdukcijom je utvrđeno je da su na mjestu preminule
+uslijed višestrukih tjelesnih ozljeda, a nakon izbijanja požara, tijela su izgorjela.
+
+AIN04-FR-1
+
+Stranica:
+10/14
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Apollo Fox, 01.08.2015., Daruvar
+
+Toksikološka analiza
+Toksikološka analiza obavljena je u Centru za forenzička ispitivanja, istraživanja i vještačenja 'Ivan
+Vučetić'. Utvrđeno je slijedeće:
+-
+
+-
+
+Koncentracija alkohola u krvi pilota iznosila je najmanje 0,80 g/kg. S obzirom na
+nepouzdanost rezultata analize krvi zbog porijekla uzorka, mišljenje o stupnju
+alkoholiziranosti dano je na temelju uzorka urina prema Tablici za izračunavanje najmanje
+količine alkohola u krvi iz sadržaja alkohola u mokraći po Froentjesu (sadržaj alkohola u urinu
+bio je 2,13 g/kg).
+Koncentracija alkohola u krvi putnika iznosila je 1,32 g/kg.
+
+Zaključak vještačenja je da su obje osobe tijekom predmetnog leta bile pod utjecajem alkohola.
+
+1.12.
+
+SPAŠAVANJE I ASPEKTI PREŽIVLJAVANJA
+
+Polijetanje zrakoplova vidjelo je nekoliko očevidaca, klupskih kolega koji su se tada nalazili na
+aerodromu. Prema njihovim izjavama, zrakoplov je nakon polijetanja krenuo u lijevi zaokret i zašao iza
+manjeg brda blizu aerodroma, gdje ga očevici više nisu mogli vidjeti. Očekivali su da će ponovo ugledati
+zrakoplov kada izađe s druge strane brda, međutim zrakoplov se nije pojavio. Uskoro su ugledali dim
+koji se dizao sa strane brda koju nisu mogli vidjeti.
+Klupski kolege tada su pokušali uspostaviti radio komunikaciju sa zrakoplovom, međutim bezuspješno.
+Troje njih odmah je uzelo aparat za gašenje, sjeli su u auto i krenuli prema mjestu s kojeg se dizao dim.
+Odmah su pronašli mjesto pada, do kojeg su već došle neke osobe. Zrakoplov je gorio te su počeli gasiti
+požar. Do mjesta nesreće ubrzo su došli i vatrogasci te hitna pomoć.
+Zbog naravi nesreće, preživljavanje osoba u zrakoplovu nije bilo moguće.
+
+1.13.
+
+DODATNE INFORMACIJE
+
+Izjave očevidaca o događanjima na Aerodromu Daruvar na dan nesreće
+Prema izjavama očevidaca, dana 01.08.2017., subota, članovi Aerokluba Ždral iz Daruvara okupili su se
+na Aerodromu Daruvar u svrhu obavljanja redovnih radova održavanja na aerodromu – košenja trave.
+Nakon radova uslijedilo je druženje članova kluba i ostalih prisutnih na aerodromu.
+Izjave očevidaca o letu zrakoplova 9A-UDS
+Svi očevici navode da je zvuk motora bio uobičajen i da nisu primijetili ništa što bi ukazivalo na
+nepravilan rad motora. Očevici koji su vidjeli cijelu putanju leta, navode da je zrakoplov nakon
+odvajanja od tla krenuo u lijevi zaokret ranije nego je to uobičajeno te da je bočni nagib u zaokretu bio
+velik, nakon čega je uslijedio gubitak visine i pad zrakoplova.
+
+AIN04-FR-1
+
+Stranica:
+11/14
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+2.
+
+Završno izvješće
+Apollo Fox, 01.08.2015., Daruvar
+
+ANALIZA
+
+Aeroklub 'Ždral' iz Daruvara okuplja ljubitelje zrakoplovnih športova s područja grada Daruvara i
+okolice. U zrakoplovnim klubovima, osim samog letenja, uvijek je prisutno i razmjenjivanje iskustva,
+obavljanje ostalih poslova od zajedničkog interesa te druženje ljudi koje međusobno veže ljubav prema
+letenju.
+Članovi Aerokluba 'Ždral' našli su se u subotu 01. kolovoza 2015. na svom aerodromu u svrhu uređivanja
+aerodromskih površina. Kosili su travu, a nakon toga uslijedilo je poslijepodnevno druženje uz
+konzumaciju.
+Pilot je u kasnijim poslijepodnevnim satima odlučio napraviti lokalni let u zoni aerodroma u rekreativne
+svrhe. Poletio je jednom s putnikom prijateljem te nakon kraćeg lokalnog leta sletio. Taj let protekao je
+bez poteškoća. Nakon petnaestak minuta poletio je ponovo. Ovoga puta putnik je bio klupski kolega
+koji je često letio s predmetnim pilotom, uvijek kao putnik, a sam nije bio pilot sportsko rekreativnog
+zrakoplova klase I.
+Putanja leta
+Obzirom da ne postoji zapis leta, putanju leta moguće je rekonstruirati jedino temeljem izjava
+očevidaca. Kako se sve izjave očevidaca u tom smislu podudaraju, rekonstruirana putanja može se
+smatrati relevantnom.
+Zrakoplov je vrlo brzo nakon odvajanja od tla ušao u lijevi zaokret, ranije nego je to uobičajeno. Prema
+izjavi očevidca, bočni nagib zrakoplova u tom zaokretu također je bio veći od uobičajenog.
+Navedene spoznaje ukazuju na vrlo vjerojatan gubitak uzgona. Do toga je moglo doći iz slijedećih
+razloga:
+-
+
+ulaženja zrakoplova u lijevi zaokret nedovoljnom brzinom,
+prevlačenja zrakoplova nakon odvajanja od tla. Nakon toga moglo je uslijediti nekontrolirano
+zanošenje ulijevo uslijed momenta propelera.
+
+Toksikološki nalazi
+Toksikološki nalazi ukazuju da su i pilot i putnik u vrijeme nesreće bili pod utjecajem alkohola.
+Koncentracija alkohola u krvi pilota utvrđena vještačenjem bila je najmanje 0,80 g/kg, što znači da je
+mogla biti i veća.
+Negativni utjecaj alkohola na ljudski organizam dobro je poznat. Već kod koncentracije alkohola u krvi
+0,3 do 0,5 g/kg može se primijetiti djelovanje alkohola na živčani sustav. Usporavaju se refleksi, slabi
+oštrina vida, smanjuje mišićna snaga, slabi pažnja, krivo se procjenjuju okolnosti te se preslobodno ulazi
+u rizike. Veće koncentracije alkohola u krvi vode do intenziviranja navedenih učinaka te daljnjeg
+oslobađanja od straha, kočnica i sputanosti.
+Osobe koje upravljaju zrakoplovima, za vrijeme upravljanja zrakoplovom ne smiju biti pod utjecajem
+alkohola, što je određeno i relevantnim zakonskim propisima.
+
+AIN04-FR-1
+
+Stranica:
+12/14
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+Završno izvješće
+Apollo Fox, 01.08.2015., Daruvar
+
+Tehnički čimbenik
+Saznanja dobivena u ovoj istrazi ne upućuju na tehnički kvar pogonske grupe, kao ni ostalih komponenti
+zrakoplova.
+
+3.
+
+ZAKLJUČAK
+
+3.1.
+
+NALAZI
+-
+
+Meteorološki uvjeti bili su povoljni za letenje sportsko rekreativnim zrakoplovima i nisu imali
+utjecaja na ovu nesreću,
+Zrakoplov je zadovoljavao sve zakonom propisane uvjete za uporabu,
+Temeljem spoznaja do kojih se došlo istragom, može se smatrati da je u vrijeme nesreće
+zrakoplov bio tehnički ispravan,
+Temeljem izjava očevidaca, može se zaključiti da je tijekom predmetnog leta motor
+zrakoplova radio normalno,
+Pilot je ispunjavao sve zakonom propisane uvjete za upravljanje predmetnim zrakoplovom,
+Pilot je imao veliko letačko iskustvo na sportsko rekreativnim zrakoplovima,
+Obzirom da se let trebao odvijati u zoni aerodroma i u G sloju, nije najavljen kontroli, niti je
+predan plan leta,
+Primarni razlog okupljanja klupskih kolega toga dana na Aerodromu Daruvar bila je, prema
+njihovim izjavama, radna akcija – košenje trave,
+Nakon završetka radova, uslijedilo je druženje članova kluba,
+Predmetni pilot odlučio je u vrijeme druženja članova kluba poletjeti u rekreativne svrhe sa
+svojim prijateljima kao putnicima,
+Pilot je napravio dva leta. Prvi let protekao je normalno, uslijedila je pauza od petnaestak
+minuta te nakon nje drugi let koji je završio nesrećom,
+Nakon polijetanja i odvajanja od tla, zrakoplov je, sukladno izjavama očevidaca, počeo
+skretati ulijevo, uz povećavanje bočnog nagiba,
+Prema spoznajama proizašlim iz ove istrage, može se zaključiti da je došlo do gubitka uzgona
+potrebnog za održanje zrakoplova u letu,
+Zrakoplov je pao u neposrednoj blizini Aerodroma Daruvar,
+Udar zrakoplova u tlo bio je takav da preživljavanje osoba koje su se nalazile u njemu, nije
+bilo moguće,
+Nakon udara izbio je požar u kojem je zrakoplov potpuno izgorio,
+Toksikološkom analizom utvrđeno je da su i pilot i putnik u vrijeme nesreće bili pod utjecajem
+alkohola.
+
+AIN04-FR-1
+
+Stranica:
+13/14
+
+AGENCIJA ZA ISTRAŽIVANJE NESREĆA
+U ZRAČNOM, POMORSKOM I
+ŽELJEZNIČKOM PROMETU
+
+3.2.
+
+Završno izvješće
+Apollo Fox, 01.08.2015., Daruvar
+
+UZROK
+
+Neposredni uzrok
+Na temelju spoznaja do kojih se došlo istragom, neposrednim uzrokom ove nesreće može se smatrati
+gubitak uzgona potrebnog za let zrakoplova. Do istog je moglo doći zbog ulaska u zavoj s velikim
+nagibom i nedovoljnom brzinom ili zbog prevelikog kuta penjanja nakon odvajanja od tla pri
+istovremeno nedovoljnoj brzini.
+Kontributivni čimbenik
+Čimbenikom koji je doveo do navedenog neposrednog uzroka, može se smatrati negativan utjecaj
+alkohola na odluke, reakcije, percepciju i procjene pri upravljanju zrakoplovom.
+
+4.
+
+SIGURNOSNE PREPORUKE
+
+Obzirom da su sve mjere kojima bi se izbjegla ova nesreća (način upravljanja zrakoplovom, procedura
+školskog kruga, ne letenje pod utjecajem alkohola…) općenito dobro poznate, a također i zakonski
+regulirane te obzirom da se u ovom slučaju radi o osposobljenom i iskusnom pilotu, Agencija za
+istraživanje nesreća u zračnom, pomorskom i željezničkom prometu u ovom slučaju nema sigurnosnu
+preporuku.
+
+Odgovorni istražitelj
+Danko Petrin
+
+AIN04-FR-1
+
+Stranica:
+14/14
+
+
