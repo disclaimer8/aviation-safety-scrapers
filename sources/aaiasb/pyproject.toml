@@ -1,0 +1,19 @@
+[project]
+name = "aaiasb-ingest"
+version = "0.1.0"
+requires-python = ">=3.11"
+description = "Greece AAIASB / HARSIA accident report ingest"
+# patchright: the HARSIA half drives a browser. harsia.gr sits behind a
+# Cloudflare challenge (cf-mitigated: challenge on a plain GET, browser UA or
+# not), the same situation cenipa is in, and HarsiaBrowser warms the listing
+# page to get clearance before fetching.
+dependencies = ["httpx>=0.27", "patchright>=1.47"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+include = ["aaiasb_ingest*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
