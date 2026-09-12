@@ -241,6 +241,14 @@ def build(conn):
         )
         report_type = row["event_class"]  # OCC number when known, else None
 
+        # Parsed from the narrative, which already holds the full extracted PDF
+        # text. baaid_reports has no probable_cause column and adding one
+        # would mean migrating a live database for no gain.
+        #
+        # Measured against all 222 PDFs on the host: 46 yield a cause, all 46
+        # long enough to count toward the score that decides indexability.
+        probable_cause = baaid.parse_probable_cause(narrative)
+
         conn.execute(
             "INSERT OR REPLACE INTO baaid_accidents "
             "(case_id, event_date, aircraft, registration, operator, location, country, "
@@ -255,7 +263,7 @@ def build(conn):
                 row["location"],
                 "BS",
                 narrative,
-                None,
+                probable_cause,
                 source_url,
                 report_type,
                 site_slug,

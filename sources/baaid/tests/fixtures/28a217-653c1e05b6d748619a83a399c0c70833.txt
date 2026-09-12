@@ -1,0 +1,461 @@
+Aviation Short Investigation
+Final Report
+Occurrence involving
+Israeli Aircraft Industries
+Westwind – 1124A, Registration N790JR
+
+Treasure Cay, Abaco, Bahamas
+5th July, 2021
+AAIA Aviation Occurrence Investigation
+Controlled Flight into Terrain
+AO21-022
+Date of Final Report
+2nd August, 2021
+
+Aircraft Accident Investigation Authority
+
+Publishing information
+Aircraft Accident Investigation Authority
+2nd Floor, Manx Corporate Center
+#45 West Bay Street
+P. O. Box CB-11702
+Nassau N. P., Bahamas
+Tel: 1 (242) 397-5513 or (242) 397-5520
+Fax: (242) 327-2192
+Email: baaid@bahamas.gov.bs
+Website: http://www.baaid.org
+Ownership of intellectual property rights in this publication
+Unless otherwise noted, copyright (and any other intellectual property rights, if any) in this publication is
+owned by the Aircraft Accident Investigation Authority of the Commonwealth of the Bahamas, P. O. Box
+CB-11702, Manx Corporate center, #45 West Bay Street, Nassau, N. P., Bahamas.
+
+N790JR Final Report
+
+2Page
+
+Aircraft Accident Investigation Authority
+
+About the AAIA
+The Aircraft Accident Investigation Authority (AAIA)
+The Aircraft Accident Investigation Authority (AAIA) is the independent accident investigation agency
+under the Bahamas Ministry of Transport & Local Government (MOT&LG) charged with the
+responsibility of investigating all aviation accidents and incidents in the Bahamas.
+The AAIA’s function is to promote and improve safety and public confidence in the aviation industry
+through excellence in:
+ Independent investigation of aviation accidents and other safety occurrences
+ Safety data recording, analysis and research
+ Fostering safety awareness, knowledge and action.
+The AAIA does not investigate for the purpose of apportioning blame or to provide a means for
+determining liability. At the same time, an investigation report must include factual material of sufficient
+weight to support the analysis and findings. At all times the AAIA endeavors to balance the use of
+material that could imply adverse comment with the need to properly explain what happened, and why, in
+a fair and unbiased manner.
+The AAIA performs its functions in accordance with the provisions of the Aircraft Accident Investigation
+Authority Act, 2019 and Regulations, 2021 and the International Civil Aviation Organization (ICAO)
+Annex 13 and, where applicable, relevant international agreements.
+The AAIA is mandated to investigate air transportation accidents and incidents, determine probable
+cause(s) of such accidents and incidents, issue safety recommendations, study transportation safety issues
+and evaluate the safety effectiveness of agencies and stakeholders involved in air transportation.
+The objective of a safety investigation is to identify and reduce safety-related risk. AAIA investigations
+determine and communicate the safety factors related to the transport safety matter being investigated.
+The AAIA makes public its findings and recommendations through accident reports, safety studies,
+special investigation reports, safety recommendations and safety alerts.
+Unless otherwise indicated, recommendations in this report are addressed to the regulatory authorities of
+the State having responsibility for the matters with which the recommendation is concerned. It is for those
+authorities to decide what action is taken.
+When the AAIA issues a safety recommendation, the person, organization or agency is required to
+provide a written response without delay. The response shall indicate whether the person, organization or
+agency accepts the recommendation, any reasons for not accepting part or all of the recommendation(s),
+and details of any proposed safety action(s) resulting from the recommendation(s) issued.
+
+N790JR Final Report
+
+3Page
+
+Aircraft Accident Investigation Authority
+
+Title
+Registered Owner:
+
+Transenergie Inc.
+
+Manufacturer:
+
+Israeli Aircraft Industries
+
+Aircraft Type:
+
+IAI 1124A Westwind
+
+Nationality:
+
+United States of America
+
+Registration:
+
+N790JR
+
+Place of Accident:
+
+Treasure Cay, Abaco, Bahamas
+
+Date and Time:
+
+5th July 2021, Approximately 3:45pm EDT (1945UTC)
+
+Synopsis
+Notification:
+
+Civil Aviation Authority Bahamas (CAA-B),
+National Transportation Safety Board USA (NTSB),
+Federal Aviaiton Administration (FAA),
+Civil Aviation Authority Israel (CAAI)
+
+Investigating Authority:
+
+Aircraft Accident Investigation Authority (AAIA),
+Ministry of Transport & Local Government
+
+Investigator in Charge:
+
+Capt. Delvin R. Major
+
+Accredited
+Representatives:
+
+Mr. Robert Gretz (NTSB) USA
+
+Technical Advisors:
+
+Capt. Theodore Ferguson, CAA-B
+Capt. Chavaz Thomas, CAA-B
+
+Releasing Authority:
+
+Aircraft Accident Investigation Authority
+
+Date of Final
+Report Publication:
+
+2nd August, 2021
+
+N790JR Final Report
+
+4Page
+
+Aircraft Accident Investigation Authority
+
+What Happened?
+On the 5th July, 2021 at approximately 3:45PM, EDT (1945UTC), an Israeli Aircraft Industries, (IAI)
+Westwind 1124A aircraft, United States registration N790JR, crashed a short distance from the end of
+runway 32 at the Treasure Cay International Airport (MYAT), Treasure Cay, Abaco, Bahamas.
+The aircraft plowed through airport lighting equipment at the end of the runway, hitting and breaking
+several trees along its path. A trail of aviation fuel and pieces of the aircraft and avionics equipment from
+the flight deck, were left behind before the aircraft finally hit a small mound (hill), spinning, hitting
+several additional trees, breaking apart and bursting into flames. The aircraft came to rest at coordinates
+26°45’21.50”N, 77°24’7.26”W, approximately 2,000 feet (.33 miles) from the end of runway 32.
+As this airport did not have a fire truck or crash and rescue personnel stationed on site, assistance with fire
+services were requested from the town. Two firetrucks from the township responded, however, due to the
+location of the crash, and no access road available, the trucks were unable to reach the crash site and assist
+in extinguishing the blaze. The fire continued unimpeded, dampened only by the intermittent downpour of
+rain, which did not aid in extinguishing the blaze, but rather, only limited the spread of the fire to
+surrounding bushes. The raging fire totally destroyed the aircraft and much of the control surfaces and
+components in the direct area of the blaze.
+On July 6, a team of investigators from the AAIA and CAA-B were dispatched to the scene. Upon arrival
+of the investigation team, surrounding brush and trees, as well as some parts and components of the
+aircraft were still burning. Initial assessments pointed to a possible failure of the aircraft to climb and
+perform as required.
+Runway 14/32 is 7,001 x 150 feet with an asphalt surface and based on the distance the aircraft traveled
+from the end of the runway to its final resting place, the signature marking on trees and airport lighting
+fixtures struck by the aircraft, in addition to the ground scars, along with pieces of the aircraft beyond the
+runway, up to the final resting place of the aircraft, it appears the aircraft was approximately 2 to 5 feet
+about the surface and not developing any lift or climb performance, while developing full power over the
+ground, striking trees and brush along its path.
+Investigations uncovered the private flight with a crew of two (2), proposed a flight time departure of
+2:10PM EDT from the Treasure Cay International Airport (MYAT), with a planned destination of
+Nassau, Bahamas (MYNN) and an arrival time of 2:33PM EDT, according to flight plan retrieved from
+Flightaware.com1. The flight plan did not specify whether the flight would be operated under Visual
+Flight Rules (VFR)2 or Instrument Flight Rules (IFR)3.
+According to witness statements taken at Treasure Cay, witnesses recalled two pilots entering the ramp
+after 3 pm. Witnesses also stated that one of the persons onboard advised customs that they will be
+departing for Marsh Harbor for fuel in the aircraft (N790JR).
+
+1 Flightaware.com is a global aviation software and data services company, based in Houston, Texas, United States. The company
+
+operates a website and mobile applications which offer free flight tracking of both private and commercial aircraft across the
+globe.
+2 In aviation, visual flight rules (VFR) are a set of regulations under which a pilot operates an aircraft in weather conditions generally
+clear enough to allow the pilot to see where the aircraft is going.
+3 Instrument flight rules (IFR) are a set of regulations that dictate how aircraft are to be operated when the pilot is unable to navigate
+using visual references under visual flight rules.
+
+N790JR Final Report
+
+5Page
+
+Aircraft Accident Investigation Authority
+A Bahamas Customs Department, Form No. C38 – Transire, which is required to be approved and
+stamped by Bahamas Customs and carried onboard all aircraft operating within the Bahamas’ boundaries,
+was completed, signed and presented to Customs Officers stationed at the Treasure Cay International
+Airport by the second-in-command on the aircraft. The approval was time stamped at 1505 local (3:05pm
+or 1905UTC).
+The approved Transire listed Marsh Harbor, Abaco (MYAM) as the final destination. It is uncertain which
+destination the aircraft would be travelling to, as the destination in the flight plan, differed from the
+destination approved on the Transire Form C38.
+A witness recalled that both pilots were sitting in the aircraft for about 40 mins before starting both
+engines and proceeding to runway 32 for departure. According to several witnesses, during the departure,
+there were cloud build-ups but no rain.
+Eyewitnesses also stated that at the time of departure, N790JR entered the threshold of runway 32,
+accelerated down the entire runway, but never become airborne. Damages to the runway edge light and
+approach lights of runway 14 were noted, confirming eyewitness statements of the aircraft never
+becoming airborne.
+A witness mentioned, “when present at the airport we look to see planes get in the air, noticing this did
+not happen. I called the baggage handler and we proceed down the runway, we saw white smoke as we
+continue off in the bush was what appears to be an explosion.”
+The aircraft landing gear left behind indentation on the surface of the ground about 60-80 feet from the
+threshold of runway 14. As the wing struck the approach lights, it created a hole in the left-wing, as
+evidence of fuel burn to the underbrush and fuel trail marks were evident and led to the crash site. Along
+its flight path, and closer to the mound that was struck, pine trees were dislodged, ground scarring was
+evident and pieces of aircraft and avionics from the flight deck and other debris were strewn about on the
+ground, leading up to the final resting place of the aircraft.
+The tail of the aircraft which included the elevator, horizontal stabilizer, vertical fin and rudder (which
+control movements of the aircraft), was detached and lodged in between two pine trees, thereby separating
+the fuselage of the aircraft from the tail section.
+During onsite inspection of the wreckage, there were still smoldering aircraft parts and components which
+hindered efforts to closely examine all components of the aircraft. A search was made for the Cockpit
+Voice Recorder and/or Flight Data Recorder (which would have revealed a more accurate account of what
+transpired) to no avail. All avionics and other components located in the aft section of the aircraft where
+recorders are housed, were all destroyed by impact and the post-crash fire. Most of the aircraft, with the
+exception of a few components and control surfaces that were strewn about, out of the direct path of the
+fire, was destroyed by the post-crash fire.
+During documentation of the scene and wreckage, 2 undamaged locking pins, which were later identified
+as thrust reverser locking pins were discovered amongst the wreckage, out of the direct path of the fire.
+The locking pins are used as safety features to protect the aircraft against unseen mishaps when parked or
+not in use, but must be removed before a flight as it can disrupt aircraft systems from functioning at its
+full capacity. (It could not be determined whether the pins were installed at the time of the crash or
+whether they were removed prior and thrown from the aircraft when the aircraft broke apart).
+
+N790JR Final Report
+
+6Page
+
+Aircraft Accident Investigation Authority
+The pilot in command that flew the aircraft in to Treasure Cay on July 2, confirmed the pins as the secure
+pins for the thrust reverser, which he claims he personally inserted, prior to retiring for the day after their
+flight.
+Investigation has uncovered that with this type aircraft, there are several configuration settings that the
+pilot must physically select and set, in order that the aircraft would climb after takeoff. Based on the fact
+that the aircraft was not able to climb, those configurations and settings were probably not met.
+As a result of the accident crash sequence and post-crash fire, both occupants of the aircraft received fatal
+injuries.
+During the post-crash interview of both pilots that flew the aircraft initially into Treasure Cay, it was
+revealed that the aircraft was stolen. As a result of the revelation of the aircraft being stolen, the local police
+was advised. The Safety and Security aspect of the investigation continued under the AAIA, addressing
+concerns raised prior to involvement of the Royal Bahamas Police Force (RBPF) for their investigation,
+based on the report of the aircraft being reported stolen.
+The AAIA uncovered several serious safety and security concerns as it relates to the Treasure Cay
+International Airport which have been addressed for required action to both the Civil Aviation Authority
+Bahamas as well as the Airport Authority Family Island Airport Division.
+
+Photo 1: N790JR ground scars and post-crash fire at accident site
+
+N790JR Final Report
+
+7Page
+
+Aircraft Accident Investigation Authority
+
+Weather Information
+At the time of the accident, the weather in the vicinity of the Treasure Cay International Airport was
+reported by the Bahamas Department of Meteorology as;
+Rain bands of Tropical Storm Elsa will periodically affect portions of The Bahamas while a highpressure ridge will maintain moderate to strong winds through the forecast period. Applicable to
+area under investigation throughout the period from 1800 UTC Monday, 05/JUL/2021 to 0600
+UTC Tuesday, 06/JUL/2021.
+Special Features: FEW/SCT 015/018 CB/TCU SCT/BKN 018/050 TOP LYRD FL160 BKN 200/240
+ISOL TO WDLY SCT SHRA/TSRA LOC IFR CONDS AND MOD TURB PSSBL IN SHRA/TSRA =
+WND SE AT 15-20KT
+Satellite/Radar Imagery: Radar and Satellite Imageries initialized at 18:30 UTC showed high clouds
+namely cirrus and low-level cumuliform clouds with showers and possible thunderstorms offshore, northnortheast of Treasure Cay.
+Surface Winds: Winds were from the south-southeast at a speed of 10 to 15 knots with higher gusts in
+showers and thunderstorms.
+Surface Observations
+(METAR) at MYGF (Freeport) and MYNN (Nassau—LPIA):
+MYGF 051800Z 15011KT 999 FEW018TCU SCT100 BKN250 30/25 A3006 MYGF 051900Z 16013KT
+9999 FEW018CB SCT100 BKN250 30/25 A3005
+MYNN 081800Z 16012KT 9999 SCT025 31/24 A3014 MYNN 081900Z 15012KT 9999 BKN025 30/25
+A3013.
+At the time of departure, eyewitnesses reported the conditions at the airport as light drizzle, however,
+shortly thereafter, the conditions deteriorated with a heavy rain downpour which also hampered rescue
+operations.
+
+N790JR Final Report
+
+8Page
+
+Aircraft Accident Investigation Authority
+
+Aircraft Information
+General information
+The Israel Aircraft Industries (IAI) Westwind 1124A is a medium size twin-engine business jet,
+certified in the transport category as a two-pilot aircraft. Depending on the installed seating
+configuration, the aircraft can carry up to 10 passengers. N790JR was configured with eight (8)
+passenger seats. The cabin could also be configured for executive seating and other specialized
+roles, such as air ambulance and freight flights. The aircraft was fitted with two Garrett
+AiResearch TFE-731 turbofan engines.
+The cabin was pressurized and the aircraft’s maximum operating altitude was 45,000 ft. The
+Westwind 1124A aircraft was approved (type-certified) by the Israeli Civil Aviation Authority in
+December 1979 and the US Federal Aviation Administration in April 1980.
+The 1124A evolved from a previous series of aircraft, including the 1121 (certified in the US in
+1964), the 1123 (certified in Israel and the US in 1971) and the 1124 (certified in Israel and the
+US in 1976). The certification basis for the 1124A included US Civil Aviation Regulation 4b
+effective 31 December 1953, as well as some amendments and additions.
+The 1124 and 1124A are very similar. Although the engines remained the same, a number of
+aerodynamic modifications enhanced the 1124A’s performance, such as a new leading-edge
+profile for the wing and the installation of winglets on the wing tip tanks.
+When compared to the 1124, the 1124A had an improved specific fuel consumption, higher initial
+cruise altitude capability and increased range.
+The modification to the leading edge of the wing also marginally increased the capacity of the
+aircraft’s main fuel tanks.
+N790JR was a Westwind 1124A, manufactured in 1984 (serial number 424) and placed on the
+US civil aircraft register. At the time of the accident, the accumulated airframe hours and
+landings was unknown. The aircraft was registered to Transenergie Inc. a Domestic for Profit
+Corporation in Houston, Texas, USA.
+
+N790JR Final Report
+
+9Page
+
+Aircraft Accident Investigation Authority
+
+Regulatory Requirement
+As the aircraft was registered in the United States of America, all certifications (aircraft and airmen) are
+required to conform to the United States Code of Federal Regulations (CFR).
+The IAI, 1124A aircraft is type certificated for more than one required pilot flight crewmember to operate.
+At a minimum, the pilot in command (PIC) must possess a type rating for that aircraft.
+In accordance with US 14 CFR 61.31(a) (2) Type Rating requirements, additional training, and
+authorization requirements;
+(a) Type ratings required. A person who acts as a pilot in command of any of the following
+aircraft must hold a type rating for that aircraft;
+(2) Turbojet-powered airplanes
+In accordance with US 14 CFR 61.55 (a) (1) (2) (3) and (b) (1) - Second in command qualifications states;
+a) A person may serve as a second-in-command of an aircraft type certificated for more than
+one required pilot flight crewmember or in operations requiring a second-in-command
+pilot flight crewmember only if that person holds;
+1. At least a private pilot certificate with the appropriate category and class rating; and
+2. An instrument rating or privilege that applies to the aircraft being flown if the flight
+is under IFR.
+3. At least a pilot type rating for the aircraft being flown unless the flight will be
+conducted as domestic flight operations within the United States Airspace.
+b) Except as provided in paragraph (e) of this section, no person may serve as a second-incommand of an aircraft type certificated for more than one required pilot flight
+crewmember or in operations requiring a second-in-command unless that person has
+within the previous 12 calendar months:
+(1) Become familiar with the following information for the specific type aircraft for which
+second-in-command privileges are requested i. Operational procedures applicable to the power plant, equipment, and systems.
+ii. Performance specifications and limitations.
+iii. Normal, abnormal, and emergency operating procedures.
+iv. Flight manual.
+v. Placards and markings.
+vi. Except as provided in paragraph (g) of this section, performed and logged pilot
+time in the type of aircraft or in a flight simulator that represents the type of
+aircraft for which second-in-command privileges are requested, which includes
+vii. Three takeoffs and three landings to a full stop as the sole manipulator of the
+flight controls;
+viii. Engine-out procedures and maneuvering with an engine out while executing the
+duties of pilot in command; and
+ix. Crew resource management training.
+In accordance with US 14 CFR 61.19(b) (1) Duration of pilot and instructor certificates and privileges
+(b) Paper student pilot certificate. A student pilot certificate issued under this part prior to April
+1, 2016 expires;
+1) For student pilots who have not reached their 40th birthday, 60 calendar months after
+the month of the date of examination shown on the medical certificate.
+
+N790JR Final Report
+
+10 P a g e
+
+Aircraft Accident Investigation Authority
+
+Investigation Findings
+The aircraft N790JR departed the Las Americas Airport (SDQ) in the Dominican Republic on Friday 2nd
+July, 2021 at 2:03PM EDT and arrived at the Treasure Cay International Airport on 2nd July, 2021 at
+3:45PM EDT. The flight originated from the Dominic Republic with two (2) flight crewmembers and
+three (3) passengers. After offloading passengers and securing and locking the aircraft, the crew stated
+they then checked in to their hotel. The crew stated that they were apprehended by immigration
+authorities for unknown reason(s) on July 4, 2021 and detained.
+The crew further stated that about an hour prior to their release on July 6, (a day after the accident), they
+were informed that the aircraft they arrived on at Treasure Cay, was involved in an accident and persons
+on board were killed. The crew further stated they never met the pilots and never gave any one authority
+to move the aircraft. The crew maintained that they had the only set of keys for the aircraft (which they
+produced and showed to investigators) in their possession during their period of detention.
+During the interview the pilot in command stated the aircraft was stolen. At that point in the interview, the
+crew were advised they would have to report this matter to the local authorities as the AAIA investigate
+for the purpose of safety and stolen aircraft is a matter for the police to investigate.
+
+Pilot
+The pilot-in-command of the aircraft at the time of the accident was a 30 year old male who was issued an
+Airline Transport Pilot certificate by the United States Federal Aviation Administration on 28th August,
+2019. He also held a type rating for the Boeing B737 and the Saab SF340 aircraft.
+The Pilot in command did not meet the requirements of US CFR 61.31 to act as pilot in command of the
+IAI 1124A aircraft as he was not in possession of a type rating required for this aircraft type.
+
+Second in Command
+The second in command was a 27 year old male and was issued a student pilot certificate on 5th March,
+2014 which expired 31st March, 2019. He did not meet the requirements of US 14 CFR 61.19(b) (1)
+The second in command also did not meet the requirements of US CFR 61.55 to act as second in
+command of the IAI 1124A aircraft, as he was not in possession of at least a private pilot certificate or
+type rating required for this aircraft type.
+
+AAIA Actions
+Upon notification to the AAIA that the aircraft was officially reported as stolen, the AAIA notified the
+Commissioner of Police that the investigation to determine the validity of the stolen claims would be
+turned over to the Royal Bahamas Police Force for further investigation. The AAIA took a supporting role
+to the RBPF investigation providing whatever technical support they would need to continue their
+investigation. The AAIA continued its investigation into safety and security concerns uncovered as it
+relates to the airmen and the aerodrome (MYAT).
+In accordance with the Aircraft Accident Investigation Authority Regulations 2021, Subpart B, – Personal
+Responsibility: Accident Reporting, Section1.050.
+(a) If, in the course of an investigation it becomes known, or it is suspected, that an act of unlawful
+interference was involved, the investigator-in-charge shall immediately initiate action to ensure
+that the aviation security authorities of The Bahamas are so informed.
+
+N790JR Final Report
+
+11 P a g e
+
+Aircraft Accident Investigation Authority
+(b) For the purpose of these Regulations, an act of unlawful interference means any act or
+attempted act such as to jeopardize the safety of civil aviation and air transport including —
+(1) unlawful seizure of an aircraft;
+(2) destruction of an aircraft in service;
+(3) hostage taking on board aircraft or on aerodromes;
+(4) forcible intrusion on board an aircraft, at an airport or on the premises of an
+aeronautical facility;
+(5) introduction on board an aircraft or at an airport of a weapon or hazardous device or
+material intended for criminal purposes;
+(6) use of an aircraft in service for the purpose of causing death, serious bodily injury, or
+serious damage to property or the environment; or
+(7) communication of false information such as to jeopardize the safety of an aircraft in
+flight or on the ground, of passengers, crew, ground personnel or the general public,
+at an airport or on the premises of a civil aviation facility.
+
+Probable Cause
+The AAIA has classified the accident as a controlled flight into terrain (CFIT) and determined the
+probable cause of the CFIT accident is due to the failure of the aircraft to climb (perform) as required.
+Contributing factors which resulted in the failure of the aircraft to perform as required includes;
+• Failure of the crew to configure the aircraft for the proper takeoff segment
+• Crew unfamiliarity with the aircraft systems
+
+Recommendations
+1. The AAIA has recommended to the Commissioner of Police of the Royal Bahamas Police Force
+that under his direction an investigation should be carried out to determine the claims made of
+stolen aircraft.
+2. The AAIA is currently in discussions with the Civil Aviation Authority Bahamas and Airport
+Authority – Family Island Airport Division to address serious safety and security issues identified
+during the investigation and safety recommendations, if warranted, will be addressed, documented
+and tracked at a later date.
+
+N790JR Final Report
+
+12 P a g e
+
+

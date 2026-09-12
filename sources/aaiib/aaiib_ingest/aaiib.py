@@ -307,6 +307,7 @@ _PC_BULLET_RE = re.compile(
 
 # Shorter than this is a heading echo or a stub, not a cause.
 PROBABLE_CAUSE_MIN = 40
+_PC_WINDOW = 6000  # chars; see the note in parse_probable_cause
 
 
 def parse_probable_cause(text: str) -> str | None:
@@ -320,7 +321,21 @@ def parse_probable_cause(text: str) -> str | None:
     m = _PC_HEADING_RE.search(text)
     if not m:
         return None
-    rest = text[m.end():]
+    # Bound the window before looking for the terminator. Bahrain is where this
+    # bites: 13 of its 46 captures have no following section heading at all, so
+    # an unbounded capture ran to the end of the document — one produced 40,998
+    # characters, the whole report filed as a probable cause. It would have
+    # passed every length check downstream and read as nonsense on the page.
+    #
+    # This corpus has no such capture today (0 of 164 here). The bound is added
+    # anyway: the failure is silent when it happens, and the same parser shape
+    # now lives in three packages — a fix that stays in the one package where
+    # the bug surfaced is not a fix for the class.
+    #
+    # 6000 is taken from the corpora, not chosen for looks: the longest genuine
+    # sections are 3,707 (Philippines), 2,227 (Croatia) and 1,831 at Bahrain's
+    # 90th percentile.
+    rest = text[m.end(): m.end() + _PC_WINDOW]
 
     end = _PC_TERMINATOR_RE.search(rest)
     body = rest[: end.start()] if end else rest
@@ -341,6 +356,12 @@ def parse_probable_cause(text: str) -> str | None:
     joined = re.sub(r"\s+", " ", joined).strip()
     # A trailing fragment with no terminator usually means the capture ran into
     # the next page; keep it, but do not emit something too short to be a cause.
+    if end is None and len(joined) > PROBABLE_CAUSE_MIN:
+        # No terminator: the window decided where this stopped, so cut back to
+        # the last sentence rather than ending mid-clause.
+        cut = joined.rfind(". ")
+        if cut > PROBABLE_CAUSE_MIN:
+            joined = joined[: cut + 1]
     return joined if len(joined) >= PROBABLE_CAUSE_MIN else None
 
 
