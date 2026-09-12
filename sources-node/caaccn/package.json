@@ -1,0 +1,23 @@
+{
+  "name": "caaccn-ingest",
+  "version": "1.0.0",
+  "description": "Mainland-China CAAC/MEM accident reports -> caaccn.db for the FlightFinder narrative pipeline",
+  "main": "src/build.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build": "node src/build.js",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "better-sqlite3": "^12.11.1"
+  },
+  "devDependencies": {
+    "jest": "^29"
+  }
+}
