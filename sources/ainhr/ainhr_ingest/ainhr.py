@@ -278,3 +278,89 @@ def download(client, pdf_url: str, dest: str | Path) -> None:
     resp.raise_for_status()
     with open(dest, "wb") as fh:
         fh.write(resp.content)
+
+
+# ── probable cause ────────────────────────────────────────────────────────────
+#
+# AIN Croatia reports carry "UZROK" as its own line, then sub-headings that are
+# part of the cause and must be kept — "Neposredni uzrok" (direct) and
+# "Kontributivni čimbenik" (contributing). The section ends at the safety
+# recommendations.
+#
+# The vocabulary is measured across all 62 PDFs on the host, not guessed:
+#
+#     SIGURNOSNE PREPORUKE              26
+#     AGENCIJA ZA ISTRAŽIVANJE NESREĆA  15   <- page furniture, not a heading
+#     KONTRIBUTIVNI ČIMBENICI            2   <- part of the cause, not the end
+#     PODUZETE MJERE                     2
+#     PREPORUKE                          1
+#
+# The agency name appearing as the "next heading" in 15 of 46 reports is the
+# running footer landing mid-section. Treating it as a terminator would cut the
+# contributing-factor paragraph off every one of them, so it is stripped as
+# furniture instead. Measuring the vocabulary rather than assuming it is the
+# only reason that distinction was visible at all.
+#
+# probable_cause decides indexability: prod needs a quality score of 50, a
+# narrative over 300 scores 30 and a cause over 100 scores 20, and the other
+# three components are hardcoded null at projection.
+_PC_HEADING_RE = re.compile(
+    r"^[ \t\f]*(?:\d+(?:\.\d+)*[.)]?[ \t\f]*)?UZRO(?:K|CI)[ \t]*:?[ \t]*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+_PC_TERMINATOR_RE = re.compile(
+    r"^[ \t\f]*(?:\d+(?:\.\d+)*[.)]?[ \t\f]*)?"
+    r"(?:SIGURNOSNE\s+PREPORUKE|PREPORUKE|PODUZETE\s+MJERE|PRILO(?:G|ZI))"
+    r"[ \t]*:?[ \t]*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+_PC_FURNITURE_RE = re.compile(
+    r"^[ \t\f]*(?:[_\-\u2014]{10,}"
+    r"|Agencija\s+za\s+istra\w*\s+nesre\w*.*"
+    r"|Stranica\s+\d+.*|\d+\s*/\s*\d+)[ \t]*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+_PC_BULLET_RE = re.compile(
+    r"^[ \t\f]*[\u2022\u25aa\u25cf\u25a0\u00b7\u2013\u2014\-\*\uE000-\uF8FF]+[ \t\f]*",
+    re.MULTILINE,
+)
+
+PROBABLE_CAUSE_MIN = 40
+
+
+def parse_probable_cause(text: str) -> str | None:
+    """Return the UZROK section as one normalised string, or None."""
+    if not text:
+        return None
+    m = _PC_HEADING_RE.search(text)
+    if not m:
+        return None
+    rest = text[m.end():]
+    end = _PC_TERMINATOR_RE.search(rest)
+    body = rest[: end.start()] if end else rest
+
+    body = _PC_FURNITURE_RE.sub("", body)
+    body = _PC_BULLET_RE.sub("", body)
+
+    out = []
+    for ln in (l.strip() for l in body.splitlines()):
+        if not ln:
+            continue
+        if out and not out[-1].endswith((".", ";", ":")):
+            out[-1] = out[-1] + " " + ln
+        else:
+            out.append(ln)
+    joined = re.sub(r"\s+", " ", " ".join(out)).strip()
+    # The next section's number sits on its own line before its title:
+    #     ...masu zrakoplova.
+    #
+    #     4.
+    #
+    #     SIGURNOSNE PREPORUKE
+    # The terminator matches the title line, so a bare "4." trails the capture.
+    # Stripped here rather than treated as a terminator: a lone number could
+    # legitimately open a numbered cause item, and this source's causes use
+    # named sub-headings, so removing it from the tail is safe where removing
+    # it from the middle would not be.
+    joined = re.sub(r"\s+\d+(?:\.\d+)*[.)]?\s*$", "", joined).strip()
+    return joined if len(joined) >= PROBABLE_CAUSE_MIN else None
