@@ -1,0 +1,808 @@
+Aviation Short Investigation
+Final Report
+Runway Excursion
+EMB-110, C6-MIC
+Governors Harbor, Eleuthera, Bahamas, 9th January 2018
+
+AAID Aviation Occurrence Investigation
+AO-18-000002
+Final Report – April 8, 2019
+
+The Air Accident Investigation Department (AAID)
+The Air Accident Investigation Department (AAID) is the independent accident investigation department
+under the Bahamas Ministry of Tourism and Aviation (MOTA) charged with the responsibility of
+investigating all aviation accidents and incidents in the Bahamas.
+The AAID’s function is to promote and improve safety and public confidence in the aviation industry
+through excellence in:
+• Independent investigation of aviation accidents and other safety occurrences
+• Safety data recording, analysis, and research
+• Fostering safety awareness, knowledge and action.
+The AAID does not investigate for the purpose of apportioning blame or to provide a means for
+determining liability. At the same time, an investigation report must include factual material of sufficient
+weight to support the analysis and findings. At all times the AAID endeavors to balance the use of
+material that could imply adverse comment with the need to properly explain what happened, and why, in
+a fair and unbiased manner.
+The AAID performs its functions in accordance with the provisions of the Bahamas Civil Aviation Act
+2016, Civil Aviation (Investigations of Air Accidents and Incidents) Regulations and Amendment
+Regulations 2017, International Civil Aviation Organization (ICAO) Annex 13 (Eleventh edition, July
+2016 – latest revision) and, where applicable, relevant international agreements.
+The Air Accident Investigation Department is mandated by the Ministry of Tourism and Aviation to
+investigate air transportation accidents and incidents, determine probable causes of accidents and
+incidents, issue safety recommendations, study transportation safety issues and evaluate the safety
+effectiveness of agencies and stakeholders involved in air transportation. The objective of a safety
+investigation is to identify and reduce safety-related risk. AAID investigations determine and
+communicate the safety factors related to the transport safety matter being investigated.
+The AAID makes public its findings and recommendations through accident reports, safety studies,
+special investigation reports, safety recommendations and safety alerts. Unless otherwise indicated,
+recommendations in this report are addressed to the regulatory authorities of the State having
+responsibility for the matters with which the recommendation is concerned. It is for those authorities to
+decide what action is taken. When the AAID issues a safety recommendation, the person, organization or
+agency is required to provide a written response without delay. The response shall indicate whether the
+person, organization or agency accepts the recommendation, any reasons for not accepting part or all the
+recommendation(s), and details of any proposed safety action(s) resulting from the recommendation(s)
+issued.
+Official Copies of accident reports can be obtained by contacting:
+Air Accident Investigation Department
+2nd Floor, Manx Corporate Center
+#45 West Bay Street
+P. O. Box CB-11702
+Nassau N. P., Bahamas
+Tel: 1 (242) 397-5513 / 5509 / 5520 / 5525
+Fax: (242) 327-2192
+Additional copies of the reports can be viewed on the AAID’s website at http://www.baaid.org or
+requested by email: baaid@bahamas.gov.bs.
+Final Report C6-MIC
+
+2Page
+
+Runway Excursion EMB-110, C6-MIC
+What Happened?
+On 9th January 2018, the Air Accident Investigation Department (AAID) received notification of an
+aircraft accident which occurred at the Governors Harbor Airport, Governors Harbor, Eleuthera,
+Bahamas.
+The aircraft involved was an Embraer Bandeirante (EMB-110), 15 passenger aircraft, registration C6MIC, registered to Pineapple Air Limited, (a Bahamas Air Operator Certificate (AOC) holder), operating
+as Pineapple Air flight 978. Information received was that at approximately 8:05 pm, after landing, the
+left main landing gear of the aircraft collapsed, resulting in a runway excursion to the left side of runway
+33.
+C6-MIC departed the Lynden Pindling International Airport (LPIA) at 7:00 pm on an instrument flight
+plan, filed with Nassau Air Traffic Control (ATC). A total of seventeen (17) souls were reported to be on
+board, (2 crew, 15 passengers). C6-MIC was not originally scheduled to operate flight 978. C6-KRC, a
+Beechcraft 1900C aircraft, also operated by Pineapple Air Ltd., was originally scheduled to conduct this
+flight. There was a change in plans and flight 978 was downgraded and C6-MIC was substituted to
+conduct the flight. A revised flight plan was not submitted to ATC noting changes.
+A post-crash interview was conducted with the captain of the aircraft in which he stated that initially, he
+attempted a landing on runway 15 at Governors Harbor Airport, but he executed a go-around when visual
+contact was lost due to heavy rain. The captain provided a written statement in which he noted that on the
+second attempt for landing, based on the suggestion of the fireman located at Governors Harbor airport,
+he made the decision to switch to runway 33. He further stated that while on final approach to runway 33,
+visual contact was lost once again, and a second go-around was executed. On the third and final attempt,
+he was able to land the aircraft on runway 33, however, 2 seconds after touchdown the left main landing
+gear collapsed resulting in a runway excursion on the left side of runway 33. Heavy rain was occurring at
+the time of the landing. The captain reported the landing and accident occurred at 7:40 pm.
+Weather conditions were described as severe, at the time of the accident, by personnel at the airport. The
+manager of the airport stated that she “was on her way home when she got the call about the accident and
+wondered what an aircraft was doing flying in such bad weather.” She also stated that “during her return
+to the airport, the weather was so bad, that she could not see the car in front of her, due to the heavy
+downpour.”
+A passenger on the aircraft in his written statement described the weather at the time of landing as
+“atrociously awful.” The firemen and Airport Authority personnel at the airport stated that after the
+accident occurred, assistance to the aircraft was hampered due to the severe rain downpour.
+The Department of Meteorology issued several severe weather warnings for the Northwest and Central
+Bahamas including Eleuthera. The forecasted warnings associated with the weather systems impacted
+local conditions and included heavy rain showers, gusty winds, and thunderstorms. These conditions were
+all present at the time of touchdown.
+On 10th January 2018, investigators from the AAID along with personnel from the Airport Authority
+(AA) were dispatched to the scene to investigate. Remnants of the thunderstorms, including persistent
+
+Final Report C6-MIC
+
+3Page
+
+rain remained in the area at the time of investigators arrival and throughout the onsite investigation
+process.
+
+Final Report C6-MIC
+
+4Page
+
+Investigation Findings
+During the documentation of the aircraft and the flight deck, the landing gear selector switch was
+observed in the “Up” position, despite the right main and nose gear being fully extended and locked in
+position. While the investigation did not uncover any other abnormalities, which may have contributed to
+the collapse of the left main landing gear, investigations uncovered other safety and security related
+concerns that required attention.
+Issues uncovered related to personnel licensing issuance and oversight, secure airside unescorted access,
+airmen initial and recurrent training documentation, aviation security oversight, lack of enforcement of
+tenant agreement and inconsistent AOC operator record keeping process and documentation.
+
+Analysis
+Observation contained here based on manufacturers engineering documentation and investigators
+analysis. Consultation with the maintenance personnel determined, based on system operation, the
+landing gear handle can be selected to the “Up” position and the landing gears will not retract (as long as
+the landing gear emergency selector switch is not selected) if there is a short or break in the circuit; but it
+will retract with an intermitting gear “micro switch” (fully extended strut off the ground during normal
+operation) interrupting and then completing the circuit, (the gear move and stop whenever the circuit
+intermits). This occurrence has been witnessed by the maintenance team in the field.
+Landing Gear Systems Engineering Evaluation of Accident Report (Embraer)
+Model EMB-110, Registration C6-MIC, MSN 110-407, Owner / operator - Pineapple Air Limited
+Accident number AO-18-000002, Authority AAID, Bahamas.
+Reports available: Accident notification, Preliminary Report, Crew report and Authority Scenario and
+some pictures of the aircraft at the accident location and of the recovering activities.
+The hypothesis that follows was advanced by the investigation team, however, the manufacturer disputes
+this hypothesis with their own analysis and hypothesis. After both analyses, the conclusion is that no
+determination can be reached as to what contributed to the left main gear failure.
+Hypothesis described in the “Investigation Findings”, document “What Happened C6-MIC - Authority
+scenario.docx”:
+“...if the landing gear switch is placed in the “UP” position and the “gear contact micro- switch” on
+either landing gear is “contaminated with dirt, water or other contaminants or if the switch is “shorted
+out” for whatever reason, it is possible that the gear will not retract when commanded by the selection of
+the gear switch. In this instance the gear position lights would still be illuminated with “3-green lights”
+which normally indicates the gear as being “down and locked,” despite the gear being selected to the
+“UP” position. However, once you land or the contaminant is removed or “system short” is corrected or
+no longer exists, there is a possibility that the gear could collapse, as the gear selector switch was in the
+“UP” position as previously selected by the crew.”
+The manufacturer systems engineering considers this hypothesis very unlikely due to the following
+reasons, all considering the hypothetical scenario above:
+
+Final Report C6-MIC
+
+5Page
+
+a) “However, once you land or...” – The landing alone would not result in any condition that permits the
+gear to retract; in opposite, the other MLG shock absorber extension microswitch gives a protection to the
+retraction solenoid valve, because it cuts the solenoid supply when the aircraft is on ground. Remark: the
+micro switches of both MLG shock absorbers plus the centered nose wheel microswitch must be closed in
+order to permit that the solenoid valve (retraction) be energized when the control switch is placed in the
+“UP” position 1.
+b) “However, once... the contaminant is removed or “system short” is corrected or no longer exists” – If
+this happens in flight, all LG legs would retract; if it happens on ground, no LG leg would retract due to
+the protection of this switch, now reading the correct condition (shock absorber compressed) and also due
+to the microswitch on the other MLG: the retraction solenoid valve is not energized unless the three micro
+switches mentioned above are closed (and the control switch is placed in the “up” position)1.
+c) It would be necessary a contamination or “short out” on the micro switches of both MLG legs and the
+nose wheel centered to allow the system to retract the gears on ground with the “emergency” switch
+placed in the “NORMAL” position; but then, all three LG legs would retract, not only one. Remember
+that the LG system is designed to retract all legs on ground intentionally if necessary, as in the case of
+engine failure during take-off on ground without adequate runway length to stop (emergency procedure 33-3 B).
+d) It would be necessary an additional failure on the “emergency” switch of the landing gear control
+panel, or the “emergency” switch would have to be placed in the “EMERG” position so that the retraction
+valve is energized when the control switch is placed in the “UP” position and the aircraft is on ground.
+Additionally, it would then be necessary to explain why the NLG leg and the RH MLG leg did not retract.
+Based on the limited information provided, this was not the case.
+e) If a contamination or “short out” happens on the “down / up” switch of the landing gear control panel
+when it is placed in the “up” position in flight, the three LG legs would remain in the position “down”
+but, when the contamination or “short out” is removed all three LG legs would retract, not only one, as
+already mentioned in c). Note 1: See Figure 4-1 or 4-2 of the manual T.O. 1C95A-2-4.
+See Safety Message for Manufacturer’s recommendation and Probable Cause
+Maintenance Action taken by Operator post-accident.
+Maintenance evaluation of the aircraft was conducted and documented by the operator inspections as per
+the company and the manufacturer’s approved maintenance planning guide. Inspections included A1
+through C inspections, hard landing inspections and sudden engine stoppage inspections. Parts and
+components damage in the excursion process were changed, replaced or overhauled as applicable (note:
+only the landing gear doors were addressed on the collapsed gear).
+Aircraft was placed on jacks and gear retraction carried out satisfactorily. Aircraft was subsequently
+returned to service. The cause of the gear failure could not be replicated or determined during the
+maintenance evaluation and inspection.
+
+Probable Cause
+The limited information obtained during the onsite investigation and post-crash analysis was not enough
+to allow a root cause determination, nor a reasonable hypothesis for the one-leg retraction on ground. No
+mechanical irregularities have been found with the landing gear system.
+
+Final Report C6-MIC
+
+6Page
+
+Contributing Factors
+The AAID believes human factors errors greatly contributed to this accident, such errors are described
+below;
+1. Organizational Influences and customs;
+a. Culture – risk averse –
+i. Company allowed aircraft to be dispatched with crew not qualified to operate in
+weather conditions they encountered.
+ii. Company failed to audit crew training records to establish their currency and
+competency.
+iii. Crew training, qualification, and authorization has been found questionable and
+may have contributed to the accident.
+2. Unsafe Supervision
+a. Crew dedicated to completing a flight without regard to weather condition or safety of
+passenger on board.
+b. Operator allowed conditions to exist where aircraft would be dispatched without
+consideration to severe weather and in violation of regulatory prohibition.
+3. Pre-conditions for unsafe Acts – Environmental factors (night and severe weather)
+a. Crew continued flight into severe weather despite regulatory prohibition of operating in
+or around severe weather or thunderstorms.
+b. The poor decision making exercised by the crew in attempting several landings in severe
+weather.
+4. Unsafe Acts
+a. Operator allowed aircraft to be dispatched after long delays without consideration to crew
+rest and duty fitness.
+b. The landing gear selector handle was observed selected in the “UP” position when during
+the onsite investigation.
+
+Additional Information
+Additional Findings or observations of significance
+• A fireman communicated to the pilot via radio communications, suggestions on runway usage
+which prompted his decision to switch from the planned runway (15), (which was the active
+runway at the time based on winds), to the opposite runway (33). This is a serious concern as
+Governors Harbour Airport is a non-tower-controlled airport and firemen or any other individual
+other than ATC personnel, are not trained to give instructions or suggestions over the radio
+frequency to pilots on suitable landing conditions.
+•
+
+C6-MIC was substituted for C6-KRC a Beechcraft 1900 aircraft without appropriate entities
+being notified. This caused great confusion in Governors Harbour as their official notification of
+the accident referenced the Beechcraft 1900 with 21 souls on board as the aircraft that had
+crashed.
+
+Final Report C6-MIC
+
+7Page
+
+•
+
+The weather conditions at the time of the accident was Instrument Meteorological Conditions
+(IMC) due to night conditions and severe weather, (thunderstorms and heavy downpour)
+requiring flights to be conducted (if at all), under Instrument Flight Rules (IFR).
+
+•
+
+A review of the captain’s most recent proficiency check conducted by the check airman approved
+by the authority, on 25 August 2017, as well as the first officer’s most recent proficiency check
+also conducted by the same approved check airman on 5th October, 2017 revealed there was no
+designation under AOC Check Results certifying this captain or the first officer as being
+authorized to conduct flights during instrument meteorological conditions under instrument flight
+rules.
+
+•
+
+Despite annotations on the reverse of the document stating instrument approaches were
+accomplished, without the satisfactory designation authorizing flight under Instrument Flight
+Rules (IFR), then both pilots were not authorized to conduct flights under Instrument Flight
+Rules.
+
+Crew Experience
+Captain
+The male captain was 34-years-old at the time of the accident. He had been issued a Commercial Pilot
+License (certificate) by the Federal Aviation Administration (FAA) in the United States of America on 8 th
+February 2002. His license bore the ratings Airplane Multi-Engine Land, Instrument Airplane and Private
+Privileges – Airplane Single Engine Land.
+On 16th January 2003, the Commercial Pilot License issued by the FAA to the captain was converted to a
+Bahamas Commercial Pilot License with the following ratings attached, Airplane Single and MultiEngine Land. (It was noted that the Instrument Rating issued by the FAA, was not added to the
+Bahamas License of the captain at this time, although it was requested on the application for
+validation of a foreign license. The reason for the omission is unknown).
+On 15th June 2011, an Application for Airman License Validation based on a Foreign License was
+submitted by the captain to the licensing authority (Flight Standards Inspectorate 1 (FSI)) for validation of
+his FAA issued pilot certificate. No records were provided to verify whether the license requested at that
+time was issued to the pilot.
+In accordance with Annex 1 to the Convention on Civil Aviation, Chapter 1, - 1.2.2.2 when an
+authorization under 1.2.2.1 (Method of rendering a license valid) is issued for use in commercial air
+transport operations, the Licensing Authority shall confirm the validity of the other Contracting State’s
+license before issuing the authorization.
+On 2nd July 2012, the licensing authority requested verification of the validity of the captain’s license
+from the FAA. The FAA responded on 2nd July 2012, in that response, it was revealed that the FAA
+commercial pilot license of the captain was revoked for life on 11 August 2009, by the FAA citing US
+regulations USC § 44710B2 as the reason.
+1 At the time of this and subsequent applications the personnel licensing department was operated under the Flight Standards
+
+Inspectorate which was a unit under the Department of Civil Aviation. Both entities ceased to exist on October 3, 2016 with the
+establishment of the Bahamas Civil Aviation Authority. Personnel Licensing matters now falls under the responsibility of the
+Safety Oversight Department, a unit under the BCAA.
+2 USC § 44710 – Revocation of airman certificate for controlled substance violations.
+
+Final Report C6-MIC
+
+8Page
+
+On 21st May 2013, an Application for Original Airman License was submitted to the authority by the
+captain for the issuance of a Bahamas Commercial Pilot License. On 27th May 2013, the licensing
+authority issued the captain a Commercial Pilot License with Airplane Single & Multi-engine Land,
+Instrument Airplane Rating. The expiration date for the issued license was 31 st May 2015.
+On 12th August 2014 confirmation of the validity of his commercial pilot certificate was sought by the
+captain from the licensing authority. No response to his request was documented.
+On 31st July 2015, an Application for Original Airman License was again submitted by the captain to the
+licensing authority for the renewal of his Bahamas Commercial Pilot License. On 6th August 2015, the
+captain’s Bahamas Commercial Pilot License was renewed by the licensing authority. The expiration
+placed on the license was 31st August 2020.
+The captain was in possession of a valid Class 1 Medical certificate with an expiration date of 31st
+October 2018.
+First Officer
+At the time of the accident the First Officer, aged 24, was in possession of an Airline Transport Pilot
+License issued by the United States of America, Federal Aviation Administration (FAA) on July 28,
+2017. The license was issued with the following ratings and limitations, “Airplane Multi-Engine Land”
+and “Commercial Privileges, Airplane Single Engine Land.” He was type rated in the Beechcraft 1900
+aircraft with the limitation, “Second in Command required.” The first officer was also in possession of a
+“First Class” medical certificate issued in January 2017.
+A Commercial Pilot license was issued by the FAA to the first officer on 14th June 2012 with Airplane
+Single Engine Land, Airplane Multi-Engine Land, and Instrument Airplane Ratings.
+A Bahamas Commercial Pilot License was issued to the first officer on 7th August 2012 with the
+following ratings, Airplane: Single and Multi-Engine Land and Instrument Airplane with the Beechcraft
+BE-1900 type rating. His license bore the limitation BE-1900 Second in Command required and
+Certificate subject to Pilot in Command limitations for BE-1900. A Bahamas Airline Transport Pilot
+license was reissued to the first officer on 31st January 2017, noting the additional Airline Transport Pilot
+license recently received from the FAA.
+
+The Aircraft
+Aircraft Information
+The Embraer EMB 110 Bandeirante is a Brazilian made general purpose 15–21 passenger twinturboprop light transport aircraft designed by Embraer for military and civil use. C6-MIC was configured
+as a 15 passenger civilian aircraft.
+A review of the maintenance records as far back as 90 days prior to this occurrence was performed. Other
+than the regular overnight maintenance inspections schedules, and other minor maintenance discrepancies
+and activities such as worn tire changes, brake changes, broken wires, engine washes etc., no other
+notable maintenance associated with the aircraft in general, or the landing gear system in particular, were
+noted as having been performed on the aircraft during that period.
+Fifteen (15) passengers and 2 crewmembers were listed on the aircraft passenger manifest at the time of
+the accident. The load manifest for the aircraft showed the aircraft load, weight, center of gravity and
+Final Report C6-MIC
+
+9Page
+
+moment to be within acceptable limitations. The manifest documented the takeoff and landing weight as
+12,424 and 12,134 pounds respectively. However, the required certification and signature of the pilot
+accepting the load and balance calculations as correct and accurate, and the certification of the load
+controller stating that the prepared load manifest as being complete and accurate was missing. This
+certification is required by CAGR Schedule 16.055(a) (c) – Flight Release.
+
+Airport Information
+According to the Bahamas Aeronautical Information Publication (AIP), Third Edition Amendment,
+01/2016, Governor's Harbor Airport is an airport in Governor's Harbor on Eleuthera in the Bahamas
+(IATA: GHB, ICAO: MYEM). It is the second most active of the three airports on Eleuthera and is about
+8 mi (13 km) north of the city. It is an airport of entry, situated 26 feet above sea level and governmentowned and operated. It has one runway aligned magnetically 153 degrees and 333 degrees (15/33) and
+8,035 feet long by 150 feet wide. The runway is paved with asphalt. The airport caters to IFR and VFR
+traffic. The airport operates sunrise to sunset.
+
+Weather
+The weather conditions in Governors Harbour area at the time of the occurrence was Instrument
+Meteorological Conditions (IMC). As there is no weather reporting system in the Governors Harbor area,
+the nearest reporting station was at Lynden Pindling Int’l Airport in Nassau, the Bahamas, some 71
+nautical miles west of Governors Harbor airport.
+The Bahamas area forecast valid for 12 hours from 1800UTC (2:00 pm local) forecasted surface trough
+across the northwest and the southeast Bahamas which were producing widespread clouds with embedded
+convection through the period.
+The significant weather was forecasted over all areas with few to scattered clouds at 1,400 to 1,600 feet in
+cumulonimbus and towering clouds throughout the period. Clouds were forecasted to be merging with
+higher layers and extended from 14,000 to 22,000 feet. Cloud ceilings and visibility were expected to be
+below 1,400 feet and 3 nautical miles in showers and isolated embedded thunderstorms. Moderate to
+severe turbulence in the vicinity of all cumulonimbus and towering clouds were expected.
+
+Final Report C6-MIC
+
+10 P a g e
+
+Additional Findings
+In addition to the investigation conducted in respect of the aircraft accident, the role and responsibility of
+other respective agencies/organizations have been investigated appropriately. This undertaking was
+accomplished by:
+1. Reviewing the procedures of the BCAA (Safety Oversight Department - SOD) as it relates to
+their personnel licensing and oversight obligations, including interaction with other States, for
+verification of the validity of that other States’ authorizations on airmen licenses prior to
+validation or conversion of that State’s license to a Bahamas license.
+2. Reviewing the Tenant Restricted Area Security Program policy by which Fixed Based Operators
+(FBO) are responsible for security and secure airside access through their facilities.
+3. Reviewing the oversight obligations of the Aviation Security Department (AvSec) of the BCAA
+as it relates to its oversight responsibility for the LPIA security entities and FBOs restricted area
+security program.
+4. Reviewing the Airport Authority obligations as it relates to the issuance of airside identification
+badges and surveillance of operators, individuals, and tenants with airside access.
+5. Reviewing the policy of the Bahamas Air Navigation Services Division regarding flights at night
+into aerodromes that are approved with sunrise to sunset operations only.
+6. Reviewing the operation of Air Operator Certificate Holder Pineapple Air Limited as it relates to
+airside access and identification badges for its employees as well as operational control and
+release of flight. Also reviewing the process of required training and training documentation as
+required by CAGR for commercial operations.
+
+Bahamas Civil Aviation Authority (BCAA) / Safety Oversight Department (BCAA)
+Personnel Licensing
+□ According to records provided by the Bahamas Civil Aviation Authority, the pilot in command of
+the aircraft was in possession of a Bahamas issued Commercial Pilot Certificate.
+□ In accordance with Annex 1 – Personnel Licensing, Eleventh Edition, July 2011, 1.2.2.1 “When a
+Contracting State renders valid a license issued by another Contracting State, as an alternative to
+the issuance of its own license, it shall establish validity by suitable authorization to be carried
+with the former license accepting it as the equivalent of the latter. When a State limits the
+authorization to specific privileges, the authorization shall specify the privileges of the license
+which are to be accepted as its equivalent. The validity of the authorization shall not extend
+beyond the period of validity of the license. The authorization ceases to be valid if the license
+upon which it was issued is revoked or suspended.”
+□ In accordance with Annex 1, Chapter 1, 1.2.2.2, when an authorization under 1.2.2.1 is issued for
+use in commercial air transport operations, the Licensing Authority shall “confirm the validity of
+the other Contracting State’s license before issuing the authorization.”
+□ On 15th June 2011, an Application for Airman License Validation based on a Foreign License was
+submitted by the captain to the licensing authority for validation of his FAA-issued certificate. No
+records on the files received from the licensing authority confirmed that a license was issued to
+the captain at that time.
+□ On July 02, 2012, the licensing authority requested confirmation of the validity of the captain’s
+license. The FAA responded stating that the pilot certificate of the captain was revoked for life,
+Final Report C6-MIC
+
+11 P a g e
+
+□
+
+as of 11 August 2009, despite the confirmation received from the FAA, the licensing authority
+proceeded to issue a commercial pilot license to the captain on 27 May 2013 and renewed it again
+2years later, on 6 August 2015.
+Proficiency check was conducted by an approved check airman of the AOC holder. The same
+check airman conducted both training and checking. Proper checks and balances protocols of the
+BCAA require anytime a training and checking activity is to occur, the same individual cannot be
+used to conduct both.
+
+Bahamas Civil Aviation Authority / Aviation Security Department
+Aviation Security Oversight
+□ “In accordance with Section 7.4.3 of the Airport Authority Security Programme, background
+checks prior to the issue of an airport badge are conducted by the Royal Bahamas Police Force, in
+particular, the Courts’ records. Before an issue of an ID, the Director of Security is guided by the
+results of any conviction in a Court of Law where an unlawful act was committed punishable in
+accordance with the laws of The Bahamas identified hereunder”.
+□ As the captain was convicted and incarcerated for controlled substance violations in the US
+Federal Court system, upon his return to the Bahamas, he was unable to obtain an ID badge that
+would allow him unescorted access to the restricted airside of LPIA, he subsequently obtained an
+ID badge issued by the Grand Bahama Airport Company in Freeport Grand Bahama.
+□ Additionally, the Bahamas National Civil Aviation Security Program NCASP Standard 6.10.4 Amended 11.1 (1) – states, “No person may be issued an aerodrome pass providing unescorted
+access to security restricted areas if they have been convicted of any felony offense or any
+misdemeanor offense within the previous five years, or the equivalent offense in another State. A
+single misdemeanor offense over five years old that did not entail a custodial sentence may be
+waived if requested by the Aerodrome Security Director and approved by the Director of Civil
+Aviation.”
+□ According to the AvSec Department of the BCAA, identification badges issued by the Airport
+Authority in Nassau are the only badges valid for continuous access to the secure airside and
+other areas at LPIA unescorted.
+□ The AvSec Department confirmed that the ID badge issued by the GBAC in Freeport to the
+captain was revoked in July 2017. However, the captain failed to return it, as requested.
+□ While airside security at LPIA is the responsibility of the Airport Authority, oversight of that
+security is the responsibility of the BCAA AvSec department and previously repeated lapses in
+security protocols cannot go unnoticed.
+
+Airport Authority (AA)
+Airside Access
+□ According to records provided by the Airport Authority Security Department, the pilot in
+command of the aircraft was denied an airport identification badge based on a recommendation
+from the Security Department of the previous Department of Civil Aviation.
+□ In a letter dated 16th May 2013, the Director of Security (Airport Authority) addressed an issue
+with management of the Fixed Base Operator concerning the captain accessing the airside by
+deceptive means via their facility.
+□ On the date of the accident (January 9), the captain again accessed the airside at LPIA, again
+through the same Fixed based Operator, (in violation of their Tenant Restricted Area Security
+Program) and accessed the aircraft and its passengers bypassing security protocols established at
+Apron 5 and security processes in Domestic Terminal, Apron 3.
+□ Upon further investigation, the pilot revealed he accessed the airside with an Identification badge
+issued by Grand Bahama Airport Company. No information was provided to verify the GBAC
+had security access to the information LPIA had that resulted in their revoking the identification
+badge request. However, at some point, the GBAC was made aware and in 2017, they also
+Final Report C6-MIC
+
+12 P a g e
+
+□
+
+□
+
+□
+
+revoked the identification badge issued to the captain and requested it be returned, which it never
+was.
+There is no indication of what means of identification was used by the captain to access the
+secure airside since being hired by Pineapple Air in 2012. Airport Authority security at the LPIA
+had revoked his identification badge application in 2013. The captain applied for and was issued
+an identification badge by the GBAC in 2015. Therefore between 2012 and 2015, the pilot gained
+access to the secure airside at LPIA unescorted with unknown identification credentials. Since
+2015, access to the secure airside at LPIA was repeated using an identification badge that was not
+valid in Nassau to access the secure airside unescorted.
+All operators are responsible for requesting ID badges for its employees that require unescorted
+access to the airside at LPIA. Airport Authority security department confirmed that no application
+for an identification badge was made on behalf of this captain from Pineapple Air Limited.
+Despite repeated violations by the same Fixed Based Operator in the past, in allowing
+unauthorized access to the restricted airside through their facility, no evidence was provided to
+show whether any investigation, penalties or enforcement action was taken by the Airport
+Authority or the Security Department of the BCAA to address the repeated violations.
+
+Pineapple Air Limited
+General
+□ The required certification and signature of the pilot accepting the aircraft (C6-MIC) load
+calculations as accurate, and the certification of the load controller stating that the prepared load
+manifest for the flight as being complete and accurate was missing from the load manifest for the
+flight. This certification is required by CAGR Schedule 16.055(a) (c) 3 – Flight Release.
+□ The flight was released and conducted without consideration for weather limitations for IFR
+flight in contravention of CAGR Schedule 10.3654 and 10.3755.
+Pilot Training and Record Keeping Process
+According to records provided by the Operator – Pineapple Air Limited, the following have been noted:
+Captain
+□ Training records reviewed for the captain documented his hiring on 15 November 2012.
+However, training records were only available for the years 2013 and 2017. No records outlining
+recurrent or requalification training was available or provided to investigators for the year 2014,
+2015 and 2016.
+□ Further investigation revealed that the captain completed initial ground and flight training for the
+company on 13 December 2012. A Proficiency Check was completed 13 February 2013 and
+again on 26th March 2013. No explanation as to why 2 proficiency checks were conducted within
+less than a 2-month period when they are required to be conducted each 6 calendar months. The
+3
+
+16.055 FLIGHT RELEASE: DECISION-MAKING RECORDS (a) No person may issue a flight release unless the required flight preparation
+documents have been reviewed and determined to be complete and accurate. (c) The signature of the PIC, and any other required person, on a
+filed operational flight plan will be the primary method of recording that decision.
+4
+
+10.365 PRE-FLIGHT ACTION, INCLUDING WEATHER REPORTS & FORECASTS (a) before commencing a flight, the PIC shall be
+familiar with all available meteorological information appropriate to the intended flight. (b) The PIC shall include, during preparation for a flight
+away from the vicinity of the place of departure, and for every flight under the instrument flight rules— (1) A study of available current weather
+reports and forecasts; and (2) The planning of an alternative course of action to provide for the eventuality that the flight cannot be completed as
+planned, because of weather conditions.
+5
+
+10.375 WEATHER LIMITATIONS FOR IFR FLIGHTS (a) For IFR flight planning purposes, no person may commence an IFR flight unless
+the available information indicates that the weather conditions at the estimated time of arrival at the aerodrome of intended landing and, where a
+destination alternate is required, at least one suitable destination alternate, will be at or above the— (1) Minimum ceiling and visibility values for
+the standard instrument approach procedure to be used; or (2) Minimum operating altitude, if no instrument approach procedure is to be used, that
+would allow a VMC decent to the aerodrome.
+
+Final Report C6-MIC
+
+13 P a g e
+
+□
+
+□
+
+□
+
+□
+□
+
+captain’s Bahamas license was not applied for until May 21, 2013 and issued on May 27, 2013.
+That being the case, it would appear as though training and a check ride were completed by an
+authorized check airman of an individual who was not in possession of a valid pilot license.
+While a pilot license was requested by the captain in 2011, the records provided by the BCAA,
+and the pilot records provided by the operator, does not show where that license requested was
+granted in 2011. Also, no flight or ground training records were available between 2011 and
+2013 when initial training was completed for the captain, followed by his proficiency check.
+Records provided documenting pilot flight times and sector (flights) between 18 November 2012
+and 28 March 2013 showed the captain completed a total of 268 sectors (flights) totaling 140.4
+flight hours. The validity of these times and sectors are of grave concern, as the captain had not
+received his official initial training and check ride that would allow him to operate as a required
+flight crew member and document flight hours and sectors until 26 March 2013. Additionally, he
+was not in possession of a valid license until 27 May 2013, therefore all training, checking and
+flights conducted prior to the issuance of this license were not valid.
+After this proficiency check was completed on 26 March 2013, there is a gap in the training
+record for the captain until recurrent ground and flight training was accomplished in May and
+July of 2017, followed by a proficiency check on 25 August 2017. No duty time, flight time or
+sectors was recorded for the captain between 26 March 2013 and January 9, 2018 (date of the
+accident). Therefore, with the pilot being employed since 15 November 2012 and 4 years of
+recurrent flight and ground training and proficiency checks and records documenting these
+training and checking events not being available, this is a serious safety concern.
+The captain’s proficiency check conducted on 25 August 2017 does not document his
+authorization to operate during instrument meteorological conditions.
+Employment records documenting exit from or re-entry into the company for employment should
+have been available. No records were made available that either confirms or denies whether the
+employment of the captain was continuous since initial hiring on November 15, 2012 or was
+intermittent. In any event, all records showing training between November 2012 and January
+2018 should have been on the captain’s files and kept by the Operator.
+
+First Officer
+□ Date of hire of the first officer is unknown as it was not available in the training record reviewed,
+however, duty time records were available as far back as November 2015.
+□ Training records and duty times were available for the year 2017. Proficiency Checks were
+conducted twice in 2017 (January 31 and October 5), however, they were 10 months apart with
+no explanation. CAGR 2017, Schedule 14, and Subpart E: Proficiency and Competency Checks,
+14.120(b)6 requires recurrent proficiency checks be completed each 6 calendar months.
+□ Duty times and 1 proficiency check was documented for the year 2016, however, no training
+records for the year 2016 was available.
+□ Duty times and training records were available for the year 2015; however, no proficiency checks
+were documented as having been conducted in 2015.
+□ First Officer’s most recent proficiency check conducted 5th October 2017, does not document his
+authorization to operate during instrument meteorological conditions.
+
+6 CAGR Schedule 14, 14.120(b) No pilot may serve nor may any person use a pilot in IFR operations unless, since the beginning
+
+of the 6th calendar month before that service, that pilot has demonstrated competency in instrument flight operations in a
+proficiency check prescribed by the Authority.
+
+Final Report C6-MIC
+
+14 P a g e
+
+Several required records to demonstrate qualification, competency and currency are not available
+in the first officer’s training file, including Flight Training Record for 2017 and all required
+recurrent training records for 2016.
+
+Bahamas Air Navigation Services Division (BANSD)
+Night Flight Operations
+□ According to records provided by the Bahamas Air Navigation Services Division, the Director of
+Civil Aviation or the shift supervisor is authorized to allow an aircraft to conduct flights after
+official sunset.
+□ On the evening in question, Pineapple Air’s flight 968was given permission by Air Traffic
+Services to conduct a flight after official sunset (5:36 pm).
+□ Based on the amendment in the Aeronautical Information Publication (AIP) (May 26, 2016)
+Section 1.8 – Night Time Aerodrome Operations;
+o “Permission to take off and land should be obtained from the Deputy Director of Air
+Traffic Services or Chief Operating Officer in charge of operations during the hours of 9
+am to 5 pm, Monday to Friday and from watch supervisors on duty after 5 pm, on
+holidays and weekends.”
+o Additionally, “requests should be made at least 8 hours in advance prior to intended
+flight.”
+□ Additionally, as the functions for official release after sunset as documented is from a department
+and position that no longer exists, amendments should be made to adequately reflect the person(s)
+and position with authority to grant such a release.
+□ ATC did not document the change in aircraft assigned to conduct flight 978. A Beechcraft BE1900 aircraft was originally scheduled to conduct the flight with 21 souls on board, yet the flight
+plan was not corrected to reflect the downgrade to the EMB-110 with 17 souls on board. This is
+significant and critical especially for search and rescue purposes, which can cause delays and
+confusion should an accident or incident occur where the aircraft is missing.
+
+Final Report C6-MIC
+
+15 P a g e
+
+Safety Action
+Whether or not the AAID identifies safety issues in the course of an investigation, relevant organizations
+may proactively initiate safety action in order to reduce their safety risk.
+Recommendations Classified in this Report issued to the following organizations
+Safety Oversight Department of the Bahamas Civil Aviation Authority (SOD – BCAA)
+The AAID recommends that the BCAA/SOD:
+1. Conduct a comprehensive audit of the AOC holder Pineapple Air Limited’s record-keeping
+practices to ensure compliance with CAGR and ensure required documentation to demonstrate
+pilot’s eligibility, qualification, competency, and currency are available and accurate.
+2. Conduct an internal audit of its validation and conversion processes to ensure documents to
+authenticate airmen qualification and licensing privileges from other contracting States are
+available and valid.
+3. Review and evaluate any conversions or validations granted to ensure they were done so in
+accordance with ICAO and BCAA guidelines.
+4. Review and scrutinize all required documents received from check airmen establishing airmen’s
+qualification and proficiency, and ensure those documents correctly reflect the authorizations to
+be exercised.
+5. Re-evaluate check airman authorization to conduct proficiency checks on behalf of the authority
+to ensure checks are conducted in accordance with the check airman authorization policy.
+Aviation Security Department of the Bahamas Civil Aviation Authority (AvSec – BCAA)
+The AAID recommends the BCAA / AvSec:
+1. Investigate to determine the extent to which the tenant restricted area security program is not
+effective. As the program has been violated repeatedly by individuals gaining unescorted access,
+with unapproved credentials, a determination needs to be made as to what corrective
+action/sanction (if applicable) is appropriate for violators of the tenant agreement, or to see what
+measures are required to strengthen gaps in the program that allows for such violations or
+deviations from established guidelines.
+2. Implement a more robust plan of security oversight and play a more active role in the oversight of
+Airport Authority security practices at the LPIA.
+3. Conduct an audit of aerodrome tenant’s records to determine if they follow the Tenant Restricted
+Area Security Program and that all employees have received security training and security
+awareness training as appropriate and in accordance with Schedule 29 of the CAGR.
+Bahamas Air Navigation Services Division (BANSD)
+The AAID recommends that BANSD:
+1. Amends its authority to release flights after official sunset to reflect the new department created
+to oversee Air Traffic Services’ mandate.
+2. Establish proper protocols outlining varied conditions under which an aircraft can depart after
+official sunset for destinations with operations sunrise to sunset. Greater coordination between
+BANSD and the intended destination airport authorities needs to be established.
+3. Clearly identify the individual(s) / position(s) authorized to permit such take-offs and landings,
+after official sunset.
+4. Establish or reinforce procedures with its personnel to ensure that aircraft conducting flights
+using the “canned” flight plan system, accurate information is available about the aircraft and the
+souls on board.
+
+Final Report C6-MIC
+
+16 P a g e
+
+Airport Authority (AA)
+The AAID recommends the Airport Authority:
+1. Increase its surveillance of all areas of LPIA, paying special attention to areas frequented by
+general aviation pilots, and to apprehend and prevent unauthorized users from accessing the
+secure airside.
+2. Establish some mechanism for investigating and levying penalties or sanctions against the
+individual(s) or facility engaged in allowing unauthorized access in breach of their secure airside
+program.
+3. Establish greater coordination with authorities in Nassau, Freeport or wherever unescorted airside
+badges are issued, to ensure the latest security information relative to airmen, or other authorized
+individuals seeking unescorted access, is available and shared between relevant agencies.
+Pineapple Air Limited (AOC)
+The AAID recommends that Pineapple Air Limited:
+1. Review the training, qualification and currency records of all required crewmembers to ensure all
+required training is complied with and documented in accordance with Civil Aviation General
+Regulations.
+2. Review and reinforce its flight release policies to ensure all dispatched flights are properly
+documented with proper acceptance by the PIC and Operational Controller.
+Manufacturers’ recommendations to Operator
+To make sure that no condition that may cause another similar failure is present, the manufacturer makes
+the following recommendations (ref: SB 110-32-0066 and maintenance manual section IV - T.O. 1C95A2-4):
+1. Make sure that the aircraft has the POST-MOD configuration of the SB 110-32-0066, which
+instructs the installation of the relay K 226.
+2. Make sure that the relay K 226 is operational.
+3. 4-26. LG operational check-out
+4. 4-28. Perform the Main Gear Wheels Alignment Check (fig 4-25)
+5. 4-76. Adjusting MLG Down lock (fig 4-38)
+6. 4-77. Adjusting NLG Down lock (fig 4-39, 4-40, 4-40A)
+7. 4-78. Adjusting LG Shock Absorbers Microswitch (fig 4-41)
+8. 4-80. Adjusting MLG Down locks Micro switches (fig 4-44)
+9. 4-82. Adjusting Centering System Microswitch (fig 4-46)
+All recommendations in this report are classified as: “Open, Await Response”
+
+Final Report C6-MIC
+
+17 P a g e
+
+Safety Message
+The limited information provided is not enough to allow a root cause determination nor a reasonable
+hypothesis for the one-leg retraction on ground. “No mechanical irregularities have been found with the
+gear system”.
+The investigation into this accident found that serious breaches in security protocols were documented yet
+no action was taken against the perpetrators. Other than the identification badge for the pilot that was
+revoked in Nassau by the Airport Authority security division, no further action was documented. The
+pilot acquired an identification badge from another island (which was subsequently revoked but never
+returned), which was used to access the airside at LPIA which is a violation of regulations and security
+policies yet again; no evidence was made available of what action was taken by the AvSec Department to
+address this issue.
+The investigation also found that:
+□ As this pilot was hired and conducted flights for a Bahamas Air Operator Certificate Holder since
+2012, each time he accessed the airside to command an aircraft, he was in breach of security
+protocols as he was not in possession of a valid airside identification badge.
+□ The Security Department of the BCAA did not provide any evidence of any further investigation,
+penalties, sanctions or enforcement action taken against the pilot, the Airport Authority, the FBO
+in question or the AOC holder for the breaches in security protocols documented.
+□ AvSec Security officials did not provide any documented evidence of any actions taken by the
+department to ensure the FBO’s compliance after repeated violations of the security regulations
+and its tenant airside access security program, dating back as far as 2013, when it was first
+brought to their attention that this pilot was accessing the airside using fraudulent and deceptive
+means as they identified.
+□ Both pilots breached CAGR regulations regarding operations during Instrument meteorological
+conditions.
+□ Neither pilot was authorized to conduct operations in weather that was instrument meteorological
+conditions based on documentation contained on their proficiency check application.
+□ Both flight training and proficiency check were conducted by the same company check airman.
+This is an activity that should not occur to ensure proper checks and balances as it relates to
+training and checking activities.
+The AAID believes the heavy workload, coupled with the night and IMC flying in severe weather, to be a
+contributing factor in this accident. Coupled with the crew’s qualification and authorizations to operate in
+weather determined to be instrument meteorological conditions, the AAID believes the lack of oversight
+of the records documentation process by both the operator, as well as the BCAA, may have given the
+crew the impression they were authorized to conduct operations in conditions they clearly were not.
+The AAID questions the check and balance process used to separate training from checking activities of
+this crew and queries the BCAA role in oversight of the same individual conducting both training and
+checking. The AAID believes the BCAA must review its policies on check airmen authorizations,
+proficiency checking activities and documentation as there is clearly a departure from standard policy.
+The AAID believes the company should review its dispatch policies and ensure the release of aircraft is
+done in accordance with CAGR as it relates to release of aircraft when the weather is not favorable at
+both departure and destination airports. The AAID also believes the operator is responsible and must
+
+Final Report C6-MIC
+
+18 P a g e
+
+ensure both PIC and Ops Controller sign all documents for release of flight as this was clearly not done in
+this case.
+As the captain’s training records were in such state of incompleteness, the AAID was unable to determine
+whether his employment was continuous between 2012 and 2018 or intermittent.
+The AAID strongly believes that a breakdown in communication and coordination occurred between the
+aviation security department of the BCAA (AvSEC), the personnel licensing department (BCAA) and the
+airport authority charged with surveillance of individuals gaining access to the airside at LPIA. The AAID
+suggests in future, any action taken to suspend or revoke the license or authorization of an airman, or any
+other individuals requiring a license or authorization issued by the BCAA, any action that is taken
+(enforcement or otherwise) it is communicated by the BCAA to the relevant Authorities tasked with
+issuing identification badges in Nassau or wherever identification badges are issued, so that the
+individual’s access to the secure airside can be evaluated by that authority or department for any
+appropriate action deemed necessary.
+The AAID believes the Airport Authority Security division should take a more proactive stance and
+challenge all individuals gaining access to the secure airside. While the Airport Authority was proactive
+in revoking the airside access of the captain due to the negative security vetting, he was still able to
+acquire another airport identification badge from an entity on another island. He was able to gain access
+to the secure airside unescorted, unchallenged and with unauthorized credentials from 2012 to 2018. This
+is a serious security breach and measures must be put in place to deter this kind of lapse in security
+oversight.
+The AAID also believes that greater scrutiny and security personnel physical presence needs to be placed
+at all fixed based operations on a permanent basis to ensure security breaches are not occurring.
+
+Final Report C6-MIC
+
+19 P a g e
+
+About this report
+Decisions regarding whether to investigate and the scope of an investigation is based on many factors,
+including the level of safety or security benefit likely to be obtained from an investigation.
+For this occurrence, an in-depth fact-gathering investigation was conducted in order to produce a
+summary report and allow for greater organization and industry awareness of potential safety and security
+issues and possible safety actions to remedy the uncovered issues.
+The Air Accident Investigation Department
+
+Delvin R. Major
+Chief Investigator of Air Accidents
+
+Final Report C6-MIC
+
+20 P a g e
+
+

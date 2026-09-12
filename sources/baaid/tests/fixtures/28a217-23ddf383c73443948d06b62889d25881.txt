@@ -1,0 +1,397 @@
+Aviation Short Investigation
+Final Report
+Occurrence involving
+Piper Aztec PA-23-250, N14178
+Lower Bogue, Eleuthera, Bahamas
+21st March 2020
+AAIA Aviation Occurrence Investigation
+AO-20-000015
+Date of Final Report
+10th May, 2021
+
+Aircraft Accident Investigation Authority
+
+Publishing information
+Aircraft Accident Investigation Authority
+2nd Floor, Manx Corporate Center
+#45 West Bay Street
+P. O. Box CB-11702
+Nassau N. P., Bahamas
+Tel: 1 (242) 397-5520 or (242) 397-5509
+Fax: (242) 327-2192
+Email: baaid@bahamas.gov.bs
+Website: http://www.baaid.org
+
+Ownership of intellectual property rights in this publication
+Unless otherwise noted, copyright (and any other intellectual property rights, if any) in this publication is
+owned by the Aircraft Accident Investigation Authority of the Commonwealth of the Bahamas, P. O. Box
+CB-11702, Manx Corporate enter, #45 West Bay Street, Nassau, N. P., Bahamas.
+
+N14178 Final Report
+
+2Page
+
+Aircraft Accident Investigation Authority
+
+About the AAIA
+The Aircraft Accident Investigation Authority (AAIA)
+The Aircraft Accident Investigation Authority (AAIA) is the independent accident investigation agency
+under the Bahamas Ministry of Transport & Local Government (MOT&LG) charged with the
+responsibility of investigating all aviation accidents and incidents in the Bahamas.
+The AAIA’s function is to promote and improve safety and public confidence in the aviation industry
+through excellence in:
+• Independent investigation of aviation accidents and other safety occurrences
+• Safety data recording, analysis and research
+• Fostering safety awareness, knowledge and action.
+The AAIA does not investigate for the purpose of apportioning blame or to provide a means for
+determining liability. At the same time, an investigation report must include factual material of sufficient
+weight to support the analysis and findings. At all times the AAIA endeavors to balance the use of
+material that could imply adverse comment with the need to properly explain what happened, and why, in
+a fair and unbiased manner.
+The AAIA performs its functions in accordance with the provisions of the Aircraft Accident Investigation
+Authority Act 2019 and Regulations, 2021 and the International Civil Aviation Organization (ICAO)
+Annex 13 and, where applicable, relevant international agreements.
+The AAIA is mandated to investigate air transportation accidents and incidents, determine probable
+cause(s) of such accidents and incidents, issue safety recommendations, study transportation safety issues
+and evaluate the safety effectiveness of agencies and stakeholders involved in air transportation. The
+objective of a safety investigation is to identify and reduce safety-related risk. AAIA investigations
+determine and communicate the safety factors related to the transport safety matter being investigated.
+The AAIA makes public its findings and recommendations through accident reports, safety studies,
+special investigation reports, safety recommendations and safety alerts. Unless otherwise indicated,
+recommendations in this report are addressed to the regulatory authorities of the State having
+responsibility for the matters with which the recommendation is concerned. It is for those authorities to
+decide what action is taken. When the AAIA issues a safety recommendation, the person, organization or
+agency is required to provide a written response without delay. The response shall indicate whether the
+person, organization or agency accepts the recommendation, any reasons for not accepting part or all of
+the recommendation(s), and details of any proposed safety action(s) resulting from the recommendation(s)
+issued.
+
+N14178 Final Report
+
+3Page
+
+Aircraft Accident Investigation Authority
+Title
+Registered Owner:
+
+Strong Tower Services LLC
+
+Manufacturer:
+
+Piper Aircraft
+
+Aircraft Type:
+
+PA-23-250
+
+Nationality:
+
+United States of America
+
+Registration:
+
+N14178
+
+Place of Accident:
+
+Lower Bogue, Eleuthera, Bahamas
+
+Date and Time:
+
+21st March 2020, 1:50 PM
+
+Synopsis
+Notification:
+
+BCAA, NTSB, FAA
+
+Investigating Authority:
+
+Aircraft Accident Investigation Authority,
+Ministry of Transport & Local Government
+
+Investigator in Charge:
+
+Mr. Kendall Dorsett Jr.
+
+Accredited
+Representatives:
+
+Mr. Brian Rayner (NTSB) USA
+
+Technical Advisors:
+
+Mr. Ryan Enders (Lycoming)
+Mr. Roberto Rodriguez (FAA)
+Mr. Marquin Israel (FAA)
+Mr. Michel Fischetti (FAA)
+
+Releasing Authority: Aircraft Accident Investigation Authority
+Date of Final
+Report Publication:
+
+N14178 Final Report
+
+10th May 2021
+
+4Page
+
+Aircraft Accident Investigation Authority
+
+What Happened?
+On the 21st March 2020, at approximately 1:50 PM, a Piper Aztec (PA-23-250) aircraft, United States
+registration N14178 ditched in shallow waters near a beach at Lower Bogue, Eleuthera, Bahamas.
+The private flight departed the North Eleuthera International Airport (MYEH), Eleuthera, Bahamas with
+destination New Bight Airport (MYCB), Cat Island, Bahamas with the pilot and two (2) passengers on
+board. The flight operated under Visual Flight Rules (VFR).
+The pilot reported that shortly after departing MYEH and while climbing through an altitude of 1,200 ft.,
+his attention was drawn to the fuel flow indicator in the aircraft after “the left engine started running a lil
+rough.” The left engine roughness was followed by the sound of a ‘bang’ and a subsequent “much louder
+bang” followed by flames which were observed coming from the inboard left engine cowling closest to
+the pilot.
+During the post-accident interview, the pilot stated that he secured the left engine by shutting off power
+and fuel supply and attempted to join the right downwind pattern for runway 07 at MYEH. The pilot
+further stated that with the change in direction toward the airport, the fire became more intense and
+realizing he would be unable to return to the field, he sought a beach closest to his position where he
+could land the aircraft safely. Once a beach was located, the pilot executed a landing in the shallow waters
+approximately 250 ft. from the shoreline in the Lower Bogue, Eleuthera settlement.
+
+Fig. 1: Drone imagery of accident site location from MYEH aerodrome
+
+After successfully ditching the aircraft, the pilot and both passengers were able to exit the aircraft in
+waters approximately waist deep and proceeded to the shore where they received assistance from local
+police and concerned citizens. The ditching of the aircraft occurred approximately 2 nautical miles from
+the threshold of Runway 07 at MYEH.
+N14178 Final Report
+
+5Page
+
+Aircraft Accident Investigation Authority
+The aircraft sustained substantial damages as a result of the engine fire and impact forces sustained during
+the ditching in waters.
+On 22nd March 2020, a team of investigators were dispatched to the scene. Initial assessments uncovered a
+catastrophic cylinder failure on the left engine which may have been the initial cause of the engine fire.
+Other damages documented include:
+•
+The left engine (severely damaged due to the fire)
+•
+Both wings and
+•
+The underside of the fuselage
+•
+Post-crash damages of note includes, damages as a result of submersion in salt
+water The occupants of the aircraft received no injuries.
+At the time of the accident, the weather was reported as visual meteorological conditions (VMC).
+Weather was not a factor in the accident.
+
+Photo 1: N14178 at accident site
+
+N14178 Final Report
+
+6Page
+
+Aircraft Accident Investigation Authority
+
+Analysis
+Following recovery of the aircraft, initial investigation showed a failure of the connecting rod assembly.
+The engine as well as its components were further analyzed. The engine was sent to Certified Engines
+Unlimited Inc., for analysis. Subsequently other components including the connecting rod, along with the
+connecting rod bearings, connecting rod bushing, connecting rod nuts and bolts, and piston pin, were sent
+to the Lycoming Materials Lab for investigation. All parts returned were seriously corroded due to
+submersion in salt water.
+Due to the state of emergency that existed in the Bahamas during the time of arrangement for further
+analysis of the engine, the engine was delayed in transportation to the United States for further analysis.
+Additionally, analysis at the manufacturer could not commence as anticipated, also due to restrictions in
+manpower and social distancing protocols, again, due to the state of emergency that existed in the United
+States. As the engine was previously submerged in salt water, some component damages resulted.
+
+Engine Analysis
+On 29th June 2020, an analysis of the left engine was conducted at the facility of Certified Engines
+Unlimited Inc., Pembroke Pines, Florida, USA. The AAIA was represented at the analysis by inspectors
+from the Federal Aviation Administration (FAA), who oversaw the examination process.
+The engine was unboxed and the following were documented:
+• Initial visual external inspection revealed #3 cylinder assembly had experienced a catastrophic
+failure (specifically, the engine block attaching hardware had failed).
+• During the detailed inspection, the following occurred and was noted:
+o #3 cylinder was removed completely from the engine.
+o The accessory case and attached accessories were removed from the engine. No items
+of significance were noted.
+o The oil pan exhibited signs of heat stress and burn through from fire.
+o The oil pan/intake plenum was removed and its contents examined. Found in the oil pan
+was the connecting rod for #3 engine which had separated from the crankshaft.
+o The #3 cylinder valves were removed and the keepers, springs and valves were all
+examined under magnification with no significant findings or observations.
+o The #3 piston and its component parts were examined.
+The connecting rod bearing cap bolts were inspected and it was noted that of the two
+bolts used to attach the connecting rod bearing cap; one bolt experienced structural
+failure while the other bolt and nut appeared to be intact with the threads having slight
+distortion.
+Additional components of the left engine were sent to the Materials Laboratory at Lycoming (the
+manufacturer) in Williamsport, Pennsylvania, USA for additional examination:
+
+Component Analysis
+The following components of the left engine were sent to the Materials Laboratory at Lycoming (the
+manufacturer) in Williamsport, Pennsylvania, USA for additional examination:
+• connecting rod,
+• connecting rod bearings,
+• connecting rod upper bushing,
+• connecting rod bolts,
+• connecting rod bolt nuts, and
+N14178 Final Report
+
+7Page
+
+Aircraft Accident Investigation Authority
+•
+
+the piston pin assembly.
+
+The component analysis concluded:
+• Of the parts returned, only the connecting rod was possibly manufactured by Lycoming. The
+bearings, bushing, conn rod bolts, conn rod nuts, and piston pin were all manufactured by another
+manufacturer.
+• The most recent overhaul was performed in the field by Certified Engines Unlimited, Inc., not by
+Lycoming Engines.
+• The connecting rod fractured in the bushing bore region. The hardness of the connecting rod was
+measured as 23.4 and 24.3 HRC on two mounted samples.
+• The microstructure of the connecting rod is a martensite-ferrite-carbide aggregate. The fracture
+surfaces were too badly damaged to identify the failure mode.
+• The deformation and corresponding fracture surfaces of the fractured connecting rod bolt
+indicated the bolt failed in bending, with sudden overload conditions. No signs of fatigue were
+visible on either fracture surface of the failed bolt.
+• The AEL-13923 bushing is made of a bronze alloy that does not conform to the Lycoming
+bushing design.
+
+Connecting Rod Bolts:
+Part Markings: SL 74644D / FAA-PMA
+•
+
+•
+
+The two connecting rod bolts are marked with identical part markings indicating they were
+manufactured by Superior. One connecting rod bolt fractured through the reduced diameter
+section closer to the threads, with the top region including the head remaining lodged in the
+connecting rod cap, while the bottom region was recovered with the nut still on. The
+corresponding fracture surfaces of the bolt were extremely corroded and cleaned in a Liquinox
+detergent solution using the ultrasonic cleaner. No signs of fatigue were identifiable on either
+fracture surface (Figure 9). The shear lips on the fracture surfaces and deformation of the two bolt
+portions indicate the bolt was loaded in bending (Figure 10). Examining the fracture surface using
+the SEM reveals ductile dimples and the absence of any identifiable fatigue features, indicating
+the bolt likely failed due to sudden overload (Figure 11).
+The other connecting rod bolt was intact, but slightly bent (Figure 12). This connecting rod bolt
+and one connecting rod bolt nut were found inside the engine cowling. This bolt and nut were
+found completely disconnected from one another, and from the connecting rod assembly. There
+was damage on the opposite side of the intact bolt, consistent with the bolt rocking back and forth
+within the connecting rod; the orientation of this damage is also consistent with the bolt being
+loaded in bending (Figure 13). While the threads of the intact bolt were not stripped, damage, in
+the form of nicked and smashed thread crests, was visible on the three or four threads furthest
+from the head (Figure 14). White globular particles were visible in the thread roots (Figure 15).
+
+Connecting Rod Bolt Nuts
+
+Part Markings: None (per Logbook: SL12186)
+•
+
+Per the logbook, both the connecting rod bolt nuts are manufactured by Superior (Figure 16). One
+of the nuts remained on the end of the fractured bolt. The other intact connecting rod bolt nut was
+found in the engine cowling, along with, but separate from, the intact connecting rod bolt. While
+the thread closest to the bearing surface on the nut appeared slightly damaged, the remainder of
+the threads appeared intact (Figures 17 and 18). The threads on both nuts were not stripped; white
+globular particles were visible in the thread roots. The nuts displayed minor secondary damage
+and corrosion.
+
+N14178 Final Report
+
+8Page
+
+Aircraft Accident Investigation Authority
+•
+
+The connecting rod bolt and connecting rod nut referred to as intact in this report were found
+inside the engine cowling, separate from one another and separate from the connecting rod
+assembly. The threads of both the nut and the bolt displayed minor damage but were not stripped.
+
+N14178 Final Report
+
+9Page
+
+Aircraft Accident Investigation Authority
+
+N14178 Final Report
+
+10 P a g e
+
+Aircraft Accident Investigation Authority
+
+N14178 Final Report
+
+11 P a g e
+
+Aircraft Accident Investigation Authority
+
+N14178 Final Report
+
+12 P a g e
+
+Aircraft Accident Investigation Authority
+
+N14178 Final Report
+
+13 P a g e
+
+Aircraft Accident Investigation Authority
+
+Investigation Findings
+Pilot
+The pilot-in-command of the aircraft was a 54 year old male who was issued an Airline Transport Pilot
+certificate by the United States Federal Aviation Administration on 25 th March, 2013. He also held a type
+rating for the Beechcraft BE-1900 with the limitation, ‘Second in command required’.
+
+The Aircraft
+Piper Aztec N14178 was a fixed-wing, six seat, twin-engine, normally aspirated engine. It had retractable
+landing gears, was an all metal airplane and was designed to combine multi-engine power, performance,
+and safety with smooth, easy handling characteristics and operational adaptability. N14178 was registered
+in the United States of America by the Federal Aviation Administration (FAA) to Strong Tower Services
+LLC.
+
+Aircraft Maintenance (Left Engine)
+The logbook for left engine S/N 27-4743 was provided; according to the logbook, the engine was field
+overhauled by Certified Engines Unlimited, Inc. on November 5, 2018. The engine had 2,917.30 total
+hours on it at overhaul. At overhaul, Bendix magnetos, rebuilt by Continental, were installed, along with
+a reground camshaft from Aircraft Specialties and six new Continental Titan cylinder assemblies. The
+logbook entry lists parts replaced during the overhaul; most of the parts listed are not Lycoming parts.
+Thus, following the overhaul, the engine was comprised of various parts manufactured by Lycoming,
+Continental and Superior. Of the engine components returned to the materials lab, only the connecting rod
+itself is possibly manufactured by Lycoming.
+On April 1, 2019 at Hobbs time 725.7 hours, the left engine was installed and inspected in accordance
+with an annual inspection and was determined to be in airworthy condition.
+On May 7, 2019 the oil from the left engine was drained, oil filter replaced and serviced with Aero Shell
+100 mineral oil. Oil Filter was examined and found clean. On August 29, 2019 at Hobbs time 778.9 hours,
+the oil from the left engine was again drained, oil filter replaced and engine serviced with Aero Shell
+100W plus engine oil.
+The final engine service prior to the accident was conducted on February 27, 2020 where times noted
+were Hobbs – 890.9 hours and total time since major overhaul documented at 165.2 hours.
+At the time of the accident the Hobbs meter indicated times as 914.2 hours showing a difference of 23.3
+hours since last maintenance inspection.
+
+N14178 Final Report
+
+14 P a g e
+
+Aircraft Accident Investigation Authority
+
+Probable Cause
+The AAIA has determined the probable cause of the accident as a catastrophic failure of the #3 cylinder of
+the left engine which severed the fuel line and resulted in an inflight fire that led to the ditching of the
+aircraft.
+Contributing factors which resulted in the failure of the cylinder;
+ Examination of the broken connecting rod bolt fractured surface revealed, ductile dimples and the
+absence of any identifiable fatigue features, indicating the bolt likely failed due to sudden
+overload, as a result of the intact connecting rod bolt rocking back and forth within the connecting
+rod.
+
+N14178 Final Report
+
+15 P a g e
+
+

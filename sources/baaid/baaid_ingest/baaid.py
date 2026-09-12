@@ -262,3 +262,98 @@ def download(client, pdf_url: str, dest) -> None:
     resp.raise_for_status()
     with open(dest, "wb") as fh:
         fh.write(resp.content)
+
+
+# ── probable cause ────────────────────────────────────────────────────────────
+#
+# Bahrain AAIA reports head the section "Probable Cause" in mixed case, then
+# give prose followed by "Contributing factors which resulted in ..." and a
+# bulleted list. The section ends at the recommendations.
+#
+# Terminator vocabulary measured across all 222 PDFs on the host:
+#
+#     CONTRIBUTING FACTORS    11   <- part of the cause, NOT the end
+#     SAFETY RECOMMENDATIONS   3
+#     AAIA-SIB                 2   <- a document reference, furniture
+#     RECOMMENDATION           1
+#     CONCLUSIONS              1
+#
+# CONTRIBUTING FACTORS leads that list and is the one entry that must not be
+# treated as a terminator: the contributing factors ARE the cause here, the
+# same call Croatia needed for KONTRIBUTIVNI ČIMBENICI. An unmeasured
+# vocabulary would have taken the most frequent following heading for the end
+# of the section and truncated a fifth of the corpus at exactly the wrong line.
+#
+# probable_cause is what decides indexability: prod needs a quality score of
+# 50, a narrative over 300 chars scores 30 and a cause over 100 scores 20, and
+# factors_json, weather_summary and phase_of_flight are hardcoded null at
+# projection.
+_PC_HEADING_RE = re.compile(
+    r"^[ \t\f]*(?:\d+(?:\.\d+)*[.)]?[ \t\f]*)?"
+    r"(?:PROBABLE\s+CAUSES?|CAUSES?\s+OF\s+THE\s+(?:ACCIDENT|INCIDENT))"
+    r"[ \t]*:?[ \t]*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+_PC_TERMINATOR_RE = re.compile(
+    r"^[ \t\f]*(?:\d+(?:\.\d+)*[.)]?[ \t\f]*)?"
+    r"(?:SAFETY\s+RECOMMENDATIONS?|RECOMMENDATIONS?|CONCLUSIONS?"
+    r"|APPENDIC?E?S?|ANNEXE?S?)[ \t]*:?[ \t]*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+_PC_FURNITURE_RE = re.compile(
+    r"^[ \t\f]*(?:AAIA[- ]SIB\b.*|Page\s+\d+\s+of\s+\d+"
+    r"|[_\-\u2014]{10,}|\d+\s*\|\s*P\s*a\s*g\s*e)[ \t]*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+# Bullets arrive as whatever glyph the report's font mapped them to; the
+# Wingdings bullet lands in the Private Use Area as U+F0B7.
+_PC_BULLET_RE = re.compile(
+    r"^[ \t\f]*[\u2022\u25aa\u25cf\u25a0\u00b7\u2013\u2014\-\*\uE000-\uF8FF]+[ \t\f]*",
+    re.MULTILINE,
+)
+
+PROBABLE_CAUSE_MIN = 40
+_PC_WINDOW = 6000  # chars; see the note in parse_probable_cause
+
+
+def parse_probable_cause(text: str) -> str | None:
+    """Return the Probable Cause section as one normalised string, or None."""
+    if not text:
+        return None
+    m = _PC_HEADING_RE.search(text)
+    if not m:
+        return None
+    # Bound the window before looking for the terminator. 13 of the 46 reports
+    # that carry this heading have no following section heading at all, so an
+    # unbounded capture runs to the end of the document: one produced 40,998
+    # characters — the whole report filed as a probable cause. It would have
+    # passed every length check downstream and read as nonsense on the page.
+    #
+    # 6000 is taken from the corpus: the 90th percentile here is 1,831, and the
+    # longest genuine sections elsewhere are 3,707 (Philippines) and 2,227
+    # (Croatia). Four Bahrain captures exceeded it, all four the heading
+    # matching somewhere it should not.
+    rest = text[m.end(): m.end() + _PC_WINDOW]
+    end = _PC_TERMINATOR_RE.search(rest)
+    body = rest[: end.start()] if end else rest
+
+    body = _PC_FURNITURE_RE.sub("", body)
+    body = _PC_BULLET_RE.sub("", body)
+
+    out = []
+    for ln in (l.strip() for l in body.splitlines()):
+        if not ln:
+            continue
+        if out and not out[-1].endswith((".", ";", ":")):
+            out[-1] = out[-1] + " " + ln
+        else:
+            out.append(ln)
+    joined = re.sub(r"\s+", " ", " ".join(out)).strip()
+    joined = re.sub(r"\s+\d+(?:\.\d+)*[.)]?\s*$", "", joined).strip()
+    if end is None and len(joined) > PROBABLE_CAUSE_MIN:
+        # No terminator: the window decided where this stopped, so cut back to
+        # the last sentence rather than ending mid-clause.
+        cut = joined.rfind(". ")
+        if cut > PROBABLE_CAUSE_MIN:
+            joined = joined[: cut + 1]
+    return joined if len(joined) >= PROBABLE_CAUSE_MIN else None
