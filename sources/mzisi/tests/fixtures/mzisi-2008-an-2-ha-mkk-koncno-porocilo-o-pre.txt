@@ -1,0 +1,2158 @@
+MINISTRSTVO ZA PROMET
+REPUBLIKA SLOVENIJA
+
+SEKTOR ZA PREISKOVANJE LETALSKIH NESREČ IN INCIDENTOV
+www.mzp.gov.si, e: gp.mzp@gov.si
+Langusova 4, 1535 Ljubljana, t: 01 478 80 00, f: 01 478 81 89
+
+Številka: 37200-2/2008/69-0010132
+Datum: 12.04.2010
+
+KONČNO POROČILO
+Letalska nesreča
+AN-2
+Registrska oznaka HA-MKK
+11.01.2008 ob 11:28 UTC
+Javor pri Sveti Planini nad Trbovljami, Republika Slovenija
+
+KONČNO POROČILO An-2 HA-MKK
+
+KAZALO
+UVOD........................................................................................................................................ 4
+SESTAVA KOMISIJE ZA PREISKOVANJE LETALSKE NESREČE........................... 5
+POVZETEK ............................................................................................................................. 6
+1. DEJSTVA ............................................................................................................................. 7
+1.1 PODATKI O LETU................................................................................................................ 7
+1.2 PODATKI O POŠKODBAH V DOGODKU UDELEŽENIH OSEB ................................................... 8
+1.3 PODATKI O POŠKODBAH ZRAKOPLOVA .............................................................................. 9
+1.4 PODATKI O OSTALI ŠKODI .................................................................................................. 9
+1.5 PODATKI O OSEBJU ............................................................................................................ 9
+1.5.1 Pilot – vodja zrakoplova ........................................................................................... 9
+1.6 PODATKI O ZRAKOPLOVU ................................................................................................ 12
+1.7 METEOROLOŠKI PODATKI ................................................................................................ 13
+1.7.1 Splošna sinoptična situacija.................................................................................... 13
+1.7.2 Nevarnosti vremenskih razmer 11.01.2008 med 08:00 UTC(*) in 14:00 UTC(*) . 16
+1.7.3 GAFOR depeše........................................................................................................ 17
+1.7.4 METAR depeše........................................................................................................ 17
+1.7.5 Vremenske razmere na vzletišču ŠENTVID pri Stični med 11:00 UTC(*) in
+12:00 UTC(*).......................................................................................................... 17
+1.7.6 Vremenske razmere na letališču Ptuj (LJPT) ......................................................... 18
+1.7.7 Vremenske razmere na območju Javorja pri Sveti Planini med
+11:00 UTC(*) in 12:00 UTC(*) .............................................................................. 18
+1.8 PODATKI O NAVIGACIJSKIH SREDSTVIH ........................................................................... 18
+1.9 PODATKI O RADIJSKI ZVEZI.............................................................................................. 18
+1.10 PODATKI O LETALIŠČU .................................................................................................. 18
+1.11 PODATKI O REGISTRATORJIH LETA ................................................................................ 19
+1.12 PODATKI Z MESTA NESREČE .......................................................................................... 19
+1.13 MEDICINSKI IN PATOLOŠKI PODATKI ............................................................................. 19
+1.14 PODATKI O POŽARU ....................................................................................................... 19
+1.15 PODATKI O MOŽNOSTIH PREŽIVETJA .............................................................................. 19
+1.16 POTEK PREISKAVE ......................................................................................................... 20
+1.17 PODATKI O OPERATORJU ............................................................................................... 21
+
+2
+
+KONČNO POROČILO An-2 HA-MKK
+
+1.18 OSTALI PODATKI ........................................................................................................... 21
+1.19 UPORABLJENE TEHNIKE PREISKAVE .............................................................................. 22
+2. ANALIZA ........................................................................................................................... 23
+2.1 PRIPRAVA ZA LET ............................................................................................................ 23
+2.2 VREMENSKE OKOLIŠČINE NA ZRAČNI POTI ...................................................................... 24
+2.3 POTEK LETA .................................................................................................................... 24
+2.4 MESTO NESREČE.............................................................................................................. 25
+2.5 ČLOVEŠKI FAKTOR .......................................................................................................... 25
+2.6 TEHNIČNI VIDIK............................................................................................................... 26
+3. ZAKLJUČKI...................................................................................................................... 27
+3.1 UGOTOVITVE ................................................................................................................... 27
+3.2 VZROK NESREČE ............................................................................................................. 28
+4. VARNOSTNA PRIPOROČILA....................................................................................... 29
+DODATKI: ............................................................................................................................. 30
+DODATEK A: POT LETA ......................................................................................................... 31
+DODATEK B: POSNETKI RADARSKE SLIKE.............................................................................. 32
+DODATEK C: PREPIS GLASOVNE KOMUNIKACIJE.................................................................... 34
+DODATEK D: METEOROLOŠKA SITUACIJA IN SPOROČILA ....................................................... 38
+DODATEK E: FOTOGRAFSKI POSNETKI MESTA NESREČE ........................................................ 58
+DODATEK F: FOTOGRAFSKI POSNETKI TEHNIČNE PREISKAVE RAZBITIN LETALA ................... 61
+
+3
+
+KONČNO POROČILO An-2 HA-MKK
+
+UVOD
+Končno poročilo o preiskavi letalske nesreče vsebuje dejstva, analizo, vzroke in varnostna
+priporočila, ki jih je ugotovila komisija za preiskovanje letalske nesreče glede na okoliščine v
+katerih se je nesreča pripetila.
+V skladu s Prilogo številka 13 k Čikaški konvenciji ter na podlagi četrtega odstavka 137. člena
+Zakona o letalstvu (Uradni list RS, št. 113/06 UPB-1), Uredbe o preiskovanju letalskih nesreč,
+resnih incidentov in incidentov (Uradni list RS, št. 72/03 in 110/05) ni namen končnega poročila o
+letalski nesreči ugotavljanje krivde ali individualne oziroma kolektivne odgovornosti. Osnovni cilj
+končnega poročila je preprečevanje letalskih nesreč in zmanjšanje tveganj v prihodnosti.
+Nedvomno mora končno poročilo o letalski nesreči koristiti varnosti letenja.
+Pomembno je, da se končno poročilo o letalski nesreči uporablja za preprečevanje letalskih nesreč.
+Uporaba končnega poročila o letalski nesreči v druge namene namreč lahko privede do napačne
+interpretacije.
+
+4
+
+KONČNO POROČILO An-2 HA-MKK
+
+SESTAVA KOMISIJE ZA PREISKOVANJE LETALSKE NESREČE
+Vodja Sektorja za preiskovanje letalskih nesreč in incidentov pri Ministrstvu za Promet
+Republike Slovenije je na podlagi tretjega odstavka 138. člena Zakona o letalstvu
+(Uradni list RS, št. 113/06 – UPB1) in na podlagi 7. člena Uredbe o preiskovanju letalskih nesreč,
+resnih incidentov in incidentov (Uradni list RS, št. 72/03 in 110/05) s sklepom številka
+37200-2/2008/1-0010132 z dne 11.01.2008 imenoval komisijo za preiskovanje letalske nesreče
+letala splošne kategorije tip An-2 registrske oznake HA-MKK, z namenom preiskovanja okoliščin v
+katerih se je nesreča pripetila, ugotavljanja vzrokov letalske nesreče in pripravo varnostnih
+priporočil za preprečevanje letalskih nesreč v prihodnje.
+
+Sestava komisije:
+
+1. Roman ROVANŠEK, Ministrstvo za promet, Sektor za preiskovanje letalskih nesreč in
+incidentov, glavni preiskovalec
+
+2. Matija ŠKRLEC, pilot inštruktor letala An-2, letalski strokovnjak, član
+
+3. Nebojša KRIČAK, letalski tehnik z dovoljenjem za vzdrževanje letal An-2, član
+
+4. mag. Frenk KRIŠTOFELC, pooblaščeni zdravnik za opravljanje zdravniških pregledov
+letalskega in drugega strokovnega osebja, član
+
+5
+
+KONČNO POROČILO An-2 HA-MKK
+
+POVZETEK
+1. Datum in čas nesreče: 11.01.2008 ob 11:28:00 UTC(*)
+2. Zrakoplov: An-2 S/H
+3. Registrska oznaka: HA-MKK
+4. Mesto nesreče: Hrib Javor pri Sveti Planini nad Trbovljami, Republika Slovenija
+5. Tip leta: VFR na ruti (VFR - ang. Visual Flight Rules - Pravila vizualnega letenja)
+6. Lastnik: Zavod ŠOLT, Cesta 27 aprila 31/7, 1000 Ljubljana, SLOVENIJA
+7. Operator: AVIA-RENT Kft., HUNGARY 1118 Budapest, Rétköz ut.4
+8. Posledice:
+8.1 Poškodbe oseb:
+
+Poškodbe
+
+Posadka
+
+Potniki
+
+Ostali
+
+Smrtne
+
+1
+
+-
+
+-
+
+Težke
+
+-
+
+1
+
+-
+
+Lažje / Nepoškodovani
+
+-
+
+-
+
+8.2 Poškodbe letala: 100% uničeno
+8.3 Poškodbe opreme: 100% uničena
+
+(*) V tem poročilu je uporabljen mednarodni srednjeevropski čas – UTC (ang. Universal Time Co-ordinated).
+Na dan nesreče je za slovenski lokalni čas potrebno dodati eno uro (UTC+1).
+
+6
+
+KONČNO POROČILO An-2 HA-MKK
+
+1. DEJSTVA
+1.1 Podatki o letu
+Dne 11.01.2008 ob 10:31:00 UTC(*) je pilot pri Uradu službe zrakoplovnih informacij
+AIS/ARO (LJLJ) oddal načrt poleta (ang. Flight Plan) za polet v skladu s splošnimi pravili
+vizualnega letenja VFR (ang. Visual Flight Rules) v vizualnih meteoroloških razmerah VMC
+(ang. Visual Meteorological Conditions). Pilot je načrtoval polet v nekontroliranem zračnem
+prostoru razreda "G" Republike Slovenije iz vzletišča ŠENTVID N45° 56' 39'' E 14° 51' 18''
+Šentvid pri Stični do letališča Maribor (LJMB) z zrakoplovom splošne kategorije tip An-2 z
+registrsko oznako HA-MKK. V načrtu poleta je pilot najavil dve osebi v zrakoplovu in
+skupno predviden čas leta 27 minut.
+Iz letališča Maribor (LJMB) naj bi pilot in njegov sopotnik še isti dan nadaljevala polet v
+Republiko Madžarsko, najprej v kraj Sármallék (LHSM) in nato v kraj Kaposvár (LHKV), kjer naj
+bi v pooblaščeni servisni organizaciji na letalu opravili redni 200 urni vzdrževalni
+pregled in zamenjavo platna na krilih.
+Dne 11.01.2008 je bila prisotna nizka oblačnost oziroma megla, ki se je zadrževala ponekod
+po nižinah in kotlinah Prekmurja in Dolenjske. Zahodno Slovenijo ter Ljubljansko kotlino je
+prekrival kompakten sloj nizke Sc (op. Stratocumulus) oblačnosti. Nad Dolenjsko, Celjsko
+kotlino ter Savinjsko je bila nizka oblačnost v obliki Sc (op. Stratocumulus) in
+Cu (op. Cumulus) v skupni količini od 3/8 do 7/8. Nad Štajersko in Dolenjsko je bilo od 3/8
+do 7/8 nizke Cu (op. Cumulus) in Sc (op. Stratocumulus) oblačnosti. Višina baze oblakov se
+je gibala od 4000 ft (1219,20 m) do 5000 ft (1524,00 m) nad morjem. V zahodni in osrednji
+Sloveniji so bili vrhovi hribov z višino nad 1000 m (3280,84 ft ) večinoma v oblakih.
+Glede na prisotnost nizke oblačnosti v dopoldanskem času in predvideno pokritost hribov v
+zahodni in osrednji Sloveniji čez dan, se je dežurni prognostik GAFOR napovedi (op. 6 urna
+prognoza za splošno letalstvo VFR, ang. General Aviation Forecast) odločil, da bo za večino
+zračnih poti napovedal, da ne bo vremenskih pogojev za VFR letenje. Prva jutranja GAFOR
+napoved izdana ob 05:00:00 UTC(*) je predvidevala nekaj izboljšanja pogojev za vzhodno
+Slovenijo, vendar jo je glede na razvoj vremena dežurni prognostik ustrezno korigiral in pustil
+vse zračne poti (op. izdano 08:00:00 UTC(*) in 11:00:00 UTC(*)) praktično zaprte za VFR
+letenje.
+
+7
+
+KONČNO POROČILO An-2 HA-MKK
+
+Ob 11:02:54 UTC(*) je pilot vzletel na vzletišču ŠENTVID. Ob 11:05:54 UTC(*) se je prvič
+preko radijske zveze na frekvenci 118.475 MHz javil informacijski službi za letenje FIS
+(ang.
+
+Flight
+
+Information
+
+Service)
+
+območne
+
+kontrole
+
+zračnega
+
+prometa
+
+Ljubljana
+
+(ang. Ljubljana Information). Operater informacijske službe za letenje je pilotu dal napotke za
+nadaljnje izvajanje VFR leta, podatek QNH (op. zračni tlak na nivoju morja), točko javljanja
+MS2 (op. Slovenske Konjice) ter potrditev squawka 2000 (op. koda radarskega odzivnika –
+ang. Transponder). Pilot je potrdil sprejem napotkov operaterja in nadaljeval let proti točki
+javljanja MS2.
+Zaradi slabih vizualnih meteoroloških razmer na zračni poti v smeri leta proti točki javljanja
+MS2 je pilot letalo usmeril v nasprotno smer proti odhodnemu vzletišču ŠENTVID. Ob
+11:19:23 UTC(*) je bilo letalo nad krajem Litija na višini 3200 ft (975.36 m). Zaradi
+spremembe smeri leta in letenja proti CTR Ljubljana (op. CTR - kontrolirana cona) je
+operater informacijske službe za letenje pilota vprašal po namenih. Pilot je operaterju
+sporočil, da se izogiba oblakom zaradi vizualnih meteoroloških razmer. Ker je pilot z letalom
+že vstopal v kontrolirano cono CTR Ljubljana je operater pilotu dal navodila, da bolj zahodno
+ne sme leteti in da naj ostane pod višino 3500 ft (1066,80 m) zaradi instrumentalnih IFR (ang.
+Instrument Flight Rules) prihodov letal v Ljubljano (LJLJ). Pilot je potrdil sprejem navodil
+operaterja in ob 11:21:51 UTC(*) usmeril letalo proti vzhodu na radial 060° VALLU. Ob
+11:23:06 UTC(*) je imel pilot zadnjo glasovno izmenjavo z operaterjem informacijske službe
+za letenje FIS (ang. Flight Information Service) območne kontrole zračnega prometa
+Ljubljana (ang. Ljubljana Information). Letalo je ob 11:27:49 UTC(*) izginilo iz radarskega
+zaslona. Ob 11:28:00 UTC(*) je letalo na nadmorski višini 1075 metrov trčilo v hrib Javor
+(1133m) N 46°10.816' E 015° 00.908' pri Sveti Planini nad Trbovljami. Pri trčenju je prišlo
+do razlitja celotne količine goriva, požara in popolnega uničenja zrakoplova. Pilot je bil
+smrtno poškodovan, sopotnik je bil težko poškodovan.
+1.2 Podatki o poškodbah v dogodku udeleženih oseb
+
+Poškodbe
+
+Posadka
+
+Potnik
+
+Ostali
+
+Smrtne
+
+1
+
+-
+
+-
+
+Težke
+
+-
+
+1
+
+-
+
+Lažje / Nepoškodovani
+
+-
+
+-
+
+8
+
+KONČNO POROČILO An-2 HA-MKK
+
+1.3 Podatki o poškodbah zrakoplova
+Letalo in oprema letala sta bila pri trčenju in kasneje požaru 100% uničena.
+1.4 Podatki o ostali škodi
+Letalo je najprej trčilo v vrhove dreves in nato na pobočje hriba Javor. Pri trčenju je bilo
+skupno poškodovanih 16 dreves in manjša količina gozdne podrasti na mestu požara. Ostale
+škode ni bilo.
+1.5 Podatki o osebju
+1.5.1 Pilot – vodja zrakoplova
+Pilot:
+
+Moški, star 51 let
+
+Državljanstvo:
+
+Slovensko
+
+Letalska licenca:
+
+CPL (A) NATIONAL
+Licenca poklicnega pilota / Commercial Pilot Licence
+Datum izdaje: 26.08.1998
+Veljavnost do: 29.08.2008
+Posebna pooblastila / Ratings:
+SEP (LAND) Eno-motorni (batni motor) / Single Engine Piston
+Datum izdaje: 26.08.1998
+Zadnje podaljšanje: 15.07.2006
+Veljavnost do: 26.08.2008
+AN-2
+Datum izdaje: 30.11.1998
+Zadnje podaljšanje: 12.08.2007
+Veljavnost do: 25.08.2009
+
+Validacija licence:
+
+13.06.2007 validirana od madžarskih letalskih oblasti
+
+Skupni nalet na AN-2:
+
+Ni podatka - pilotova knjižica letenja je bila pri nesreči uničena
+
+Ostala pilotska dovoljenja:
+
+PPL - Dovoljenje športnega pilota letala / Private Pilot Licence
+Datum izdaje: 11.07.1994
+Zadnje podaljšanje: 30.07.2001
+Veljavnost do: 30.06.2002
+Skupni nalet pri zadnjem podaljšanju: 923 ur, 28 minut
+
+9
+
+KONČNO POROČILO An-2 HA-MKK
+
+GPL - Dovoljenje pilota jadralnega letala / Glider Pilot Licence
+Datum izdaje: 15.09.1993
+Zadnje podaljšanje: 30.07.2007
+Veljavnost do: 30.07.2009
+Skupni nalet pri zadnjem podaljšanju: 315 ur, 56 minut
+DPJZ - Dovoljenje pilota jadralnega zmaja
+Datum izdaje: 30.07.1999
+Veljavnost do: Velja neomejeno
+DPZ - Dovoljenje pilota zmaja
+Datum izdaje: 01.06.1992
+Zadnje podaljšanje: 30.07.1997
+Veljavnost do: Velja neomejeno
+Skupni nalet pri zadnjem podaljšanju: 813 ur, 35 minut
+Posebna pooblastila / Ratings:
+Učitelj motornih zmajev
+Datum izdaje: 29.05.1992
+ULN - Dovoljenje pilota ULN
+Datum izdaje: 05.11.1996
+Zadnje podaljšanje: 30.07.2005
+Veljavnost do: 30.07.2009
+Skupni nalet pri podaljšanju 30.07.1997: 2020 ur, 22 minut
+Posebna pooblastila / Ratings:
+UL motorno letalo / UL Airplane
+Datum izdaje: 13.05.1994
+Učitelj / Instructor
+Datum izdaje: 15.01.1996
+Motorni zmaj / Powered Hang Glider
+Datum izdaje: 29.05.1992
+Učitelj / Instructor
+Datum izdaje: 29.05.1992
+UL Test pilot
+Datum izdaje: 30.07.1995
+
+10
+
+KONČNO POROČILO An-2 HA-MKK
+
+Zdravniško spričevalo:
+
+Spričevalo 1. razreda / Medical Certificate Class 1
+Zadnji splošni zdravniški pregled: 27.07.2007
+Veljavnost splošnega zdravniškega pregleda do: 06.02.2008
+
+Letalsko tehnična dovoljenja: Del-66 Licenca za vzdrževanje zrakoplova /
+Part-66 Aircraft Maintenance Licence
+Datum izdaje: 06.12.2006
+Veljavnost do: 06.12.2011
+Type / Ratings:
+AN-2
+Kategorija: B1, od: 31.05.2005
+JAK-52
+Kategorija: B1, od: 31.05.2005
+PIPER SEP ENGINE- METAL STRUCTURE
+Kategorija: B1, od: 31.05.2005
+CESSNA SEP ENGINE-METAL STRUCTURE
+Kategorija: B1, od: 31.05.2005
+EMBRAER EMB 120 (PWC 118)
+Kategorija B1, od: 06.12.2006
+Nacionalni privilegij zunaj področja uporabe Dela 66
+Jadralna letala / Gliders
+BLANIK L13, od: 08.12.2006
+BLANIK L23, od: 08.12.2006
+Ostala strokovna dovoljenja: LSO - Dovoljenje za delo letališkega strokovnega osebja
+Datum izdaje: 10.04.1997
+Veljavnost do: 30.07.2002
+Posebna pooblastila / Ratings:
+Parker-Signalist, od: 15.03.1997
+Voznik-Polnilec, od: 15.03.1997
+Manipulant z gorivom in mazivom, od: 15.03.1997
+
+11
+
+KONČNO POROČILO An-2 HA-MKK
+
+1.6 Podatki o zrakoplovu
+Vsa dokumentacija, ki se je nahajala v letalu je pri požaru zgorela. Iz prejete dokumentacije
+od lastnika letala, Direktorata za civilno letalstvo Ministrstva za promet Republike Slovenije in
+madžarskih letalskih oblasti, Hungary National Transport Authority, Directorate for Air Transport
+so razvidni naslednji podatki:
+•
+
+Zrakoplov:
+
+ANTONOV
+
+•
+
+Tip zrakoplova:
+
+An-2 S/H
+
+•
+
+Številka tipskega certifikata:
+
+L.1/2835/1986
+
+•
+
+Serijska številka:
+
+1G17853
+
+•
+
+Leto izdelave:
+
+1978
+
+•
+
+Maksimalna vzletna masa (MTOM):
+
+5500 kg
+
+•
+
+Proizvajalec:
+
+WSK PZL MIELEC, Poljska
+
+•
+
+Registrska oznaka:
+
+HA-MKK
+
+•
+
+Država registracije:
+
+Republika Madžarska
+
+•
+
+Lastnik:
+
+Zavod ŠOLT, Cesta 27 aprila 31/7,
+1000 Ljubljana
+
+•
+
+Potrdilo o vpisu v Register zrakoplovov:
+
+Izdano 31.05.2007
+
+•
+
+Spričevalo o plovnosti:
+
+Izdano 31.05.2007, veljavno do 19.04.2008
+
+•
+
+Zadnji servisni pregled:
+
+23.09.2007, 50 urni, pri skupnem naletu letala
+7491 ur in 3905 ciklov
+
+•
+
+Tip motorja:
+
+AS-621 R/16
+
+•
+
+Serijska številka:
+
+K1631322
+
+•
+
+Zadnji servisni pregled:
+
+23.09.2007, 50 urni
+
+•
+
+Tip propelerja:
+
+AV-2-SER-02-000PS
+
+•
+
+Serijska številka:
+
+024340111
+
+•
+
+Zadnji servisni pregled:
+
+23.09.2007, 50 urni
+
+•
+
+Vrsta goriva v uporabi:
+
+Motorni bencin Eurosuper 95
+
+•
+
+Datum zadnjega polnjenja goriva:
+
+26.12.2007
+
+•
+
+Količina dopolnjenega goriva:
+
+600 litrov
+
+•
+
+Skupna količina goriva pred zadnjim letom: približno 800 litrov
+
+12
+
+KONČNO POROČILO An-2 HA-MKK
+
+1.7 Meteorološki podatki
+Meteorološke podatke o stanju vremena na dan nesreče je komisija pridobila od Agencije
+Republike Slovenije za okolje, Sektorja za letalsko meteorologijo.
+1.7.1 Splošna sinoptična situacija
+Nad zahodno Evropo je bila obsežna dolina nizkega zračnega pritiska, nad vzhodnim
+Sredozemljem območje visokega zračnega pritiska.
+Vreme po Sloveniji:
+ Veter
+Nad Slovenijo so prevladovali zmerni jugozahodni vetrovi. Od višine FL050 do višine FL100,
+je meteorološki model ALADIN izračunal veter s hitrostjo okrog 25 vozlov. Veter je nad
+osrednjo Sloveniji na višini okrog FL050 pihal s hitrostjo okrog 20 vozlov, ter sunki do 30
+vozlov. Nižje na višini FL030 (Lisca 943 m) je veter pihal s hitrostjo 12 vozlov ter sunki do
+25 vozlov, na višini FL020 (Vnajnarje 630 m), je pihal s hitrostjo 5 vozlov ter sunki do 10
+vozlov. Na vseh višinah je pihal veter jugozahodne smeri. Po nižinah in kotlinah je veter pri tleh
+zapihal le ponekod.
+ Oblačnost
+Iz satelitske slike je bila razvidna nizka oblačnost oziroma megla, ki se je še zadrževala
+ponekod po nižinah in kotlinah Prekmurja in Dolenjske. Zahodno Slovenijo ter Ljubljansko
+kotlino je prekrival kompakten sloj nizke Sc (op. Stratocumulus) oblačnosti. Nad Dolenjsko,
+Celjsko kotlino ter Savinjsko je bila nizka oblačnost v obliki Sc (op. Stratocumulus) in Cu
+(op. Cumulus) v skupni količini od 3/8 do 7/8. Nad Štajersko in Dolenjsko je bilo od 3/8 do
+7/8 nizke Cu (op. Cumulus) in Sc (op. Stratocumulus) oblačnosti. Višina baze oblakov se je
+gibala od 4000 ft (1219,20 m) do 5000 ft (1524,00 m) nad morjem. V zahodni in osrednji
+Sloveniji so bili vrhovi hribov z višino nad 1000 metrov večinoma v oblakih.
+
+13
+
+KONČNO POROČILO An-2 HA-MKK
+
+Meteorološke postaje so zabeležile sledeča opazovanja oblakov:
+Ura
+
+Lisca
+
+Celje
+
+Letališče Cerklje
+ob Krki
+
+08 UTC(*)
+
+Skupna oblačnost 6/8
+
+Ob 08 UTC(*) ni opazovanj
+
+Megla
+
+Ob 09 UTC(*) ni opazovanj
+
+Megla
+
+Nizka oblačnost 6/8
+09 UTC(*)
+
+6/8 Sc baza 4500 ft
+Skupna oblačnost 4/8
+Nizka oblačnost 4/8
+2/8 Sc baza 4500 ft
+2/8 Cu baza 4400 ft
+
+10 UTC(*)
+
+Skupna oblačnost 6/8 Ob 10 UTC(*) ni opazovanj Megla
+Nizka oblačnost 5/8
+2/8 Sc baza 4500 ft
+3/8 Cu baza 4400 ft
+
+11 UTC(*)
+
+Skupna oblačnost 6/8 Ob 11 UTC(*) ni opazovanj Megla
+Nizka oblačnost 5/8
+3/8 Sc baza
+
+4500 ft
+
+3/8 Cu baza 4400 ft
+12 UTC(*)
+
+13 UTC(*)
+
+14 UTC(*)
+
+Skupna oblačnost 7/8 Skupna oblačnost 6/8
+Nizka oblačnost 6/8
+
+Nizka oblačnost 6/8
+
+3/8 Sc baza
+
+4500 ft
+
+2/8 Sc baza 4700 ft
+
+3/8 Cu baza 4400 ft
+
+5/8 Cu baza 5000 ft
+
+Skupna oblačnost 7/8
+
+Skupna oblačnost 7/8
+
+Nizka oblačnost 6/8
+
+Nizka oblačnost 7/8
+
+3/8 Sc baza 4500 ft
+
+1/8 Sc baza 3800 ft
+
+3/8 Cu baza 4400 ft
+
+7/8 Cu baza 4800 ft
+
+Skupna oblačnost 7/8
+
+Ob 14 UTC(*) ni opazovanj
+
+Nizka oblačnost 6/8
+3/8 Sc baza 4500 ft
+3/8 Cu baza 4400 ft
+
+Megla
+
+SCT002
+BKN040
+(SCT009 BKN047
+višini glede na
+MSL)
+SCT005
+BKN035
+(SCT012 BKN053
+višini glede na
+MSL)
+
+14
+
+KONČNO POROČILO An-2 HA-MKK
+
+Meteorološke postaje so zabeležile sledeča opazovanja oblakov:
+Ura
+
+Ljubljana
+
+Letališče Maribor
+
+Letališče Cerklje ob Krki
+
+08 UTC(*)
+
+Skupna oblačnost 8/8
+
+Megla
+
+Megla
+
+Megla
+
+Megla
+
+Nizka oblačnost 8/8
+09 UTC(*)
+
+8/8 Sc baza 4900 ft
+Skupna oblačnost 8/8
+Nizka oblačnost 8/8
+4/8 Sc baza 3500 ft
+8/8 Sc baza 5000 ft
+
+10 UTC(*) Skupna oblačnost 8/8 Skupna oblačnost 0/8
+Megla
+Megla z vidnim nebom
+Nizka oblačnost 8/8
+5/8 Sc baza 3500 ft
+8/8 Sc baza 5000 ft
+11 UTC(*) Skupna oblačnost 8/8 Skupna oblačnost 3/8
+Nizka oblačnost 8/8
+
+Nizka oblačnost 3/8
+
+2/8 Sc baza
+
+3500 ft
+
+3/8 Sc baza 4900 ft
+
+8/8 Sc baza
+
+5000 ft
+
+12 UTC(*) Skupna oblačnost 8/8 Skupna oblačnost 8/8
+
+13 UTC(*)
+
+Nizka oblačnost 8/8
+
+Nizka oblačnost 3/8
+
+5/8 Sc baza
+
+3500 ft
+
+3/8 Sc baza 3900 ft
+
+8/8 Sc baza
+
+5000 ft
+
+Skupna oblačnost 8/8
+
+Skupna oblačnost 2/8
+
+Nizka oblačnost 8/8
+
+Nizka oblačnost 1/8
+
+3/8 Sc baza 3500 ft
+
+1/8 Sc baza 3900 ft
+
+Megla
+
+Megla
+
+Megla
+
+3/8 Cu baza 5000 ft
+14 UTC(*)
+
+Skupna oblačnost 8/8
+
+Skupna oblačnost 2/8
+
+Ob 14 UTC(*)
+
+Nizka oblačnost 8/8
+
+Nizka oblačnost 2/8
+
+ni opazovanj
+
+5/8 Sc baza 3500 ft
+
+2/8 Sc baza 3900 ft
+
+8/8 Su baza 5000 ft
+
+15
+
+KONČNO POROČILO An-2 HA-MKK
+
+ Padavine
+V zahodni Sloveniji so se pojavljale padavine, pri čemer je bila meja sneženja na višini FL060.
+Padavine so bile šibke, tako da jih radar ni zaznal. Padavin v notranjosti ni bilo.
+ Vidnost
+Megla po nižinah in kotlinah se je čez dan razkrojila. Najprej v Celjski kotlini in okolici Maribora
+kjer se je razkrojila okrog poldneva, popoldne pa še na Dolenjskem in Prekmurju. V Ljubljanski
+kotlini je bila vidnost okrog 8 km, medtem ko je bila drugod v notranjosti nad
+
+10 km.
+
+Postaja
+
+08 UTC(*)
+
+09 UTC(*)
+
+10 UTC(*)
+
+11 UTC(*)
+
+12 UTC(*)
+
+13 UTC(*)
+
+14 UTC(*)
+
+Lisca
+
+20 000 m
+
+20 000 m
+
+20 000 m
+
+20 000 m
+
+20 000 m
+
+20 000 m
+
+20 000 m
+
+Novo mesto
+
+100 m
+
+50 m
+
+50 m
+
+50 m
+
+50 m
+
+200 m
+
+/
+
+Ljubljana
+
+8 000 m
+
+8 000 m
+
+8 000 m
+
+8 000 m
+
+8 000 m
+
+7 000 m
+
+7 000 m
+
+Maribor
+
+200 m
+
+50 m
+
+200 m
+
+10 000 m
+
+20 000 m
+
+20 000 m
+
+20 000 m
+
+Celje
+
+/
+
+/
+
+/
+
+/
+
+20 000 m
+
+10 000 m
+
+/
+
+Cerklje ob Krki
+
+200 m
+
+300 m
+
+250 m
+
+200 m
+
+300 m
+
+800 m
+
+4 000 m
+
+Opazovana vidnost na meteoroloških postajah
+
+1.7.2 Nevarnosti vremenskih razmer 11.01.2008 med 08:00 UTC(*) in 14:00 UTC(*)
+ Turbulenca
+Nad Severno Slovenijo je bila predvidena zmerna turbulenca nad FL030, med FL020 in FL030 pa
+šibka turbulenca. Glede na intenziteto turbulence sta bili izdani AIRMET depeši / opozorili:
+LJLA AIRMET 3 VALID 110900/111200 LJLJLJLA
+LJUBLJANA FIR MOD TURB FCST ABV FL030 STNR NC=
+in
+LJLA AIRMET 5 VALID 111200/111600 LJLJLJLA
+LJUBLJANA FIR MOD TURB FCST ABV FL030 STNR NC=
+
+16
+
+KONČNO POROČILO An-2 HA-MKK
+
+ Zaledenitev
+Nad zahodno Slovenijo je bila predvidena zmerna zaledenitev nad FL060. Glede na
+intenziteto zaledenitve je bila izdana AIRMET depeša za zmerne zaledenitve:
+LJLA AIRMET 4 VALID 111115/111500 LJLJLJLA LJUBLJANA FIR MOD ICE FCST W OF E01430 ABV FL060 STNR NC=
+1.7.3 GAFOR depeše
+Glede na prisotnost nizke oblačnosti v dopoldanskem času in predvideno pokritost hribov v
+zahodni in osrednji Sloveniji čez dan se je dežurni prognostik odločil, da bo za večino zračnih
+poti napovedal, da ne bo vremenskih pogojev za VFR letenje. Prva jutranja GAFOR napoved
+izdana ob 05:00:00 UTC(*) je predvidevala nekaj izboljšanja pogojev za vzhodno Slovenijo,
+vendar jo je glede na razvoj vremena dežurni prognostik ustrezno korigiral in pustil vse
+zračne poti (op. izdano 08:00:00 UTC(*) in 11:00:00 UTC(*)) praktično zaprte za VFR
+letenje.
+1.7.4 METAR depeše
+Sporočilo o vremenu na letališču Ljubljana (LJLJ):
+LJLJ 111200Z 00000KT 9999 FEW003 BKN028 02/02 Q1020 NOSIG=
+LJLJ 111230Z VRB01KT 9999 FEW003 BKN028 02/02 Q1020 NOSIG=
+Sporočilo o vremenu na letališču Maribor (LJMB):
+LJMB 111200Z 19013KT 9999 SCT030 07/04 Q1018=
+LJMB 111230Z 20013KT 180V250 9999 SCT030 10/06 Q1017=
+Sporočilo o vremenu na letališču Celje (LJCE):
+LJCE 111200Z 00000KT 0300 FG VV001 00/00 Q1021 RMK RED=
+LJCE 111230Z VRB01KT 0300 FG VV001 00/00 Q1020 RMK RED=
+1.7.5 Vremenske razmere na vzletišču ŠENTVID pri Stični med 11:00 UTC(*) in 12:00 UTC(*)
+Vzletišče Šentvid pri Stični je bilo izven območja pokritega s stratusom oziroma meglo.
+Vidnost je bila nad 10 km. Pihal je šibak veter zahodne smeri s hitrostjo do 5 vozlov. Nebo je
+pokrivala nizka oblačnost stratokumulusne oblačnosti v skupni količini med 4/8 in 7/8 ter z bazo na
+višini med FL040 in FL050. Padavin ni bilo.
+
+17
+
+KONČNO POROČILO An-2 HA-MKK
+
+1.7.6 Vremenske razmere na letališču Ptuj (LJPT)
+Megla na območju letališča se je proti poldnevu razkrojila tako, da se je vidnost izboljšala iz
+200 m na nad 10 km. Pihati je začel veter jugozahodne smeri s hitrostjo do 12 vozlov. V
+popoldanskem času je bilo do 3/8 stratokumulusne oblačnosti z višino baze na FL040.
+1.7.7 Vremenske razmere na območju Javorja pri Sveti Planini med 11:00 UTC(*) in 12:00 UTC(*)
+Na območju Javorja pri Sveti planini je pihal veter jugozahodne smeri s hitrostjo 12 vozlov ter
+sunki do 25 vozlov. Prisotna je bila zmerna turbulenca nad FL030 ter šibka turbulenca med
+FL020 in FL030. Vidnost je bila nad 10 km. Stratokumulusna oblačnost je pokrivala od 5/8
+do 7/8 neba z bazo na višini med FL040 in FL050. Vrhovi posameznih najvišjih hribov v
+okolici so bili v oblaku. Šibka zaledenitev je bila prisotna znotraj oblačnosti nad FL060.
+1.8 Podatki o navigacijskih sredstvih
+Letalo je bilo opremljeno z osnovnimi instrumenti, merilec hitrosti, višinomer in kompas, kar
+je zadostovalo za polet v vizualnih meteoroloških pogojih VMC. V letalu je bila dodatno
+vgrajena »GPS« (op. neletalska) naprava namenjena za lažje vodenje navigacije, ki ni podprta
+s podatki o višini terena, temveč daje podatke o poziciji v prostoru in razdaljo med točkami.
+1.9 Podatki o radijski zvezi
+Pilot je letel v nekontroliranem zračnem prostoru Republike Slovenije razreda "G" v katerem
+so dovoljeni poleti brez radijske zveze. Pilot je imel vzpostavljeno radijsko zvezo na
+frekvenci 118.475 MHz z letalsko informacijsko službo FIS (ang. FIS – Flight Information
+Service) območne kontrole zračnega prometa Ljubljana (LJUBLJANA INFORMATION). Pri
+poslušanju zvočnega zapisa pogovorov pilota z letalsko informacijsko službo FIS je bilo
+ugotovljeno, da je glasovna komunikacija v celotnem času leta potekala nemoteno in v skladu
+z veljavnimi predpisi.
+1.10 Podatki o letališču
+Ker se je nesreča zgodila na zračni poti podatki o letališču niso pomembni.
+
+18
+
+KONČNO POROČILO An-2 HA-MKK
+
+1.11 Podatki o registratorjih leta
+Letalo ni bilo opremljeno z registratorji leta, ker jih predpisi za to kategorijo zrakoplovov ne
+zahtevajo.
+1.12 Podatki z mesta nesreče
+Letalo je trčilo v hrib Javor (1133 m) pri Sveti Planini nad Trbovljami na nadmorski višini
+1075 m. Geografske koordinate mesta trčenja so N 46°10.816' E 015° 00.908'. Na mestu
+nesreče je bilo ugotovljeno, da je letalo je najprej trčilo v vrhove dreves s kraki propelerja, po
+tem s krili in trupom in nato trčilo v zemeljsko površino. Pri trčenju letala je prišlo do razlitja
+celotne količine goriva, ki je bilo v letalu. Pri tem je prišlo do požara, ki je zajel celotno
+letalo. Požar so v celoti pogasili gasilci. Kraj nesreče so zavarovali policisti. Sopotnik je bil s
+hudimi opeklinami pred prihodom glavnega preiskovalca prepeljan v Univerzitetni klinični
+center v Ljubljani. Raztresenost razbitin letala je bila skoncentrirana na mestu trčenja, tipična
+ukrivljenost krakov propelerja je izkazovala, da je ob trčenju motor deloval na moči za
+križarjenje.
+1.13 Medicinski in patološki podatki
+Na podlagi poročila pristojnega Inštituta za sodno medicino je bilo ugotovljeno, da je pilot
+izgubil življenje od posledic letalske nesreče. Pilot v času nesreče ni bil pod vplivom alkohola
+in ni užival nobenih zdravil. Sopotnik je nesrečo preživel s hudimi opeklinami.
+1.14 Podatki o požaru
+Pri trčenju letala je prišlo do poškodb gorivnih rezervoarjev in gorivne instalacije na motorju,
+kar je povzročilo izlitje celotne količine goriva in požar. Požar je zajel motor in celotno letalo,
+ki je bilo skoncentrirano na mestu trčenja. Požar so pogasili gasilci.
+1.15 Podatki o možnostih preživetja
+/
+
+19
+
+KONČNO POROČILO An-2 HA-MKK
+
+1.16 Potek preiskave
+•
+
+Dne 11.01.2008 je glavni preiskovalec opravil ogled na mestu nesreče. Na mestu nesreče
+so bili policisti, prišli sta dežurna preiskovalna sodnica in okrožna državna tožilka. Zaradi
+zelo slabega vremena, pihal je močan veter, rahlo je deževalo, vidljivost zaradi goste
+megle in teme je bila slaba, je bil ogled po osnovnem pregledu prekinjen. Mesto nesreče
+so zavarovali policisti.
+
+•
+
+Dne 12.01.2008 je komisija za preiskavo letalske nesreče nadaljevala ogled na mestu
+nesreče. Na mesto nesreče so prispeli predstavniki madžarskih letalskih oblasti (ang.
+Hungary National Transport Authority, Directorate for Air Transport, ki so si ogledali
+mesto nesreče in razbitine ter glavnemu preiskovalcu predali dokumentacijo letala.
+
+•
+
+Dne 13.01.2008 so bile razbitine letala odmaknjene iz mesta nesreče in prepeljane na
+varovano mesto za nadaljnje postopke preiskave.
+
+•
+
+Dne 29.01.2008 je bila na mestu nesreče s predstavniki Zavoda za gozdove Slovenije,
+Območne enote Ljubljana, opravljen terenski ogled in ocena poškodovanih dreves.
+
+•
+
+11.02.2008 je bilo izdano Uvodno poročilo o letalski nesreči.
+
+•
+
+15.01.2010 je bil izdan Osnutek končnega poročila.
+
+•
+
+17.03.2010 je bil izdan Osnutek končnega poročila v angleškem jeziku.
+
+20
+
+KONČNO POROČILO An-2 HA-MKK
+
+1.17 Podatki o operatorju
+Operator zrakoplova AVIA-RENT Kft., HUNGARY 1118 Budapest, Rétköz ut.4, je imel
+veljavno dovoljenje za izvajanje letalskih operacij z zrakoplovom An-2 S/H registrske oznake
+HA-MKK. Dovoljenje je bilo operatorju izdano s strani madžarskih letalskih oblasti Hungary
+National Transport Authority, Directorate for Air Transport z veljavnostjo do 31.12.2009.
+Operator zrakoplova AVIA-RENT Kft., HUNGARY 1118 Budapest, Rétköz ut.4 in lastnik
+zrakoplova Zavod ŠOLT, Cesta 27 aprila 31/7, 1000 Ljubljana, Slovenija, sta imela sklenjen
+sporazum o izvajanju letalskih operaciji z letalom An-2 S/H registrske oznake HA-MKK. V
+sporazumu (ang. Aircraft Operating Agreement) je bilo določeno, da letalske operacije z
+letalom v skladu s sporazumom izvaja lastnik zrakoplova Zavod ŠOLT, Cesta 27 aprila 31/7,
+1000 Ljubljana, Slovenija. Lastnik zrakoplova je imel veljavno dovoljenje za izvajanje
+letalskih dejavnosti izdano s strani Ministrstva za promet Republike Slovenije z naslednjimi
+operativnimi določbami:
+A) Vrsta operacij
+
+A9- Padalski leti
+
+B) Tipi zrakoplovov
+
+Antonov, An-2 S/H
+
+C) Območje delovanja
+
+Slovenija
+
+D) Posebne omejitve
+
+D1- VFR podnevi,
+D4- Nekomercialni padalski leti
+(Samo za člane Zavoda Šolt)
+
+E) Posebna pooblastila/dovoljenja
+
+E104- Izvenletališki padalski skoki
+
+F) Registrske oznake letal
+
+HA-MKK
+
+1.18 Ostali podatki
+Lastnik zrakoplova Zavod ŠOLT, Cesta 27 aprila 31/7, 1000 Ljubljana, Slovenija, je imel
+sklenjeno zavarovanje v skladu z Uredbo EC 785/2004 za čas od 05.04.2007 do 01.02.2008.
+
+21
+
+KONČNO POROČILO An-2 HA-MKK
+
+1.19 Uporabljene tehnike preiskave
+Uporabljene so bile klasične tehnike preiskave. Komisija je opravila preiskavo s tehniko
+fotografskega dokumentiranja pri ogledu na mestu nesreče, s tehnično preiskavo motorja,
+propelerja in delov strukture, z analizo meteoroloških podatkov, z analizo pridobljene
+razpoložljive dokumentacije pilota in zrakoplova, z analizo radarske slike in glasovne
+komunikacije med pilotom in operaterjem FIS.
+
+- NAMERNO PRAZNO -
+
+22
+
+KONČNO POROČILO An-2 HA-MKK
+
+2. ANALIZA
+2.1 Priprava za let
+Pilot je načrtoval polet v nekontroliranem zračnem prostoru razreda "G" Republike Slovenije
+iz vzletišča ŠENTVID N45° 56' 39'' E 14° 51' 18'' Šentvid pri Stični, do letališča Maribor
+(LJMB). V zračnem prostoru razreda "G" Republike Slovenije so po veljavnih predpisih
+dovoljeni poleti brez radijske zveze in dovoljenja za polet. Pilotom je v zračnem prostoru
+razreda "G" Republike Slovenije na voljo letalska informacijska služba FIS. Ker je pilot
+načrtoval leteti do letališča Maribor (LJMB) kjer je organizirana služba kontrole zračnega
+prometa je v skladu s splošnimi pravili letenja pri Uradu službe zrakoplovnih informacij
+AIS/ARO (LJLJ) oddal načrt poleta (ang. Flight Plan) za polet po pravilih vizualnega letenja
+VFR (ang. Visual Flight Rules) v vizualnih meteoroloških razmerah VMC (ang. Visual
+Meteorological Conditions). Pri analizi stanja vremena in pridobljenih podatkov iz satelitske
+slike je bila na dan nesreče razvidna nizka oblačnost oziroma megla, ki se je še zadrževala
+ponekod po nižinah in kotlinah Prekmurja in Dolenjske. Zahodno Slovenijo ter Ljubljansko
+kotlino je prekrival kompakten sloj nizke Sc (op. Stratocumulus) oblačnosti. Nad Dolenjsko,
+Celjsko kotlino ter Savinjsko je bila nizka oblačnost v obliki Sc (op. Stratocumulus) in Cu
+(op. Cumulus) v skupni količini od 3/8 do 7/8. Nad Štajersko in Dolenjsko je bilo od 3/8 do
+7/8 nizke Cu (op. Cumulus) in Sc (op. Stratocumulus) oblačnosti. Višina baze oblakov se je
+gibala od 4000 ft (1219,20 m) do 5000 ft (1524,00 m) nad morjem. V zahodni in osrednji
+Sloveniji so bili vrhovi hribov z višino nad 1000 metrov večinoma v oblakih. Glede na
+prisotnost nizke oblačnosti v dopoldanskem času in predvideno pokritost hribov v zahodni in
+osrednji Sloveniji čez dan, se je dežurni prognostik odločil, da bo za večino zračnih poti
+napovedal, da ne bo vremenskih pogojev za VFR letenje. Prva jutranja GAFOR napoved
+izdana ob 05:00 UTC(*) je predvidevala nekaj izboljšanja pogojev za vzhodno Slovenijo,
+vendar jo je glede na razvoj vremena dežurni prognostik ustrezno korigiral in pustil vse
+zračne poti (op. izdano 08:00 UTC(*) in 11:00 UTC(*)) praktično zaprte za VFR letenje.
+Iz podatkov stanja vremena in napovedi za dan 11.01.2008 domnevamo, da je pilot pri
+meteorološki pripravi za let najverjetneje upošteval samo poročilo o vremenskem stanju in
+vremenski napovedi za letališče Maribor (LJMB) (op. letališča za pristajanje) in poročilo o
+vremenskem stanju in vremenski napovedi za letališče Ptuj (op. alternativno letališče), ni pa
+upošteval vremenskega stanja na načrtovani zračni poti predvideni z načrtom leta.
+
+23
+
+KONČNO POROČILO An-2 HA-MKK
+
+2.2 Vremenske okoliščine na zračni poti
+Na območju letalske nesreče je pihal veter jugozahodne smeri s hitrostjo 12 vozlov ter sunki
+do 25 vozlov. Prisotna je bila zmerna turbulenca nad FL030 ter šibka turbulenca med FL020
+in FL030. Vidnost je bila nad 10 km. Stratokumulusna oblačnost je pokrivala od 5/8 do 7/8
+neba z bazo na višini med FL040 in FL050. Vrhovi posameznih najvišjih hribov v okolici so
+bili v oblaku. Šibka zaledenitev je bila prisotna znotraj oblačnosti nad FL060. Prevladovala je
+zelo slaba vidljivost. To ugotovljeno stanje potrjuje tudi izjava sopotnika (op. sopotnik je pilot
+z dovoljenjem pilota ULN in dovoljenjem športnega pilota), ki je sedel poleg pilota v pilotski
+kabini. Sopotnik je v svoji izjavi povedal, da v zraku letalo ni imelo nobenih težav, da je
+motor deloval brez težav, da je bilo letalo v času nesreče na višini približno 1500 ft
+(457,20 m), (op. domnevamo, da je ta višina QFE višina odhodnega vzletišča), kar je bilo
+očitno za tisto območje in izredno slabo vidljivost veliko prenizko in hriba Javor (1133 m)
+N 46°10.816' E 015° 00.908' pri Sveti Planini nad Trbovljami pred seboj nista videla. Glede
+na vremenske okoliščine, ki so bile na zračni poti je bilo mogoče samo IFR letenje (op. letenje
+po pravilih instrumentalnega letenja (ang. Instrument Flight Rules).
+2.3 Potek leta
+Ob 11:02:54 UTC(*) je pilot vzletel na vzletišču ŠENTVID. Ob 11:05:54 UTC(*) se je prvič
+preko radijske zveze na frekvenci 118.475 MHz javil informacijski službi za letenje FIS
+(ang.
+
+Flight
+
+Information
+
+Service)
+
+območne
+
+kontrole
+
+zračnega
+
+prometa
+
+Ljubljana
+
+(ang. Ljubljana Information). Operater informacijske službe za letenje je pilotu dal napotke za
+nadaljnje izvajanje VFR leta, podatek QNH (op. zračni tlak na nivoju morja), točko javljanja
+MS2 (op. Slovenske Konjice) ter potrditev squawka 2000 (op. koda radarskega odzivnika –
+ang. Transponder). Pilot je potrdil sprejem napotkov operaterja in nadaljeval let proti točki
+javljanja MS2 (op. Slovenske Konjice). Zaradi slabih vizualnih meteoroloških razmer na
+zračni poti v smeri leta proti točki javljanja MS2, je pilot letalo usmeril nazaj v smer proti
+odhodnemu vzletišču ŠENTVID. Ob 11:19:23 UTC(*) je bilo letalo nad krajem Litija na
+višini 3200 ft (975,36 m). Zaradi spremembe smeri leta in letenja proti CTR Ljubljana
+(op. CTR je kontrolirana cona), je operater informacijske službe za letenje pilota vprašal po
+namenih. Pilot je operaterju sporočil, da se izogiba oblakom zaradi vizualnih meteoroloških
+razmer. Ker je pilot z letalom že vstopal v kontrolirano cono CTR Ljubljana je operater pilotu
+dal navodila, da bolj zahodno ne sme leteti in da naj ostane pod višino 3500 ft (op. 1066,80m)
+zaradi instrumentalnih IFR (ang. Instrument Flight Rules) prihodov letal v Ljubljano (LJLJ).
+
+24
+
+KONČNO POROČILO An-2 HA-MKK
+
+Pilot je potrdil sprejem navodil operaterja in ob 11:21:51 UTC(*) usmeril letalo proti vzhodu
+na radial 060° VALLU. Ob 11:23:06 UTC(*) je imel pilot zadnjo glasovno izmenjavo z
+operaterjem informacijske službe za letenje FIS območne kontrole zračnega prometa
+Ljubljana (ang. Ljubljana Information). Letalo je ob 11:27:49 UTC(*) izginilo iz radarskega
+zaslona in ob 11:28:00 UTC(*) na nadmorski višini 1075 metrov trčilo v hrib Javor (1133 m)
+N 46°10.816' E 015° 00.908' pri Sveti Planini nad Trbovljami.
+Pilot je poskušal obdržati vizualni kontakt z zemeljsko površino z nekajkratnimi znižavanji
+nivoja leta na zračni poti vključno s spremembo smeri leta in bil uspešen vse do neposrednega
+približanja hribu Javor (1133 m) N 46°10.816' E 015° 00.908' pri Sveti Planini nad
+Trbovljami, kjer je bilo letalo na višini 1075 metrov, kar je bilo glede na višino hriba Javor
+(1133 m) prenizko nad terenom.
+2.4 Mesto nesreče
+Letalo je trčilo v hrib Javor (1133 m) pri Sveti Planini nad Trbovljami na nadmorski višini
+1075 m. Letalo je najprej trčilo v vrhove dreves s kraki propelerja, s krili, trupom in nato
+trčilo v zemeljsko površino. Pri trčenju letala je prišlo do razlitja celotne količine goriva in
+posledično do požara. Pri trčenju krakov propelerja ob drevesa je motor iztrgalo iz
+motorskega prostora. Raztresenost razbitin letala je bila skoncentrirana na mestu trčenja,
+tipična ukrivljenost krakov propelerja je izkazovala, da je ob trčenju motor deloval na moči za
+križarjenje, hitrost letala tik preden je izginilo iz radarskega zaslona je bila 125 vozlov.
+2.5 Človeški faktor
+Vodja zrakoplova, pilot s poklicno licenco pilota je imel ustrezna dovoljenja za pilotiranje
+letala AN-2 in veljavno zdravniško spričevalo I. razreda. Iz pridobljene dokumentacije, ki jo
+je pridobila komisija je bilo ugotovljeno, da v času nesreče pilot ni bil pod vplivom alkohola
+in ostalih substanc. Zdravstveno stanje pilota na nesrečo ni vplivalo. Pilot je opravil ustrezno
+najavo leta. Iz pridobljene razpoložljive vremenske dokumentacije je razvidno, da so bili
+vremenski pogoji slabi za predvideni let, vendar se je pilot kljub temu odločil, da bo let
+izvedel. Prav tako je iz razpoložljive radarske slike razbrati, da je pilot poskušal polet izvesti s
+pomočjo satelitskega navigacijskega sistema GPS-a (ang. Global Positioning System).
+Radarski zapis leta se ujema s planirano smerjo leta, vendar so bili vremenski pogoji
+(op. nizka baza oblakov in slaba horizontalna vidljivost) preslabi za izvedbo, kar je imelo za
+posledico udarec v hrib. Te ugotovitve potrjuje tudi izjava sopotnika.
+
+25
+
+KONČNO POROČILO An-2 HA-MKK
+
+2.6 Tehnični vidik
+Letalo je bilo registrirano in imelo veljavno spričevalo o plovnosti. Pri tehnični preiskavi
+letala, motorja in propelerja je bilo ugotovljeno, da je motor deloval na režimu horizontalnega
+leta. Letalo ni imelo tehničnih težav z motorjem, propelerjem in ostalimi sistemi in opremo.
+Požara pred trčenjem na motorju ni bilo. Te ugotovitve komisije potrjuje tudi izjava
+sopotnika.
+
+- NAMERNO PRAZNO -
+
+26
+
+KONČNO POROČILO An-2 HA-MKK
+
+3. ZAKLJUČKI
+3.1 Ugotovitve
+ Pri meteorološki pripravi za let je pilot najverjetneje upošteval samo poročilo o
+vremenskem stanju in vremenski napovedi za letališče Maribor (LJMB) (op. letališča
+za pristajanje) in poročilo o vremenskem stanju in vremenski napovedi za letališče
+Ptuj (op. alternativno letališče), ni pa upošteval stanja na načrtovani zračni poti
+predvideni z načrtom leta.
+ Pilot je opravil ustrezno najavo leta.
+ Glede na vremenske okoliščine, ki so bile na zračni poti je bilo mogoče samo
+instrumentalno letenje IFR (op. IFR po pravilih instrumentalnega letenja, ang.
+Instrument Flight Rules).
+ Pilot je poskušal obdržati vizualni kontakt z zemeljsko površino z nekajkratnimi
+znižavanji nivoja leta na zračni poti vključno s spremembo smeri leta in bil uspešen
+vse do neposrednega približanja hribu Javor (1133 m) N 46°10.816' E 015° 00.908' pri
+Sveti Planini nad Trbovljami, kjer je bilo letalo na višini 1075 m, kar je bilo glede na
+višino hriba Javor 1133 m prenizko nad terenom.
+ Raztresenost razbitin letala je bila skoncentrirana na mestu trčenja, tipična ukrivljenost
+krakov propelerja je izkazovala, da je ob trčenju motor deloval na moči za križarjenje,
+hitrost letala tik preden je izginilo iz radarskega zaslona je bila 125 vozlov.
+ Vodja zrakoplova, pilot s poklicno licenco pilota je imel ustrezna dovoljenja za
+pilotiranje letala AN-2 in veljavno zdravniško spričevalo I. razreda.
+ Zdravstveno stanje pilota na nesrečo ni vplivalo.
+ Iz pridobljene razpoložljive vremenske dokumentacije je razvidno, da so bili
+vremenski pogoji slabi za predvideni let, vendar se je pilot kljub temu odločil, da bo
+let izvedel.
+ Iz razpoložljive radarske slike je bilo mogoče razbrati, da je pilot poskušal polet
+izvesti s pomočjo satelitskega navigacijskega sistema GPS-a (ang. Global Positioning
+System).
+ Radarski zapis leta se ujema s planirano smerjo leta, vendar so bili vremenski pogoji
+(op. nizka baza oblakov in slaba horizontalna vidljivost) preslabi za izvedbo, kar je
+imelo za posledico udarec v hrib. Te ugotovitve potrjuje tudi izjava sopotnika, ki je
+nesrečo preživel.
+
+27
+
+KONČNO POROČILO An-2 HA-MKK
+
+ Motor je deloval na režimu horizontalnega leta. Letalo ni imelo tehničnih težav z
+motorjem, propelerjem in ostalimi sistemi in opremo. Požara pred trčenjem na motorju
+ni bilo. Te ugotovitve komisije potrjuje tudi izjava sopotnika, ki je nesrečo preživel.
+3.2 Vzrok nesreče
+Slabe
+
+meteorološke
+
+razmere
+
+na
+
+zračni
+
+poti
+
+in
+
+v
+
+bližini
+
+hriba
+
+Javor
+
+(1133
+
+m)
+
+N 46°10.816' E 015° 00.908' pri Sveti Planini nad Trbovljami z nizko bazo oblakov in slabo
+vidljivostjo je bil vzrok, da je pilot izgubljal vizualni kontakt z zemeljsko površino. Aktualni
+pogoji so bili pod VFR pogoji. Pilot je poskušal obdržati vizualni kontakt z zemeljsko
+površino z nekajkratnimi znižavanji nivoja leta na zračni poti vključno s spremembo smeri
+leta
+
+in
+
+bil
+
+na
+
+začetku
+
+leta
+
+uspešen.
+
+Ob
+
+približevanju
+
+hribu
+
+Javor
+
+(1133
+
+m)
+
+N 46°10.816' E 015° 00.908' pri Sveti Planini nad Trbovljami je bilo letalo na višini
+1075 metrov, kar je bilo prenizko nad terenom.
+Vzrok nesreče je kontroliran let v teren (CFIT).
+(CFIT = ang. Controlled-Flight-Into-Terrain).
+
+28
+
+KONČNO POROČILO An-2 HA-MKK
+
+4. VARNOSTNA PRIPOROČILA
+ Predlagamo, da Ministrstvo za promet, Direktorat za civilno letalstvo obvesti vse
+letalske šole in zasebne pilote o pomembnosti ustrezne priprave za letenje in
+sestavitve načrta leta, kot to določajo veljavni predpisi.
+ Predlagamo, da Kontrola zračnega prometa v primeru neustreznih vremenskih
+pogojev za vizualno VFR letenje na zračni poti o tem obvesti pilote, če je med
+obema vzpostavljena glasovna komunikacija.
+
+29
+
+KONČNO POROČILO An-2 HA-MKK
+
+DODATKI:
+DODATEK A: Pot leta
+DODATEK B: Posnetki radarske slike
+DODATEK C: Prepis glasovne komunikacije
+DODATEK D: Meteorološka situacija in sporočila
+DODATEK E: Fotografski posnetki mesta nesreče
+DODATEK F: Fotografski posnetki tehnične preiskave razbitin letala
+
+30
+
+KONČNO POROČILO An-2 HA-MKK
+
+DODATEK A: Pot leta
+
+Mesto trčenja:
+Hrib Javor (1133 m)
+N 46°10.816' E 015° 00.908'
+
+Mesto vzleta:
+Vzletišče ŠENTVID, Šentvid pri Stični
+N45° 56' 39'' E 14° 51' 18''
+
+Pot leta zrakoplova HA-MKK
+
+31
+
+KONČNO POROČILO An-2 HA-MKK
+
+DODATEK B: Posnetki radarske slike
+
+Slika 1: Sprememba smeri leta letala
+
+Slika 2: Smer leta letala proti CTR Ljubljana
+
+32
+
+KONČNO POROČILO An-2 HA-MKK
+
+Slika 3: Nad krajem Litija na višini 3200 ft (975.36 m)
+
+Slika 4: Položaj letala tik preden je izginilo iz radarskega zaslona
+
+33
+
+KONČNO POROČILO An-2 HA-MKK
+
+DODATEK C: Prepis glasovne komunikacije
+Frekvenca: 118,475 MHz
+Časovni interval: 1100 – 1400 UTC
+Datum varnostnega dogodka: 11.01.2008
+Čas varnostnega dogodka: 1128 UTC
+
+ČAS
+hh:mm:ss
+11:05:54
+
+VIR
+
+PREPIS
+
+HAMKK
+
+Ljubljana information HAMKK dober dan
+
+FIS
+HAMKK
+
+HAMKK Ljubljana information dober dan go ahead
+HAMKK via flight plan from Šentvid destination Maribor
+departed before three minutes altitude one.. two
+thousand HKK
+HKK continue VFR QNH 1021 report MS2
+Call you MS2 HKK QNH 1021
+QNH is 1021
+QNH 1021 HKK
+
+FIS
+HAMKK
+FIS
+HAMKK
+11:06:41
+
+ČAS
+hh:mm:ss
+11:11.36
+
+VIR
+OEXLE
+FIS
+
+PREPIS
+
+OPOMBE
+
+Ljubljana information OEXLE dober dan
+OEXLE Ljubljana information dober dan go ahead
+Konec
+glasovne
+izmenjave
+
+VIR
+
+PREPIS
+
+FIS
+OEXLE
+
+OEXLE Ljubljana information good day go ahead
+OEXLE on VFR flight from Maribor to Zagorje overhead
+ME …MS2 estimating Celje at 25 Zagorje next
+OLE continue VFR QNH 1021 report before changing to
+local frequency
+continue VFR QNH 1021 wilco OEXLE
+
+FIS
+OEXLE
+11:12:33
+
+Prvi klic
+HAMKK na
+frekvenci
+
+Konec
+glasovne
+izmenjave
+
+11:11:46
+
+ČAS
+hh:mm:ss
+11:11:52
+
+OPOMBE
+
+OPOMBE
+
+Konec
+glasovne
+izmenjave
+
+34
+
+KONČNO POROČILO An-2 HA-MKK
+
+ČAS
+hh:mm:ss
+11:19:09
+11:19:13
+
+ČAS
+hh:mm:ss
+11:19:23
+
+VIR
+FIS
+
+PREPIS
+HKK Ljubljana
+
+Konec
+glasovne
+izmenjave
+
+VIR
+
+PREPIS
+
+FIS
+HAMKK
+FIS
+HAMKK
+
+HKK Ljubljana information
+Go ahead HKK
+Report intentions
+Via flight planed route to Maribor but avoiding direc
+Dolsko to mantain VMC now overhead Litija three
+thousand two hundred feet
+HKK roger stay clear of CTR Ljubljana and remain
+below three thousand five hundred feet due IFR arrivals
+to Ljubljana
+Remaining below three thousand five hundred avoiding
+CTR Ljubljana
+
+FIS
+
+HAMKK
+11:20:00
+
+ČAS
+hh:mm:ss
+11:21:28
+11:20:00
+
+ČAS
+hh:mm:ss
+11:21:44
+
+OPOMBE
+
+Konec
+glasovne
+izmenjave
+
+VIR
+FIS
+
+PREPIS
+
+OPOMBE
+
+HKK že vstopate v CTR bolj zahodno ne smete
+Konec
+glasovne
+izmenjave
+
+VIR
+FIS
+HAMKK
+
+PREPIS
+
+OPOMBE
+
+HKK
+…. Affirmative roger HKK
+
+11:21:51
+
+ČAS
+hh:mm:ss
+11:22:21
+11:22:25
+
+OPOMBE
+
+Konec
+glasovne
+izmenjave
+
+VIR
+FIS
+
+PREPIS
+
+OPOMBE
+
+OLE report position
+Konec
+glasovne
+izmenjave
+
+35
+
+KONČNO POROČILO An-2 HA-MKK
+
+ČAS
+hh:mm:ss
+11:22:29
+
+VIR
+
+PREPIS
+
+FIS
+OEXLE
+FIS
+
+OLE report position
+OLE abeam Celje
+OLE roger possible traffic antonov two overhead Litija
+inbound MS2 at 3000 feet
+Looking out OLE
+HKK possible traffic light helikopter abeam Celje
+inbound Zagorje thousand above ground
+Received information HKK looking out
+
+OEXLE
+FIS
+HAMKK
+11:23:06
+
+ČAS
+hh:mm:ss
+11:33:21
+
+Konec
+glasovne
+izmenjave
+
+VIR
+
+PREPIS
+
+OEXLE
+
+Ljubljana information OLE three minutes before landing
+Zagorje
+OLE roger contact local frequency adijo
+Contact local frequency hvala adijo
+
+FIS
+OEXLE
+11:33:39
+
+ČAS
+hh:mm:ss
+11:51:30
+11:51:36
+
+ČAS
+hh:mm:ss
+11:51:49
+11:51:53
+
+ČAS
+hh:mm:ss
+11:52:01
+11:52:05
+
+OPOMBE
+
+OPOMBE
+
+Konec
+glasovne
+izmenjave
+
+VIR
+FIS
+
+PREPIS
+
+OPOMBE
+
+HKK report position
+Konec
+glasovne
+izmenjave
+
+VIR
+FIS
+
+PREPIS
+
+OPOMBE
+
+HKK Ljubljana information do you read
+Konec
+glasovne
+izmenjave
+
+VIR
+FIS
+
+PREPIS
+
+OPOMBE
+
+HKK Ljubljana information do you read
+Konec
+glasovne
+izmenjave
+
+36
+
+KONČNO POROČILO An-2 HA-MKK
+
+ČAS
+hh:mm:ss
+12:00:04
+12:00:10
+
+ČAS
+hh:mm:ss
+12:00:19
+12:00:25
+
+ČAS
+hh:mm:ss
+12:00:41
+12:00:47
+
+ČAS
+hh:mm:ss
+12:01:22
+12:01:26
+
+ČAS
+hh:mm:ss
+12:18:51
+12:18:55
+
+VIR
+FIS
+
+PREPIS
+
+OPOMBE
+
+HAMKK Ljubljana information
+Konec
+glasovne
+izmenjave
+
+VIR
+FIS
+
+PREPIS
+
+OPOMBE
+
+HAMKK Ljubljana information
+Konec
+glasovne
+izmenjave
+
+VIR
+FIS
+
+PREPIS
+
+OPOMBE
+
+HAMKK Ljubljana information
+Konec
+glasovne
+izmenjave
+
+VIR
+FIS
+
+PREPIS
+
+OPOMBE
+
+HAMKK Ljubljana information
+Konec
+glasovne
+izmenjave
+
+VIR
+FIS
+
+PREPIS
+
+OPOMBE
+
+HAMKK Ljubljana information
+Konec
+glasovne
+izmenjave
+
+37
+
+KONČNO POROČILO An-2 HA-MKK
+
+DODATEK D: Meteorološka situacija in sporočila
+Vreme po Sloveniji:
+ Veter
+
+Slika1:Vetrovno polje meteorološkega modela ALADIN za 11.01.2008 ob 12 UTC(*) – FL100
+
+Nad Slovenijo so prevladovali zmerni jugozahodni vetrovi. Od višine FL050 do višine
+FL100 je meteorološki model ALADIN izračunal veter s hitrostjo okrog 25 vozlov. Veter je
+nad osrednjo Sloveniji na višini okrog FL050 pihal s hitrostjo okrog 20 vozlov, ter sunki do
+30 vozlov. Na vseh višina je pihal veter jugozahodne smeri. Po nižinah in kotlinah je veter pri
+tleh zapihal le ponekod.
+
+38
+
+KONČNO POROČILO An-2 HA-MKK
+
+Slika 2:Vetrovno polje meteorološkega modela ALADIN za 11.01.2008 ob 12 UTC(*) – FL050
+
+39
+
+KONČNO POROČILO An-2 HA-MKK
+
+Meritve avtomatskih meteoroloških postaj:
+Lisca: Hitrost vetra
+
+Hitrost vetra 2008-01-11 Lisca_M18
+
+Nižje na višini FL030 (Lisca 943 m) je veter pihal s hitrostjo 12 vozlov ter sunki do 25
+vozlov.
+
+40
+
+KONČNO POROČILO An-2 HA-MKK
+
+Lisca: Smer vetra
+
+Smer vetra 2008-01-11 Lisca_M18
+
+41
+
+KONČNO POROČILO An-2 HA-MKK
+
+Celje: Hitrost vetra
+
+Hitrost vetra 2008-01-11 Celje_E23
+
+42
+
+KONČNO POROČILO An-2 HA-MKK
+
+Celje: Smer vetra
+
+Smer vetra 2008-01-11 Celje_E23
+
+43
+
+KONČNO POROČILO An-2 HA-MKK
+
+Vnajnarje: (op. 20 km vzhodno od Ljubljane) Hitrost vetra
+
+Hitrost vetra 2008-01-11 Vnajnarje_A95
+
+Na višini FL020 (Vnajnarje 630 m) je veter pihal s hitrostjo 5 ter sunki do 10 vozlov.
+
+44
+
+KONČNO POROČILO An-2 HA-MKK
+
+Vnajnarje: (20 km vzhodno od Ljubljane) Smer vetra
+
+Smer vetra 2008-01-11 Vnajnarje_A95
+
+45
+
+KONČNO POROČILO An-2 HA-MKK
+
+Trbovlje: Smer vetra
+
+Smer vetra 2008-01-11 Trbovlje_E26
+
+46
+
+KONČNO POROČILO An-2 HA-MKK
+
+Rogla: Hitrost vetra
+
+Hitrost vetra 2008-01-11 Rogla_M14
+
+47
+
+KONČNO POROČILO An-2 HA-MKK
+
+Rogla: Smer vetra
+
+Smer vetra 2008-01-11 Rogla_M14
+
+48
+
+KONČNO POROČILO An-2 HA-MKK
+
+Oblačnost:
+
+Slika 1: Satelitska kompozitna slika dne 11.01.2008 ob 09 UTC(*)
+
+Slika 2: Satelitska kompozitna slika dne 11.01.2008 ob 10 UTC(*)
+
+49
+
+KONČNO POROČILO An-2 HA-MKK
+
+Oblačnost:
+
+Slika 3: Satelitska kompozitna slika dne 11.01.2008 ob 11 UTC(*)
+
+Slika 4: Satelitska kompozitna slika dne 11.01.2008 ob 12 UTC(*)
+
+50
+
+KONČNO POROČILO An-2 HA-MKK
+
+Oblačnost:
+
+Slika 5: Satelitska kompozitna slika dne 11.01.2008 ob 13 UTC(*)
+
+Slika 6: Satelitska kompozitna slika dne 11.01.2008 ob 14 UTC(*)
+
+51
+
+KONČNO POROČILO An-2 HA-MKK
+
+Padavine:
+
+Radarska slika dne 11.01.2008 ob 12 UTC(*)
+
+V zahodni Sloveniji so se pojavljale padavine, pri čemer je bila meja sneženja na višini
+FL060. Padavine so bile šibke, tako da jih radar ni zaznal. Padavin v notranjosti ni bilo.
+
+52
+
+KONČNO POROČILO An-2 HA-MKK
+
+Nevarnosti vremenskih razmer 11.01.2008 med 08 UTC(*) in 14 UTC(*)
+Turbulenca:
+Nad Severno Slovenijo je bila predvidena zmerna turbulenca nad FL030, med FL020 in
+FL030 pa šibka turbulenca. Glede na intenziteto turbulence sta bili izdani AIRMET
+depeši /opozorili:
+LJLA AIRMET 3 VALID 110900/111200 LJLJLJLA
+LJUBLJANA FIR MOD TURB FCST ABV FL030 STNR NC=
+in
+LJLA AIRMET 5 VALID 111200/111600 LJLJLJLA
+LJUBLJANA FIR MOD TURB FCST ABV FL030 STNR NC=
+Zaledenitev:
+Nad zahodno Slovenijo je bila predvidena zmerna zaledenitev nad FL060. Glede na
+intenziteto zaledenitve je bila izdana AIRMET depeša za zmerne zaledenitve:
+LJLA AIRMET 4 VALID 111115/111500 LJLJLJLA
+LJUBLJANA FIR MOD ICE FCST W OF E01430 ABV FL060 STNR NC=
+
+53
+
+KONČNO POROČILO An-2 HA-MKK
+
+Izdane GAFOR depeše na dan 11.01.2008
+Čas: 05:00 UTC(*), 08:00 UTC(*),11:00 UTC(*)
+
+54
+
+KONČNO POROČILO An-2 HA-MKK
+
+55
+
+KONČNO POROČILO An-2 HA-MKK
+
+METAR depeše
+LJLJ 110800Z VRB01KT 9999 BKN040 M01/M01 Q1022 NOSIG=
+LJLJ 110830Z 00000KT 9999 FEW003 BKN037 M01/M01 Q1022 NOSIG=
+LJLJ 110900Z 00000KT 9999 FEW003 BKN030 M00/M00 Q1022 NOSIG=
+LJLJ 110930Z VRB02KT 9999 FEW003 OVC025 01/01 Q1022 NOSIG=
+LJLJ 111000Z VRB01KT 9999 FEW003 OVC025 01/01 Q1022 NOSIG=
+LJLJ 111030Z VRB01KT 9999 FEW003 OVC025 01/01 Q1021 NOSIG=
+LJLJ 111100Z VRB02KT 9999 FEW003 OVC025 01/01 Q1021 NOSIG=
+LJLJ 111130Z 00000KT 9999 FEW003 BKN025 02/02 Q1021 NOSIG=
+LJLJ 111200Z 00000KT 9999 FEW003 BKN028 02/02 Q1020 NOSIG=
+LJLJ 111230Z VRB01KT 9999 FEW003 BKN028 02/02 Q1020 NOSIG=
+LJLJ 111300Z 27003KT 210V290 9999 -RA MIFG FEW020 BKN035 03/03 Q1019 NOSIG=
+LJLJ 111330Z VRB01KT 7000 -RA MIFG FEW020 BKN035 03/03 Q1019 NOSIG=
+LJLJ 111400Z 30004KT 7000 -RA MIFG FEW020 BKN035 04/04 Q1019 NOSIG=
+LJMB 110800Z 32003KT 310V030 0200 R33/0450N FZFG VV001
+LJMB 110830Z 34005KT 360V070 0200 R33/0450N FZFG VV001
+LJMB 110900Z VRB01KT 0300 R33/0400V0600U FZFG VV001 M01/M02 Q1020 33190095=
+LJMB 110930Z VRB05KT 0200 R33/0350N FZFG VV001 M01/M01 Q1020=
+LJMB 111000Z 05003KT 300V100 0200 R33/0250V0500N FG NSC 00/M00 Q1020=
+LJMB 111030Z 30002KT 1500 BR FEW001 SCT020 00/M00 Q1019=
+LJMB 111100Z 21013KT 170V250 9999 SCT040 07/06 Q1019=
+LJMB 111130Z 19011KT 160V220 9999 SCT040 07/04 Q1019=
+LJMB 111200Z 19013KT 9999 SCT030 07/04 Q1018=
+LJMB 111230Z 20013KT 180V250 9999 SCT030 10/06 Q1017=
+LJMB 111300Z 21015KT 190V250 9999 FEW030 10/06 Q1017=
+LJMB 111330Z 20014KT 180V260 9999 FEW030 10/06 Q1017=
+LJMB 111400Z 20015KT 9999 FEW030 09/06 Q1017=
+LJCE 110800Z VRB02KT 0200 FZFG VV001 M02/M02 Q1023 RMK RED=
+LJCE 110830Z 00000KT 0300 FZFG VV002 M02/M02 Q1023 RMK RED=
+LJCE 110900Z VRB01KT 0300 FZFG VV002 M02/M02 Q1023 RMK RED=
+LJCE 110930Z 26001KT 0200 FZFG VV002 M01/M01 Q1023 RMK RED=
+LJCE 111000Z VRB01KT 0250 FZFG VV002 M01/M01 Q1023 RMK RED=
+LJCE 111030Z VRB01KT 0300 FZFG VV002 M00/M00 Q1022 RMK RED=
+LJCE 111100Z 00000KT 0200 FZFG VV001 M00/M00 Q1022 RMK RED=
+LJCE 111130Z VRB01KT 0200 FZFG VV001 M00/M00 Q1021 RMK RED=
+LJCE 111200Z 00000KT 0300 FG VV001 00/00 Q1021 RMK RED=
+LJCE 111230Z VRB01KT 0300 FG VV001 00/00 Q1020 RMK RED=
+LJCE 111300Z 18001KT 0800 FG SCT002 BKN040 01/01 Q1020 RMK AMB=
+LJCE 111330Z VRB01KT 2500 BR SCT002 BKN035 01/01 Q1020 RMK YLO=
+LJCE 111400Z 00000KT 4000 BR SCT005 BKN035 02/02 Q1020 RMK GRN=
+
+56
+
+KONČNO POROČILO An-2 HA-MKK
+
+Podatek sistema za samodejno posredovanje vremenskih informacij ATIS:
+
+ATIS Record
+LOG FILE: C:\ATIS\log\2008\01\11\102048.html
+Date: 2008.01.11 Time: 10:20:48
+
+LJUBLJANA ATIS INFORMATION SIERRA.
+AT TIME 1020.
+EXPECT I.L.S APPROACH.
+RUNWAY 31.
+TRANSITION LEVEL 110.
+WIND VARIABLE 2 KNOTS.
+VISIBILITY 10 KILOMETRES OR MORE.
+CLOUD FEW 3 HUNDRED FEET. OVERCAST 2 THOUSAND 5 HUNDRED FEET.
+TEMPERATURE 01.
+DEWPOINT 01.
+Q.N.H 1021.
+NOSIG.
+FOR START-UP AND PUSH BACK CONTACT TOWER 118 DECIMAL 0. .
+END OF LJUBLJANA ATIS INFORMATION SIERRA.
+
+57
+
+KONČNO POROČILO An-2 HA-MKK
+
+DODATEK E: Fotografski posnetki mesta nesreče
+
+Slika 1: Razbitine letala na mestu nesreče 11.01.2008
+
+Slika 2: Razbitine letala na mestu nesreče 11.01.2008
+
+58
+
+KONČNO POROČILO An-2 HA-MKK
+
+Slika 3: Razbitine letala z vidnimi posledicami požara na mestu nesreče
+
+Slika 4: Skoncentriranost razbitin na mestu nesreče z vidnim ukrivljenim krakom propelerja motorja
+
+59
+
+KONČNO POROČILO An-2 HA-MKK
+
+Slika 5: Poškodovana drevesa v smeri trčenja
+
+Slika 6: Del krila na drevesu v smeri trčenja
+
+60
+
+KONČNO POROČILO An-2 HA-MKK
+
+DODATEK F: Fotografski posnetki tehnične preiskave razbitin letala
+
+Slika 1: Preiskava motorja
+
+Slika 2: Preiskava delov motorja
+
+61
+
+KONČNO POROČILO An-2 HA-MKK
+
+Slika 3: Regulator števila vrtljajev propelerja (ang. Speed Governor)
+
+Slika 4: Regulator števila vrtljajev propelerja je bil v položaju za križarjenje
+
+62
+
+KONČNO POROČILO An-2 HA-MKK
+
+Slika 5: Preiskava propelerja
+
+Slika 6: Preiskava krakov propelerja
+
+63
+
+KONČNO POROČILO An-2 HA-MKK
+
+Slika 7: Preiskava kril in gorivnih rezervoarjev
+
+Slika 8: Metrični indikator višine
+
+64
+
+

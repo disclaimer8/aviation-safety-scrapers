@@ -1,0 +1,1345 @@
+MINISTRSTVO ZA PROMET
+REPUBLIKA SLOVENIJA
+
+SEKTOR ZA PREISKOVANJE LETALSKIH NESREČ IN INCIDENTOV
+www.mzp.gov.si, e: gp.mzp@gov.si
+Langusova 4, 1535 Ljubljana, t: 01 478 80 00, f: 01 478 81 89
+
+Številka: 37200-1/2007/72-0010132
+Datum: 18.06.2010
+
+KONČNO POROČILO
+O PREISKAVI LETALSKE NESREČE
+ULTRALAHKEGA MOTORNEGA LETALA STORCH II,
+REGISTRSKE OZNAKE S5-PAJ, KI SE JE PRIPETILA
+28.01.2007
+
+KONČNO POROČILO
+
+S5-PAJ
+
+KAZALO
+UVOD..................................................................................................................................................4
+IMENOVANJE KOMISIJE ZA PREISKOVANJE LETALSKE NESREČE ............................5
+POVZETEK .......................................................................................................................................6
+1. DEJSTVA .......................................................................................................................................7
+1.1 Podatki o letu .............................................................................................................................7
+1.2 Podatki o poškodbah v dogodku udeleženih oseb .....................................................................8
+1.3 Podatki o poškodbah ultralahkega motornega letala..................................................................9
+1.4 Podatki o ostali škodi ...............................................................................................................11
+1.5 Podatki o osebju .......................................................................................................................12
+1.5.1 Podatki o pilotu.................................................................................................................12
+1.5.2 Podatki o učencu ...............................................................................................................13
+1.6 Podatki o ultralahkem motornem letalu ...................................................................................14
+1.6.1 Splošni podatki..................................................................................................................14
+1.6.2 Podatki o motorju..............................................................................................................15
+1.6.3 Podatki o propelerju .........................................................................................................16
+1.6.4 Podatki o gorivu in mazivu ...............................................................................................16
+1.6.5 Podatki o servisiranju in vzdrževanju ultralahkega motornega letala .............................17
+1.7 Meteorološki podatki ...............................................................................................................18
+1.7.1 Splošna vremenska situacija na dan 28.01.2007 .............................................................18
+1.7.2 Opis vremena v okolici Šentvida pri Stični na dan 28.01.2007 ob 16.00 uri ..................18
+po lokalnem času..............................................................................................................18
+1.7.3 Radarska slika..................................................................................................................19
+1.7.4 Satelitska slika..................................................................................................................20
+1.7.5 Zaključek ..........................................................................................................................20
+1.8 Podatki o navigacijskih sredstvih.............................................................................................21
+1.9 Podatki o radijski zvezi ............................................................................................................21
+1.10 Podatki o vzletišču .................................................................................................................21
+1.10.1 Specifični pogoji uporabe vzletišča.................................................................................21
+1.10.2 Izredni postopki...............................................................................................................23
+1.11 Podatki o registratorjih leta ....................................................................................................25
+1.12 Podatki z mesta nesreče .........................................................................................................25
+1.13 Medicinski in patološki podatki.............................................................................................26
+1.13.1 Podatki o pilotu...............................................................................................................26
+
+2
+
+KONČNO POROČILO
+
+S5-PAJ
+
+1.13.2 Podatki o učencu .............................................................................................................26
+1.14 Podatki o požaru.....................................................................................................................26
+1.15 Podatki o možnostih preživetja ..............................................................................................26
+1.16 Potek preiskave letalske nesreče ............................................................................................26
+1.17 Podatki o operatorju ...............................................................................................................27
+1.18 Ostali podatki .........................................................................................................................27
+1.19 Uporabljene tehnike preiskave...............................................................................................27
+2. ANALIZA .....................................................................................................................................28
+2.1 Splošno.....................................................................................................................................28
+2.2 Analiza leta ..............................................................................................................................28
+2.2.1 Ugotovitve analize leta......................................................................................................29
+2.3 Analiza ultralahkega motornega letala.....................................................................................30
+2.3.1 Analiza dovoljenja za letenje ............................................................................................30
+2.4 Analiza goriva in maziva .........................................................................................................30
+2.5 Analiza motorja.......................................................................................................................31
+2.5.1 Analiza uplinjača številka 1 ..............................................................................................33
+2.5.2 Ugotovitev analize uplinjača številka 1 ............................................................................34
+2.5.3 Analiza uplinjača številka 2 ..............................................................................................35
+2.5.4 Ugotovitev analize uplinjača številka 2 ............................................................................36
+2.5.5 Končna ugotovitev analize uplinjačev 1 in 2 ....................................................................36
+2.5.6 Analiza statorja vžiga........................................................................................................37
+2.5.7 Analiza električne inštalacije na motorju ........................................................................38
+2.5.8. Ostalo ...............................................................................................................................40
+3. ZAKLJUČKI................................................................................................................................42
+3.1 Ugotovitve ............................................................................................................................42
+3.2 Vzrok nesreče .......................................................................................................................43
+4. VARNOSTNA PRIPOROČILA.................................................................................................44
+
+3
+
+KONČNO POROČILO
+
+S5-PAJ
+
+UVOD
+Končno poročilo o preiskavi letalske nesreče vsebuje dejstva, analizo, vzroke in varnostna
+priporočila, ki jih je ugotovila komisija za preiskovanje letalske nesreče glede na okoliščine v
+katerih se je nesreča pripetila.
+V skladu s prilogo številka 13 k Čikaški konvenciji ter na podlagi četrtega odstavka 137. člena
+Zakona o letalstvu (Ur. list RS, št. 113/06 – UPB1), Uredbe o preiskovanju letalskih nesreč, resnih
+incidentov in incidentov (Ur. list RS, št. 72/03 in 110/05) ni namen končnega poročila o letalski
+nesreči ugotavljanje krivde ali individualne oziroma kolektivne odgovornosti. Osnovni cilj
+končnega poročila je preprečevanje letalskih nesreč in zmanjšanje tveganj v prihodnosti.
+Nedvomno mora končno poročilo o letalski nesreči koristiti varnosti letenja.
+Pomembno je, da se končno poročilo o letalski nesreči uporablja za preprečevanje letalskih nesreč.
+Uporaba končnega poročila o letalski nesreči v druge namene namreč lahko privede do napačne
+interpretacije.
+
+4
+
+KONČNO POROČILO
+
+S5-PAJ
+
+IMENOVANJE KOMISIJE ZA PREISKOVANJE LETALSKE NESREČE
+Sektor za preiskovanje letalskih nesreč in incidentov pri Ministrstvu za Promet Republike Slovenije
+je na podlagi tretjega odstavka 138. člena Zakona o letalstvu (Ur. list RS, št. 113/06 – UPB1) in na
+podlagi 7. člena Uredbe o preiskovanju letalskih nesreč, resnih incidentov in incidentov
+(Ur. list RS, št. 72/03 in 110/05) s sklepom številka 37200-1/2007/2-0010132 z dne 30.01.2007
+imenoval komisijo za preiskovanje letalske nesreče ultralahkega motornega letala STORCH II,
+registrske oznake S5-PAJ z namenom preiskovanja okoliščin v katerih se je nesreča pripetila,
+ugotavljanja vzrokov letalske nesreče in pripravo varnostnih priporočil za preprečevanje letalskih
+nesreč v prihodnosti.
+
+Sestava komisije:
+
+1. Roman ROVANŠEK, Ministrstvo za promet,
+Sektor za preiskovanje letalskih nesreč in incidentov,
+podsekretar - preiskovalec, glavni preiskovalec
+2. Marko PETERNELJ, Ministrstvo za promet,
+Sektor za preiskovanje letalskih nesreč in incidentov,
+podsekretar - preiskovalec, član komisije
+3. Ivo BOSCAROL, PIPISTREL d.o.o. Ajdovščina,
+letalski strokovnjak, član komisije
+
+5
+
+KONČNO POROČILO
+
+S5-PAJ
+
+POVZETEK
+1. Datum in čas nesreče: 28.01.2007 ob 15.30 po lokalnem času
+2. Vrsta zrakoplova: ULN / Ultralahko motorno letalo STORCH II
+3. Mesto nesreče: Neposredna bližina vzletišča Šentvid pri Stični
+4. Lastnik letala: Fizična oseba
+5. Tip leta: Šolanje - šolski krogi
+6. Proizvajalec letala: OFFICINE RODARO S.R.L, ITALIJA
+7. Država registracije: REPUBLIKA SLOVENIJA
+8. Registrska oznaka letala: S5 – PAJ
+9. Operator: Letalski klub Šentvid, Šentvid 65, 1296 Šentvid pri Stični, SLOVENIJA
+10. Posledice: Posadka težko poškodovana, Letalo 100% poškodovano
+10.1 Poškodbe oseb:
+
+Poškodbe
+mrtvi
+težke
+lažje / nepoškodovani
+
+Posadka
+2
+-
+
+Sopotniki
+-
+
+Ostali
+-
+
+10.2 Poškodbe letala: Letalo 100% poškodovano
+10.3 Poškodbe opreme: Oprema 100% poškodovana
+10.4 Poškodbe motorja: Motor 100% poškodovan
+
+6
+
+KONČNO POROČILO
+
+S5-PAJ
+
+1. DEJSTVA
+1.1 Podatki o letu
+Dne 28.01.2007 sta ob 15.10 uri po lokalnem času učenec, ki se je usposabljal za pilota ultralahkega
+motornega letala in pilot lastnik ultralahkega motornega letala vzletela na vzletišču Šentvid pri
+Stični. Vzletela sta z namenom dodatnega usposabljanja po elementih šolskega kroga v smeri 32
+vzletno pristajalne steze. Učenec je bil že usposobljen za samostojno letenje po šolskih krogih.
+Zaradi vremenskih razmer (jugozahodni veter, turbulenca in striženje vetra) je bilo pred letenjem
+odločeno, da bo zaradi varnosti učenca poleg njega na desnem sedežu letel tudi pilot lastnik
+ultralahkega motornega letala, ki je imel veljavno dovoljenje pilota ULN. Pilot lastnik ultralahkega
+motornega letala je bil tudi pripravnik za učitelja letenja z opravljenim metodskim naletom. Učenec
+in pilot sta načrtovala opraviti pet šolskih krogov z izvajanjem pristajanja s podaljškom (ang. touch
+and go). Po zaključenem četrtem šolskem krogu in opravljenim pristankom s podaljškom je učenec
+vzletel v peti (op. zadnji načrtovani) šolski krog. Kmalu po vzletu v smeri 32 na doseženi višini
+približno 50 metrov je prišlo do odpovedi motorja. Ob odpovedi delovanja motorja je upravljanje
+letala od učenca prevzel pilot lastnik letala. Pilot se je odločil, da bo z zavojem v desno opravil
+povratek na vzletno pristajalno stezo vzletišča v smeri 14. Pri tem se je letalo zaradi zmanjšanja
+hitrosti pod minimalno hitrost prevleklo (op. izguba vzgona) in trčilo v tla z desnim krilom, se
+obrnilo okrog desnega krila (op. navpične osi) in začelo vzvratno drseti po travnatem terenu do
+drevesa pri katerem se je zaustavilo. Mesto trčenja ultralahkega motornega letala v tla in smer
+drsenja do popolne zaustavitve je prikazano na spodnji sliki.
+
+Slika 1. Mesto trčenja, smer drsenja in položaj po popolni zaustavitvi
+
+7
+
+KONČNO POROČILO
+
+S5-PAJ
+
+Sled leta ultralahkega motornega letala po izjavah očividcev je prikazana na spodnjem zemljevidu.
+
+Slika 2. Sled leta ultralahkega motornega letala
+
+1.2 Podatki o poškodbah v dogodku udeleženih oseb
+
+Poškodbe
+mrtvi
+težke
+lažje / nepoškodovani
+
+Posadka
+2
+-
+
+Sopotniki
+-
+
+Ostali
+-
+
+NAMERNO PRAZNO
+
+8
+
+KONČNO POROČILO
+
+S5-PAJ
+
+1.3 Podatki o poškodbah ultralahkega motornega letala
+Ultralahko motorno letalo, njegova oprema in motor s propelerjem je bilo pri nesreči 100%
+poškodovano. Poškodbe ultralahkega motornega letala so prikazane na spodnjih slikah:
+
+Slika 1. Poškodbe centralnega dela letala in motorja
+
+Slika 2. Poškodbe opreme
+
+Slika 3. Poškodbe levega krila
+
+Slika 4. Poškodbe desnega krila
+
+Slika 5. Poškodbe zgornjega centralnega dela
+
+Slika 6. Poškodbe trupa
+
+9
+
+KONČNO POROČILO
+
+S5-PAJ
+
+Slika 7. Del poškodovane instrumentalne plošče
+
+Slika 8. Poškodovana instrumentalna plošča
+
+Slika 9. Poškodovani deli iz pilotske kabine
+
+Slika 10. Poškodbe okvirja pilotske kabine
+
+Slika 11. Poškodovana vrata pilotske kabine
+
+Slika 12. Poškodovana notranjost pilotske kabine
+
+10
+
+KONČNO POROČILO
+
+S5-PAJ
+
+1.4 Podatki o ostali škodi
+Pri trčenju ultralahkega motornega letala v tla se je poškodovala manjša površina travnika. Pred
+umikom poškodovanega ultralahkega motornega letala z mesta nesreče so bila od trupa oddvojena
+krila in iz njih istočeno gorivo. Poškodbe na površini travnika in iztočeno gorivo iz ultralahkega
+motornega letala je prikazano na spodnjih slikah.
+
+Slika 1. Poškodba travnika nastala pri trčenju desnega krila
+
+Slika 2. Poškodba travnika nastala pri trčenju motorja
+
+Slika 3. Poškodba travnika nastale pri drsenju podvozja
+
+Slika 4. Gorivo iz obeh kril
+
+NAMERNO PRAZNO
+
+11
+
+KONČNO POROČILO
+
+S5-PAJ
+
+1.5 Podatki o osebju
+1.5.1 Podatki o pilotu
+Pilot:
+
+Moški, rojen 1957
+
+Državljanstvo:
+
+Slovensko
+
+Dovoljenja - licence:
+
+DOVOLJENJE ZASEBNEGA PILOTA:
+Vrsta licence: PPL(A) NATIONAL
+Datum izdaje: 09.11.1998
+Veljavnost do: 22.11.2009
+DOVOLJENJE PILOTA ULN:
+ULN / Posebna pooblastila: UL motorno letalo od 26.11.2003
+Datum izdaje: 26.11.2003
+Veljavnost do: 26.11.2007
+
+Zdravniško spričevalo: 2 razred
+Pričetek veljavnosti: 14.11.2002
+Splošni zdravniški pregled:
+Zadnji 09.11.2006, Naslednji 14.11.2007
+Elektrokardiogram:
+Zadnji 09.11.2006, Naslednji 14.11.2007
+Audiogram:
+Zadnji 09.11.2006, Naslednji 14.11.2008
+Omejitve: Brez omejitev
+
+Status v letalski šoli Letalskega kluba Šentvid:
+Pilot je bil vpisan v Knjigo učencev (op. register) letalskega kluba Šentvid št. 495-6/03 z dne
+09.06.2003 pod zaporedno številko 28 kot pripravnik za učitelja na ultralahkih motornih letalih z
+začetkom usposabljanja 13.06.2006. Pilot je imel do dneva nesreče skupno 4 ure in 50 minut
+metodskega naleta.
+Skupni nalet na ULN – motorno letalo: 76 ur in 8 minut
+
+12
+
+KONČNO POROČILO
+
+S5-PAJ
+
+1.5.2 Podatki o učencu
+Učenec:
+
+Moški, rojen 1979
+
+Državljanstvo:
+
+Slovensko
+
+Zdravniško spričevalo: 2 razred
+Pričetek veljavnosti: 24.10.2006
+Razširjeni zdravniški pregled: 24.10.2006
+Splošni zdravniški pregled:
+Zadnji 24.10.2006, Naslednji 24.10.2011
+Elektrokardiogram:
+Zadnji 24.10.2006, Naslednji 24.10.2011
+Omejitve: Brez omejitev
+
+Status v letalski šoli:
+Vpisan v Knjigo učencev (op. register) letalskega kluba Šentvid št. 495-6/03, ki je bila izdana dne
+09.06.2003 in je zavedena pod zaporedno številko 15 registra knjig učencev. Vpisan pod zaporedno
+številko 32 kot učenec za pridobivanje dovoljenja pilota ultralahke letalne naprave ULN – pilota UL
+motornega letala, z začetkom usposabljanja 24.09.2006.
+
+Skupni nalet pred nesrečo: 10 ur in 11 minut
+
+NAMERNO PRAZNO
+
+13
+
+KONČNO POROČILO
+
+S5-PAJ
+
+1.6 Podatki o ultralahkem motornem letalu
+1.6.1 Splošni podatki
+
+Tip in model:
+
+STORCH II
+
+Registrska oznaka:
+
+S5-PAJ
+
+Proizvajalec:
+
+OFFICINE RODARO S.R.L., ITALIJA
+
+Serijska številka:
+
+36
+
+Leto izdelave:
+
+1992
+
+Skupni nalet pred nesrečo:
+
+788 ur in 24 minut
+
+Številka dovoljenja za letenje:
+
+142
+
+Veljavnost dovoljenja za letenje:
+
+Od 09.08.2006 Do 08.08.2007
+
+Namen uporabe:
+
+Šport, šolanje
+
+Datum zadnjega vzdrževalnega pregleda:
+
+29.12.2006 v obliki 100 urnega pregleda
+
+Zavarovanje:
+
+Sklenjeno od 09.08.2006 do 08.08.2007
+
+Status plovnosti pred nesrečo:
+
+Ploven
+
+Poškodbe pri nesreči:
+
+100 % poškodovano
+
+Slika 1. Ultralahko motorno letalo STORCH ll registrske oznake S5-PAJ udeleženo v nesreči
+
+14
+
+KONČNO POROČILO
+
+S5-PAJ
+
+1.6.2 Podatki o motorju
+
+Tip motorja:
+
+ROTAX 503 UL
+
+Proizvajalec:
+
+BOMBARDIER - ROTAX GMBH, GUNSKIRCHEN
+AVSTRIJA
+
+Serijska številka:
+
+4838029
+
+Leto izdelave:
+
+1997
+
+Datum vgradnje:
+
+04.07.1997
+
+Datum obnove:
+
+27.06.2006
+
+Čas delovanja do nesreče:
+
+150 ur in 24 minut
+
+Status pred nesrečo:
+
+Deloval. V poletanju samodejno prekinil z delovanjem
+
+Poškodbe pri nesreči:
+
+100% poškodovan
+
+Slika 1. Motor ROTAX 503 UL s poškodovanimi kraki propelerja po trčenju ob tla
+
+NAMERNO PRAZNO
+
+15
+
+KONČNO POROČILO
+
+S5-PAJ
+
+1.6.3 Podatki o propelerju
+
+Tip propelerja:
+
+BAM 3
+
+Proizvajalec:
+
+PIPISTREL d.o.o., Ajdovščina, SLOVENIJA
+
+Datum vgradnje:
+
+12.07.2002
+
+Status pred nesrečo:
+
+Deloval
+
+Poškodbe pri nesreči:
+
+100 % poškodovan
+
+Slika 1. Poškodovana kraka propelerja po trčenju
+
+Slika 2. Poškodovan krak propelerja v kraterju trčenja
+
+1.6.4 Podatki o gorivu in mazivu
+
+Vrsta goriva:
+
+Neosvinčeni motorni bencin 95
+
+Vrsta olja za mešanje z gorivom:
+
+Valvoline SynPower FullSynthetic 2T
+
+Količina goriva v letalu pred nesrečo:
+
+Približno 13 litrov
+
+NAMERNO PRAZNO
+
+16
+
+KONČNO POROČILO
+
+S5-PAJ
+
+1.6.5 Podatki o servisiranju in vzdrževanju ultralahkega motornega letala
+Podatki o servisiranju in vzdrževanju ultralahkega motornega letala S5-PAJ so pridobljeni iz
+Tehnične knjige zrakoplova št. 1 z datumom prvega vnosa 25.12.2005.
+
+Slika 1. Tehnična knjiga zrakoplova S5-PAJ
+
+Prepis podatkov zapisov o servisiranju in vzdrževanju iz Tehnične knjige zrakoplova so navedeni v
+spodnji tabeli.
+25.03.2006
+
+Izvršen redni periodični pregled (50 ur) pri naletu 606,41 TT.
+
+29.04.2006
+
+Naslednji pregled 100 Hrs pri naletu 650 ur TT.
+Zamenjane glavne vzmetne noge podvozja.
+
+26.05.2006
+
+Izvršen 50 urni pregled po navodilih proizvajalca letala in proizvajalca
+
+27.06.2006
+
+motorja ROTAX.
+Izvršena obnova motorja po navodilih proizvajalca.
+
+07.07.2006
+
+Zamenjana glavna motorna gred 638 TT/ (259 TACH.T.) Next pri
+688.
+Ponovno zategnjene glave cilindrov 24 Nm 643,10 TT.
+
+09.10.2006
+
+Na letalu izvršen 50 urni pregled v skladu z navodili proizvajalca pri
+naletu 686 ur TT ( TACH.T. 311 ur). Zamenjana os kolesa glavne leve
+noge podvozja. Naslednji pregled (100 urni) pri naletu 738 TT ali 360
+ur TACH.T.
+
+29.12.2006
+
+Izvršen 100 urni pregled na letalu in motorju po navodilih proizvajalca.
+Letalo preizkušeno na
+
+zemlji in v zraku pri naletu 742,05 TT.
+
+Naslednji pregled (50) pri naletu 788 ur TT. Letalo vrnjeno v uporabo.
+
+17
+
+KONČNO POROČILO
+
+S5-PAJ
+
+1.7 Meteorološki podatki
+Meteorološke podatke stanja vremena na območju Šentvida pri Stični na dan 28.01.2007 okrog
+16.00 ure po lokalnem času je komisija za preiskovanje letalske nesreče pridobila od Agencije
+Republike Slovenije za okolje, sektorja za letalsko meteorologijo. Analizo vremenskih pogojev je
+sektor za letalsko meteorologijo pripravil na podlagi meteoroloških meritev in opazovanj
+opravljenih na meteoroloških postajah po Sloveniji, podatkov radiosondažne meritve atmosfere
+opravljenih v Zagrebu, podatkov arhiva slik meteorološkega radarja in satelitskih slik, podatkov
+izračunanih polj meteoroloških spremenljivk numeričnih modelov ECMWF in analiz nižinskih kart.
+1.7.1 Splošna vremenska situacija na dan 28.01.2007
+Na dan 28.01.2007 je bila Slovenija na robu doline zračnega pritiska. V višini je pihal
+severozahodni veter, pri tleh jugozahodni veter.
+1.7.2 Opis vremena v okolici Šentvida pri Stični na dan 28.01.2007 ob 16.00 uri
+po lokalnem času
+Iz SYNOP depeš meteorološke postaje Novo mesto, Lisca in Ljubljana Bežigrad, satelitske in
+radarske slike je razvidno, da je ob 16.00 uri po lokalnem času v okolici Šentvida pri Stični
+prevladovalo pretežno jasno nebo, od 2/8 do 4/8 nizke oblačnosti, ter do 6/8 visoke oblačnosti. V
+širšem območju je v popoldanskem času pri tleh pihal jugozahodni veter s hitrostjo do 10 vozlov, ki
+je proti večeru slabel. Glede na dobro prevetrenost širšega območja gre sklepati, da mikroklimatski
+pogoji ne vplivajo odločilno na relativno vlažnost na določeni lokaciji, temveč jo določa zračna
+masa, ki se zadržuje nad širšim območjem. Tako lahko trdimo, da je relativna vlaga pri tleh med 60
+in 70 odstotki, na višini 5000 ft (1524 m) pa med 30 in 40 odstotki. Temperatura pri tleh je bila ob
+16.00 uri okrog 6°C, na višini 5000 ft (1524 m) pa -1°C.
+
+Lokacija
+
+Temperatura
+
+Relativna vlaga
+
+Novo mesto
+
+7.4°C
+
+58%
+
+Cerklje ob Krki
+
+6.0°C
+
+66%
+
+Ljubljana Bežigrad
+
+5.6°C
+
+71%
+
+Tabela 1. Temperatura in relativna vlaga ob 16.00 uri po lokalnem času
+
+18
+
+KONČNO POROČILO
+
+S5-PAJ
+
+Postaja
+
+12 UTC
+
+18 UTC
+
+ECMWF Ljubljana
+
+-2°C
+
+0°C
+
+41%
+
+30%
+
+-3°C
+
+1°C
+
+45%
+
+29%
+
+-2°C
+
+/
+
+ECMWF Cerklje ob Krki
+
+Radiosondaža – Zagreb
+
+43%
+Tabela 2. Podatki o temperaturi in relativni vlažnosti iz numeričnega modela ECMWF in radiosondažne meritve iz
+Zagreba na višini 5000 ft (1524 m)
+
+1.7.3 Radarska slika
+Radarska slika kaže, da na območju Šentvida pri Stični ni bilo prisotnih padavin.
+
+Slika 1. Radarske meritve ob 16.00 uri po lokalnem času
+
+19
+
+KONČNO POROČILO
+
+S5-PAJ
+
+1.7.4 Satelitska slika
+Satelitska slika kaže, da je na področju Šentvida pri Stični bilo pretežno jasno vreme.
+
+Slika 1. Satelitska slika ob 16.00 uri po lokalnem času
+
+1.7.5 Zaključek
+Na področju Šentvida pri Stični so dne 28.01.2007 ob 16.00 uri po lokalnem času prevladovali
+naslednji meteorološki pogoji:
+ Meteorološka vidnost nad 10 km,
+ Temperatura zraka okrog 6°C,
+ Pretežno jasno nebo z 2/8 do 4/8 nizke ter 6/8 visoke oblačnosti,
+ Čez dan je pihal jugozahodni veter s hitrostjo do 10 vozlov, ki je proti večeru slabel. Na
+višini 5000 ft (1524 m) je pihal veter jugozahodne smeri s hitrostjo do 15 vozlov,
+ Temperatura pri tleh je bila okrog 6° C, relativna vlaga med 60 in 70 odstotki. Na višini 5000
+ft (1524 m) je bila temperatura okrog -1° C, relativna vlaga med 30 in 40 odstotki.
+
+20
+
+KONČNO POROČILO
+
+S5-PAJ
+
+1.8 Podatki o navigacijskih sredstvih
+Posadka je letela vizualno. Ostali podatki niso pomembni.
+1.9 Podatki o radijski zvezi
+V navodilih za vzletišče Šentvid je opredeljeno, da radijsko opremo sestavlja prenosna radijska
+postaja, ki deluje na frekvenci 123.50 Mhz. Po podatkih zbranih pri preiskavi je bilo ugotovljeno,
+da radijska zveza med posadko in vodjem letenja oziroma njegovim namestnikom ni bila
+vzpostavljena.
+1.10 Podatki o vzletišču
+Vzletišče Šentvid je namenjeno zrakoplovom splošne in posebne kategorije katerih zmogljivosti
+ustrezajo dolžini vzletno pristajalne steze. Vzletišče je uporabno za dnevno letenje v vizualnih
+meteoroloških pogojih. Vzletišče se nahaja južno od naselja Šentvid pri Stični ob cesti Šentvid –
+Dob v neposredni bližini železniške postaje Šentvid pri Stični. Območje uporabe vzletišča je
+omejeno s krogom polmera 5 km s centrom v središču vzletno pristajalne steze na geografskih
+koordinatah N 45°56̕ 39̕ ̕
+
+E 014°51̕ 18̕ ̕ . Vzletno pristajalna steza je pravokotne oblike z
+
+dimenzijami 560 x 30 m. Smer vzletno pristajalne steze je 32 – 14 (317° - 137°). Nadmorska višina
+praga 32 je 308 m, praga 14 pa 314 m. Meteorološko opremo sestavljajo vetrovna vreča in
+anemometer. Informacije o vremenu se pridobivajo v meteorološki službi na letališču Brnik.
+Letalski klub Šentvid je imel na dan nesreče veljavno dovoljenje za uporabo vzletišča Šentvid z
+veljavnim navodilom za njegovo uporabo.
+1.10.1 Specifični pogoji uporabe vzletišča
+Po veljavnih navodilih za vzletišče se vzletanje v smeri 32 izvaja proti naselju Šentvid. Prvi zavoj
+(levi ali desni) v šolski krog se mora izvesti pred preletom naselja. Pri preletu naselja se mora
+upoštevati največja možna protihrupna zaščita.
+Pri vzletanju v smeri 14 ni ovir in naseljenih krajev. 150 metrov od konca stripa 14 seka smer vzleta
+železniški nasip višine 3 metre.
+Pri pristajanju v smeri 32 ni ovir. Pristaja se preko nasipa železniške proge in kolovoza.
+Pristajanje v smeri 14 se izvaja preko naselja Šentvid zato je potrebno upoštevati protihrupno
+zaščito. Naselje je potrebno preleteti na varni višini in z najmanjšo močjo motorja. V finalni fazi
+pristanka je potrebno preleteti vod električne napeljave in cesto.
+
+21
+
+KONČNO POROČILO
+
+S5-PAJ
+
+Širše območje vzletišča Šentvid je prikazano na spodnji topografski karti. Rdeči trak ponazarja
+vzletno pristajalno stezo pravokotne oblike z dimenzijami 560 x 30 m, ki se uporablja za vzletanje
+in pristajanje letal. Puščice prikazujejo smeri vzletno pristajalne steze 32 in 14. Krog rumene barve
+prikazuje območje uporabe vzletišča, ki je omejeno s krogom polmera 5 km.
+
+14
+
+32
+
+Slika 1. Položaj vzletišča Šentvid in smeri vzletno pristajalne steze
+
+22
+
+KONČNO POROČILO
+
+S5-PAJ
+
+1.10.2 Izredni postopki
+Po veljavnih navodilih za vzletišče v primeru odpovedi motorja po vzletu v smeri 32 je teren za
+zasilni pristanek v osi steze po preletu asfaltne ceste in električne napeljave neposredno za cesto.
+Teren za zasilni pristanek v smeri 32 je prikazan na spodnji sliki.
+
+MESTO TRČENJA
+S5-PAJ
+
+32
+
+Slika 1. Teren za zasilni pristanek v smeri 32 in mesto trčenja ultralahkega motornega letala
+
+23
+
+KONČNO POROČILO
+
+S5-PAJ
+
+Po veljavnih navodilih za vzletišče v primeru odpovedi motorja po vzletu v smeri 14 je teren za
+zasilni pristanek v osi steze pred in po preletu železniškega nasipa. Teren za zasilni pristanek v
+smeri 14 in mesto trčenja ultralahkega motornega letala je prikazan na spodnji sliki.
+
+MESTO TRČENJA
+S5-PAJ
+
+14
+
+Slika 2. Teren za zasilni pristanek v smeri 14 in mesto trčenja ultralahkega motornega letala
+
+24
+
+KONČNO POROČILO
+
+S5-PAJ
+
+1.11 Podatki o registratorjih leta
+Na ultralahkih letalih se registratorji leta ne uporabljajo.
+1.12 Podatki z mesta nesreče
+Na mestu nesreče je bilo ugotovljeno, da je ultralahko motorno letalo trčilo v tla z desnim krilom in
+se nato obrnilo okrog desnega krila (op. navpične osi) ter začelo vzvratno drseti po terenu navzdol
+do drevesa pri katerem se je ustavilo. Pri tem se je letalo popolnoma poškodovalo. Spodnje slike
+prikazujejo stanje razbitin letala ob prihodu komisije na mesto nesreče.
+
+Slika 1. Letalo na mestu popolne zaustavitve
+
+Slika 2. Centralni del – motor in pilotska kabina
+
+Slika 3. Repne površine naslonjene ob krošnjo drevesa
+
+Slika 4. Oprema v pilotski kabini
+
+25
+
+KONČNO POROČILO
+
+S5-PAJ
+
+1.13 Medicinski in patološki podatki
+1.13.1 Podatki o pilotu
+Pilot je bil pri trčenju letala težko poškodovan. Pilot je pri nesreči zadobil zlom desne noge, zlom
+nosu ter več udarcev po glavi in telesu. Pilot je bil pred prihodom preiskovalcev letalske nesreče
+prepeljan v Klinični center Ljubljana.
+1.13.2 Podatki o učencu
+Učenec je bil pri trčenju letala težko poškodovan. Učenec je zadobil poškodbo desnega gležnja in
+pretres možganov. Učenec je bil pred prihodom preiskovalcev prepeljan v Klinični center Ljubljana.
+1.14 Podatki o požaru
+Požara ni bilo.
+1.15 Podatki o možnostih preživetja
+/
+1.16 Potek preiskave letalske nesreče
+Sektor za preiskovanje letalskih nesreč in incidentov pri Ministrstvu za Promet je bil o
+
+nesreči
+
+obveščen dne 28.01.2007 ob 16.00 uri po lokalnem času s strani Operativno komunikacijskega
+centra. Dva člana komisije za preiskovanje letalske nesreče sta na kraj nesreče prispela še isti dan
+ob 17.30 uri. Na mestu nesreče je bilo ugotovljeno, da sta bila učenec in pilot prepeljana v
+Univerzitetni klinični center Ljubljana. Na mestu nesreče so se nahajali gasilci gasilske brigade
+Ljubljana. Komisija je opravila ogled poškodovanega letala in mesto nesreče. Mesto nesreče je bilo
+zavarovano s strani policistov policijske postaje Grosuplje. Preiskava na mestu nesreče se je
+nadaljevala naslednji dan. Po končani preiskavi je bilo poškodovano letalo prepeljano v varovane
+prostore za nadaljnje postopke preiskave. Komisija je v postopku preiskave letalske nesreče
+opravila razgovor z učencem in pilotom lastnikom letala. Opravljena je bila preiskava na strukturi
+in opremi letala. Analizo
+
+motorja ultralahkega letala je komisija
+
+opravila v sodelovanju s
+
+pooblaščeno organizacijo za vzdrževanje motorjev ROTAX.
+
+04.03.2009 je bil končan osnutek končnega poročila.
+
+26
+
+KONČNO POROČILO
+
+S5-PAJ
+
+1.17 Podatki o operatorju
+Operator je Letalski klub Šentvid, Šentvid pri Stični 65, 1296 Šentvid pri Stični, ki je imel na dan
+nesreče veljavno Spričevalo o usposobljenosti za pouk zrakoplovnega osebja. Spričevalo
+št. 470-43/2005 je bilo Letalskemu klubu izdano dne 22.06.2005 z veljavnostjo do 30.06.2007 s
+strani Ministrstva za Promet, Uprave Republike Slovenije za civilno letalstvo. Spričevalo je bilo
+izdano letalskemu klubu za pridobitev naslednjih dovoljenj:
+
+1. DOVOLJENJA PILOTA ULN– motorno letalo, motorni zmaj / UL pilot licence
+2. DOVOLJENJA PILOTA JADRALNEGA LETALA/ Glider pilot licence.
+
+Letalskemu klubu Šentvid je Ministrstvo za Promet, Uprava Republike Slovenije za civilno
+letalstvo potem, ko je bilo ugotovljeno, da kot druga organizacija za usposabljanje pilotov v vseh
+pogledih ustreza zahtevam skupnega letalstva S5-JAR-FCL 1.125 v zvezi z zahtevo za
+usposabljanje izdala Potrdilo o odobritvi št. RF/SLO – 016 za usposabljanje po tečaju za:
+
+1. PPL(A) – Zasebni pilot letala – Private pilot licence PPL(A)
+
+Potrdilo o odobritvi je bilo izdano 22.06.2005 z veljavnostjo do 30.06.2007.
+1.18 Ostali podatki
+/
+1.19 Uporabljene tehnike preiskave
+Uporabljene so bile klasične tehnike preiskave.
+
+NAMERNO PRAZNO
+
+27
+
+KONČNO POROČILO
+
+S5-PAJ
+
+2. ANALIZA
+2.1 Splošno
+Na podlagi podatkov iz 1. poglavja tega poročila je bilo ugotovljeno, da je na ultralahkem
+motornem letalu po vzletu v peti (op. zadnji načrtovani) šolski krog na višini približno 50 metrov
+prišlo do samodejne odpovedi delovanja motorja. Po odpovedi delovanja motorja je pilot lastnik
+ultralahkega motornega letala od učenca prevzel upravljanje letala ter izvedel desni zavoj z
+namenom povratka proti vzletno pristajalni stezi vzletišča v smeri 14. Pri tem se je ultralahko
+motorno letalo zaradi zmanjšanja hitrosti pod minimalno hitrost prevleklo (op. izguba vzgona) in
+trčilo v tla. Komisija za preiskovanje letalske nesreče je opravila analizo leta, analizo ultralahkega
+motornega letala in analizo motorja.
+2.2 Analiza leta
+Pri analizi leta je bilo ugotovljeno, da je po zaključenem četrtem šolskem krogu in opravljenim
+pristankom s podaljškom v smeri 32 vzletno pristajalne steze vzletišča Šentvid učenec vzletel v peti
+(op. zadnji načrtovani) šolski krog. V fazi poletanja na doseženi višini približno 50 metrov je motor
+ultralahkega motornega letala samodejno popolnoma prenehal delovati. Ob popolni odpovedi
+delovanja motorja je ultralahko motorno letalo začelo izgubljati višino.
+Ultralahko motorno letalo se je nahajalo desno od sredinske osi vzletno pristajalne steze v smeri 32
+in je poletalo v smeri hiš, ki se nahajajo tik za asfaltno cesto in električno napeljavo. Pilot lastnik
+letala je v trenutku odpovedi motorja prevzel upravljanje letala od učenca. Zaradi položaja v
+katerem se je nahajalo ultralahko motorno letalo in zaradi izgubljanja višine kot posledice odpovedi
+delovanja motorja, pilot lastnik letala ni mogel opraviti zasilni pristanek v osi steze po preletu
+asfaltne ceste in električne napeljave neposredno za cesto, kot je to določeno v veljavnih navodilih
+za vzletišče v primeru odpovedi motorja po vzletu v smeri 32. Glede na okoliščine se je pilot
+odločil, da bo z zavojem v desno opravil povratek na vzletno pristajalno stezo vzletišča v smeri 14.
+Pri tem se je letalo zaradi zmanjšanja hitrosti pod minimalno hitrost prevleklo (op. izguba vzgona),
+trčilo v tla z desnim krilom, se obrnilo okrog desnega krila (op. navpične osi) in začelo vzvratno
+drseti po travnatem terenu do drevesa pri katerem se je ustavilo. Na naslednji sliki je prikazana os
+vzletno pristajalne steze smeri 32 vzletišča Šentvid, prikazana je točka terena za zasilni pristanek,
+označena je smer poletanja, označena je smer vetra, označeno je mesto odpovedi motorja in mesto
+trčenja ultralahkega motornega letala na travnatem pobočju v neposredni bližini hiš. Prikazi so
+narejeni na podlagi pridobljenih izjav učenca, pilota lastnika ultralahkega motornega letala in na
+podlagi ugotovitev komisije pri analizi leta.
+
+28
+
+KONČNO POROČILO
+
+S5-PAJ
+
+Odpoved motorja
+
+Desni zavoj v smer 14
+
+Mesto trčenja
+
+Smer vetra
+Teren za zasilni
+pristanek v osi steze
+
+Smer poletanja
+
+Os steze vzletišča
+
+32
+Slika 1. Pogled iz praga steze smeri 32
+
+2.2.1 Ugotovitve analize leta
+Na podlagi dejstev je bilo ugotovljeno, da je učenec po opravljenem pristanku s podaljškom v smeri
+32 vzletel v peti (op. zadnji načrtovani) šolski krog. V poletanju je učenec usmerjal letalo desno od
+sredinske osi vzletno pristajalne steze smeri 32, ker ni opravil popravka smeri poleta za levi bočni
+veter. V tem času je pihal jugozahodni veter s hitrostjo do 10 vozlov. Temperatura pri tleh je bila
+okrog 6° C, relativna vlaga je bila med 60 in 70 odstotki. Zaradi položaja v katerem se je nahajalo
+ultralahko motorno letalo ob odpovedi motorja in zaradi izgubljanja višine pilot lastnik letala ni
+mogel opraviti zasilni pristanek v osi steze po preletu asfaltne ceste in električne napeljave
+neposredno za cesto, kot je to določeno v veljavnih navodilih za vzletišče v primeru odpovedi
+motorja po vzletu v smeri 32. Glede na okoliščine in položaj ultralahkega motornega letala se je
+pilot odločil, da bo z zavojem v desno opravil povratek na vzletno pristajalno stezo vzletišča v
+smeri 14. Pri tem je ultralahko motorno letalo izgubilo vzgon in pilot lastnik letala ni mogel
+preprečiti trčenja v tla.
+
+29
+
+KONČNO POROČILO
+
+S5-PAJ
+
+2.3 Analiza ultralahkega motornega letala
+Za ultralahko motorno letalo STORCH II, registrske oznake S5- PAJ, je bila opravljena analiza
+veljavnosti dovoljenja za letenje (ang. Permit To Fly), analiza strukture ultralahkega motornega
+letala in njegove opreme.
+2.3.1 Analiza dovoljenja za letenje
+Pri analizi dovoljenja za letenje (ang. Permit To Fly) je bilo ugotovljeno, da je imelo letalo na dan
+nesreče veljavno dovoljenje za letenje z veljavnostjo do 08.08.2007. Dovoljenje za letenje je izdalo
+Ministrstvo za promet, Uprava Republike Slovenije za civilno letalstvo dne 09.08.2006.
+2.4 Analiza goriva in maziva
+Na mestu nesreče je bilo iz obeh uplinjačev motorja vzeto gorivo za laboratorijsko analizo.
+Rezultati laboratorijske analize so pokazali, da je bilo gorivo ustrezno, prav tako je bilo v gorivu
+ustrezno olje za mešanje. Odstotek mešanice goriva in olja je bil pravilen. Spodnje slike prikazujejo
+oba uplinjača motorja na mestu nesreče.
+
+Slika 1. Uplinjača motorja in zračni filter na mestu nesreče
+
+30
+
+KONČNO POROČILO
+
+S5-PAJ
+
+Slika 2. Uplinjača motorja iz katerih je bilo vzeto gorivo na mestu nesreče
+
+2.5 Analiza motorja
+Na motorju vrste ROTAX 503 UL, ki je bil vgrajen na ultralahko motorno letalo je bila opravljena
+analiza celotnega motorja in njegovih komponent. Ugotovitve analize so navedene v nadaljevanju.
+
+»Predmetni motor ni certificiran letalski motor« (op. opozorilo proizvajalca!).
+Posadke so dolžne upoštevati navodila proizvajalca, ki se nahajajo v Operativnem
+priročniku za uporabo motorja.
+Za predmetni motor je proizvajalec BRP Rotax GmbH izdal Operativni priročnik (ang.
+Operators Manual for Engine Types Rotax 447 UL SCDI, Rotax 503 UL DCDI, Rotax 582
+UL DCDI model 90, Rotax 582 UL DCDI model 99, Edition 0 of 1999 05 01), ki so ga bile
+posadke dolžne uporabljati na podlagi Priročnika za vodenje UL letala Storch S5-PAJ –
+prevod proizvajalčevega priročnika iz italijanskega jezika in priredba za predmetno letalo
+(op. reg. oznako S5-PAJ) iz leta 1993 z dopolnitvijo in revizijo iz leta 2005.
+V predmetnem Operativnem priročniku sta na str. 4-2 pod točko 4.2) še dva opozorila, ki
+glasita:
+
+in
+
+31
+
+KONČNO POROČILO
+
+S5-PAJ
+
+kar pomeni:
+▲ OPOZORILO:
+
+Motor je po konstrukciji podložen nenadni odpovedi.
+Odpoved motorja
+lahko povzroči nesrečo pri
+pristajanju, zasilno pristajanje ali pristajanje brez moči
+motorja (op. z ustavljenim motorjem). Nesreča pri
+pristajanju posledično lahko povzroči težko telesno
+poškodbo ali smrt .
+
+▲ OPOZORILO:
+
+Nikoli ne letite z zrakoplovom, ki je opremljen s tem
+motorjem na lokacijah (op. v prostoru / v območju), na
+hitrostih, na višinah, ali v drugih okoliščinah v katerih
+ne morete zagotoviti uspešnega pristanka z ustavljenim
+motorjem.
+Zrakoplov opremljen s tem motorjem mora leteti samo
+v DNEVNIH VFR* pogojih.
+* VFR – Visual Flight Rules : pravila vizualnega
+letenja
+
+Kljub navedenim opozorilom proizvajalca motorja se je glavni preiskovalec odločil, da opravi
+tehnično preiskavo motorja z namenom, da se ugotovi resnični vzrok odpovedi motorja in s tem
+zmanjšajo tveganja v prihodnje.
+
+NAMERNO PRAZNO
+
+32
+
+KONČNO POROČILO
+
+S5-PAJ
+
+2.5.1 Analiza uplinjača številka 1
+Na uplinjaču vrste BING 54 je bila opravljena celotna analiza njegovih sestavnih delov. Pri analizi
+je bilo ugotovljeno, da je imel uplinjač neustrezno (op. preveč obrabljeno) iglo in neustrezno gumi
+kapico (op. Boudna) pletenice plina.
+Slike prikazujejo pregled in analizo sestavnih delov uplinjača z ugotovitvami.
+
+Slika 1. Analiza uplinjača
+
+Slika 3. Neustrezna igla uplinjača
+
+Slika 2. Analiza uplinjača
+
+Slika 4. Neustrezna gumi kapica pletenice plina
+
+33
+
+KONČNO POROČILO
+
+S5-PAJ
+
+2.5.2 Ugotovitev analize uplinjača številka 1
+Pri analizi uplinjača številka 1 je bilo ugotovljeno, da sta bili igla uplinjača in gumi kapica pletenice
+plina (op. boudna) neustrezni. Posledično je bilo delovanje motorja v tem primeru nepravilno
+oziroma neenakomerno pri dodajanju in odvzemanju plina.
+Na polnem plinu v poletanju obrabljenost igle ni imela vpliva na delovanje motorja.
+Pri analizi uplinjača številka 1 je bilo ugotovljeno, da uplinjač ni bil vzrok za samodejno odpoved
+delovanja motorja kljub ugotovljenim navedenim nepravilnostim. Ugotovljene nepravilnosti na
+uplinjaču so takšne narave, da je bilo delovanje motorja sicer omogočeno vendar bi v določenih
+pogojih lahko vplivale na nepravilno delovanje motorja.
+
+Slika 1. Neustrezni komponenti uplinjača številka 1
+
+NAMERNO PRAZNO
+
+34
+
+KONČNO POROČILO
+
+S5-PAJ
+
+2.5.3 Analiza uplinjača številka 2
+Na uplinjaču vrste BING 54 je bila opravljena celotna analiza njegovih sestavnih delov. Pri analizi
+je bilo ugotovljeno, da je imel uplinjač vgrajeno neustrezno iglo. Spodnje slike prikazujejo analizo
+sestavnih delov uplinjača z ugotovitvijo.
+
+Slika 1. Analiza uplinjača
+
+IGLA UPLINJAČA
+
+Slika 2. Neustrezna igla uplinjača
+
+NOVA IGLA
+
+Slika 3. Primerjava distanc med iglo uplinjača številka 2 in novo iglo
+
+35
+
+KONČNO POROČILO
+
+S5-PAJ
+
+2.5.4 Ugotovitev analize uplinjača številka 2
+Pri analizi uplinjača številka 2 je bilo ugotovljeno, da je bila igla uplinjača obrabljena do te mere, da
+ni omogočala pravilne zmesi goriva in zraka. Posledično je bilo delovanje motorja v tem primeru
+nepravilno. Posledica tega je zaganjanje motorja oziroma neenakomeren tek. Ustreznost igle ni bilo
+mogoče ugotoviti, ker je bila oznaka igle nevidna. Pri takih pomanjkljivostih uplinjač ne more
+zagotavljati pravilne zmesi goriva in zraka. Kot posledica tega se pojavlja neenakomeren tek,
+sprememba temperature motorja, težji zagon, slabo pospeševanje, itd.
+Pri analizi uplinjača številka 2 je bilo ugotovljeno, da uplinjač ni bil vzrok za samodejno odpoved
+delovanja motorja kljub ugotovljeni nepravilnosti. Ugotovljene nepravilnosti na uplinjaču so takšne
+narave, da je bilo delovanje motorja sicer omogočeno vendar bi v določenih pogojih lahko vplivale
+na pravilno delovanje motorja.
+2.5.5 Končna ugotovitev analize uplinjačev 1 in 2
+Ugotovljene nepravilnosti na obeh uplinjačih so bile take narave, da je bilo delovanje motorja
+omogočeno vendar bi v določenih pogojih lahko vplivale na pravilno delovanje motorja.
+Pomanjkljivosti ugotovljene pri analizi obeh uplinjačev so posledica neustreznega servisiranja in
+vzdrževanja.
+
+NAMERNO PRAZNO
+
+36
+
+KONČNO POROČILO
+
+S5-PAJ
+
+2.5.6 Analiza statorja vžiga
+Pri analizi statorja vžiga je bilo glede na dobljene rezultate meritev, ki so bile opravljene in glede na
+izvedbo nekaterih sprememb na statorju vžiga (podaljšanje žic), popravilo izolacije tuljav z
+zalivanjem ugotovljeno, da delovanje statorja vžiga ni bilo pravilno, kar posledično pomeni tudi
+nepravilno delovanje visokonapetostnih tuljav vžigalnega sistema VNT.
+Ugotovljeno stanje potrjuje dejstvo, da je bilo na statorju vžiga izvajano neustrezno vzdrževanje popravilo z zalivanjem in podaljšanje žic, ki je neustrezno.
+Na sliki je prikazana analiza statorja vžiga z ugotovitvami.
+
+Zalivanje tuljav
+
+Podaljševanje žic
+
+Neustrezni spoji
+
+Slika 1. Ugotovitve analize statorja vžiga
+
+37
+
+KONČNO POROČILO
+
+S5-PAJ
+
+2.5.7 Analiza električne inštalacije na motorju
+Pri analizi električne instalacije na motorju je bilo ugotovljeno, da je bila delna odpoved delovanja
+motorja povzročena zaradi poškodovana izolacija žice pri šest polnem konektorju, ki služi za
+ugašanje motorja. Ta poškodovani del žice se je nahajal nezavarovan v neposredni bližini
+kovinskega nosilca motorja. Poškodba izolacije žice je prikazana na spodnji sliki.
+
+Slika 1. Dotik poškodovane izolacija žice ob nosilec je bil vzrok za prekinitev tokokroga enega sistema vžiga
+
+Do poškodbe izolacije omenjene žice je prišlo sčasoma in je bila posledica obremenitev žice na
+nateg oziroma upogib in drgnjenju ob ostrem robu plastične ovojnice, kjer je najprej nastala zareza
+in nato razpoka. Zarezni poškodbi silikonske izolacije obeh električnih žic sta razvidni tudi na
+drugem koncu plastične ovojnice, kar vse tudi kaže na precej dotrajano in improvizirano izvedbo
+navedene električne inštalacije. (Dopis MNZ, Center za forenzične preiskave, št. 233-3492/2009/
+(2P501-11) z dne 27.05.2009).
+
+38
+
+KONČNO POROČILO
+
+S5-PAJ
+
+Motor ima Ducati-jev dvojni sistem vžiga, kar pomeni, da bi v opisanem primeru bil izključen le en
+sistem, drugi pa bi deloval. Ob nedelovanju enega sistema (op. prikazano na shemi v z »eletronic
+box 2«) še vedno ostane delujoč drugi sistem (op. »electronic box 1«). Shematski prikaz je podan
+na električni shemi (ang. Wiring Diagram) Priročnika za vgradnjo (ang. Instalation Manual):
+
+BOX 1 DELUJE
+
+KRATKI STIK
+BOX 2 NE
+DELUJE
+
+Zaradi predmetnega kratkega stika bi motor skladno z električno shemo deloval, vendar na
+zmanjšanih obratih.
+V primeru izpada enega sistema vžiga motor še vedno deluje na drugem sistemu. Na polnem plinu
+se ob delovanju enega sistema zmanjšajo obrati motorja največ 400 - 500 o/min (op. nekateri viri
+celo trdijo, da je na polnem plinu padec obratov lahko neznaten oziroma zanemarljiv, na 3.500
+o/min pa tja do 200 o/min). Iz performančnega diagrama (na naslednji strani) je razvidno, da bi
+padec obratov zmanjšal moč motorja za okrog 7 KM (hp), kar pomeni zmanjšanje moči motorja za
+okrog 15 %. Iz izgube moči motorja izhaja, da bi bil z letalom še vedno mogoč horizontalni let.
+
+39
+
+KONČNO POROČILO
+
+S5-PAJ
+
+DIAGRAM PERFORMANS MOTORJA ROTAX 503 UL
+
+2.5.8. Ostalo
+V času nesreče je bila temperatura zraka 60 C ter relativna vlažnost od 60 do 70%.
+Ta dva meteorološka elementa kažeta na zaledenitve uplinjačev neodvisno od konstrukcije
+okrova motorja.
+Od strokovnjakov Rotax-a je bil pridobljen diagram zaledenitve uplinjača:
+
+Č
+
+DIAGRAM ZALEDENITVE UPLINJAČA
+
+40
+
+KONČNO POROČILO
+
+S5-PAJ
+
+Iz diagrama je razvidno (navpična debela bela črta), da na temperaturi 6 0 C pri 60% relativni
+vlažnosti na moči spuščanja oziroma od III do IV zavoja šolskega kroga in v nadaljnjem spuščanju
+v končnem priletu (op. v t.i. »finalu«) prihaja do močne zaledenitve uplinjača vse do pristanka.
+Pri 70% relativni vlažnosti prihaja do močne zaledenitve na vseh močeh motorja, kar pomeni, da
+prihaja do močne zaledenitve po celem šolskem krogu.
+Uplinjači z drsnikom med katere spada tudi predmetni tip uplinjača je manj podvržen zaledenitvi
+kot klasični uplinjač, kar pa ne pomeni, da ne pride do zaledenitve, le potek zaledenitve je drugačen.
+Potek zaledenitve:
+-
+
+Po šolskem krogu vse do III zavoja zaledenitev nima velikega vpliva na delovanje
+motorja, ker vodni kondenz (op. ki se spreminja v majhne ledene kristale v uplinjaču)
+motor »predela« skoraj brez posledic. Odprtina za zrak uplinjača je z drsnikom odprta
+okrog ¾ preseka.
+
+-
+
+Od III zavoja šolskega kroga (op. v spuščanju) je odprtina za zrak okrog ½ manjša. Pri
+zmanjšanem preseku odprtine za zrak ter upočasnjenem pretoku zraka se večji del
+ledenih kristalov začne kopiči (op. nabirati) v zmanjšanem preseku, kar pogojuje
+bogatejšo zmes. Motor deluje.
+
+-
+
+V »finalu«, ko se plin odvzame do konca, drsnik uplinjača pride v najnižji položaj,
+odprtina je skoraj zaprta in kopičenje (op. nabiranje) leda se na vhodu pospešuje.
+
+-
+
+Po dotiku VPS, pri dodajanju plina do konca za podaljšanje na naslednji šolski krog
+drsnik popolnoma odpre odprtino za zrak, pretok zraka se naglo poveča ter nakopičeni
+led zdrsne v motor. Motor takšne količine leda ne more več »predelati« ter pride najprej
+do neenakomernega teka in nato do odpovedi.
+
+NAMERNO PRAZNO
+
+41
+
+KONČNO POROČILO
+
+S5-PAJ
+
+3. ZAKLJUČKI
+3.1 Ugotovitve
+ V poletanju je učenec usmerjal letalo desno od sredinske osi vzletno pristajalne steze smeri
+32 ker ni pariral levega bočnega vetra. Zaradi položaja v katerem je bilo ultralahko motorno
+letalo ob odpovedi motorja in zaradi izgubljanja višine pilot lastnik letala ni mogel opraviti
+zasilni pristanek v osi steze po preletu asfaltne ceste in električne napeljave neposredno za
+cesto, kot je to določeno v veljavnih navodilih za vzletišče v primeru odpovedi motorja po
+vzletu v smeri 32. Glede na okoliščine in položaj ultralahkega motornega letala se je pilot
+odločil, da bo z zavojem v desno opravil povratek na vzletno pristajalno stezo vzletišča v
+smeri 14. Pri tem je ultralahko motorno letalo izgubilo vzgon in pilot lastnik letala ni mogel
+preprečiti trčenja v tla.
+
+ Ultralahko motorno letalo je imelo na dan nesreče veljavno dovoljenje za letenje z
+veljavnostjo do 08.08.2007.
+
+ Na ultralahkem motornem letalu ni bila pritrjena identifikacijska tablica velikosti deset krat
+pet centimetrov z vsebino, ki jo predpisuje Pravilnik o ultralahkih letalnih napravah (Ur.list
+RS, št.107/2008).
+
+ Struktura ultralahkega motornega letala in oprema nista vplivali na nesrečo.
+ Gorivo je bilo ustrezno, prav tako je bilo v gorivu ustrezno olje za mešanje. Odstotek
+mešanice goriva in olja je bil pravilen.
+
+ Na statorju vžiga je bilo izvajano neustrezno vzdrževanje - popravilo z zalivanjem in
+podaljšanje žic, ki je neustrezno.
+
+ Pomanjkljivosti ugotovljene pri analizi motorja so posledica neustreznega servisiranja in
+vzdrževanja.
+
+ Izgubo moči motorja je verjetno povzročila poškodovana izolacija žice pri šest polnem
+konektorju, ki služi za ugašanje motorja. Ta poškodovani del žice se je nahajal nezavarovan
+v neposredni bližini kovinskega nosilca motorja. Pri delujočem motorju je lahko prišlo do
+
+42
+
+KONČNO POROČILO
+
+S5-PAJ
+
+dotika poškodovane žice z nosilcem motorja, kar je povzročilo prekinitev tokokroga in s tem
+izgubo moči motorja ter padec obratov motorja.
+
+ Na podlagi meteoroloških podatkov obstaja velika verjetnost zaledenitve uplinjačev.
+
+3.2 Vzrok nesreče
+Vzrok nesreče je samodejna popolna odpoved delovanja motorja, ki je najbolj verjetno povzročena
+s padcem moči motorja zaradi napake na vžigalnem sistemu ter istočasno zaledenitvijo uplinjačev.
+
+NAMERNO PRAZNO
+
+43
+
+KONČNO POROČILO
+
+S5-PAJ
+
+4. VARNOSTNA PRIPOROČILA
+Na podlagi ugotovitev preiskave letalske nesreče z namenom preprečevanja letalskih nesreč ter
+zmanjšanje tveganj v prihodnosti, naj Direktorat za civilno letalstvo uvede postopek za spremembo
+določbe 3. točke 18. člena Pravilnika o ultralahkih letalnih napravah (Ur. list RS, št. 107/2008).
+Spremenjeno določilo 3. točke 18. člena naj se glasi:
+
+»Za naprave so obvezni letni pregledi po priročniku za letenje in vzdrževanje naprave, ki ga
+izda proizvajalec. Letne preglede opravlja potrjena organizacija ali za to usposobljena oseba,
+ki jo pooblasti ministrstvo. Za vzdrževanje naprave je odgovoren lastnik«.
+
+44
+
+
