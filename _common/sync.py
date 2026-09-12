@@ -73,6 +73,7 @@ VENDORED = {
     "aaicth": {"http": "httpc", "robots": "robots"},
     "eaaid": {"http": "httpc", "robots": "robots"},
     "aacsv": {"http": "httpc", "robots": "robots", "text": "text"},
+    "aaiasb": {"http": "httpc", "robots": "robots"},
     "aaid": {"http": "httpc", "robots": "robots", "text": "text"},
     "dgcakw": {"http": "httpc", "robots": "robots", "text": "text"},
     # aaibmn carries the canon three byte-for-byte plus Mongolian date,
