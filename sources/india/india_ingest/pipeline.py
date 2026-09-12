@@ -45,6 +45,16 @@ def discover(conn, client, full=False):
     """
     html = india.fetch_index(client)
     rows = india.parse_index(html)
+    if not rows:
+        # 214 rows from this source are already in production, so an
+        # empty listing is the markup changing — not the authority
+        # publishing nothing. Returning 0 here is indistinguishable
+        # from a clean run, which is how a dead scraper stays quiet.
+        raise RuntimeError(
+            "[india discover] listing parsed to zero rows. The markup has"
+            " probably changed; refusing to report an empty run as success."
+        )
+
     taken = {
         r["case_id"]
         for r in conn.execute(

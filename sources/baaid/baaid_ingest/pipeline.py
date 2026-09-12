@@ -37,6 +37,25 @@ def discover(conn, client, full=False):
     html = resp.content.decode("utf-8", "replace") if isinstance(resp.content, bytes) else resp.content
 
     rows = baaid.parse_listing(html)
+
+    if not rows:
+
+        # 222 rows from this source are already in production, so an
+
+        # empty listing is the markup changing — not the authority
+
+        # publishing nothing. Returning 0 here is indistinguishable
+
+        # from a clean run, which is how a dead scraper stays quiet.
+
+        raise RuntimeError(
+
+            "[baaid discover] listing parsed to zero rows. The markup has"
+
+            " probably changed; refusing to report an empty run as success."
+
+        )
+
     inserted = 0
     for row in rows:
         case_id = row["case_id"]

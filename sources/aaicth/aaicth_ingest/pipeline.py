@@ -59,6 +59,25 @@ def discover(conn, client, full=False):
             continue
 
         rows = aaicth.parse_listing(html, report_type)
+
+        if not rows:
+
+            # 107 rows from this source are already in production, so an
+
+            # empty listing is the markup changing — not the authority
+
+            # publishing nothing. Returning 0 here is indistinguishable
+
+            # from a clean run, which is how a dead scraper stays quiet.
+
+            raise RuntimeError(
+
+                "[aaicth discover] listing parsed to zero rows. The markup has"
+
+                " probably changed; refusing to report an empty run as success."
+
+            )
+
         for row in rows:
             case_id = row["case_id"]
             key = (row["seq_no"], row["year"])

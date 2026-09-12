@@ -43,6 +43,7 @@ def discover(conn, client, full=False):
     Returns: number of rows inserted.
     """
     inserted = 0
+    seen = 0
     for url in griaa.iter_year_urls():
         time.sleep(griaa.DELAY)
         try:
@@ -54,6 +55,7 @@ def discover(conn, client, full=False):
             continue
 
         rows = griaa.parse_listing(html, url)
+        seen += len(rows)
         for row in rows:
             case_id = row["case_id"]
             if conn.execute(
@@ -91,6 +93,19 @@ def discover(conn, client, full=False):
             )
             inserted += 1
         conn.commit()
+    if seen == 0:
+        # Across every year, not per year: a year with no accidents is
+        # ordinary, a whole archive with none is not. 219 rows from this
+        # source are already in production.
+        #
+        # Placed after the loop rather than inside it, and outside the try
+        # above: that try's `except Exception` would swallow this and
+        # `continue`, which is how a guard becomes decorative.
+        raise RuntimeError(
+            "[griaa discover] every year listing parsed to zero rows. The"
+            " markup has probably changed; refusing to report an empty run as"
+            " success."
+        )
     return inserted
 
 

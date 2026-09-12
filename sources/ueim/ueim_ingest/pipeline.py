@@ -122,6 +122,16 @@ def discover(conn, client, full=False):
             print(f"[ueim discover] {url}: failed: {e}", file=sys.stderr)
             continue
         records = ueim.parse_listing(page_html, url, lang=lang)
+        if not records:
+            # 56 rows from this source are already in production, so an
+            # empty listing is the markup changing — not the authority
+            # publishing nothing. Returning 0 here is indistinguishable
+            # from a clean run, which is how a dead scraper stays quiet.
+            raise RuntimeError(
+                "[ueim discover] listing parsed to zero rows. The markup has"
+                " probably changed; refusing to report an empty run as success."
+            )
+
         inserted += _insert_records(conn, records, taken)
         conn.commit()
     return inserted

@@ -47,6 +47,25 @@ def discover(conn, client, full=False):
         return 0
 
     rows = jiaacve.parse_listing(html)
+
+    if not rows:
+
+        # 459 rows from this source are already in production, so an
+
+        # empty listing is the markup changing — not the authority
+
+        # publishing nothing. Returning 0 here is indistinguishable
+
+        # from a clean run, which is how a dead scraper stays quiet.
+
+        raise RuntimeError(
+
+            "[jiaacve discover] listing parsed to zero rows. The markup has"
+
+            " probably changed; refusing to report an empty run as success."
+
+        )
+
     rows = jiaacve.resolve_superseded(rows)
 
     inserted = 0

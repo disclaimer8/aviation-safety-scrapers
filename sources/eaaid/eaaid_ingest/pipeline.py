@@ -59,6 +59,25 @@ def discover(conn, client):
         )
 
     events = eaaid.parse_listing_html(html)
+
+    if not events:
+
+        # 84 rows from this source are already in production, so an
+
+        # empty listing is the markup changing — not the authority
+
+        # publishing nothing. Returning 0 here is indistinguishable
+
+        # from a clean run, which is how a dead scraper stays quiet.
+
+        raise RuntimeError(
+
+            "[eaaid discover] listing parsed to zero rows. The markup has"
+
+            " probably changed; refusing to report an empty run as success."
+
+        )
+
     events = eaaid.assign_case_ids(events)
     print(f"[eaaid discover] parsed {len(events)} unique events from listing")
 
