@@ -454,3 +454,118 @@ def download(client, pdf_url: str, dest: str | Path) -> None:
     resp.raise_for_status()
     with open(dest, "wb") as fh:
         fh.write(resp.content)
+
+
+# ── probable cause ────────────────────────────────────────────────────────────
+#
+# Slovenian reports head the section "3.2 Vzrok nesreče" — section number and
+# mixed-case title on one line — then give prose or a numbered list, ending at
+# the safety recommendations.
+#
+# Terminator vocabulary measured across all 69 PDFs on the host:
+#
+#     VARNOSTNA PRIPOROČILA       18
+#     KONČNO POROČILO             11   <- running header, furniture
+#     NAMERNO PRAZNO               3   <- "intentionally blank", furniture
+#     VARNOSTNO PRIPOROČILO        2
+#     VAROSTNO PRIPOROČILO         1   <- typo in the source, not ours
+#     OSNUTEK KONČNEGA POROČILA    1
+#
+# Three things that vocabulary settles:
+#
+#   * KONČNO POROČILO is the second most frequent heading after the section
+#     and is not a heading at all — it is the running header that follows a
+#     page break. Treating it as a terminator would cut a sixth of the corpus
+#     short. Same shape as Croatia's agency footer.
+#   * VAROSTNO PRIPOROČILO is misspelled in the report itself (missing the N).
+#     The pattern tolerates it rather than losing that report, the same way
+#     aaiahk has to tolerate "Interim Statemet".
+#   * The heading also appears in the table of contents with dot leaders and a
+#     page number. Those are skipped: 9 of the 69 reports have ONLY a contents
+#     entry, and taking it would capture the contents page as the cause.
+#
+# probable_cause is what decides indexability: prod needs a quality score of
+# 50, a narrative over 300 chars scores 30 and a cause over 100 scores 20, and
+# factors_json, weather_summary and phase_of_flight are hardcoded null at
+# projection.
+_PC_HEADING_RE = re.compile(
+    r"^[ \t\f]*(?:\d+(?:\.\d+)*[.)]?[ \t\f]*)?"
+    r"VZROK\w*(?:\s+(?:NESRE\w+|INCIDENT\w*|DOGODKA))?[ \t]*:?[ \t]*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+# A contents-page entry: dot or dash leaders, usually with a page number.
+_PC_TOC_RE = re.compile(r"[.\-_]{5,}\s*\d*\s*$")
+_PC_TERMINATOR_RE = re.compile(
+    r"^[ \t\f]*(?:\d+(?:\.\d+)*[.)]?[ \t\f]*)?"
+    r"(?:VARN?OSTN[AO]\s+PRIPORO\w+|OSNUTEK\s+KON\w+|PRILOG[AE]|VIRI)"
+    r"[ \t]*:?[ \t]*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+# The running header is "KONČNO POROČILO" with the registration or the report
+# title appended on the same line, so it cannot be matched with $ right after
+# the phrase — that missed 4 of 35 captures, which then carried
+# "KONČNO POROČILO An-2 HA-MKK" into the middle of a cause.
+#
+# The agency name is deliberately NOT stripped with a trailing wildcard. It
+# also opens a real sentence — "Služba za preiskovanje ... nima varnostnih
+# priporočil" ("the Service has no safety recommendations") — and removing the
+# line there would delete a finding rather than a header. It is stripped only
+# when it is the whole line.
+_PC_FURNITURE_RE = re.compile(
+    r"^[ \t\f]*(?:"
+    r"KON\w*N\w*\s+PORO\w+.*"            # running header, plus whatever trails it
+    r"|POVZETEK\s+KON\w+.*"
+    r"|NAMERNO\s+PRAZNO"
+    r"|MZI,\s*(?:Slu\w*ba|Sektor)\s+za\s+preiskovanje.*"
+    r"|(?:Slu\w*ba|Sektor)\s+za\s+preiskovanje[\w, ]*nesre\w+"
+    r"(?:\s+in\s+incidentov)?"              # header form, WHOLE line only:
+                                            # the same phrase opens a real
+                                            # sentence elsewhere and must
+                                            # survive there
+    r"|\d+\s*/\s*\d+[\w\s.-]*"            # "12/19 TAYRONA MXP 155" page rule
+    r"|[_\-\u2014]{10,}|\d{1,4}|S5-[A-Z]{3}"
+    r")[ \t]*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+_PC_BULLET_RE = re.compile(
+    r"^[ \t\f]*[\u2022\u25aa\u25cf\u25a0\u00b7\u2013\u2014\-\*\uE000-\uF8FF]+[ \t\f]*",
+    re.MULTILINE,
+)
+
+PROBABLE_CAUSE_MIN = 40
+_PC_WINDOW = 6000  # chars; see the note in parse_probable_cause
+
+
+def parse_probable_cause(text: str) -> str | None:
+    """Return the Vzrok nesreče section as one normalised string, or None."""
+    if not text:
+        return None
+    hit = next((m for m in _PC_HEADING_RE.finditer(text)
+                if not _PC_TOC_RE.search(m.group(0))), None)
+    if hit is None:
+        return None
+    # Bounded for the reason documented in baaid: an unbounded capture on a
+    # report with no following heading takes the rest of the document, and
+    # nothing downstream would notice.
+    rest = text[hit.end(): hit.end() + _PC_WINDOW]
+    end = _PC_TERMINATOR_RE.search(rest)
+    body = rest[: end.start()] if end else rest
+
+    body = _PC_FURNITURE_RE.sub("", body)
+    body = _PC_BULLET_RE.sub("", body)
+
+    out = []
+    for ln in (l.strip() for l in body.splitlines()):
+        if not ln:
+            continue
+        if out and not out[-1].endswith((".", ";", ":")):
+            out[-1] = out[-1] + " " + ln
+        else:
+            out.append(ln)
+    joined = re.sub(r"\s+", " ", " ".join(out)).strip()
+    joined = re.sub(r"\s+\d+(?:\.\d+)*[.)]?\s*$", "", joined).strip()
+    if end is None and len(joined) > PROBABLE_CAUSE_MIN:
+        cut = joined.rfind(". ")
+        if cut > PROBABLE_CAUSE_MIN:
+            joined = joined[: cut + 1]
+    return joined if len(joined) >= PROBABLE_CAUSE_MIN else None

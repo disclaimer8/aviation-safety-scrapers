@@ -226,6 +226,15 @@ def build(conn):
             row["aircraft"], row["registration"], row["location"]
         )
 
+        # Parsed from the narrative, which already holds the full extracted PDF
+        # text. mzisi_reports has no probable_cause column and adding one
+        # would mean migrating a live database for no gain.
+        #
+        # Measured against all 69 PDFs on the host: 35 yield a cause, 28 of
+        # them long enough to count toward the score that decides
+        # indexability.
+        probable_cause = mzisi.parse_probable_cause(narrative)
+
         conn.execute(
             "INSERT OR REPLACE INTO mzisi_accidents "
             "(case_id, event_date, aircraft, registration, operator, location, "
@@ -241,7 +250,7 @@ def build(conn):
                 row["location"],
                 "SI",
                 narrative,
-                None,
+                probable_cause,
                 source_url,
                 row["event_class"],
                 site_slug,
