@@ -31,6 +31,16 @@ def discover(conn, client, full=False):
     Returns: number of rows inserted.
     """
     pdf_list = jcaa.discover_pdf_urls(client)
+    if not pdf_list:
+        # 5 rows from this source are already in production, so an
+        # empty listing is the markup changing — not the authority
+        # publishing nothing. Returning 0 here is indistinguishable
+        # from a clean run, which is how a dead scraper stays quiet.
+        raise RuntimeError(
+            "[jcaa discover] listing parsed to zero rows. The markup has"
+            " probably changed; refusing to report an empty run as success."
+        )
+
     print(f"[jcaa discover] found {len(pdf_list)} candidate PDFs")
 
     inserted = 0

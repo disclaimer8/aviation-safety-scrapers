@@ -31,9 +31,11 @@ def discover(conn, client, full=False):
     Idempotent — existing case_ids are skipped. Returns rows inserted.
     """
     inserted = 0
+    seen = 0
     for page_url, page_html in aaibmn.iter_listing_pages(client):
         try:
             rows = aaibmn.parse_listing(page_html)
+            seen += len(rows)
         except Exception as exc:
             print(f"[aaibmn discover] {page_url}: parse {exc}", file=sys.stderr)
             continue
@@ -72,6 +74,22 @@ def discover(conn, client, full=False):
             )
             inserted += 1
         conn.commit()
+
+    if seen == 0:
+        # Across EVERY category page, not per page: a single page may
+        # legitimately be empty, the whole walk may not. 27 rows from this
+        # source are already in production, so zero everywhere is the markup
+        # changing rather than the authority publishing nothing.
+        #
+        # Placed after the loop and outside the try above deliberately. That
+        # try's `except Exception` would swallow this RuntimeError and
+        # `continue`, which is how a guard ends up decorative — the same shape
+        # that made cenipa's page-1 guard unreachable.
+        raise RuntimeError(
+            "[aaibmn discover] every listing page parsed to zero rows. The"
+            " markup has probably changed; refusing to report an empty run as"
+            " success."
+        )
     return inserted
 
 

@@ -50,6 +50,29 @@ def discover(conn, client, full=False):
 
     year_urls = aaiib.iter_year_urls(index_html)
 
+    if not year_urls:
+
+        # The index lists one URL per year. Zero of them means the
+
+        # index markup changed; 169 rows from this source are already
+
+        # in production, so it is not that the authority published
+
+        # nothing. An empty individual YEAR is left unguarded on
+
+        # purpose — a year with no accidents is ordinary.
+
+        raise RuntimeError(
+
+            "[aaiib discover] the index yielded no year URLs. The markup"
+
+            " has probably changed; refusing to report an empty run as"
+
+            " success."
+
+        )
+
+
     inserted = 0
     for year_url in year_urls:
         ym = __import__("re").search(r"/(\d{4})-accidents", year_url)
