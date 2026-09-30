@@ -142,9 +142,15 @@ def test_fetch_summary_fallback(conn, tmp_path, monkeypatch):
     assert row["narrative_text"].startswith("S")
 
 
+# build() publishes aviation reports only (see test_aviation_guard.py), so the
+# built fixtures need a report that reads like one.
+_AVIATION_REPORT = ("The aircraft touched down hard on runway 23 and the pilot "
+                    "taxied to the apron of the airport. ") * 100
+
+
 def test_build(conn, tmp_path, monkeypatch):
     pipeline.discover(conn, FakeClient())
-    monkeypatch.setattr(pipeline.pdf, "extract_text", lambda p: "N" * 9000)
+    monkeypatch.setattr(pipeline.pdf, "extract_text", lambda p: _AVIATION_REPORT)
     pipeline.fetch(conn, FakeClient(), pdf_dir=str(tmp_path))
     assert pipeline.build(conn) == 1
     acc = conn.execute("SELECT * FROM ovv_accidents").fetchone()
@@ -155,7 +161,7 @@ def test_build(conn, tmp_path, monkeypatch):
 
 def test_build_idempotent(conn, tmp_path, monkeypatch):
     pipeline.discover(conn, FakeClient())
-    monkeypatch.setattr(pipeline.pdf, "extract_text", lambda p: "N" * 9000)
+    monkeypatch.setattr(pipeline.pdf, "extract_text", lambda p: _AVIATION_REPORT)
     pipeline.fetch(conn, FakeClient(), pdf_dir=str(tmp_path))
     pipeline.build(conn)
     conn.execute("UPDATE ovv_reports SET status='parsed' WHERE status='built'")

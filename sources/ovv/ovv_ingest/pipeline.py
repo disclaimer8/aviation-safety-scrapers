@@ -286,6 +286,15 @@ def build(conn):
     built = 0
     for row in rows:
         narrative = row["narrative_text"] or ""
+        if not ovv.looks_like_aviation(row["case_id"], row["title"], narrative):
+            print(f"[ovv build] {row['case_id']}: no aviation evidence in the text, skipped",
+                  file=sys.stderr)
+            conn.execute(
+                "UPDATE ovv_reports SET status=?, updated_at=? WHERE case_id=?",
+                (db.STATUS_SKIPPED, db.now_ms(), row["case_id"]),
+            )
+            conn.commit()
+            continue
         if len(narrative) < _NARRATIVE_FLOOR:
             conn.execute(
                 "UPDATE ovv_reports SET status=?, updated_at=? WHERE case_id=?",

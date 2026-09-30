@@ -47,8 +47,10 @@ def test_scanned_pdf_promoted_to_ocr(conn, tmp_path, monkeypatch):
     _discover(conn, monkeypatch)
     # text layer is thin (scan); OCR recovers a full narrative
     monkeypatch.setattr(pipeline.pdf, "extract_text", lambda p: "short")
+    # An aviation report: build() publishes nothing else (test_aviation_guard.py).
+    ocr_text = "Het vliegtuig landde hard op de landingsbaan van de luchthaven. " * 20
     monkeypatch.setattr(pipeline.pdf, "ocr_extract",
-                        lambda p, lang="nld+eng": "L" * 1000)
+                        lambda p, lang="nld+eng": ocr_text)
     pipeline.fetch(conn, _Client(), pdf_dir=str(tmp_path))
     row = conn.execute(
         "SELECT source_tier, narrative_text FROM ovv_reports "
